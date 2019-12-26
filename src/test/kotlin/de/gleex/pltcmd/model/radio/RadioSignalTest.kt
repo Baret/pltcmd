@@ -16,4 +16,6 @@ class RadioSignalTest {
         Assertions.assertEquals(10, terrainList.size)
         Assertions.assertEquals(20, sig.along(terrainList))
     }
+
+
 }
