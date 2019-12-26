@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.model.terrain
 
-enum class TerrainHeight(val height: Int) {
+enum class TerrainHeight(val value: Int) {
     ONE(1),
     TWO(2),
     THREE(3),
