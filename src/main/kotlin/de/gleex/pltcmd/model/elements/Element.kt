@@ -1,13 +1,10 @@
 package de.gleex.pltcmd.model.elements
 
 /**
- * Part of a military hierarchy. It consits of multiple other elements.
- *
- * @param C the common type of all possible children
+ * Part of a military hierarchy that follows orders.
  */
-interface Element<C : Element<C>> {
+interface Element {
 
-	/** @return the subordinate elements of this element. */
-	fun parts(): List<C>
+	fun executeOrder()
 
 }
