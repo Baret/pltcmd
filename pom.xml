@@ -29,6 +29,7 @@
             <groupId>com.github.Hexworks.amethyst</groupId>
             <artifactId>amethyst.core</artifactId>
             <version>2019.1.0-PREVIEW</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
