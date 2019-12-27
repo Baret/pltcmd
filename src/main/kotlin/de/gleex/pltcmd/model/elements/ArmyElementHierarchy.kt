@@ -3,7 +3,7 @@ package de.gleex.pltcmd.model.elements
 /**
  * @see [Army Hierarchy](https://en.wikipedia.org/wiki/Military_unit#Army_hierarchy)
  */
-enum class ArmyUnitHierarchy(val minCountOfConstituentUnits : Int, val maxCountOfConstituentUnits : Int) {
+enum class ArmyElementHierarchy(val minCountOfConstituentUnits : Int, val maxCountOfConstituentUnits : Int) {
 	/** Formation, strength: 6,000 to 20,000  */
 	Division(2, 4),
 	/** Formation, strength: 3,000 to 5,000  */
