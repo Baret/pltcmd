@@ -13,14 +13,12 @@ enum class ArmyElementHierarchy(val minCountOfConstituentUnits : Int, val maxCou
 	/** Subunit, strength: 80 to 250  */
 	Company(2, 8),
 	/** Sub-subunit, strength: 26 to 55  */
-	Platoon(2, 5),
-	/** strength: 12 to 24  */
-	Section(1, 4),
+	Platoon(2, 6),
 	/** strength: 8 to 12  */
 	Squad(2, 3),
-	/** strength: 3 to 4  */
+	/** strength: 2 to 4  */
 	Fireteam(1, 2),
-	/** strength: 2 to 3  */
-	FireAndManeuverTeam(0, 0)
+	/** strength: 2  */
+	BuddyTeam(0, 0)
 	
 }
