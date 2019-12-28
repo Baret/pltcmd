@@ -6,10 +6,10 @@ import de.gleex.pltcmd.options.GameOptions
 import kotlin.math.floor
 
 /**
- * A radio signal carries a message. it has an initial strength depending on the sending radio.
+ * A radio signal carries a message. It has an initial strength depending on the sending radio.
  * While traveling over or through terrain it loses strength, which makes it harder to understand ("decode")
  * the message. The signal needs the terrain tiles it travels along to calculate its strength at a target location.
- * The resulting signal <b>is expressed as a value from 0.0 to 1.0</b>. It uses an [AttenuationModel] to
+ * The resulting signal **is expressed as a value from 0.0 to 1.0**. It uses an [AttenuationModel] to
  * calculate the signal loss.
  */
 open class RadioSignal(private val initialStrength: Double, private val initialTerrain: Terrain) {
@@ -29,7 +29,9 @@ open class RadioSignal(private val initialStrength: Double, private val initialT
     private val attenuation: AttenuationModel = GameOptions.attenuationModel
 
     /**
-     * Calculates the signal loss along the given terrain. The result will be a value from 0.0 to 1.0
+     * Calculates the signal loss along the given terrain. The result will be a value from 0.0 to 1.0.
+     * A final strength >= 100 means full strength of 100%, lower values equal the percentage value
+     * (i.e. signalStrength of 80 -> 80% -> 0.80).
      */
     fun along(terrain: List<Terrain>): Double {
         val (_, targetHeight) = terrain.last()
@@ -58,6 +60,5 @@ open class RadioSignal(private val initialStrength: Double, private val initialT
      */
     protected fun Double.toPercent(): Double = this.toBigDecimal().divide(100.0.toBigDecimal()).toDouble().coerceIn(0.0, 1.0)
 
+    private fun TerrainHeight.toDouble(): Double = value.toDouble()
 }
-
-private fun TerrainHeight.toDouble(): Double = value.toDouble()
