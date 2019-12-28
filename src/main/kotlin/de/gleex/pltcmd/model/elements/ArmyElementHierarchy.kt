@@ -20,31 +20,29 @@ enum class ArmyElementHierarchy(val minCountOfConstituentUnits: Int, val maxCoun
 	Fireteam(1, 2),
 	/** strength: 2  */
 	BuddyTeam(0, 0) {
-		override fun createElement(): Element {
+		override fun createElement(superordinate: Element?): Element {
 			val soldier1 = GenericUnit(UnitType.Soldier)
 			val soldier2 = GenericUnit(UnitType.Soldier)
-			return ElementImpl(setOf(soldier1, soldier2), setOf())
+			return ElementImpl(superordinate, setOf(soldier1, soldier2))
 		}
 	};
 
 	fun averageCountOfConsituentUnits(): Int {
 		return (minCountOfConstituentUnits + maxCountOfConstituentUnits) / 2
 	}
-
+	
 	/** Creates a default Element with the average number of constituent units for every subordinate element. */
-	open fun createElement(): Element {
-		val hierarchy = values()
-		val myIndex = hierarchy.indexOf(this)
-		val subordinates = mutableSetOf<Element>()
-		if (myIndex + 1 < hierarchy.size) {
+	open fun createElement(superordinate: Element?): Element {
+		val element = ElementImpl(superordinate, setOf())
+		val consituentUnitType = values().getOrNull(ordinal + 1)
+		if (consituentUnitType != null) {
 			val averageCount = averageCountOfConsituentUnits()
-			val consituentUnitType = hierarchy[myIndex + 1]
 			for (i in 0 until averageCount) {
-				val subordinate = consituentUnitType.createElement()
-				subordinates.add(subordinate)
+				// subordinates
+				consituentUnitType.createElement(element)
 			}
 		}
-		return ElementImpl(setOf(), subordinates)
+		return element
 	}
 
 }

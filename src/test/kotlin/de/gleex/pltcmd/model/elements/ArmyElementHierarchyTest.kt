@@ -9,7 +9,7 @@ class ArmyElementHierarchyTest {
 
 	@Test
 	fun createElement() {
-		val division = ArmyElementHierarchy.Division.createElement()
+		val division = ArmyElementHierarchy.Division.createElement(null)
 
 		assertHierarchy(
 			division,
@@ -27,7 +27,7 @@ class ArmyElementHierarchyTest {
 		assertNotNull(actual)
 		assertTrue(actual is ElementImpl)
 
-		val actualSubordinates = actual.subordinates
+		val actualSubordinates = actual.getSubordinates()
 		val actualMembers = actual.members
 		if (actualSubordinates.isEmpty()) {
 			assertBuddyTeam(actualMembers)
@@ -48,9 +48,10 @@ class ArmyElementHierarchyTest {
 	private fun assertSubHierarchy(actual: ElementImpl, vararg expectedCounts: Int) {
 		val expectedSubordinateCounts = expectedCounts.firstOrNull() ?: 0;
 		val remainingCounts = expectedCounts.drop(1)
-		val actualSubordinates = actual.subordinates
+		val actualSubordinates = actual.getSubordinates()
 		assertEquals(expectedSubordinateCounts, actualSubordinates.size)
 		actualSubordinates.forEach {
+			assertEquals(actual, (it as ElementImpl).superordinate)
 			assertHierarchy(it, *remainingCounts.toIntArray())
 		}
 	}
