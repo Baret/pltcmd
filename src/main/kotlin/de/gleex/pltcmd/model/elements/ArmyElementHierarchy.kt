@@ -3,7 +3,7 @@ package de.gleex.pltcmd.model.elements
 /**
  * @see [Army Hierarchy](https://en.wikipedia.org/wiki/Military_unit#Army_hierarchy)
  */
-enum class ArmyElementHierarchy(val minCountOfConstituentUnits: Int, val maxCountOfConstituentUnits: Int) {
+enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxCountOfConstituentElements: Int) {
 	/** Formation, strength: 6,000 to 20,000  */
 	Division(2, 4),
 	/** Formation, strength: 3,000 to 5,000  */
@@ -27,19 +27,19 @@ enum class ArmyElementHierarchy(val minCountOfConstituentUnits: Int, val maxCoun
 		}
 	};
 
-	fun averageCountOfConsituentUnits(): Int {
-		return (minCountOfConstituentUnits + maxCountOfConstituentUnits) / 2
+	fun averageCountOfConsituentElements(): Int {
+		return (minCountOfConstituentElements + maxCountOfConstituentElements) / 2
 	}
 	
 	/** Creates a default Element with the average number of constituent units for every subordinate element. */
 	open fun createElement(superordinate: Element?): Element {
 		val element = ElementImpl(superordinate, setOf())
-		val consituentUnitType = values().getOrNull(ordinal + 1)
-		if (consituentUnitType != null) {
-			val averageCount = averageCountOfConsituentUnits()
+		val consituentElementType = values().getOrNull(ordinal + 1)
+		if (consituentElementType != null) {
+			val averageCount = averageCountOfConsituentElements()
 			for (i in 0 until averageCount) {
 				// subordinates
-				consituentUnitType.createElement(element)
+				consituentElementType.createElement(element)
 			}
 		}
 		return element
