@@ -2,11 +2,8 @@ package de.gleex.pltcmd.model.radio
 
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
-import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.options.GameOptions
-import java.math.BigDecimal
 import kotlin.math.floor
-import kotlin.math.round
 
 /**
  * A radio signal carries a message. it has an initial strength depending on the sending radio.
@@ -31,17 +28,18 @@ open class RadioSignal(private val initialStrength: Double, private val initialT
 
     private val attenuation: AttenuationModel = GameOptions.attenuationModel
 
+    /**
+     * Calculates the signal loss along the given terrain. The result will be a value from 0.0 to 1.0
+     */
     fun along(terrain: List<Terrain>): Double {
         val (_, targetHeight) = terrain.last()
         val startHeight = initialTerrain.height
         val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrain.size.toDouble()
-        println("Slope = $slope")
         var signal = initialStrength
         for ((index, t) in terrain.withIndex()) {
             // Calculate if the signal is above, at or through the current field
             // currentHeight (y) = mx + b
             val currentHeight = floor(slope * index + startHeight.toDouble())
-            println("height at index $index = $currentHeight, terrainHeight = ${t.height}")
             signal = when {
                 // signal travels through the air (above ground)
                 currentHeight > t.height.toDouble() -> signal * BASE_LOSS_FACTOR

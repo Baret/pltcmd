@@ -2,6 +2,9 @@ package de.gleex.pltcmd.model.radio
 
 import de.gleex.pltcmd.model.terrain.TerrainType
 
+/**
+ * With this [AttenuationModel] the signal is reduced by a specific percentage for each [TerrainType]
+ */
 class PercentageReducingAttenuation : AttenuationModel {
     override fun reducedAt(signalStrength: Double, type: TerrainType): Double {
         return signalStrength * type.lossFactor()
