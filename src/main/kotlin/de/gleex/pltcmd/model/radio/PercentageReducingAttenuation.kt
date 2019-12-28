@@ -1,11 +1,10 @@
 package de.gleex.pltcmd.model.radio
 
-import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainType
 
-class HeightIgnoringAttenuation : AttenuationModel {
-    override fun reducedAt(signalStrength: Double, t: Terrain): Double {
-        return signalStrength * t.type.lossFactor()
+class PercentageReducingAttenuation : AttenuationModel {
+    override fun reducedAt(signalStrength: Double, type: TerrainType): Double {
+        return signalStrength * type.lossFactor()
     }
 
     private fun TerrainType.lossFactor() =
