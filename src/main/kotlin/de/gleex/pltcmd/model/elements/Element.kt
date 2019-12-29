@@ -10,9 +10,7 @@ data class Element(val callSign: CallSign, val superordinate: Element?, val memb
 
 	init {
 		// link from element to its subordinates
-		if (superordinate is Element) {
-			superordinate.addSubordinate(this)
-		}
+		superordinate?.addSubordinate(this)
 	}
 
 	internal fun getSubordinates(): Set<Element> {
