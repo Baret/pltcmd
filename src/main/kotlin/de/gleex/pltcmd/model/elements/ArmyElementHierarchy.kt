@@ -37,8 +37,9 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 	
 	/** Creates a default Element with the average number of constituent units for every subordinate element. */
 	open fun createElement(superordinate: Element?): Element {
+		val leader = GenericUnit(UnitType.Soldier)
 		val callSign = getCallSign(superordinate)
-		val element = Element(callSign, superordinate, setOf())
+		val element = Element(callSign, superordinate, setOf(leader))
 		val consituentElementType = values().getOrNull(ordinal + 1)
 		if (consituentElementType != null) {
 			val averageCount = averageCountOfConsituentElements()

@@ -21,6 +21,7 @@ class ArmyElementHierarchyTest {
 			2/*fireteams*/,
 			1/*buddy team*/
 		)
+		assertEquals(7024, GenericUnit.IdCounter.next())
 	}
 
 	private fun assertHierarchy(actual: Element, vararg expectedCounts: Int) {
@@ -31,17 +32,25 @@ class ArmyElementHierarchyTest {
 		if (actualSubordinates.isEmpty()) {
 			assertBuddyTeam(actualMembers)
 		} else {
-			assertEquals(setOf(), actualMembers)
+			assertLeader(actualMembers)
 			assertSubHierarchy(actual, *expectedCounts)
 		}
 	}
 
+	private fun assertLeader(actualMembers: Set<Unit>) {
+		assertEquals(1, actualMembers.size)
+		assertSoldiers(actualMembers)
+	}
+
 	private fun assertBuddyTeam(actualMembers: Set<Unit>) {
 		assertEquals(2, actualMembers.size)
+		assertSoldiers(actualMembers)
+	}
+	
+	private fun assertSoldiers(actualMembers: Set<Unit>) {
 		actualMembers.forEach() {
 			assertTrue(it.isOfType(UnitType.Soldier))
 		}
-
 	}
 
 	private fun assertSubHierarchy(actual: Element, vararg expectedCounts: Int) {
