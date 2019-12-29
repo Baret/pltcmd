@@ -34,7 +34,7 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 	fun averageCountOfConsituentElements(): Int {
 		return (minCountOfConstituentElements + maxCountOfConstituentElements) / 2
 	}
-	
+
 	/** Creates a default Element with the average number of constituent units for every subordinate element. */
 	open fun createElement(superordinate: Element?): Element {
 		val leader = GenericUnit(UnitType.Soldier)
@@ -50,17 +50,20 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 		}
 		return element
 	}
-	
+
 	open fun getCallSign(superordinate: Element?): CallSign {
-		val csName: String
-		if (superordinate != null) {
-			val superName = superordinate.callSign.name
-			val subCount = superordinate.getSubordinates().size
-			csName = superName + "-" + (subCount + 1)
-		} else {
-			csName = name + " " + Random.nextInt()
+		if (superordinate == null) {
+			// TODO ensure unique name
+			return CallSign(name + " " + Random.nextInt());
 		}
-		return CallSign(csName);
+		val superCallSign = superordinate.callSign
+		val siblingCount = superordinate.getSubordinates().size
+		return superCallSign + (siblingCount + 1)
 	}
 
+}
+
+/** creates a new [CallSign] for a sub element by adding a separator and the given [subElementNumber] to a call sign */
+operator fun CallSign.plus(subElementNumber: Int): CallSign {
+	return CallSign("$name-$subElementNumber")
 }
