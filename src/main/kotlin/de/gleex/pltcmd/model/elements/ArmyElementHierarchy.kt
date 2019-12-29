@@ -27,7 +27,7 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 			val soldier1 = GenericUnit(UnitType.Soldier)
 			val soldier2 = GenericUnit(UnitType.Soldier)
 			val callSign = getCallSign(superordinate)
-			return Element(callSign, superordinate, setOf(soldier1, soldier2))
+			return Element(callSign, setOf(soldier1, soldier2), superordinate)
 		}
 	};
 
@@ -39,7 +39,7 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 	open fun createElement(superordinate: Element?): Element {
 		val leader = GenericUnit(UnitType.Soldier)
 		val callSign = getCallSign(superordinate)
-		val element = Element(callSign, superordinate, setOf(leader))
+		val element = Element(callSign, setOf(leader), superordinate)
 		val consituentElementType = values().getOrNull(ordinal + 1)
 		if (consituentElementType != null) {
 			val averageCount = averageCountOfConsituentElements()
