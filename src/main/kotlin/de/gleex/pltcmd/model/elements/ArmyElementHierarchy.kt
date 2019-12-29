@@ -53,7 +53,7 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 
 	open fun getCallSign(superordinate: Element?): CallSign {
 		if (superordinate == null) {
-			// TODO ensure unique name
+			// TODO ensure unique name for a lot of calls
 			return CallSign(name + " " + Random.nextInt());
 		}
 		val superCallSign = superordinate.callSign
