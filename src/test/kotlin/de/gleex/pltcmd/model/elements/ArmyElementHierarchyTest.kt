@@ -23,9 +23,8 @@ class ArmyElementHierarchyTest {
 		)
 	}
 
-	private fun assertHierarchy(actual: Element, vararg expectedCounts: Int) {
+	private fun assertHierarchy(actual: ElementImpl, vararg expectedCounts: Int) {
 		assertNotNull(actual)
-		assertTrue(actual is ElementImpl)
 
 		val actualSubordinates = actual.getSubordinates()
 		val actualMembers = actual.members
@@ -51,7 +50,7 @@ class ArmyElementHierarchyTest {
 		val actualSubordinates = actual.getSubordinates()
 		assertEquals(expectedSubordinateCounts, actualSubordinates.size)
 		actualSubordinates.forEach {
-			assertEquals(actual, (it as ElementImpl).superordinate)
+			assertEquals(actual, it.superordinate)
 			assertHierarchy(it, *remainingCounts.toIntArray())
 		}
 	}
