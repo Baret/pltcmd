@@ -1,5 +1,8 @@
 package de.gleex.pltcmd.model.elements
 
+import kotlin.random.Random
+
+
 /**
  * @see [Army Hierarchy](https://en.wikipedia.org/wiki/Military_unit#Army_hierarchy)
  */
@@ -23,7 +26,8 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 		override fun createElement(superordinate: Element?): Element {
 			val soldier1 = GenericUnit(UnitType.Soldier)
 			val soldier2 = GenericUnit(UnitType.Soldier)
-			return Element(superordinate, setOf(soldier1, soldier2))
+			val callSign = getCallSign(superordinate)
+			return Element(callSign, superordinate, setOf(soldier1, soldier2))
 		}
 	};
 
@@ -33,7 +37,8 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 	
 	/** Creates a default Element with the average number of constituent units for every subordinate element. */
 	open fun createElement(superordinate: Element?): Element {
-		val element = Element(superordinate, setOf())
+		val callSign = getCallSign(superordinate)
+		val element = Element(callSign, superordinate, setOf())
 		val consituentElementType = values().getOrNull(ordinal + 1)
 		if (consituentElementType != null) {
 			val averageCount = averageCountOfConsituentElements()
@@ -43,6 +48,18 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 			}
 		}
 		return element
+	}
+	
+	open fun getCallSign(superordinate: Element?): CallSign {
+		val csName: String
+		if (superordinate != null) {
+			val superName = superordinate.callSign.name
+			val subCount = superordinate.getSubordinates().size
+			csName = superName + "-" + (subCount + 1)
+		} else {
+			csName = name + " " + Random.nextInt()
+		}
+		return CallSign(csName);
 	}
 
 }

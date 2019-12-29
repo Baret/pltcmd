@@ -5,7 +5,7 @@ import java.lang.IllegalArgumentException
 /**
  * Part of a military hierarchy with a set of [Unit]s and subordinate [Element]s.
  */
-class Element(val superordinate: Element?, val members: Set<Unit>) {
+data class Element(val callSign: CallSign, val superordinate: Element?, val members: Set<Unit>) {
 	private val subordinates: MutableSet<Element> = mutableSetOf()
 
 	init {
