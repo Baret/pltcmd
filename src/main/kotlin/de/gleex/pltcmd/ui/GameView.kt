@@ -1,13 +1,13 @@
 package de.gleex.pltcmd.ui
 
 import de.gleex.pltcmd.options.UiOptions
+import de.gleex.pltcmd.ui.fragments.LayersFragment
+import de.gleex.pltcmd.ui.fragments.MousePosition
 import org.hexworks.zircon.api.*
 import org.hexworks.zircon.api.builder.game.GameAreaBuilder
 import org.hexworks.zircon.api.component.ComponentAlignment
-import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.data.Block
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.extensions.onSelectionChanged
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.graphics.Layer
@@ -73,33 +73,7 @@ class GameView: BaseView() {
 		log.info("loaded layers with size ${layers[0].size}")
 
 		sidebar.addFragment(LayersFragment(sidebar.contentSize.width, layers.toList()))
+		sidebar.addFragment(MousePosition(sidebar.contentSize.width, screen))
     }
 }
 
-class LayersFragment(val width: Int, layers: List<Layer>) : Fragment {
-	override val root = Components.
-			vbox().
-			withSize(width, 2).
-			build().apply {
-					addComponent(Components.header().withText("Layers"))
-					val checkBoxes = Components.
-							hbox().
-							withSize(width,1).
-							withSpacing(2).
-							build()
-					layers.forEachIndexed { i, layer ->
-						val checkBoxWidth = width / layers.size
-						checkBoxes.addComponent(
-								Components.
-										checkBox().
-										withText((i+1).toString()).
-										build().
-										apply {
-											isSelected = true
-											onSelectionChanged { layer.isHidden = layer.isHidden.not() }
-										})
-					}
-					addComponent(checkBoxes)
-				}
-
-}
