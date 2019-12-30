@@ -6,6 +6,8 @@ object UiOptions {
     fun buildAppConfig() =
             AppConfigs.
                     newConfig().
+                    // GameComponents is a beta feature
+                    enableBetaFeatures().
                     withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT).
                     withTitle("PltCmd").
                     build()
