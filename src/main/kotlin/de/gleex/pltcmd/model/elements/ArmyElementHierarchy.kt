@@ -57,7 +57,7 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 			return CallSign(name + " " + Random.nextInt());
 		}
 		val superCallSign = superordinate.callSign
-		val siblingCount = superordinate.getSubordinates().size
+		val siblingCount = superordinate.subordinates.size
 		return superCallSign + (siblingCount + 1)
 	}
 
