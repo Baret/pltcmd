@@ -25,6 +25,7 @@
             <groupId>org.hexworks.zircon</groupId>
             <artifactId>zircon.core</artifactId>
             <version>${zircon.version}</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.hexworks.zircon</groupId>
