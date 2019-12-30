@@ -1,20 +1,18 @@
 package de.gleex.pltcmd.ui
 
 import de.gleex.pltcmd.options.UiOptions
-import org.hexworks.zircon.api.Blocks
-import org.hexworks.zircon.api.ComponentDecorations
-import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.GameComponents
-import org.hexworks.zircon.api.Tiles
+import org.hexworks.zircon.api.*
 import org.hexworks.zircon.api.builder.game.GameAreaBuilder
 import org.hexworks.zircon.api.component.ComponentAlignment
+import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.data.Block
 import org.hexworks.zircon.api.data.Tile
+import org.hexworks.zircon.api.extensions.onSelectionChanged
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.graphics.Layer
 import org.hexworks.zircon.api.mvc.base.BaseView
-import org.hexworks.zircon.api.resource.REXPaintResource
+import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -22,9 +20,11 @@ import java.nio.file.Paths
  * The view to display the map, radio log and interaction panel
  */
 class GameView: BaseView() {
-    override fun onDock() {
+	private val log = LoggerFactory.getLogger(GameView::class.java)
+
+	override fun onDock() {
         val sidebar = Components.
-                panel().
+                vbox().
                 withSize(UiOptions.INTERFACE_PANEL_WIDTH, UiOptions.INTERFACE_PANEL_HEIGHT).
                 withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT).
                 withDecorations(ComponentDecorations.halfBlock()).
@@ -55,19 +55,51 @@ class GameView: BaseView() {
                 build()
 
 		screen.addComponent(sidebar)
+		screen.addComponent(logArea)
 		screen.addComponent(map)
-        screen.addComponent(logArea)
 
 		// overlay the map area with the mock image
 		val layers = mutableListOf<Layer>()
 		val mapfile = Files.newInputStream(Paths.get("mockups/rexpaintfiles/mapview.xp"))
 		mapfile.buffered().use {
-			val mapMock = REXPaintResource.loadREXFile(mapfile)
+			val mapMock = REXPaintResources.loadREXFile(mapfile)
 			layers.addAll(mapMock.toLayerList())
+			
 		}
 		layers.forEach {
 			it.moveRightBy(sidebar.width)
 			screen.pushLayer(it)
 		}
+		log.info("loaded layers with size ${layers[0].size}")
+
+		sidebar.addFragment(LayersFragment(sidebar.contentSize.width, layers.toList()))
     }
+}
+
+class LayersFragment(val width: Int, layers: List<Layer>) : Fragment {
+	override val root = Components.
+			vbox().
+			withSize(width, 2).
+			build().apply {
+					addComponent(Components.header().withText("Layers"))
+					val checkBoxes = Components.
+							hbox().
+							withSize(width,1).
+							withSpacing(2).
+							build()
+					layers.forEachIndexed { i, layer ->
+						val checkBoxWidth = width / layers.size
+						checkBoxes.addComponent(
+								Components.
+										checkBox().
+										withText((i+1).toString()).
+										build().
+										apply {
+											isSelected = true
+											onSelectionChanged { layer.isHidden = layer.isHidden.not() }
+										})
+					}
+					addComponent(checkBoxes)
+				}
+
 }
