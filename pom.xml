@@ -10,7 +10,7 @@
 
     <properties>
         <kotlin.version>1.3.61</kotlin.version>
-        <zircon.version>2018.5.0-RELEASE</zircon.version>
+        <zircon.version>2019.1.2-PREVIEW</zircon.version>
     </properties>
 
     <repositories>
