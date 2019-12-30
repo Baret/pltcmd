@@ -41,7 +41,7 @@ class RadioSignalTest {
                 .98,
                 rs.along(listOf(Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE))))
         assertEquals(
-                .98.pow(3),
+                .97.pow(3),
                 rs.along(listOf(Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE),
                                 Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE),
                                 Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE))))
