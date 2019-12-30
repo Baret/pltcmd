@@ -31,6 +31,8 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 		}
 	};
 
+	private var createdElements = 0
+
 	fun averageCountOfConsituentElements(): Int {
 		return (minCountOfConstituentElements + maxCountOfConstituentElements) / 2
 	}
@@ -40,6 +42,7 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 		val leader = GenericUnit(UnitType.Soldier)
 		val callSign = getCallSign(superordinate)
 		val element = Element(callSign, setOf(leader), superordinate)
+		createdElements++
 		val consituentElementType = values().getOrNull(ordinal + 1)
 		if (consituentElementType != null) {
 			val averageCount = averageCountOfConsituentElements()
@@ -53,8 +56,8 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
 
 	open fun getCallSign(superordinate: Element?): CallSign {
 		if (superordinate == null) {
-			// TODO ensure unique name for a lot of calls
-			return CallSign(name + " " + Random.nextInt());
+			// provide call sign for the next element
+			return CallSign("$name ${createdElements + 1}");
 		}
 		val superCallSign = superordinate.callSign
 		val siblingCount = superordinate.subordinates.size

@@ -22,6 +22,7 @@ class ArmyElementHierarchyTest {
 			1/*buddy team*/
 		)
 		assertEquals(7024, GenericUnit.IdCounter.next())
+		assertEquals("Division 2", ArmyElementHierarchy.Division.createElement(null).callSign.name)
 	}
 
 	private fun assertHierarchy(actual: Element, vararg expectedCounts: Int) {
