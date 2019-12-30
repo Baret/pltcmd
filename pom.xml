@@ -35,6 +35,7 @@
             <groupId>com.github.Hexworks.amethyst</groupId>
             <artifactId>amethyst.core</artifactId>
             <version>2019.1.0-PREVIEW</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -43,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
+            <artifactId>kotlin-test-junit5</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
