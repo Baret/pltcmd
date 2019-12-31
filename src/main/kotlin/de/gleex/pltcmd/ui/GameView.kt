@@ -3,6 +3,7 @@ package de.gleex.pltcmd.ui
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.LayersFragment
 import de.gleex.pltcmd.ui.fragments.MousePosition
+import de.gleex.pltcmd.ui.fragments.MultiSelect
 import org.hexworks.zircon.api.*
 import org.hexworks.zircon.api.builder.game.GameAreaBuilder
 import org.hexworks.zircon.api.component.ComponentAlignment
@@ -72,8 +73,10 @@ class GameView: BaseView() {
 		}
 		log.info("loaded layers with size ${layers[0].size}")
 
-		sidebar.addFragment(LayersFragment(sidebar.contentSize.width, layers.toList()))
-		sidebar.addFragment(MousePosition(sidebar.contentSize.width, screen))
+		val sidebarWidth = sidebar.contentSize.width
+		sidebar.addFragment(LayersFragment(sidebarWidth, layers.toList()))
+		sidebar.addFragment(MousePosition(sidebarWidth, screen))
+		sidebar.addFragment(MultiSelect(sidebarWidth))
     }
 }
 
