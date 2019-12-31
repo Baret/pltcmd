@@ -8,7 +8,7 @@ import org.hexworks.zircon.api.extensions.handleMouseEvents
 import org.hexworks.zircon.api.screen.Screen
 import org.hexworks.zircon.api.uievent.MouseEventType
 
-class MousePosition(val width: Int, val componentToWach: Screen) : Fragment {
+class MousePosition(private val width: Int, private val componentToWatch: Screen) : Fragment {
     override val root = Components.
             hbox().
             withSize(width, 1).
@@ -18,7 +18,7 @@ class MousePosition(val width: Int, val componentToWach: Screen) : Fragment {
                         label().
                         withText("Mouse pos: ${Positions.create(0,0)}").
                         build().
-                        apply { componentToWach.handleMouseEvents(MouseEventType.MOUSE_MOVED) {
+                        apply { componentToWatch.handleMouseEvents(MouseEventType.MOUSE_MOVED) {
                             mouseEvent, _ ->
                                 text = "Mouse pos: ${mouseEvent.position.x} | ${mouseEvent.position.y}"
                                 UIEventResponses.pass()

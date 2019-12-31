@@ -76,7 +76,7 @@ class GameView: BaseView() {
 		val sidebarWidth = sidebar.contentSize.width
 		sidebar.addFragment(LayersFragment(sidebarWidth, layers.toList()))
 		sidebar.addFragment(MousePosition(sidebarWidth, screen))
-		sidebar.addFragment(MultiSelect(sidebarWidth))
+		sidebar.addFragment(MultiSelect(sidebarWidth, listOf("value1", "value2", "value3")))
     }
 }
 

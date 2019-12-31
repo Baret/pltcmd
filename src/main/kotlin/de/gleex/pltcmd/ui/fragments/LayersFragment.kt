@@ -5,7 +5,7 @@ import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.extensions.onSelectionChanged
 import org.hexworks.zircon.api.graphics.Layer
 
-class LayersFragment(val width: Int, layers: List<Layer>) : Fragment {
+class LayersFragment(private val width: Int, private val layers: List<Layer>) : Fragment {
 	override val root = Components.vbox().
 			withSize(width, 2).
 			build().apply {
