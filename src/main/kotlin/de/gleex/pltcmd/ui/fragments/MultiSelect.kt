@@ -29,12 +29,14 @@ class MultiSelect<T: Any>(
     private val rightButton = Components.
             button().
             withText(Symbols.ARROW_RIGHT.toString()).
+            withDecorations().
             build().
             apply { processComponentEvents(ComponentEventType.ACTIVATED) { nextValue()} }
 
     private val leftButton = Components.
             button().
             withText(Symbols.ARROW_LEFT.toString()).
+            withDecorations().
             build().
             apply { processComponentEvents(ComponentEventType.ACTIVATED) { prevValue()} }
 
@@ -44,6 +46,7 @@ class MultiSelect<T: Any>(
 
     override val root = Components.hbox().
             withSize(width, 1).
+            withSpacing(0).
             build().
             apply {
                 addComponent(leftButton)
