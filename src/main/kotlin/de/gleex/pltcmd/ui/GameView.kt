@@ -13,7 +13,6 @@ import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.graphics.Layer
 import org.hexworks.zircon.api.mvc.base.BaseView
-import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -21,8 +20,6 @@ import java.nio.file.Paths
  * The view to display the map, radio log and interaction panel
  */
 class GameView: BaseView() {
-	private val log = LoggerFactory.getLogger(GameView::class.java)
-
 	override fun onDock() {
         val sidebar = Components.
                 vbox().
@@ -71,7 +68,6 @@ class GameView: BaseView() {
 			it.moveRightBy(sidebar.width)
 			screen.pushLayer(it)
 		}
-		log.info("loaded layers with size ${layers[0].size}")
 
 		val sidebarWidth = sidebar.contentSize.width
 		sidebar.addFragment(LayersFragment(sidebarWidth, layers.toList()))
