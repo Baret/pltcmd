@@ -1,5 +1,10 @@
 package de.gleex.pltcmd
 
+import de.gleex.pltcmd.options.UiOptions
+import de.gleex.pltcmd.ui.GameView
+import org.hexworks.zircon.api.SwingApplications
+
+
 fun main() {
-    println("Welcome to PltCmd!")
+    SwingApplications.startApplication(UiOptions.buildAppConfig()).dock(GameView())
 }
