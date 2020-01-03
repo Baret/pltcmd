@@ -76,7 +76,8 @@ class GameView: BaseView() {
 		val sidebarWidth = sidebar.contentSize.width
 		sidebar.addFragment(LayersFragment(sidebarWidth, layers.toList()))
 		sidebar.addFragment(MousePosition(sidebarWidth, screen))
-		sidebar.addFragment(MultiSelect(sidebarWidth, listOf("value1", "value2", "value3")))
+		val str = ""
+		sidebar.addFragment(MultiSelect<String>(sidebarWidth, listOf("value1", "value2", "value3"), {newValue -> logArea.addParagraph(newValue)}))
     }
 }
 
