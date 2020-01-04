@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import java.lang.IllegalArgumentException
+import de.gleex.pltcmd.model.terrain.Terrain
 
 /**
  * A sector has 50 by 50 [WorldTile]s (it is a square).
@@ -10,7 +11,7 @@ data class Sector(val tiles: Set<WorldTile>) {
 		/** edge length of a sector (in each directon of the map rectangle) */
 		const val TILE_COUNT = 50
 
-		fun createAt(origin: Coordinate): Sector {
+		fun createAt(origin: Coordinate, terrain: Terrain): Sector {
 			// sectors must have full 50s as origin
 			if (origin.eastingFromLeft % TILE_COUNT != 0 || origin.northingFromBottom % TILE_COUNT != 0) {
 				throw IllegalArgumentException("Origin of a Sector must be on a 50th of the map. Given: $origin")
@@ -20,7 +21,7 @@ data class Sector(val tiles: Set<WorldTile>) {
 			for (x in 0 until TILE_COUNT) {
 				for (y in 0 until TILE_COUNT) {
 					val coordinate = Coordinate(origin.eastingFromLeft + x, origin.northingFromBottom + y)
-					sectorTiles.add(WorldTile(coordinate))
+					sectorTiles.add(WorldTile(coordinate, terrain))
 				}
 			}
 			return Sector(sectorTiles);
