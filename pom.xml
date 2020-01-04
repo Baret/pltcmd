@@ -13,6 +13,7 @@
 		<zircon.version>2019.1.2-PREVIEW</zircon.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 	</properties>
 
 	<repositories>
