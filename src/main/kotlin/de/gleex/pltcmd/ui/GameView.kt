@@ -5,7 +5,7 @@ import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.MultiSelect
-import org.hexworks.zircon.api.ColorThemes
+import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
@@ -19,6 +19,10 @@ import org.hexworks.zircon.api.mvc.base.BaseView
  * The view to display the map, radio log and interaction panel
  */
 class GameView(val gameWorld: GameWorld) : BaseView() {
+	companion object {
+		val log = LoggerFactory.getLogger(GameView::class)
+	}
+
 	override fun onDock() {
         val sidebar = Components.
                 vbox().
@@ -31,7 +35,7 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 			newGameComponentBuilder<Tile, MapBlock>().
 			withGameArea(gameWorld).
 			withProjectionMode(ProjectionMode.TOP_DOWN).
-			withSize(UiOptions.MAP_VIEW_WDTH, UiOptions.MAP_VIEW_HEIGHT).
+			withVisibleSize(gameWorld.visibleSize()).
 			withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
 			withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Sector xy"), ComponentDecorations.shadow()).
 			build()
@@ -47,6 +51,10 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 		screen.addComponent(logArea)
 		screen.addComponent(map)
 
+		log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
+		log.debug("It currently shows ${gameWorld.visibleSize()} offset by ${gameWorld.visibleOffset()}")
+
+		// playing around with stuff...
 		val sidebarWidth = sidebar.contentSize.width
 		sidebar.addFragment(MousePosition(sidebarWidth, screen))
 
@@ -55,18 +63,6 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 		sidebar.addFragment(MultiSelect(sidebarWidth, listOf("value1", "a longer value", "a", "a value so long you cant even read it!"), { newValue -> logArea.addParagraph(newValue,  false)}))
 
 		sidebar.addComponent(Components.panel().withSize(sidebarWidth, 5))
-
-		sidebar.addFragment(MultiSelect(
-				sidebarWidth,
-				listOf(
-						Pair("adriftInDreams", ColorThemes.adriftInDreams()),
-						Pair("amiga OS", ColorThemes.amigaOs()),
-						Pair("captured by pirates", ColorThemes.capturedByPirates()),
-						Pair("very long name for a color theme", ColorThemes.war())),
-				callback = {screen.applyColorTheme(it.second)},
-				centeredText = true,
-				toStringMethod = { it.first }
-		))
     }
 }
 

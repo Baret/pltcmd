@@ -27,6 +27,7 @@ class GameWorld(worldMap: WorldMap): GameArea<Tile, MapBlock> by GameAreaBuilder
 
     init {
         worldMap.sectors.forEach(::putSector)
+        log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = ${visibleSize()}")
     }
 
     private fun putSector(sector: Sector) {
