@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game
 
+import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import org.hexworks.zircon.api.TileColors
 import org.hexworks.zircon.api.Tiles
@@ -32,4 +33,12 @@ object TileRepository {
                 withForegroundColor(TileColors.create(60, 60, 60, 255)).
                 buildCharacterTile()
     }
+
+    fun heightTile(height: TerrainHeight) = Tiles.newBuilder().
+            withCharacter(' ').
+            withForegroundColor(TileColor.defaultForegroundColor()).
+            withBackgroundColor(ColorRepository.heihgtColor(height)).
+            buildCharacterTile()
+
+    fun empty() = Tiles.empty()
 }
