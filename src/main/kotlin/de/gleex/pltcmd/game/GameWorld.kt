@@ -17,7 +17,7 @@ import org.hexworks.zircon.api.game.GameArea
 class GameWorld(worldMap: WorldMap): GameArea<Tile, MapBlock> by GameAreaBuilder.newBuilder<Tile, MapBlock>().
         withActualSize(Sizes.create3DSize(GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT, GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT, 1)).
         withVisibleSize(Sizes.create3DSize(Sector.TILE_COUNT, Sector.TILE_COUNT, 1)).
-        withLayersPerBlock(3).
+        withLayersPerBlock(MapBlock.layersPerBlock).
         withDefaultBlock(MapBlock(Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE))).
         build()
 {

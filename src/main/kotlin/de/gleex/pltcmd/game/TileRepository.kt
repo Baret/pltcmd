@@ -2,10 +2,9 @@ package de.gleex.pltcmd.game
 
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
-import org.hexworks.zircon.api.TileColors
 import org.hexworks.zircon.api.Tiles
-import org.hexworks.zircon.api.color.ANSITileColor
 import org.hexworks.zircon.api.color.TileColor
+import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.Symbols
 
 /**
@@ -13,31 +12,51 @@ import org.hexworks.zircon.api.graphics.Symbols
  */
 object TileRepository {
 
-    private val baseTerrainTile = Tiles.newBuilder().withBackgroundColor(TileColor.transparent())
+    private val heightTiles: MutableMap<TerrainHeight, Tile> = mutableMapOf()
+    private val terrainTiles: MutableMap<TerrainType, Tile> = mutableMapOf()
 
-    fun terrainTile(type: TerrainType) = when(type) {
-        TerrainType.GRASSLAND -> baseTerrainTile.
+    init {
+        TerrainHeight.values().forEach { heightTiles[it] = initHeightTile(it) }
+        TerrainType.values().forEach { terrainTiles[it] = initTerrainTile(it) }
+    }
+
+    /**
+     * Returns the tile for the given [TerrainHeight]
+     */
+    fun forHeight(height: TerrainHeight) = heightTiles[height]!!
+
+    /**
+     * Returns the tile for the given [TerrainType]
+     */
+    fun forType(type: TerrainType) = terrainTiles[type]!!
+
+    private fun initTerrainTile(type: TerrainType) = when(type) {
+        TerrainType.GRASSLAND -> Tiles.newBuilder().
+                withForegroundColor(ColorRepository.forType(type)).
+                withBackgroundColor(TileColor.transparent()).
                 withCharacter('\"').
-                withForegroundColor(ANSITileColor.RED).
-                buildCharacterTile()
-        TerrainType.FOREST -> baseTerrainTile.
+                build()
+        TerrainType.FOREST -> Tiles.newBuilder().
+                withForegroundColor(ColorRepository.forType(type)).
+                withBackgroundColor(TileColor.transparent()).
                 withCharacter(Symbols.SPADES).
-                withForegroundColor(ANSITileColor.GREEN).
                 buildCharacterTile()
-        TerrainType.HILL -> baseTerrainTile.
+        TerrainType.HILL -> Tiles.newBuilder().
+                withForegroundColor(ColorRepository.forType(type)).
+                withBackgroundColor(TileColor.transparent()).
                 withCharacter(Symbols.INTERSECTION).
-                withForegroundColor(ANSITileColor.GRAY).
                 buildCharacterTile()
-        TerrainType.MOUNTAIN -> baseTerrainTile.
+        TerrainType.MOUNTAIN -> Tiles.newBuilder().
+                withForegroundColor(ColorRepository.forType(type)).
+                withBackgroundColor(TileColor.transparent()).
                 withCharacter(Symbols.TRIANGLE_UP_POINTING_BLACK).
-                withForegroundColor(TileColors.create(60, 60, 60, 254)).
                 buildCharacterTile()
     }
 
-    fun heightTile(height: TerrainHeight) = Tiles.newBuilder().
-            withCharacter(' ').
+    private fun initHeightTile(height: TerrainHeight) = Tiles.newBuilder().
             withForegroundColor(TileColor.defaultForegroundColor()).
-            withBackgroundColor(ColorRepository.heihgtColor(height)).
+            withBackgroundColor(ColorRepository.forHeight(height)).
+            withCharacter(Symbols.BLOCK_SOLID).
             buildCharacterTile()
 
     fun empty() = Tiles.empty()
