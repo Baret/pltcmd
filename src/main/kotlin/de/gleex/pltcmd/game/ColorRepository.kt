@@ -9,7 +9,7 @@ import org.hexworks.zircon.api.color.TileColor
  */
 object ColorRepository {
 
-    private val MAX_HEIGHT = TileColors.create(200, 200, 200, 255)
+    private val MAX_HEIGHT = TileColors.create(200, 200, 200, 254)
 
     /**
      * Creates a [TileColor] for the given [TerrainHeight] to be used as background color for tiles.
