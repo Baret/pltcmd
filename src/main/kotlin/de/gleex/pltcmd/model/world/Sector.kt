@@ -22,10 +22,11 @@ data class Sector(val tiles: Set<WorldTile>) {
 			for (x in 0 until TILE_COUNT) {
 				for (y in 0 until TILE_COUNT) {
 					val coordinate = Coordinate(origin.eastingFromLeft + x, origin.northingFromBottom + y)
+					val randomHeight = TerrainHeight.values().random()
 					if(coordinate.eastingFromLeft % 5 == 0 && coordinate.northingFromBottom % 5 == 0) {
-						sectorTiles.add(WorldTile(coordinate, Terrain(TerrainType.MOUNTAIN, TerrainHeight.TEN)))
+						sectorTiles.add(WorldTile(coordinate, Terrain(TerrainType.MOUNTAIN, randomHeight)))
 					} else if(coordinate.eastingFromLeft % 5 == 0 || coordinate.northingFromBottom % 5 == 0) {
-						sectorTiles.add(WorldTile(coordinate, Terrain(TerrainType.FOREST, TerrainHeight.ONE)))
+						sectorTiles.add(WorldTile(coordinate, Terrain(TerrainType.HILL, randomHeight)))
 					} else {
 						sectorTiles.add(WorldTile(coordinate, terrain))
 					}

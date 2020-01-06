@@ -8,7 +8,7 @@ import org.hexworks.zircon.api.data.base.BlockBase
 class MapBlock(terrain: Terrain): BlockBase<Tile>() {
 
     companion object {
-        const val layersPerBlock = 2
+        const val layersPerBlock = 3
     }
 
     private var unitTile: Tile = TileRepository.empty()
@@ -16,7 +16,7 @@ class MapBlock(terrain: Terrain): BlockBase<Tile>() {
     private val heightTile: Tile = TileRepository.forHeight(terrain.height)
 
     override val layers: MutableList<Tile>
-        get() = mutableListOf(heightTile, terrainTile)//, unitTile)
+        get() = mutableListOf(heightTile, terrainTile, unitTile)
 
     override fun fetchSide(side: BlockSide) = TileRepository.empty()
 }

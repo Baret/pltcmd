@@ -54,7 +54,7 @@ object TileRepository {
     }
 
     private fun initHeightTile(height: TerrainHeight) = Tiles.newBuilder().
-            withForegroundColor(TileColor.defaultForegroundColor()).
+            withForegroundColor(ColorRepository.forHeight(height)).
             withBackgroundColor(ColorRepository.forHeight(height)).
             withCharacter(Symbols.BLOCK_SOLID).
             buildCharacterTile()
