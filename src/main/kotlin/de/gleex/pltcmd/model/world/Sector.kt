@@ -22,13 +22,17 @@ data class Sector(val tiles: Set<WorldTile>) {
 			for (x in 0 until TILE_COUNT) {
 				for (y in 0 until TILE_COUNT) {
 					val coordinate = Coordinate(origin.eastingFromLeft + x, origin.northingFromBottom + y)
-					val randomHeight = TerrainHeight.values().random()
+					val height = TerrainHeight.values()[x % (TILE_COUNT / 5)]
+					var type = TerrainType.values()[(x / ( TILE_COUNT / 2) + y / (TILE_COUNT / 2))]
+					if(x > TILE_COUNT / 2 && y > TILE_COUNT / 2) {
+						type = TerrainType.values()[3]
+					}
 					if(coordinate.eastingFromLeft % 5 == 0 && coordinate.northingFromBottom % 5 == 0) {
-						sectorTiles.add(WorldTile(coordinate, Terrain(TerrainType.MOUNTAIN, randomHeight)))
+						sectorTiles.add(WorldTile(coordinate, Terrain(type, TerrainHeight.TEN)))
 					} else if(coordinate.eastingFromLeft % 5 == 0 || coordinate.northingFromBottom % 5 == 0) {
-						sectorTiles.add(WorldTile(coordinate, Terrain(TerrainType.HILL, randomHeight)))
+						sectorTiles.add(WorldTile(coordinate, Terrain(type, TerrainHeight.ONE)))
 					} else {
-						sectorTiles.add(WorldTile(coordinate, terrain))
+						sectorTiles.add(WorldTile(coordinate, Terrain(type, height)))
 					}
 
 				}

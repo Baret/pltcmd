@@ -32,9 +32,9 @@ object ColorRepository {
      * Creates a [TileColor] for the given [TerrainType] to be used as foreground color for terrain tiles.
      */
     fun forType(type: TerrainType): TileColor = when(type) {
-        TerrainType.GRASSLAND -> TileColor.create(200, 200 ,200 ,0)
-        TerrainType.FOREST -> TileColor.create(100, 99 ,255 ,0)
-        TerrainType.HILL -> TileColor.create(50, 144 ,200 ,0)
-        TerrainType.MOUNTAIN -> TileColor.create(200, 50 ,92 ,0)
+        TerrainType.GRASSLAND -> TileColor.create(95, 169, 51, 0)
+        TerrainType.FOREST -> TileColor.create(35, 104, 10, 0)
+        TerrainType.HILL -> TileColor.create(121, 77, 33, 0)
+        TerrainType.MOUNTAIN -> TileColor.create(112, 107, 102, 0)
     }
 }
