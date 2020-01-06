@@ -1,28 +1,26 @@
 package de.gleex.pltcmd.model.world
 
-import org.junit.jupiter.api.Test
-import kotlin.test.*
-import java.lang.IllegalArgumentException
-import de.gleex.pltcmd.model.world.Sector.*
-import de.gleex.pltcmd.model.terrain.TerrainType
-import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.Terrain
+import de.gleex.pltcmd.model.terrain.TerrainHeight
+import de.gleex.pltcmd.model.terrain.TerrainType
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class SectorTest {
 
 	@Test
 	fun createAt() {
 		val origin = Coordinate(150, 700)
-		val terrain = Terrain(TerrainType.HILL, TerrainHeight.EIGHT)
 
-		val result = Sector.createAt(origin, terrain)
+		val result = Sector.createAt(origin, Terrain(TerrainType.HILL, TerrainHeight.EIGHT))
 
 		val tiles = result.tiles
 		assertEquals(Sector.TILE_COUNT * Sector.TILE_COUNT, tiles.size)
 		val validEastings = origin.eastingFromLeft until (origin.eastingFromLeft + Sector.TILE_COUNT)
 		val validNorthings = origin.northingFromBottom until (origin.northingFromBottom + Sector.TILE_COUNT)
 		tiles.forEach {
-			assertEquals(terrain, it.terrain)
 			assertTrue(
 				it.coordinate.eastingFromLeft in validEastings,
 				"easting ${it.coordinate.eastingFromLeft} in $validEastings"
