@@ -30,7 +30,7 @@ object TileRepository {
                 buildCharacterTile()
         TerrainType.MOUNTAIN -> baseTerrainTile.
                 withCharacter(Symbols.TRIANGLE_UP_POINTING_BLACK).
-                withForegroundColor(TileColors.create(60, 60, 60, 255)).
+                withForegroundColor(TileColors.create(60, 60, 60, 254)).
                 buildCharacterTile()
     }
 
