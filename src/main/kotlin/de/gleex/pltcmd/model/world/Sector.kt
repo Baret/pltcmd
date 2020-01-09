@@ -12,7 +12,8 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
 		/** edge length of a sector (in each directon of the map rectangle) */
 		const val TILE_COUNT = 50
 
-		fun createAt(origin: Coordinate, terrain: Terrain): Sector {
+		// TODO: this will eventually be done by a map generator
+		fun generateAt(origin: Coordinate): Sector {
 			// create all tiles for this sector
 			val sectorTiles = mutableSetOf<WorldTile>()
 			for (x in 0 until TILE_COUNT) {
@@ -33,7 +34,7 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
 
 				}
 			}
-			return Sector(origin, sectorTiles);
+			return Sector(origin, sectorTiles)
 		}
 	}
 

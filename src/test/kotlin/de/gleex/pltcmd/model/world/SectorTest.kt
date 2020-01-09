@@ -1,8 +1,5 @@
 package de.gleex.pltcmd.model.world
 
-import de.gleex.pltcmd.model.terrain.Terrain
-import de.gleex.pltcmd.model.terrain.TerrainHeight
-import de.gleex.pltcmd.model.terrain.TerrainType
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -14,7 +11,7 @@ class SectorTest {
 	fun createAt() {
 		val origin = Coordinate(150, 700)
 
-		val result = Sector.createAt(origin, Terrain(TerrainType.HILL, TerrainHeight.EIGHT))
+		val result = Sector.generateAt(origin)
 
 		val tiles = result.tiles
 		assertEquals(Sector.TILE_COUNT * Sector.TILE_COUNT, tiles.size)
@@ -35,8 +32,7 @@ class SectorTest {
 	@Test
 	fun createAtInvalidOrigin() {
 		val origin = Coordinate(123, 456)
-		val terrain = Terrain(TerrainType.HILL, TerrainHeight.EIGHT)
-		assertFailsWith(IllegalArgumentException::class, { Sector.createAt(origin, terrain) })
+		assertFailsWith(IllegalArgumentException::class) { Sector.generateAt(origin) }
 	}
 
 }
