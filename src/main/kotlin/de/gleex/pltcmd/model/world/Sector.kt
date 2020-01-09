@@ -7,16 +7,12 @@ import de.gleex.pltcmd.model.terrain.TerrainType
 /**
  * A sector has 50 by 50 [WorldTile]s (it is a square).
  */
-data class Sector(val tiles: Set<WorldTile>) {
+data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
 	companion object {
 		/** edge length of a sector (in each directon of the map rectangle) */
 		const val TILE_COUNT = 50
 
 		fun createAt(origin: Coordinate, terrain: Terrain): Sector {
-			// sectors must have full 50s as origin
-			if (origin.eastingFromLeft % TILE_COUNT != 0 || origin.northingFromBottom % TILE_COUNT != 0) {
-				throw IllegalArgumentException("Origin of a Sector must be on a 50th of the map. Given: $origin")
-			}
 			// create all tiles for this sector
 			val sectorTiles = mutableSetOf<WorldTile>()
 			for (x in 0 until TILE_COUNT) {
@@ -37,11 +33,16 @@ data class Sector(val tiles: Set<WorldTile>) {
 
 				}
 			}
-			return Sector(sectorTiles);
+			return Sector(origin, sectorTiles);
 		}
 	}
 
 	init {
+		// sectors must have full 50s as origin
+		if (origin != origin.toSectorOrigin()) {
+			throw IllegalArgumentException("Origin of a Sector must be on a 50th of the map. Given: $origin")
+		}
+
 		// validate that a full sector is given and all tiles belong to the same sector
 		if (tiles.size != TILE_COUNT * TILE_COUNT) {
 			throw IllegalArgumentException("A sector must consist of ${TILE_COUNT * TILE_COUNT} tiles, but ${tiles.size} given!")
@@ -59,11 +60,11 @@ data class Sector(val tiles: Set<WorldTile>) {
 		return getSectorOrigin() == other.getSectorOrigin()
 	}
 
-	private fun WorldTile.getSectorOrigin(): Coordinate {
-		return Coordinate(
-			coordinate.eastingFromLeft - (coordinate.eastingFromLeft % TILE_COUNT),
-			coordinate.northingFromBottom - (coordinate.northingFromBottom % TILE_COUNT)
-		)
-	}
+	private fun WorldTile.getSectorOrigin() = coordinate.toSectorOrigin()
+
+	private fun Coordinate.toSectorOrigin() = Coordinate(
+			eastingFromLeft - (eastingFromLeft % TILE_COUNT),
+			northingFromBottom - (northingFromBottom % TILE_COUNT)
+	)
 
 }
