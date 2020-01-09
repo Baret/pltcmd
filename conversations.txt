@@ -7,7 +7,9 @@ Bravo, move to (x|y), over
 Command, this is Bravo, moving to (x|y), out
 
 [messageSimple] (nur eine info mit "copy that")
-(kein bsp. braucht man ie unterscheidung?)
+z.B. selbstständige meldung, wenn befehl abgearbeitet:
+Command, this is Bravo, reached destination (x|y), over
+Copy that, Bravo, out
 
 [messageComplex] (folgeantworten/mehrere stränge)
 Command, we found supplies here, over
