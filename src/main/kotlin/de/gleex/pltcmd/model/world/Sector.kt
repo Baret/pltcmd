@@ -47,7 +47,7 @@ data class Sector(val tiles: Set<WorldTile>) {
 			throw IllegalArgumentException("A sector must consist of ${TILE_COUNT * TILE_COUNT} tiles, but ${tiles.size} given!")
 		}
 		val firstTile = tiles.first()
-		if (!tiles.all({ it.inSameSector(firstTile) })) {
+		if (!tiles.all { it.inSameSector(firstTile) }) {
 			throw IllegalArgumentException("All tiles must be part of the same sector! Given: $tiles")
 		}
 	}

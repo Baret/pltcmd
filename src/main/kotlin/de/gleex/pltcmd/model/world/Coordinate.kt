@@ -7,4 +7,9 @@ package de.gleex.pltcmd.model.world
  *
  * It is like the numerical location of the Military Grid Reference System (see https://en.wikipedia.org/wiki/Military_Grid_Reference_System#Numerical_location).
  */
-data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int)
+data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) {
+    /**
+     * Converts this coordinate to a [MainCoordinate]
+     */
+    fun toMaainCoordinate() = MainCoordinate(eastingFromLeft / 100, northingFromBottom / 100)
+}
