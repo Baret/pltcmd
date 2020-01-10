@@ -2,7 +2,7 @@ package de.gleex.pltcmd.model.world
 
 /**
  * Represents the "ain part" of a [Coordinate]. The main part consists of 100 by 100 tiles
- * and is therefore a 100th of a coordinate (or "trnkating the last two digits").
+ * and is therefore a 100th of a coordinate (or "truncating the last two digits").
  * That also means that a main coordinate contains four [Sector]s
  */
 data class MainCoordinate(val eastingFromLeft: Int, val northingFromBottom: Int) {

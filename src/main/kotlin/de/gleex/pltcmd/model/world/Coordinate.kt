@@ -11,5 +11,5 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) {
     /**
      * Converts this coordinate to a [MainCoordinate]
      */
-    fun toMaainCoordinate() = MainCoordinate(eastingFromLeft / 100, northingFromBottom / 100)
+    fun toMainCoordinate() = MainCoordinate(eastingFromLeft / 100, northingFromBottom / 100)
 }

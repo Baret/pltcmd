@@ -19,7 +19,7 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
 			for (x in 0 until TILE_COUNT) {
 				for (y in 0 until TILE_COUNT) {
 					val coordinate = Coordinate(origin.eastingFromLeft + x, origin.northingFromBottom + y)
-					val height = TerrainHeight.values()[x % (TILE_COUNT / 5)]
+					val height = TerrainHeight.values()[x % TerrainHeight.values().size]
 					var type = TerrainType.values()[(x / ( TILE_COUNT / 2) + y / (TILE_COUNT / 2))]
 					if(x > TILE_COUNT / 2 && y > TILE_COUNT / 2) {
 						type = TerrainType.values()[3]
@@ -56,10 +56,7 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
 
 
 	// extensions for WorldTile
-
-	private fun WorldTile.inSameSector(other: WorldTile): Boolean {
-		return getSectorOrigin() == other.getSectorOrigin()
-	}
+	private fun WorldTile.inSameSector(other: WorldTile) = getSectorOrigin() == other.getSectorOrigin()
 
 	private fun WorldTile.getSectorOrigin() = coordinate.toSectorOrigin()
 

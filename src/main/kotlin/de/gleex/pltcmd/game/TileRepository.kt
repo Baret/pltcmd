@@ -31,33 +31,27 @@ object TileRepository {
     fun forType(type: TerrainType) = terrainTiles[type]!!
 
     private fun initTerrainTile(type: TerrainType) = when(type) {
-        TerrainType.GRASSLAND -> Tiles.newBuilder().
-                withForegroundColor(ColorRepository.forType(type)).
-                withBackgroundColor(TileColor.transparent()).
-                withCharacter('\"').
-                build()
-        TerrainType.FOREST -> Tiles.newBuilder().
-                withForegroundColor(ColorRepository.forType(type)).
-                withBackgroundColor(TileColor.transparent()).
-                withCharacter(Symbols.SPADES).
-                buildCharacterTile()
-        TerrainType.HILL -> Tiles.newBuilder().
-                withForegroundColor(ColorRepository.forType(type)).
-                withBackgroundColor(TileColor.transparent()).
-                withCharacter(Symbols.INTERSECTION).
-                buildCharacterTile()
-        TerrainType.MOUNTAIN -> Tiles.newBuilder().
-                withForegroundColor(ColorRepository.forType(type)).
-                withBackgroundColor(TileColor.transparent()).
-                withCharacter(Symbols.TRIANGLE_UP_POINTING_BLACK).
-                buildCharacterTile()
+        TerrainType.GRASSLAND -> characterTile(type, '\"')
+        TerrainType.FOREST -> characterTile(type, Symbols.SPADES)
+        TerrainType.HILL -> characterTile(type, Symbols.INTERSECTION)
+        TerrainType.MOUNTAIN -> characterTile(type, Symbols.TRIANGLE_UP_POINTING_BLACK)
     }
 
-    private fun initHeightTile(height: TerrainHeight) = Tiles.newBuilder().
-            withForegroundColor(ColorRepository.forHeight(height)).
-            withBackgroundColor(ColorRepository.forHeight(height)).
-            withCharacter(Symbols.BLOCK_SOLID).
-            buildCharacterTile()
+    private fun characterTile(type: TerrainType, character: Char) =
+            Tiles.
+                newBuilder().
+                withForegroundColor(ColorRepository.forType(type)).
+                withBackgroundColor(TileColor.transparent()).
+                withCharacter(character).
+                buildCharacterTile()
+
+    private fun initHeightTile(height: TerrainHeight) =
+            Tiles.
+                newBuilder().
+                withForegroundColor(ColorRepository.forHeight(height)).
+                withBackgroundColor(ColorRepository.forHeight(height)).
+                withCharacter(Symbols.BLOCK_SOLID).
+                buildCharacterTile()
 
     fun empty() = Tiles.empty()
 }

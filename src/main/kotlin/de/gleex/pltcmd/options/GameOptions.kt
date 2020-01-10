@@ -8,6 +8,6 @@ import de.gleex.pltcmd.model.radio.PercentageReducingAttenuation
 object GameOptions {
     var attenuationModel = PercentageReducingAttenuation()
 
-    const val SECTORS_COUNT_H = 1
-    const val SECTORS_COUNT_V = 1
+    const val SECTORS_COUNT_H = 10
+    const val SECTORS_COUNT_V = 10
 }
