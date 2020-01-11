@@ -31,14 +31,20 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
                 withDecorations(ComponentDecorations.halfBlock()).
                 build()
 
+		val mainPart = Components.panel().
+			withSize(UiOptions.MAP_VIEW_WDTH, UiOptions.MAP_VIEW_HEIGHT).
+			withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
+			withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Sector xy"), ComponentDecorations.shadow()).
+			build()
+
 		val map = GameComponents.
 			newGameComponentBuilder<Tile, MapBlock>().
 			withGameArea(gameWorld).
 			withProjectionMode(ProjectionMode.TOP_DOWN).
 			withVisibleSize(gameWorld.visibleSize()).
-			withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
-			withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Sector xy"), ComponentDecorations.shadow()).
+			withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
 			build()
+		mainPart.addComponent(map)
 
         val logArea = Components.
                 logArea().
@@ -49,7 +55,7 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 
 		screen.addComponent(sidebar)
 		screen.addComponent(logArea)
-		screen.addComponent(map)
+		screen.addComponent(mainPart)
 
 		log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
 		log.debug("It currently shows ${gameWorld.visibleSize()} offset by ${gameWorld.visibleOffset()}")
