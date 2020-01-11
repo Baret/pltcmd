@@ -14,6 +14,7 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.mvc.base.BaseView
+import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 
 /**
  * The view to display the map, radio log and interaction panel
@@ -34,7 +35,7 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 		val mainPart = Components.panel().
 			withSize(UiOptions.MAP_VIEW_WDTH, UiOptions.MAP_VIEW_HEIGHT).
 			withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
-			withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Sector xy"), ComponentDecorations.shadow()).
+			withDecorations(MapGridDecorationRenderer(gameWorld)).
 			build()
 
 		val map = GameComponents.
