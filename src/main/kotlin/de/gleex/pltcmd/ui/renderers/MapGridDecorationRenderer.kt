@@ -25,6 +25,7 @@ class MapGridDecorationRenderer(val world: GameWorld) : ComponentDecorationRende
 	override val offset = Position.create(1, 1)
 
 	override fun render(tileGraphics: SubTileGraphics, context: ComponentDecorationRenderContext) {
+		// TODO move drawing code into a graphics class
 		// much copied from DefaulBox.init
 		val size = tileGraphics.size
 		val topLeftPos = size.fetchTopLeftPosition()
