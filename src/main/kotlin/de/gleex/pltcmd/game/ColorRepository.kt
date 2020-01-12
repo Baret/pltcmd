@@ -10,6 +10,9 @@ import org.hexworks.zircon.api.color.TileColor
  */
 object ColorRepository {
 
+    val GRID_COLOR = TileColor.defaultForegroundColor()
+    val GRID_COLOR_HIGHLIGHT = TileColors.create(77, 77, 77)
+
     private val MAX_HEIGHT = TileColors.create(230, 230, 230, 0)
 
     /**

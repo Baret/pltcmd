@@ -16,6 +16,7 @@ import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.graphics.Symbols
 import org.hexworks.zircon.api.builder.graphics.TileGraphicsBuilder
 import org.hexworks.zircon.api.TileColors
+import de.gleex.pltcmd.game.ColorRepository
 
 /** Draws a grid around the [GameWorld] that shows the [Coordinate]s of the visible area like a border or box. */
 class MapGridDecorationRenderer(val world: GameWorld) : ComponentDecorationRenderer {
@@ -49,7 +50,7 @@ class MapGridDecorationRenderer(val world: GameWorld) : ComponentDecorationRende
 		verticalLine.drawOnto(tileGraphics, topLeftPos + Position.create(size.width - 1, 1))
 		val majorGridMarker =
 			TileGraphicsBuilder.newBuilder().withSize(Size.create(1, 1))
-				.withTile(Position.create(0, 0), createTile(Symbols.SINGLE_LINE_CROSS).withForegroundColor(TileColors.create(77, 77, 77)))
+				.withTile(Position.create(0, 0), createTile(Symbols.SINGLE_LINE_CROSS).withForegroundColor(ColorRepository.GRID_COLOR_HIGHLIGHT))
 				.build()
 		val minorGridMarker =
 			TileGraphicsBuilder.newBuilder().withSize(Size.create(1, 1))
@@ -74,7 +75,7 @@ class MapGridDecorationRenderer(val world: GameWorld) : ComponentDecorationRende
 	}
 
 	private fun createTile(character: Char): Tile {
-		return Tiles.newBuilder().withForegroundColor(TileColor.defaultForegroundColor())
+		return Tiles.newBuilder().withForegroundColor(ColorRepository.GRID_COLOR)
 			.withBackgroundColor(TileColor.transparent()).withCharacter(character).buildCharacterTile()
 	}
 }
