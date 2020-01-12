@@ -35,7 +35,7 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 		val mainPart = Components.panel().
 			withSize(UiOptions.MAP_VIEW_WDTH, UiOptions.MAP_VIEW_HEIGHT).
 			withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
-			withDecorations(MapGridDecorationRenderer(gameWorld)).
+			withDecorations(MapGridDecorationRenderer()).
 			build()
 
 		val map = GameComponents.
