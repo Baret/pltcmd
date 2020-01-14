@@ -5,6 +5,7 @@ import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.MultiSelect
+import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -14,7 +15,6 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.mvc.base.BaseView
-import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 
 /**
  * The view to display the map, radio log and interaction panel
@@ -63,13 +63,11 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 
 		// playing around with stuff...
 		val sidebarWidth = sidebar.contentSize.width
-		sidebar.addFragment(MousePosition(sidebarWidth, screen))
+		sidebar.addFragment(MousePosition(sidebarWidth, map))
 
 		sidebar.addComponent(Components.panel().withSize(sidebarWidth, 5))
 
 		sidebar.addFragment(MultiSelect(sidebarWidth, listOf("value1", "a longer value", "a", "a value so long you cant even read it!"), { newValue -> logArea.addParagraph(newValue,  false)}))
-
-		sidebar.addComponent(Components.panel().withSize(sidebarWidth, 5))
     }
 }
 
