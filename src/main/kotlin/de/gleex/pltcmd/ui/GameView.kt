@@ -2,19 +2,31 @@ package de.gleex.pltcmd.ui
 
 import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.game.MapBlock
+import de.gleex.pltcmd.game.TileRepository
+import de.gleex.pltcmd.model.radio.RadioSignal
+import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.MultiSelect
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
+import org.hexworks.cobalt.datatypes.extensions.ifPresent
+import org.hexworks.cobalt.datatypes.extensions.map
+import org.hexworks.cobalt.datatypes.extensions.orElseThrow
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
+import org.hexworks.zircon.api.extensions.processMouseEvents
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.mvc.base.BaseView
+import org.hexworks.zircon.api.shape.LineFactory
+import org.hexworks.zircon.api.uievent.MouseEvent
+import org.hexworks.zircon.api.uievent.MouseEventType
+import org.hexworks.zircon.api.uievent.UIEventPhase
 
 /**
  * The view to display the map, radio log and interaction panel
@@ -38,13 +50,40 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 			withDecorations(MapGridDecorationRenderer()).
 			build()
 
+		var oldClick: Position? = null
+
 		val map = GameComponents.
 			newGameComponentBuilder<Tile, MapBlock>().
 			withGameArea(gameWorld).
 			withProjectionMode(ProjectionMode.TOP_DOWN).
 			withVisibleSize(gameWorld.visibleSize()).
 			withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
-			build()
+			build(). apply {
+				processMouseEvents(MouseEventType.MOUSE_CLICKED) { mouseEvent: MouseEvent, uiEventPhase: UIEventPhase ->
+					val clickedPosition = mouseEvent.position - absolutePosition
+					if(oldClick == null) {
+						oldClick = clickedPosition
+					} else {
+						log.debug("Drawing line from $oldClick to $clickedPosition")
+						val line = LineFactory.buildLine(oldClick!!, clickedPosition)
+						val terrainList: MutableList<Terrain> = mutableListOf()
+						val firstTerrain = gameWorld.
+								fetchBlockAt(clickedPosition.toPosition3D(0)).
+								map {
+									it.terrain
+								}.
+								orElseThrow { IllegalStateException("No terrain found at $clickedPosition") }
+						val signal = RadioSignal(200.0, firstTerrain)
+						line.positions().drop(1).forEach {pos ->
+							gameWorld.fetchBlockAt(pos.toPosition3D(0)).ifPresent {
+								terrainList += it.terrain
+								it.setUnit(TileRepository.forSignal(signal.along(terrainList)))
+							}
+						}
+						oldClick = null
+					}
+				}
+			}
 		mainPart.addComponent(map)
 
         val logArea = Components.

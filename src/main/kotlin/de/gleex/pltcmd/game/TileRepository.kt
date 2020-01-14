@@ -2,8 +2,8 @@ package de.gleex.pltcmd.game
 
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
+import org.hexworks.zircon.api.TileColors
 import org.hexworks.zircon.api.Tiles
-import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.Symbols
 
@@ -41,7 +41,7 @@ object TileRepository {
             Tiles.
                 newBuilder().
                 withForegroundColor(ColorRepository.forType(type)).
-                withBackgroundColor(TileColor.transparent()).
+                withBackgroundColor(TileColors.transparent()).
                 withCharacter(character).
                 buildCharacterTile()
 
@@ -54,4 +54,13 @@ object TileRepository {
                 buildCharacterTile()
 
     fun empty() = Tiles.empty()
+
+    fun forSignal(signalStrength: Double): Tile {
+        return Tiles.
+                newBuilder().
+                withForegroundColor(ColorRepository.radioColor(signalStrength)).
+                withBackgroundColor(ColorRepository.radioColor(signalStrength)).
+                withCharacter(Symbols.BULLET_SMALL).
+                buildCharacterTile()
+    }
 }
