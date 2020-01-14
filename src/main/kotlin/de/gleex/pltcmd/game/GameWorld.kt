@@ -31,7 +31,6 @@ class GameWorld(worldMap: WorldMap): GameArea<Tile, MapBlock> by GameAreaBuilder
     }
 
     private fun putSector(sector: Sector) {
-        log.debug("Putting sector at ${sector.tiles.first().coordinate}")
         sector.tiles.forEach {
             val position = it.coordinate.toPosition()
             val block = MapBlock(it.terrain)

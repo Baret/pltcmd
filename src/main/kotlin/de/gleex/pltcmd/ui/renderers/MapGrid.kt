@@ -1,20 +1,17 @@
-package org.hexworks.zircon.internal.graphics
+package de.gleex.pltcmd.ui.renderers
 
-import org.hexworks.zircon.api.builder.data.TileBuilder
+import de.gleex.pltcmd.game.ColorRepository
+import org.hexworks.zircon.api.Tiles
 import org.hexworks.zircon.api.builder.graphics.TileGraphicsBuilder
+import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
-import org.hexworks.zircon.api.graphics.Box
-import org.hexworks.zircon.api.graphics.BoxType
+import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.StyleSet
+import org.hexworks.zircon.api.graphics.Symbols
 import org.hexworks.zircon.api.graphics.TileGraphics
 import org.hexworks.zircon.api.resource.TilesetResource
 import org.hexworks.zircon.api.shape.LineFactory
-import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.graphics.Symbols
-import de.gleex.pltcmd.game.ColorRepository
-import org.hexworks.zircon.api.Tiles
-import org.hexworks.zircon.api.color.TileColor
 
 /**
  * Draws a border around a rectangle with a grid indicator every five tiles. Every second tile has a highlight color to see the main coordinates.
@@ -36,13 +33,16 @@ class MapGrid(
 
         val topLeftPos = size.fetchTopLeftPosition()
         val majorGridMarker =
-            TileGraphicsBuilder.newBuilder().withSize(Size.create(1, 1))
-                .withTile(Position.create(0, 0), createTile(Symbols.SINGLE_LINE_CROSS).withForegroundColor(ColorRepository.GRID_COLOR_HIGHLIGHT))
-                .build()
+            TileGraphicsBuilder.newBuilder().
+                withSize(Size.create(1, 1)).
+                withTile(Position.create(0, 0), createTile(Symbols.SINGLE_LINE_CROSS).
+                withForegroundColor(ColorRepository.GRID_COLOR_HIGHLIGHT)).
+                build()
         val minorGridMarker =
-            TileGraphicsBuilder.newBuilder().withSize(Size.create(1, 1))
-                .withTile(Position.create(0, 0), createTile(Symbols.SINGLE_LINE_CROSS))
-                .build()
+            TileGraphicsBuilder.newBuilder().
+                withSize(Size.create(1, 1)).
+                withTile(Position.create(0, 0), createTile(Symbols.SINGLE_LINE_CROSS)).
+                build()
         drawCorners()
         drawEdges(topLeftPos)
         drawGridMarkers(topLeftPos, majorGridMarker, minorGridMarker)
@@ -91,9 +91,12 @@ class MapGrid(
     }
 
     private fun createTile(character: Char): Tile {
-        return Tiles.newBuilder().withForegroundColor(ColorRepository.GRID_COLOR)
-            .withBackgroundColor(TileColor.transparent()).withCharacter(character).buildCharacterTile()
+        return Tiles.newBuilder().
+                withForegroundColor(ColorRepository.GRID_COLOR).
+                withBackgroundColor(TileColor.transparent()).
+                withCharacter(character).
+                buildCharacterTile()
     }
 
-    override fun toString() = "MapGrid ${backend.toString()}"
+    override fun toString() = "MapGrid $backend"
 }
