@@ -104,6 +104,8 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 		val sidebarWidth = sidebar.contentSize.width
 		sidebar.addFragment(MousePosition(sidebarWidth, map))
 
+		//sidebar.addFragment(RadioSignalFragment(sidebarWidth))
+
 		sidebar.addComponent(Components.panel().withSize(sidebarWidth, 5))
 
 		sidebar.addFragment(MultiSelect(sidebarWidth, listOf("value1", "a longer value", "a", "a value so long you cant even read it!"), { newValue -> logArea.addParagraph(newValue,  false)}))
