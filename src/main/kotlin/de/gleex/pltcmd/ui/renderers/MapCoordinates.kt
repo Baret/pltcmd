@@ -48,7 +48,7 @@ class MapCoordinates(
                 withBackgroundColor(TileColor.transparent())
         for (i in 1 until size.width step 5) {
             // top
-            val topCoord = topLeftCoordinate.withRelativeEasting(i - 1)
+            val topCoord = topLeftCoordinate.withRelativeEasting(i - 1) // offset between decoration and map view
             val topText = topCoord.eastingFromLeft.toString()
             var top = topLeftPos.withRelativeX(i + 1)
             for (letter in topText) {
@@ -56,7 +56,7 @@ class MapCoordinates(
                 top = top.withRelativeX(1)
             }
             // left
-            val leftCoord = topLeftCoordinate.withRelativeNorthing(i - 1)
+            val leftCoord = topLeftCoordinate.withRelativeNorthing(-i + 1) // offset between decoration and map view
             val leftText = leftCoord.northingFromBottom.toString()
             var left = topLeftPos.withRelativeY(i + 1)
             for (letter in leftText) {
