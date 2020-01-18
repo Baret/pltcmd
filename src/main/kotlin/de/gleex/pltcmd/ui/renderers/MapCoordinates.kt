@@ -44,7 +44,6 @@ class MapCoordinates(
     private fun drawGridCoordinates(topLeftCoordinate: Coordinate, topLeftPos: Position) {
         // grid coordinates (for square)
         val builder = Tiles.newBuilder().
-                withForegroundColor(ColorRepository.GRID_COLOR).
                 withBackgroundColor(TileColor.transparent())
         for (i in 1 until size.width step 5) {
             // top
@@ -61,20 +60,26 @@ class MapCoordinates(
     private fun drawCenteredHorizontally(topText: String, pos: Position, builder: TileBuilder) {
             // center text on position
             var topTextOffset = offsetForCenteredText(topText)
+            // highlight first number
+            builder.withForegroundColor(ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X)
             for (letter in topText) {
                 val top = pos.withRelativeX(topTextOffset)
                 draw(letter, top, builder)
                 topTextOffset++
+                builder.withForegroundColor(ColorRepository.GRID_COLOR)
             }
     }
 
     private fun drawCenteredVertically(leftText: String, pos: Position, builder: TileBuilder) {
             // center text on position
             var leftTextOffset = offsetForCenteredText(leftText)
+            // highlight first number
+            builder.withForegroundColor(ColorRepository.COORDINATE_COLOR_HIGHLIGHT_Y)
             for (letter in leftText) {
                 val left = pos.withRelativeY(leftTextOffset)
                 draw(letter, left, builder)
                 leftTextOffset++
+                builder.withForegroundColor(ColorRepository.GRID_COLOR)
             }
     }
 
