@@ -46,10 +46,10 @@ class MapCoordinates(
         for (i in 1 until size.width step 5) {
             // top
             val topCoord = topLeftCoordinate.withRelativeEasting(i - 1)
-            draw(CoordinateTileString(topCoord.eastingFromLeft, false), topLeftPos.withRelativeX(i + 1)) // +1 offset by other decoration to map view position
+            draw(CoordinateTileString(topCoord.eastingFromLeft), topLeftPos.withRelativeX(i + 1)) // +1 offset by other decoration to map view position
             // left
             val leftCoord = topLeftCoordinate.withRelativeNorthing(-i + 1)
-            draw(CoordinateTileString(leftCoord.northingFromBottom, true), topLeftPos.withRelativeY(i + 1)) // +1 offset by other decoration to map view position
+            draw(VerticalCoordinateTileString(leftCoord.northingFromBottom), topLeftPos.withRelativeY(i + 1)) // +1 offset by other decoration to map view position
         }
     }
 

@@ -17,10 +17,10 @@ import org.hexworks.zircon.api.color.TileColor
  * Draws a part of a coordinate as text. The major coordinate will be highlighted.
  * It can be drawn horizontally or vertically.
  **/
-class CoordinateTileString(coordinateValue: Int, val vertical: Boolean) : Drawable {
+open class CoordinateTileString(coordinateValue: Int) : Drawable {
     private val text: String
     private val majorLength: Int
-    
+
     init {
         text = coordinateValue.toString()
         val majorCoordinateValue = Math.floorDiv(coordinateValue, 100)
@@ -30,51 +30,36 @@ class CoordinateTileString(coordinateValue: Int, val vertical: Boolean) : Drawab
     override fun drawOnto(surface: DrawSurface, position: Position) {
         val builder = Tiles.newBuilder().
                 withBackgroundColor(TileColor.transparent())
-        if (vertical) drawCenteredVertically(surface, position, builder)
-        else drawCenteredHorizontally(surface, position, builder)
+        drawCentered(surface, position, builder)
     }
 
-    private fun drawCenteredHorizontally(surface: DrawSurface, pos: Position, builder: TileBuilder) {
+    private fun drawCentered(surface: DrawSurface, textCenter: Position, builder: TileBuilder) {
             // center text on position
-            var topTextOffset = offsetForCenteredText(text)
+            var textOffset = offsetForCenteredText(text)
             // highlight first number
-            builder.withForegroundColor(ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X)
+            builder.withForegroundColor(getHighlightColor())
             text.forEachIndexed { index, letter ->
-                val top = pos.withRelativeX(topTextOffset)
-                draw(surface, letter, top, builder)
-                topTextOffset++
+                val letterPos = getDrawPosition(textCenter, textOffset)
+                draw(surface, letter, letterPos, builder)
+                textOffset++
                 if (index >= majorLength) {
-                    builder.withForegroundColor(ColorRepository.GRID_COLOR)
+                    builder.withForegroundColor(getDefaultColor())
                 }
             }
     }
 
-    private fun drawCenteredVertically(surface: DrawSurface, pos: Position, builder: TileBuilder) {
-            // center text on position
-            var leftTextOffset = offsetForCenteredText(text)
-            // highlight first number
-            builder.withForegroundColor(ColorRepository.COORDINATE_COLOR_HIGHLIGHT_Y)
-            text.forEachIndexed { index, letter ->
-                val left = pos.withRelativeY(leftTextOffset)
-                draw(surface, letter, left, builder)
-                leftTextOffset++
-                if (index >= majorLength) {
-                    builder.withForegroundColor(ColorRepository.GRID_COLOR)
-                }
-            }
-    }
+    /** Returns the [Position] where to draw a character that is the given amount offset from the given center */
+    open protected fun getDrawPosition(center: Position, textOffset: Int) = center.withRelativeX(textOffset)
 
-    private fun offsetForCenteredText(text: String) = -(text.length / 2)
+    open protected fun getHighlightColor() = ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
 
-    private fun draw(surface: DrawSurface, letter: Char, pos: Position, builder: TileBuilder) =
+    open protected fun getDefaultColor() = ColorRepository.GRID_COLOR
+
+    /** Returns the number of characters in front of the middle of the [String] */
+    open protected fun offsetForCenteredText(text: String) = -(text.length / 2)
+
+    /** Draws a single character at the given position */
+    open protected fun draw(surface: DrawSurface, letter: Char, pos: Position, builder: TileBuilder) =
         surface.draw(builder.withCharacter(letter).buildCharacterTile(), pos)
-
-    private fun createTile(character: Char): Tile {
-        return Tiles.newBuilder().
-                withForegroundColor(ColorRepository.GRID_COLOR).
-                withBackgroundColor(TileColor.transparent()).
-                withCharacter(character).
-                buildCharacterTile()
-    }
 
 }
