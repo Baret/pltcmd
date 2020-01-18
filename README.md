@@ -10,4 +10,4 @@ The game resolves around a map showing a small part of the world map. You contro
 
 This is the current state of the UI:
 
-![map screenshot](screenshots/map.png | wdith=800)
+![map screenshot](/screenshots/map.png)
