@@ -39,11 +39,13 @@ class CoordinateTileString(coordinateValue: Int, val vertical: Boolean) : Drawab
             var topTextOffset = offsetForCenteredText(text)
             // highlight first number
             builder.withForegroundColor(ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X)
-            for (letter in text) {
+            text.forEachIndexed { index, letter ->
                 val top = pos.withRelativeX(topTextOffset)
                 draw(surface, letter, top, builder)
                 topTextOffset++
-                builder.withForegroundColor(ColorRepository.GRID_COLOR)
+                if (index >= majorLength) {
+                    builder.withForegroundColor(ColorRepository.GRID_COLOR)
+                }
             }
     }
 
@@ -52,11 +54,13 @@ class CoordinateTileString(coordinateValue: Int, val vertical: Boolean) : Drawab
             var leftTextOffset = offsetForCenteredText(text)
             // highlight first number
             builder.withForegroundColor(ColorRepository.COORDINATE_COLOR_HIGHLIGHT_Y)
-            for (letter in text) {
+            text.forEachIndexed { index, letter ->
                 val left = pos.withRelativeY(leftTextOffset)
                 draw(surface, letter, left, builder)
                 leftTextOffset++
-                builder.withForegroundColor(ColorRepository.GRID_COLOR)
+                if (index >= majorLength) {
+                    builder.withForegroundColor(ColorRepository.GRID_COLOR)
+                }
             }
     }
 
