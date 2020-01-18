@@ -48,27 +48,40 @@ class MapCoordinates(
                 withBackgroundColor(TileColor.transparent())
         for (i in 1 until size.width step 5) {
             // top
-            val topCoord = topLeftCoordinate.withRelativeEasting(i - 1) // offset between decoration and map view
+            val topCoord = topLeftCoordinate.withRelativeEasting(i - 1)
             val topText = topCoord.eastingFromLeft.toString()
-            var top = topLeftPos.withRelativeX(i + 1)
-            for (letter in topText) {
-                draw(letter, top, builder)
-                top = top.withRelativeX(1)
-            }
+            drawCenteredHorizontally(topText, topLeftPos.withRelativeX(i + 1), builder) // +1 offset by other decoration to map view position
             // left
-            val leftCoord = topLeftCoordinate.withRelativeNorthing(-i + 1) // offset between decoration and map view
+            val leftCoord = topLeftCoordinate.withRelativeNorthing(-i + 1)
             val leftText = leftCoord.northingFromBottom.toString()
-            var left = topLeftPos.withRelativeY(i + 1)
-            for (letter in leftText) {
-                draw(letter, left, builder)
-                left = left.withRelativeY(1)
-            }
+            drawCenteredVertically(leftText, topLeftPos.withRelativeY(i + 1), builder) // +1 offset by other decoration to map view position
         }
     }
 
-    private fun draw(letter: Char, pos: Position, builder: TileBuilder) {
-        draw(builder.withCharacter(letter).buildCharacterTile(), pos)
+    private fun drawCenteredHorizontally(topText: String, pos: Position, builder: TileBuilder) {
+            // center text on position
+            var topTextOffset = offsetForCenteredText(topText)
+            for (letter in topText) {
+                val top = pos.withRelativeX(topTextOffset)
+                draw(letter, top, builder)
+                topTextOffset++
+            }
     }
+
+    private fun drawCenteredVertically(leftText: String, pos: Position, builder: TileBuilder) {
+            // center text on position
+            var leftTextOffset = offsetForCenteredText(leftText)
+            for (letter in leftText) {
+                val left = pos.withRelativeY(leftTextOffset)
+                draw(letter, left, builder)
+                leftTextOffset++
+            }
+    }
+
+    private fun offsetForCenteredText(text: String) = -(text.length / 2)
+
+    private fun draw(letter: Char, pos: Position, builder: TileBuilder) =
+        draw(builder.withCharacter(letter).buildCharacterTile(), pos)
 
     private fun createTile(character: Char): Tile {
         return Tiles.newBuilder().
@@ -78,5 +91,6 @@ class MapCoordinates(
                 buildCharacterTile()
     }
 
-    override fun toString() = "MapGrid $backend"
+    override fun toString() = "MapCoordinates $backend"
+
 }
