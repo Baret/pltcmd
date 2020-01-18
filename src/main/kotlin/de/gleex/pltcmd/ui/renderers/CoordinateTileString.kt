@@ -17,7 +17,13 @@ import org.hexworks.zircon.api.color.TileColor
  * Draws a part of a coordinate as text. The major coordinate will be highlighted.
  * It can be drawn horizontally or vertically.
  **/
-open class CoordinateTileString(coordinateValue: Int) : Drawable {
+open class CoordinateTileString(
+    coordinateValue: Int,
+    protected val drawParams: CoordinateDrawParameters = CoordinateDrawParameters(
+        ColorRepository.GRID_COLOR,
+        ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
+    )
+) : Drawable {
     private val text: String
     private val majorLength: Int
 
@@ -37,23 +43,19 @@ open class CoordinateTileString(coordinateValue: Int) : Drawable {
             // center text on position
             var textOffset = offsetForCenteredText(text)
             // highlight first number
-            builder.withForegroundColor(getHighlightColor())
+            builder.withForegroundColor(drawParams.highlighColor)
             text.forEachIndexed { index, letter ->
                 val letterPos = getDrawPosition(textCenter, textOffset)
                 draw(surface, letter, letterPos, builder)
                 textOffset++
                 if (index >= majorLength) {
-                    builder.withForegroundColor(getDefaultColor())
+                    builder.withForegroundColor(drawParams.defaultColor)
                 }
             }
     }
 
     /** Returns the [Position] where to draw a character that is the given amount offset from the given center */
     open protected fun getDrawPosition(center: Position, textOffset: Int) = center.withRelativeX(textOffset)
-
-    open protected fun getHighlightColor() = ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
-
-    open protected fun getDefaultColor() = ColorRepository.GRID_COLOR
 
     /** Returns the number of characters in front of the middle of the [String] */
     open protected fun offsetForCenteredText(text: String) = -(text.length / 2)
