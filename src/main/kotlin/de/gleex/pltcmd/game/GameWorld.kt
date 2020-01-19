@@ -42,7 +42,8 @@ class GameWorld(private val worldMap: WorldMap): GameArea<Tile, MapBlock> by Gam
 
     private fun Position3D.toCoordinate() = Coordinate(x, y)
 
-    fun visibleMapOffset(): Coordinate {
+    /** Returns the [Coordinate] of the [Tile] that is visible in the top left corner. */
+    fun visibleTopLeftCoordinate(): Coordinate {
         return visibleOffset().toCoordinate()
     }
 

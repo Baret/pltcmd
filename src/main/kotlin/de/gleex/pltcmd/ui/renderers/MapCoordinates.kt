@@ -32,11 +32,9 @@ class MapCoordinates(
     : TileGraphics by backend {
 
     init {
-        // data first, drawing second
-        val topLeftCoordinate = world.visibleMapOffset()
-
         setStyleFrom(styleSet)
 
+        val topLeftCoordinate = world.visibleTopLeftCoordinate()
         val topLeftPos = size.fetchTopLeftPosition()
         drawGridCoordinates(topLeftCoordinate, topLeftPos)
     }
