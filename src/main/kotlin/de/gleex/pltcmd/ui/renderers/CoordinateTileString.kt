@@ -29,7 +29,8 @@ open class CoordinateTileString(
     }
 
     override fun drawOnto(surface: DrawSurface, position: Position) {
-        val builder = Tiles.newBuilder().withBackgroundColor(TileColor.transparent())
+        val builder = Tiles.newBuilder()
+                .withBackgroundColor(TileColor.transparent())
         drawCentered(surface, position, builder)
     }
 

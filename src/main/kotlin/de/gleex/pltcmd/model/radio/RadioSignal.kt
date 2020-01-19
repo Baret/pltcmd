@@ -48,7 +48,7 @@ open class RadioSignal(private val initialStrength: Double, private val initialT
                 // signal travels through the ground
                 currentHeight < t.height.toDouble() -> signal * TERRAIN_LOSS_FACTOR
                 // signal travels along the terrain
-                else -> attenuation.reducedAt(signal, t.type)
+                else                                -> attenuation.reducedAt(signal, t.type)
             }
         }
         return signal.toPercent()

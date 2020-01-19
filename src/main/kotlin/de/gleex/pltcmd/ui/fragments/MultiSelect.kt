@@ -16,7 +16,7 @@ import kotlin.math.min
  * Optionally you can specify if the text on the label should be centered, default is true.
  * If the toString method of [T] is not well suited for the label, you can pass a different one.
  */
-class MultiSelect<T: Any>(
+class MultiSelect<T : Any>(
         width: Int,
         private val values: List<T>,
         private val callback: (T) -> Unit,
@@ -26,19 +26,17 @@ class MultiSelect<T: Any>(
 
     private val indexProperty = createPropertyFrom(0)
 
-    private val rightButton = Components.
-            button().
+    private val rightButton = Components.button().
             withText(Symbols.ARROW_RIGHT.toString()).
             withDecorations().
             build().
-            apply { processComponentEvents(ComponentEventType.ACTIVATED) { nextValue()} }
+            apply { processComponentEvents(ComponentEventType.ACTIVATED) { nextValue() } }
 
-    private val leftButton = Components.
-            button().
+    private val leftButton = Components.button().
             withText(Symbols.ARROW_LEFT.toString()).
             withDecorations().
             build().
-            apply { processComponentEvents(ComponentEventType.ACTIVATED) { prevValue()} }
+            apply { processComponentEvents(ComponentEventType.ACTIVATED) { prevValue() } }
 
     private val label = Components.label().
             withSize(width - (leftButton.width + rightButton.width), 1).
@@ -53,12 +51,11 @@ class MultiSelect<T: Any>(
                 addComponent(label)
                 addComponent(rightButton)
 
-                label.
-                    apply {
-                        text = getStringValue(0)
-                        textProperty.updateFrom(indexProperty) { i -> getStringValue(i) }
-                    }
+                label.apply {
+                    text = getStringValue(0)
+                    textProperty.updateFrom(indexProperty) { i -> getStringValue(i) }
                 }
+            }
 
     private fun setValue(index: Int) {
         indexProperty.value = index
@@ -67,7 +64,7 @@ class MultiSelect<T: Any>(
 
     private fun nextValue() {
         var nextIndex = indexProperty.value + 1
-        if(nextIndex >= values.size) {
+        if (nextIndex >= values.size) {
             nextIndex = 0
         }
         setValue(nextIndex)
@@ -75,7 +72,7 @@ class MultiSelect<T: Any>(
 
     private fun prevValue() {
         var prevIndex = indexProperty.value - 1
-        if(prevIndex < 0) {
+        if (prevIndex < 0) {
             prevIndex = values.size - 1
         }
         setValue(prevIndex)

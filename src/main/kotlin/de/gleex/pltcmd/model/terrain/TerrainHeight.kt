@@ -13,14 +13,14 @@ enum class TerrainHeight(val value: Int) {
     TEN(10);
 
     operator fun inc() =
-            when(this) {
-                TEN -> TEN
-                else -> enumValues<TerrainHeight>()[ordinal+1]
+            when (this) {
+                TEN  -> TEN
+                else -> enumValues<TerrainHeight>()[ordinal + 1]
             }
 
     operator fun dec() =
-            when(this) {
-                ONE -> ONE
-                else -> enumValues<TerrainHeight>()[ordinal-1]
+            when (this) {
+                ONE  -> ONE
+                else -> enumValues<TerrainHeight>()[ordinal - 1]
             }
 }
