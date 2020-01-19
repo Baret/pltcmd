@@ -11,6 +11,6 @@ class VerticalCoordinateTileString(
     )
 ) : CoordinateTileString(coordinateValue, drawParams) {
 
-    override protected fun getDrawPosition(center: Position, textOffset: Int) = center.withRelativeY(textOffset)
+    override fun getDrawPosition(center: Position, textOffset: Int) = center.withRelativeY(textOffset)
 
 }

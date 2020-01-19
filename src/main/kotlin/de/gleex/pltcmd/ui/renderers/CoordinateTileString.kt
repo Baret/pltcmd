@@ -7,6 +7,7 @@ import org.hexworks.zircon.api.builder.data.TileBuilder
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.graphics.DrawSurface
+import kotlin.math.log10
 
 /**
  * Draws a part of a coordinate as text. The major coordinate will be highlighted.
@@ -19,13 +20,12 @@ open class CoordinateTileString(
         ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
     )
 ) : Drawable {
-    private val text: String
+    private val text = coordinateValue.toString()
     private val majorLength: Int
 
     init {
-        text = coordinateValue.toString()
         val majorCoordinateValue = Math.floorDiv(coordinateValue, 100)
-        majorLength = Math.log10(majorCoordinateValue.toDouble()).toInt()
+        majorLength = log10(majorCoordinateValue.toDouble()).toInt()
     }
 
     override fun drawOnto(surface: DrawSurface, position: Position) {
@@ -38,7 +38,7 @@ open class CoordinateTileString(
             // center text on position
             var textOffset = offsetForCenteredText(text)
             // highlight first number
-            builder.withForegroundColor(drawParams.highlighColor)
+            builder.withForegroundColor(drawParams.highlightColor)
             text.forEachIndexed { index, letter ->
                 val letterPos = getDrawPosition(textCenter, textOffset)
                 draw(surface, letter, letterPos, builder)
@@ -50,13 +50,13 @@ open class CoordinateTileString(
     }
 
     /** Returns the [Position] where to draw a character that is the given amount offset from the given center */
-    open protected fun getDrawPosition(center: Position, textOffset: Int) = center.withRelativeX(textOffset)
+    protected open fun getDrawPosition(center: Position, textOffset: Int) = center.withRelativeX(textOffset)
 
     /** Returns the number of characters in front of the middle of the [String] */
-    open protected fun offsetForCenteredText(text: String) = -(text.length / 2)
+    protected open fun offsetForCenteredText(text: String) = -(text.length / 2)
 
     /** Draws a single character at the given position */
-    open protected fun draw(surface: DrawSurface, letter: Char, pos: Position, builder: TileBuilder) =
+    protected open fun draw(surface: DrawSurface, letter: Char, pos: Position, builder: TileBuilder) =
         surface.draw(builder.withCharacter(letter).buildCharacterTile(), pos)
 
 }
