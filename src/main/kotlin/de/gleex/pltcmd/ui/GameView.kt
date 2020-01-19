@@ -5,6 +5,7 @@ import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.MultiSelect
+import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
@@ -15,7 +16,6 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.mvc.base.BaseView
-import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 
 /**
  * The view to display the map, radio log and interaction panel

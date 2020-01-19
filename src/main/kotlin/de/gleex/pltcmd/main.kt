@@ -7,7 +7,6 @@ import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.GameView
 import org.hexworks.zircon.api.SwingApplications
-import org.hexworks.zircon.api.data.impl.Position3D
 
 
 fun main() {
