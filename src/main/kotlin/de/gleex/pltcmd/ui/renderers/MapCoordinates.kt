@@ -15,6 +15,7 @@ import org.hexworks.zircon.api.resource.TilesetResource
 class MapCoordinates(
         world: GameWorld,
         size: Size,
+        contentOffset: Position,
         styleSet: StyleSet,
         tileset: TilesetResource,
         private val backend: TileGraphics = TileGraphicsBuilder.newBuilder()
@@ -28,18 +29,18 @@ class MapCoordinates(
 
         val topLeftCoordinate = world.visibleTopLeftCoordinate()
         val topLeftPos = size.fetchTopLeftPosition()
-        drawGridCoordinates(topLeftCoordinate, topLeftPos)
+        drawGridCoordinates(topLeftCoordinate, topLeftPos, contentOffset)
     }
 
-    private fun drawGridCoordinates(topLeftCoordinate: Coordinate, topLeftPos: Position) {
+    private fun drawGridCoordinates(topLeftCoordinate: Coordinate, topLeftPos: Position, contentOffset: Position) {
         // grid coordinates (for square)
-        for (i in 1 until size.width step 5) {
+        for (i in 0 until size.width step 5) {
             // top
-            val topCoord = topLeftCoordinate.withRelativeEasting(i - 1)
-            draw(CoordinateTileString(topCoord.eastingFromLeft), topLeftPos.withRelativeX(i + 1)) // +1 offset by other decoration to map view position
+            val topCoord = topLeftCoordinate.withRelativeEasting(i)
+            draw(CoordinateTileString(topCoord.eastingFromLeft), topLeftPos.withRelativeX(i + contentOffset.x))
             // left
-            val leftCoord = topLeftCoordinate.withRelativeNorthing(-i + 1)
-            draw(VerticalCoordinateTileString(leftCoord.northingFromBottom), topLeftPos.withRelativeY(i + 1)) // +1 offset by other decoration to map view position
+            val leftCoord = topLeftCoordinate.withRelativeNorthing(-i)
+            draw(VerticalCoordinateTileString(leftCoord.northingFromBottom), topLeftPos.withRelativeY(i + contentOffset.y))
         }
     }
 
