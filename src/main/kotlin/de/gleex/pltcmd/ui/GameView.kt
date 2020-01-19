@@ -5,6 +5,7 @@ import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.MultiSelect
+import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
@@ -35,7 +36,7 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 		val mainPart = Components.panel().
 			withSize(UiOptions.MAP_VIEW_WDTH, UiOptions.MAP_VIEW_HEIGHT).
 			withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
-			withDecorations(MapGridDecorationRenderer()).
+			withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld)).
 			build()
 
 		val map = GameComponents.

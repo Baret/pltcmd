@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.terrain.Terrain
-import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.terrain.TerrainHeight
+import de.gleex.pltcmd.model.terrain.TerrainType
 
 /**
  * The smallest piece of the world/map.

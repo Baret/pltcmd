@@ -39,4 +39,16 @@ class GameWorld(worldMap: WorldMap): GameArea<Tile, MapBlock> by GameAreaBuilder
     }
 
     private fun Coordinate.toPosition() = Position3D.create(eastingFromLeft, northingFromBottom, 0)
+
+    private fun Position3D.toCoordinate() = Coordinate(x, y)
+
+    /** Returns the [Coordinate] of the [Tile] that is visible in the top left corner. */
+    fun visibleTopLeftCoordinate(): Coordinate {
+        return visibleOffset().toCoordinate()
+    }
+
+    fun scrollToCoordinate(coord: Coordinate) {
+        scrollTo3DPosition(coord.toPosition())
+    }
+
 }

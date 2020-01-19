@@ -10,12 +10,13 @@ import org.hexworks.zircon.api.SwingApplications
 
 
 fun main() {
+    val initialOrigin = Coordinate(350, 200)
     val worldMap = WorldMap(
             setOf(
-                    Sector.generateAt(
-                            Coordinate(0, 0))))
+                    Sector.generateAt(initialOrigin)))
 
     val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
     val gameWorld = GameWorld(worldMap)
+    gameWorld.scrollToCoordinate(initialOrigin)
     application.dock(GameView(gameWorld))
 }
