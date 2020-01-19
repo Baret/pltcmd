@@ -8,7 +8,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class RadioSignalTest {
-    private class RadioSignalTestExtension: RadioSignal(200.0, Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE)) {
+    private class RadioSignalTestExtension : RadioSignal(200.0, Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE)) {
         fun testToPercent(testValue: Double) = testValue.toPercent()
     }
 

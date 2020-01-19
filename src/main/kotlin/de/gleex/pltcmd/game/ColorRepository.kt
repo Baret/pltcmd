@@ -20,27 +20,27 @@ object ColorRepository {
     /**
      * Creates a [TileColor] for the given [TerrainHeight] to be used as background color for tiles.
      */
-    fun forHeight(height: TerrainHeight): TileColor = when(height) {
-        TerrainHeight.ONE -> MAX_HEIGHT.darkenByPercent(0.9)
-        TerrainHeight.TWO -> MAX_HEIGHT.darkenByPercent(0.8)
+    fun forHeight(height: TerrainHeight): TileColor = when (height) {
+        TerrainHeight.ONE   -> MAX_HEIGHT.darkenByPercent(0.9)
+        TerrainHeight.TWO   -> MAX_HEIGHT.darkenByPercent(0.8)
         TerrainHeight.THREE -> MAX_HEIGHT.darkenByPercent(0.7)
-        TerrainHeight.FOUR -> MAX_HEIGHT.darkenByPercent(0.6)
-        TerrainHeight.FIVE -> MAX_HEIGHT.darkenByPercent(0.5)
-        TerrainHeight.SIX -> MAX_HEIGHT.darkenByPercent(0.4)
+        TerrainHeight.FOUR  -> MAX_HEIGHT.darkenByPercent(0.6)
+        TerrainHeight.FIVE  -> MAX_HEIGHT.darkenByPercent(0.5)
+        TerrainHeight.SIX   -> MAX_HEIGHT.darkenByPercent(0.4)
         TerrainHeight.SEVEN -> MAX_HEIGHT.darkenByPercent(0.3)
         TerrainHeight.EIGHT -> MAX_HEIGHT.darkenByPercent(0.2)
-        TerrainHeight.NINE -> MAX_HEIGHT.darkenByPercent(0.1)
-        TerrainHeight.TEN -> MAX_HEIGHT
+        TerrainHeight.NINE  -> MAX_HEIGHT.darkenByPercent(0.1)
+        TerrainHeight.TEN   -> MAX_HEIGHT
     }
 
     /**
      * Creates a [TileColor] for the given [TerrainType] to be used as foreground color for terrain tiles.
      */
-    fun forType(type: TerrainType): TileColor = when(type) {
-        TerrainType.GRASSLAND -> TileColors.create(95, 169, 51)
-        TerrainType.FOREST -> TileColors.create(35, 104, 10)
-        TerrainType.HILL -> TileColors.create(121, 77, 33)
-        TerrainType.MOUNTAIN -> TileColors.create(112, 107, 102)
+    fun forType(type: TerrainType): TileColor = when (type) {
+        TerrainType.GRASSLAND -> TileColor.create(95, 169, 51)
+        TerrainType.FOREST    -> TileColor.create(35, 104, 10)
+        TerrainType.HILL      -> TileColor.create(121, 77, 33)
+        TerrainType.MOUNTAIN  -> TileColor.create(112, 107, 102)
     }
 
     fun radioColor(signalStrength: Double): TileColor {
