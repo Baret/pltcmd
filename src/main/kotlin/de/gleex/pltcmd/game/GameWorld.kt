@@ -14,7 +14,7 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.impl.Position3D
 import org.hexworks.zircon.api.game.GameArea
 
-class GameWorld(private val worldMap: WorldMap): GameArea<Tile, MapBlock> by GameAreaBuilder.newBuilder<Tile, MapBlock>().
+class GameWorld(worldMap: WorldMap): GameArea<Tile, MapBlock> by GameAreaBuilder.newBuilder<Tile, MapBlock>().
         withActualSize(Sizes.create3DSize(GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT, GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT, 1)).
         withVisibleSize(Sizes.create3DSize(Sector.TILE_COUNT, Sector.TILE_COUNT, 1)).
         withLayersPerBlock(MapBlock.LAYERS_PER_BLOCK).
