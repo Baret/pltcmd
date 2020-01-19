@@ -1,0 +1,31 @@
+[init]
+Bravo, this is command, over
+Come in, Command, over
+
+[order]
+Bravo, move to (x|y), over
+Command, this is Bravo, moving to (x|y), out
+
+[messageSimple] (nur eine info mit "copy that")
+z.B. selbstständige meldung, wenn befehl abgearbeitet:
+Command, this is Bravo, reached destination (x|y), over
+Copy that, Bravo, out
+
+[messageComplex] (folgeantworten/mehrere stränge)
+Command, we found supplies here, over
+a)  copy that, Bravo. Load up as much as you can
+    roger that Command, loading supplies. out
+
+b)  copy that, Bravo. out
+
+[report]
+Bravo, report position, out
+Command, this is Bravo, our position is (x|y), out
+
+[impotantMessage] (kein init, aka broadcast?)
+(wenn grad conversation) BREAK BREAK!
+(Command?) This is Brvo, we are taking fire!, out
+
+[broadcast]
+(init anders:) All units, this is Command. Rules of engagement are as follows: Fire at will!
+(Antworten in Reihenfolge) Command, this is X, copy that, fire at will. Over
