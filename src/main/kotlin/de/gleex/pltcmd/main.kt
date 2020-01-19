@@ -11,13 +11,13 @@ import org.hexworks.zircon.api.data.impl.Position3D
 
 
 fun main() {
-    val worldMap = WorldMap(
+    val initialOrigin = Coordinate(350, 200)
+	val worldMap = WorldMap(
             setOf(
-                    Sector.generateAt(
-                            Coordinate(350, 200))))
+                    Sector.generateAt(initialOrigin)))
 
     val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
     val gameWorld = GameWorld(worldMap)
-    gameWorld.scrollTo3DPosition(Position3D.create(350, 200,0))
+    gameWorld.scrollToCoordinate(initialOrigin)
     application.dock(GameView(gameWorld))
 }

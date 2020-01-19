@@ -46,4 +46,8 @@ class GameWorld(private val worldMap: WorldMap): GameArea<Tile, MapBlock> by Gam
         return visibleOffset().toCoordinate()
     }
 
+    fun scrollToCoordinate(coord: Coordinate) {
+        scrollTo3DPosition(coord.toPosition())
+    }
+
 }
