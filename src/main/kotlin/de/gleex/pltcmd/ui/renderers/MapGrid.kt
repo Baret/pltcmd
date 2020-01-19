@@ -63,12 +63,12 @@ class MapGrid(
 
     private fun drawEdges(topLeftPos: Position) {
         val horizontalLine = LineFactory.buildLine(Position.create(0, 0), Position.create(size.width - 3, 0))
-            .toTileGraphics(createTile(Symbols.SINGLE_LINE_HORIZONTAL), currentTileset())
+                .toTileGraphics(createTile(Symbols.SINGLE_LINE_HORIZONTAL), currentTileset())
         draw(horizontalLine, topLeftPos + Position.create(1, 0))
         draw(horizontalLine, topLeftPos + Position.create(1, size.height - 1))
 
         val verticalLine = LineFactory.buildLine(Position.create(0, 0), Position.create(0, size.height - 3))
-            .toTileGraphics(createTile(Symbols.SINGLE_LINE_VERTICAL), currentTileset())
+                .toTileGraphics(createTile(Symbols.SINGLE_LINE_VERTICAL), currentTileset())
         draw(verticalLine, topLeftPos + Position.create(0, 1))
         draw(verticalLine, topLeftPos + Position.create(size.width - 1, 1))
     }

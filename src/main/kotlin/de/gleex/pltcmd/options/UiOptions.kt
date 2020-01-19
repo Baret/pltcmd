@@ -5,8 +5,7 @@ import org.hexworks.zircon.api.CP437TilesetResources
 
 object UiOptions {
     fun buildAppConfig() =
-            AppConfigs.
-                    newConfig().
+            AppConfigs.newConfig().
                     // GameComponents is a beta feature
                     enableBetaFeatures().
                     withSize(WINDOW_WIDTH, WINDOW_HEIGHT).
@@ -14,7 +13,7 @@ object UiOptions {
                     withDefaultTileset(CP437TilesetResources.rexPaint16x16()).
                     build()
 
-    const val WINDOW_WIDTH =  90
+    const val WINDOW_WIDTH = 90
     const val WINDOW_HEIGHT = 63
 
     const val MAP_VIEW_WDTH = 53

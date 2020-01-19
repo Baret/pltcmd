@@ -9,7 +9,7 @@ import org.hexworks.zircon.api.data.base.BlockBase
  * A MapBlock represents one tile in the map view. It consists of multiple [layers], showing its immutable [Terrain]
  * and the unit (or its marker) at this tile.
  */
-class MapBlock(terrain: Terrain): BlockBase<Tile>() {
+class MapBlock(terrain: Terrain) : BlockBase<Tile>() {
 
     companion object {
         /**

@@ -8,8 +8,7 @@ import org.hexworks.zircon.api.extensions.handleMouseEvents
 import org.hexworks.zircon.api.uievent.MouseEventType
 
 class MousePosition(private val width: Int, private val componentToWatch: Component) : Fragment {
-    override val root = Components.
-            hbox().
+    override val root = Components.hbox().
             withSize(width, 1).
             build().
             apply {
@@ -20,9 +19,10 @@ class MousePosition(private val width: Int, private val componentToWatch: Compon
                         build().
                         apply { componentToWatch.handleMouseEvents(MouseEventType.MOUSE_MOVED) {
                             mouseEvent, _ ->
-                                val pos = mouseEvent.position - componentToWatch.absolutePosition
-                                text = "Mouse pos: ${pos.x} | ${pos.y}"
-                                UIEventResponses.pass()
-                        } })
+                        val pos = mouseEvent.position - componentToWatch.absolutePosition
+                        text = "Mouse pos: ${pos.x} | ${pos.y}"
+                        UIEventResponses.pass()
+                    }
+                })
             }
 }

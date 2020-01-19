@@ -16,8 +16,10 @@ object TileRepository {
     private val terrainTiles: MutableMap<TerrainType, Tile> = mutableMapOf()
 
     init {
-        TerrainHeight.values().forEach { heightTiles[it] = initHeightTile(it) }
-        TerrainType.values().forEach { terrainTiles[it] = initTerrainTile(it) }
+        TerrainHeight.values()
+                .forEach { heightTiles[it] = initHeightTile(it) }
+        TerrainType.values()
+                .forEach { terrainTiles[it] = initTerrainTile(it) }
     }
 
     /**
@@ -30,11 +32,11 @@ object TileRepository {
      */
     fun forType(type: TerrainType) = terrainTiles[type]!!
 
-    private fun initTerrainTile(type: TerrainType) = when(type) {
+    private fun initTerrainTile(type: TerrainType) = when (type) {
         TerrainType.GRASSLAND -> characterTile(type, '\"')
-        TerrainType.FOREST -> characterTile(type, Symbols.SPADES)
-        TerrainType.HILL -> characterTile(type, Symbols.INTERSECTION)
-        TerrainType.MOUNTAIN -> characterTile(type, Symbols.TRIANGLE_UP_POINTING_BLACK)
+        TerrainType.FOREST    -> characterTile(type, Symbols.SPADES)
+        TerrainType.HILL      -> characterTile(type, Symbols.INTERSECTION)
+        TerrainType.MOUNTAIN  -> characterTile(type, Symbols.TRIANGLE_UP_POINTING_BLACK)
     }
 
     private fun characterTile(type: TerrainType, character: Char) =
