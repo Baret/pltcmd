@@ -12,6 +12,8 @@ object ColorRepository {
 
     val GRID_COLOR = TileColors.defaultForegroundColor()
     val GRID_COLOR_HIGHLIGHT = TileColors.create(77, 77, 77)
+    val COORDINATE_COLOR_HIGHLIGHT_X = TileColors.create(128, 102, 64) // brown
+    val COORDINATE_COLOR_HIGHLIGHT_Y = TileColors.create(255, 128, 0) // orange
 
     private val MAX_HEIGHT = TileColors.create(230, 230, 230)
 

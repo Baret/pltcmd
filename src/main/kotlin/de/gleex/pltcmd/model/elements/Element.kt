@@ -1,7 +1,5 @@
 package de.gleex.pltcmd.model.elements
 
-import java.lang.IllegalArgumentException
-
 /**
  * Part of a military hierarchy with a set of [Unit]s and subordinate [Element]s.
  */
