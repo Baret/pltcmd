@@ -14,11 +14,11 @@ import kotlin.math.log10
  * It can be drawn horizontally or vertically.
  **/
 open class CoordinateTileString(
-    coordinateValue: Int,
-    protected val drawParams: CoordinateDrawParameters = CoordinateDrawParameters(
-        ColorRepository.GRID_COLOR,
-        ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
-    )
+        coordinateValue: Int,
+        protected val drawParams: CoordinateDrawParameters = CoordinateDrawParameters(
+                ColorRepository.GRID_COLOR,
+                ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
+        )
 ) : Drawable {
     private val text = coordinateValue.toString()
     private val majorLength: Int
@@ -29,24 +29,23 @@ open class CoordinateTileString(
     }
 
     override fun drawOnto(surface: DrawSurface, position: Position) {
-        val builder = Tiles.newBuilder().
-                withBackgroundColor(TileColor.transparent())
+        val builder = Tiles.newBuilder().withBackgroundColor(TileColor.transparent())
         drawCentered(surface, position, builder)
     }
 
     private fun drawCentered(surface: DrawSurface, textCenter: Position, builder: TileBuilder) {
-            // center text on position
-            var textOffset = offsetForCenteredText(text)
-            // highlight first number
-            builder.withForegroundColor(drawParams.highlightColor)
-            text.forEachIndexed { index, letter ->
-                val letterPos = getDrawPosition(textCenter, textOffset)
-                draw(surface, letter, letterPos, builder)
-                textOffset++
-                if (index >= majorLength) {
-                    builder.withForegroundColor(drawParams.defaultColor)
-                }
+        // center text on position
+        var textOffset = offsetForCenteredText(text)
+        // highlight first number
+        builder.withForegroundColor(drawParams.highlightColor)
+        text.forEachIndexed { index, letter ->
+            val letterPos = getDrawPosition(textCenter, textOffset)
+            draw(surface, letter, letterPos, builder)
+            textOffset++
+            if (index >= majorLength) {
+                builder.withForegroundColor(drawParams.defaultColor)
             }
+        }
     }
 
     /** Returns the [Position] where to draw a character that is the given amount offset from the given center */
@@ -57,6 +56,6 @@ open class CoordinateTileString(
 
     /** Draws a single character at the given position */
     protected open fun draw(surface: DrawSurface, letter: Char, pos: Position, builder: TileBuilder) =
-        surface.draw(builder.withCharacter(letter).buildCharacterTile(), pos)
+            surface.draw(builder.withCharacter(letter).buildCharacterTile(), pos)
 
 }
