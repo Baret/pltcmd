@@ -10,7 +10,7 @@ import org.hexworks.zircon.api.graphics.impl.SubTileGraphics
 /** Draws major grid coordinates around a component. It will be displayed on the top and left side. Designed to work with [MapGridDecorationRenderer]. */
 class MapCoordinateDecorationRenderer(private val world: GameWorld) : ComponentDecorationRenderer {
 
-    // top, left, bottom, right
+    // one line on top and a column left
     override val occupiedSize = Size.create(1, 1)
     override val offset = Position.create(1, 1)
 
