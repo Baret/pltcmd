@@ -17,12 +17,12 @@ import kotlin.math.min
  * If the toString method of [T] is not well suited for the label, you can pass a different one.
  */
 class MultiSelect<T : Any>(
-        width: Int,
+        override val width: Int,
         private val values: List<T>,
         private val callback: (T) -> Unit,
         private val centeredText: Boolean = true,
         private val toStringMethod: (T) -> String = Any::toString
-) : Fragment {
+) : BaseFragment {
 
     private val indexProperty = createPropertyFrom(0)
 

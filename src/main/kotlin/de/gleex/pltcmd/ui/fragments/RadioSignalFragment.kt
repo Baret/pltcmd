@@ -1,9 +1,8 @@
 package de.gleex.pltcmd.ui.fragments
 
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.component.Fragment
 
-class RadioSignalFragment(width: Int): Fragment {
+class RadioSignalFragment(override val width: Int): BaseFragment {
     override val root = Components.
             vbox().
             withSize(width, 2).
@@ -14,7 +13,7 @@ class RadioSignalFragment(width: Int): Fragment {
                         label().
                         withText("Strength: ").
                         build()
-                val strangthInput = Components.
+                val strengthInput = Components.
                         textBox(width - strengthLabel.width).
                         build()
 
@@ -24,7 +23,7 @@ class RadioSignalFragment(width: Int): Fragment {
                         withSize(width, 1).
                         apply {
                             addComponent(strengthLabel)
-                            addComponent(strangthInput)
+                            addComponent(strengthInput)
                         }
                 )
             }
