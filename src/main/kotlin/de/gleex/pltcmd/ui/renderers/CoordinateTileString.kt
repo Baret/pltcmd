@@ -1,17 +1,12 @@
 package de.gleex.pltcmd.ui.renderers
 
-import org.hexworks.zircon.api.data.CharacterTile
-import org.hexworks.zircon.api.data.Position
-import org.hexworks.zircon.api.graphics.CharacterTileString
-import org.hexworks.zircon.api.graphics.DrawSurface
-import org.hexworks.zircon.api.graphics.TileGraphics
-import org.hexworks.zircon.api.resource.TilesetResource
-import org.hexworks.zircon.api.behavior.Drawable
-import org.hexworks.zircon.api.builder.data.TileBuilder
-import org.hexworks.zircon.api.data.Tile
 import de.gleex.pltcmd.game.ColorRepository
 import org.hexworks.zircon.api.Tiles
+import org.hexworks.zircon.api.behavior.Drawable
+import org.hexworks.zircon.api.builder.data.TileBuilder
 import org.hexworks.zircon.api.color.TileColor
+import org.hexworks.zircon.api.data.Position
+import org.hexworks.zircon.api.graphics.DrawSurface
 
 /**
  * Draws a part of a coordinate as text. The major coordinate will be highlighted.

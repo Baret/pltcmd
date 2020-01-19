@@ -1,21 +1,13 @@
 package de.gleex.pltcmd.ui.renderers
 
-import de.gleex.pltcmd.game.ColorRepository
-import org.hexworks.zircon.api.Tiles
-import org.hexworks.zircon.api.builder.graphics.TileGraphicsBuilder
-import org.hexworks.zircon.api.color.TileColor
-import org.hexworks.zircon.api.data.Position
-import org.hexworks.zircon.api.data.Size
-import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.graphics.StyleSet
-import org.hexworks.zircon.api.graphics.Symbols
-import org.hexworks.zircon.api.graphics.TileGraphics
-import org.hexworks.zircon.api.resource.TilesetResource
-import org.hexworks.zircon.api.shape.LineFactory
 import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.model.world.Coordinate
-import org.hexworks.zircon.api.CharacterTileStrings
-import org.hexworks.zircon.api.builder.data.TileBuilder
+import org.hexworks.zircon.api.builder.graphics.TileGraphicsBuilder
+import org.hexworks.zircon.api.data.Position
+import org.hexworks.zircon.api.data.Size
+import org.hexworks.zircon.api.graphics.StyleSet
+import org.hexworks.zircon.api.graphics.TileGraphics
+import org.hexworks.zircon.api.resource.TilesetResource
 
 /**
  * Draws a border around a rectangle with a grid indicator every five tiles. Every second tile has a highlight color to see the main coordinates.
