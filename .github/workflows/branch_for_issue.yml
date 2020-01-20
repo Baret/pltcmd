@@ -10,6 +10,6 @@ jobs:
         steps:
         - uses: actions/checkout@v1
         - name: Create Issue Branch
-          uses: robvanderleek/create-issue-branch@v1.0
+          uses: robvanderleek/create-issue-branch@v1.1
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
