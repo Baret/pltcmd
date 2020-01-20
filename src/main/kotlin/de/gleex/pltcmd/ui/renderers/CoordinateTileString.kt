@@ -1,11 +1,12 @@
 package de.gleex.pltcmd.ui.renderers
 
 import de.gleex.pltcmd.game.ColorRepository
-import org.hexworks.zircon.api.Tiles
-import org.hexworks.zircon.api.behavior.Drawable
 import org.hexworks.zircon.api.builder.data.TileBuilder
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Position
+import org.hexworks.zircon.api.data.Size
+import org.hexworks.zircon.api.data.Tile
+import org.hexworks.zircon.api.graphics.CharacterTileString
 import org.hexworks.zircon.api.graphics.DrawSurface
 import kotlin.math.log10
 
@@ -19,9 +20,12 @@ open class CoordinateTileString(
                 ColorRepository.GRID_COLOR,
                 ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
         )
-) : Drawable {
+) : CharacterTileString {
     private val text = coordinateValue.toString()
     private val majorLength: Int
+
+    override val size: Size
+        get() = Size.create(text.length, 1)
 
     init {
         val majorCoordinateValue = Math.floorDiv(coordinateValue, 100)
@@ -29,7 +33,7 @@ open class CoordinateTileString(
     }
 
     override fun drawOnto(surface: DrawSurface, position: Position) {
-        val builder = Tiles.newBuilder()
+        val builder = Tile.newBuilder()
                 .withBackgroundColor(TileColor.transparent())
         drawCentered(surface, position, builder)
     }

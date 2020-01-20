@@ -7,6 +7,7 @@ import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.GameView
 import org.hexworks.zircon.api.SwingApplications
+import org.hexworks.zircon.api.extensions.toScreen
 
 
 fun main() {
@@ -18,5 +19,6 @@ fun main() {
     val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
     val gameWorld = GameWorld(worldMap)
     gameWorld.scrollToCoordinate(initialOrigin)
-    application.dock(GameView(gameWorld))
+    val tileGrid = application.tileGrid
+    tileGrid.toScreen().dock(GameView(gameWorld, tileGrid))
 }

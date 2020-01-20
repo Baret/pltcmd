@@ -2,35 +2,34 @@ package de.gleex.pltcmd.game
 
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
-import org.hexworks.zircon.api.Tiles
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.Symbols
 
 /**
- * Serves all Tiles that are needed in the game.
+ * Serves all Tile that are needed in the game.
  */
 object TileRepository {
 
-    private val heightTiles: MutableMap<TerrainHeight, Tile> = mutableMapOf()
-    private val terrainTiles: MutableMap<TerrainType, Tile> = mutableMapOf()
+    private val heightTile: MutableMap<TerrainHeight, Tile> = mutableMapOf()
+    private val terrainTile: MutableMap<TerrainType, Tile> = mutableMapOf()
 
     init {
         TerrainHeight.values()
-                .forEach { heightTiles[it] = initHeightTile(it) }
+                .forEach { heightTile[it] = initHeightTile(it) }
         TerrainType.values()
-                .forEach { terrainTiles[it] = initTerrainTile(it) }
+                .forEach { terrainTile[it] = initTerrainTile(it) }
     }
 
     /**
      * Returns the tile for the given [TerrainHeight]
      */
-    fun forHeight(height: TerrainHeight) = heightTiles[height]!!
+    fun forHeight(height: TerrainHeight) = heightTile[height]!!
 
     /**
      * Returns the tile for the given [TerrainType]
      */
-    fun forType(type: TerrainType) = terrainTiles[type]!!
+    fun forType(type: TerrainType) = terrainTile[type]!!
 
     private fun initTerrainTile(type: TerrainType) = when (type) {
         TerrainType.GRASSLAND -> characterTile(type, '\"')
@@ -40,7 +39,7 @@ object TileRepository {
     }
 
     private fun characterTile(type: TerrainType, character: Char) =
-            Tiles.
+            Tile.
                 newBuilder().
                 withForegroundColor(ColorRepository.forType(type)).
                 withBackgroundColor(TileColor.transparent()).
@@ -48,12 +47,12 @@ object TileRepository {
                 buildCharacterTile()
 
     private fun initHeightTile(height: TerrainHeight) =
-            Tiles.
+            Tile.
                 newBuilder().
                 withForegroundColor(ColorRepository.forHeight(height)).
                 withBackgroundColor(ColorRepository.forHeight(height)).
                 withCharacter(Symbols.BLOCK_SOLID).
                 buildCharacterTile()
 
-    fun empty() = Tiles.empty()
+    fun empty() = Tile.empty()
 }

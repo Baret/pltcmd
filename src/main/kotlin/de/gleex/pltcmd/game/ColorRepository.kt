@@ -2,7 +2,6 @@ package de.gleex.pltcmd.game
 
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
-import org.hexworks.zircon.api.TileColors
 import org.hexworks.zircon.api.color.TileColor
 
 /**
@@ -11,11 +10,11 @@ import org.hexworks.zircon.api.color.TileColor
 object ColorRepository {
 
     val GRID_COLOR = TileColor.defaultForegroundColor()
-    val GRID_COLOR_HIGHLIGHT = TileColors.create(77, 77, 77)
-    val COORDINATE_COLOR_HIGHLIGHT_X = TileColors.create(128, 102, 64) // brown
-    val COORDINATE_COLOR_HIGHLIGHT_Y = TileColors.create(255, 128, 0) // orange
+    val GRID_COLOR_HIGHLIGHT = TileColor.create(77, 77, 77)
+    val COORDINATE_COLOR_HIGHLIGHT_X = TileColor.create(128, 102, 64) // brown
+    val COORDINATE_COLOR_HIGHLIGHT_Y = TileColor.create(255, 128, 0) // orange
 
-    private val MAX_HEIGHT = TileColors.create(230, 230, 230, 0)
+    private val MAX_HEIGHT = TileColor.create(230, 230, 230, 0)
 
     /**
      * Creates a [TileColor] for the given [TerrainHeight] to be used as background color for tiles.

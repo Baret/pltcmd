@@ -1,17 +1,20 @@
 package de.gleex.pltcmd.options
 
-import org.hexworks.zircon.api.AppConfigs
 import org.hexworks.zircon.api.CP437TilesetResources
+import org.hexworks.zircon.api.ColorThemes
+import org.hexworks.zircon.api.application.AppConfig
 
 object UiOptions {
     fun buildAppConfig() =
-            AppConfigs.newConfig().
+            AppConfig.newBuilder().
                     // GameComponents is a beta feature
                     enableBetaFeatures().
                     withSize(WINDOW_WIDTH, WINDOW_HEIGHT).
                     withTitle("PltCmd").
                     withDefaultTileset(CP437TilesetResources.rexPaint16x16()).
                     build()
+
+    val THEME = ColorThemes.default()
 
     const val WINDOW_WIDTH = 90
     const val WINDOW_HEIGHT = 63

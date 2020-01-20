@@ -1,24 +1,19 @@
 package de.gleex.pltcmd.game
 
-import de.gleex.pltcmd.model.terrain.Terrain
-import de.gleex.pltcmd.model.terrain.TerrainHeight
-import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import org.hexworks.zircon.api.Sizes
 import org.hexworks.zircon.api.builder.game.GameAreaBuilder
+import org.hexworks.zircon.api.data.Position3D
+import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.data.impl.Position3D
 import org.hexworks.zircon.api.game.GameArea
 
 class GameWorld(worldMap: WorldMap): GameArea<Tile, MapBlock> by GameAreaBuilder.newBuilder<Tile, MapBlock>().
-        withActualSize(Sizes.create3DSize(GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT, GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT, 1)).
-        withVisibleSize(Sizes.create3DSize(Sector.TILE_COUNT, Sector.TILE_COUNT, 1)).
-        withLayersPerBlock(MapBlock.LAYERS_PER_BLOCK).
-        withDefaultBlock(MapBlock(Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE))).
+        withActualSize(Size3D.create(GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT, GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT, 1)).
+        withVisibleSize(Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1)).
         build()
 {
     companion object {
@@ -27,7 +22,7 @@ class GameWorld(worldMap: WorldMap): GameArea<Tile, MapBlock> by GameAreaBuilder
 
     init {
         worldMap.sectors.forEach(::putSector)
-        log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = ${visibleSize()}")
+        log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = $visibleSize")
     }
 
     private fun putSector(sector: Sector) {
@@ -44,11 +39,11 @@ class GameWorld(worldMap: WorldMap): GameArea<Tile, MapBlock> by GameAreaBuilder
 
     /** Returns the [Coordinate] of the [Tile] that is visible in the top left corner. */
     fun visibleTopLeftCoordinate(): Coordinate {
-        return visibleOffset().toCoordinate()
+        return visibleOffset.toCoordinate()
     }
 
     fun scrollToCoordinate(coord: Coordinate) {
-        scrollTo3DPosition(coord.toPosition())
+        scrollTo(coord.toPosition())
     }
 
 }
