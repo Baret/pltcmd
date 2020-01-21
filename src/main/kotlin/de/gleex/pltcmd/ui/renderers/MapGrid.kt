@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.ui.renderers
 
 import de.gleex.pltcmd.game.ColorRepository
-import org.hexworks.zircon.api.Tiles
 import org.hexworks.zircon.api.builder.graphics.TileGraphicsBuilder
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Position
@@ -50,10 +49,10 @@ class MapGrid(
         val bottomRightPos = size.fetchBottomRightPosition()
 
         // corners
-        setTileAt(topLeftPos, createTile(Symbols.SINGLE_LINE_TOP_LEFT_CORNER))
-        setTileAt(topRightPos, createTile(Symbols.SINGLE_LINE_TOP_RIGHT_CORNER))
-        setTileAt(bottomLeftPos, createTile(Symbols.SINGLE_LINE_BOTTOM_LEFT_CORNER))
-        setTileAt(bottomRightPos, createTile(Symbols.SINGLE_LINE_BOTTOM_RIGHT_CORNER))
+        draw(createTile(Symbols.SINGLE_LINE_TOP_LEFT_CORNER), topLeftPos)
+        draw(createTile(Symbols.SINGLE_LINE_TOP_RIGHT_CORNER), topRightPos)
+        draw(createTile(Symbols.SINGLE_LINE_BOTTOM_LEFT_CORNER), bottomLeftPos)
+        draw(createTile(Symbols.SINGLE_LINE_BOTTOM_RIGHT_CORNER), bottomRightPos)
     }
 
     private fun drawEdges(topLeftPos: Position) {

@@ -5,12 +5,13 @@ import org.hexworks.zircon.api.data.Position
 
 class VerticalCoordinateTileString(
         coordinateValue: Int,
+        drawPosition: Position,
         drawParams: CoordinateDrawParameters = CoordinateDrawParameters(
                 ColorRepository.GRID_COLOR,
                 ColorRepository.COORDINATE_COLOR_HIGHLIGHT_Y
         )
-) : CoordinateTileString(coordinateValue, drawParams) {
+) : CoordinateTileString(coordinateValue, drawPosition, drawParams) {
 
-    override fun getDrawPosition(center: Position, textOffset: Int) = center.withRelativeY(textOffset)
+    override fun getDrawPosition(textOffset: Int) = drawPosition.withRelativeY(textOffset)
 
 }

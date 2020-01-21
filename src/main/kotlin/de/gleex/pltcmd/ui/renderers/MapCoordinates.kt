@@ -27,7 +27,7 @@ class MapCoordinates(
     : TileGraphics by backend {
 
     init {
-        setStyleFrom(styleSet)
+        applyStyle(styleSet)
 
         val topLeftCoordinate = world.visibleTopLeftCoordinate()
         val topLeftPos = size.fetchTopLeftPosition()
@@ -39,10 +39,10 @@ class MapCoordinates(
         for (i in 0 until size.width step 5) {
             // top
             val topCoord = topLeftCoordinate.withRelativeEasting(i)
-            draw(CoordinateTileString(topCoord.eastingFromLeft), topLeftPos.withRelativeX(i + mapOffset.x))
+            draw(CoordinateTileString(topCoord.eastingFromLeft, topLeftPos.withRelativeX(i + mapOffset.x)))
             // left
             val leftCoord = topLeftCoordinate.withRelativeNorthing(-i)
-            draw(VerticalCoordinateTileString(leftCoord.northingFromBottom), topLeftPos.withRelativeY(i + mapOffset.y))
+            draw(VerticalCoordinateTileString(leftCoord.northingFromBottom, topLeftPos.withRelativeY(i + mapOffset.y)))
         }
     }
 

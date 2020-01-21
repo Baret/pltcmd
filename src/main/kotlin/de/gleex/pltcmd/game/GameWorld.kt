@@ -9,12 +9,13 @@ import org.hexworks.zircon.api.builder.game.GameAreaBuilder
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.game.GameArea
+import org.hexworks.zircon.internal.game.InternalGameArea
 
-class GameWorld(worldMap: WorldMap): GameArea<Tile, MapBlock> by GameAreaBuilder.newBuilder<Tile, MapBlock>().
+// TODO: Extend GameArea! (application does not start with zircon 2020.0.1-PREVIEW)
+class GameWorld(worldMap: WorldMap): InternalGameArea<Tile, MapBlock> by GameAreaBuilder.newBuilder<Tile, MapBlock>().
         withActualSize(Size3D.create(GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT, GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT, 1)).
         withVisibleSize(Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1)).
-        build()
+        build() as InternalGameArea<Tile, MapBlock>
 {
     companion object {
         private val log = LoggerFactory.getLogger(GameWorld::class)
