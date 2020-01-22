@@ -39,12 +39,10 @@ class MapCoordinates(
         for (i in 0 until size.width step 5) {
             // top
             val topCoord = topLeftCoordinate.withRelativeEasting(i)
-            // TODO should be drawable without .tiles!?
-            draw(CoordinateTileString(topCoord.eastingFromLeft, topLeftPos.withRelativeX(i + mapOffset.x)).tiles)
+            draw(CoordinateTileString(topCoord.eastingFromLeft), topLeftPos.withRelativeX(i + mapOffset.x))
             // left
             val leftCoord = topLeftCoordinate.withRelativeNorthing(-i)
-            // TODO should be drawable without .tiles!?
-            draw(VerticalCoordinateTileString(leftCoord.northingFromBottom, topLeftPos.withRelativeY(i + mapOffset.y)).tiles)
+            draw(VerticalCoordinateTileString(leftCoord.northingFromBottom), topLeftPos.withRelativeY(i + mapOffset.y))
         }
     }
 

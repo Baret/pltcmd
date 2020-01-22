@@ -14,7 +14,6 @@ import kotlin.math.log10
  **/
 open class CoordinateTileString(
         coordinateValue: Int,
-        protected val drawPosition: Position,
         protected val drawParams: CoordinateDrawParameters = CoordinateDrawParameters(
                 ColorRepository.GRID_COLOR,
                 ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
@@ -40,7 +39,6 @@ open class CoordinateTileString(
                 .withBackgroundColor(TileColor.transparent())
         // highlight first number
         builder.withForegroundColor(drawParams.highlightColor)
-        val letterPos = drawPosition
         var textOffset = 0
         text.forEachIndexed { index, letter ->
             if (index >= majorLength) {
@@ -53,5 +51,5 @@ open class CoordinateTileString(
     }
 
     /** Returns the [Position] where to draw a character that is the given amount offset from the given center */
-    protected open fun getDrawPosition(textOffset: Int) = drawPosition.withRelativeX(textOffset)
+    protected open fun getDrawPosition(textOffset: Int) = Position.create(textOffset, 0)
 }
