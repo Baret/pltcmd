@@ -14,7 +14,7 @@ object UiOptions {
                     withDefaultTileset(CP437TilesetResources.rexPaint16x16()).
                     build()
 
-    val THEME = ColorThemes.default()
+    val THEME = ColorThemes.cyberpunk()
 
     const val WINDOW_WIDTH = 90
     const val WINDOW_HEIGHT = 63

@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game
 
 import de.gleex.pltcmd.model.terrain.Terrain
 import kotlinx.collections.immutable.persistentMapOf
-import org.hexworks.zircon.api.data.BlockTileType
+import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.base.BaseBlock
 
@@ -20,8 +20,11 @@ class MapBlock(terrain: Terrain) : BaseBlock<Tile>(Tile.empty(), persistentMapOf
         // TODO: Merge height and type tile into one
         terrainTile = TileRepository.forType(terrain.type)
         heightTile = TileRepository.forHeight(terrain.height)
-        tiles.put(BlockTileType.BOTTOM, heightTile)
-        tiles.put(BlockTileType.CONTENT, unitTile)
+        top = Tile.newBuilder().
+                withForegroundColor(TileColor.create(42, 42, 255)).
+                withBackgroundColor(TileColor.transparent()).
+                withCharacter('X').
+                buildCharacterTile()
+        bottom = TileRepository.createTerrainTile(terrain)
     }
-
 }

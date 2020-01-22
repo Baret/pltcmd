@@ -9,7 +9,6 @@ import de.gleex.pltcmd.ui.GameView
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
 
-
 fun main() {
     val initialOrigin = Coordinate(350, 200)
     val worldMap = WorldMap(
