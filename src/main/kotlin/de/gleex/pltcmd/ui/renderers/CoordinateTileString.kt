@@ -20,7 +20,7 @@ open class CoordinateTileString(
                 ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
         )
 ) : TileComposite {
-    private val text = coordinateValue.toString()
+    protected val text = coordinateValue.toString()
     private val majorLength: Int
 
     override val size: Size
