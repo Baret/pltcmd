@@ -5,17 +5,18 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import org.hexworks.zircon.api.builder.game.GameAreaBuilder
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.internal.game.InternalGameArea
+import org.hexworks.zircon.api.game.base.BaseGameArea
+import org.hexworks.zircon.internal.game.impl.TopDownProjectionStrategy
 
-// TODO: Extend GameArea! (application does not start with zircon 2020.0.1-PREVIEW)
-class GameWorld(worldMap: WorldMap): InternalGameArea<Tile, MapBlock> by GameAreaBuilder.newBuilder<Tile, MapBlock>().
-        withActualSize(Size3D.create(GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT, GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT, 1)).
-        withVisibleSize(Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1)).
-        build() as InternalGameArea<Tile, MapBlock>
+class GameWorld(worldMap: WorldMap):
+        BaseGameArea<Tile, MapBlock>(
+                Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
+                GameOptions.WORLD_SIZE,
+                mapOf(),
+                TopDownProjectionStrategy())
 {
     companion object {
         private val log = LoggerFactory.getLogger(GameWorld::class)
