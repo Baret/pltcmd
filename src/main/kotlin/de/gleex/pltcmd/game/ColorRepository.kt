@@ -9,12 +9,16 @@ import org.hexworks.zircon.api.color.TileColor
  */
 object ColorRepository {
 
+    val FRIENDLY = TileColor.create(42, 42, 254)
+
+    val TRANSPARENT = TileColor.transparent()
+
     val GRID_COLOR = TileColor.defaultForegroundColor()
     val GRID_COLOR_HIGHLIGHT = TileColor.create(77, 77, 77)
     val COORDINATE_COLOR_HIGHLIGHT_X = TileColor.create(128, 102, 64) // brown
     val COORDINATE_COLOR_HIGHLIGHT_Y = TileColor.create(255, 128, 0) // orange
 
-    private val MAX_HEIGHT = TileColor.create(230, 230, 230, 125)
+    private val MAX_HEIGHT = TileColor.create(230, 230, 230, 254)
 
     /**
      * Creates a [TileColor] for the given [TerrainHeight] to be used as background color for tiles.
