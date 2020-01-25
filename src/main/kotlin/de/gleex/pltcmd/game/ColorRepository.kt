@@ -10,6 +10,7 @@ import org.hexworks.zircon.api.color.TileColor
 object ColorRepository {
 
     val FRIENDLY = TileColor.create(42, 42, 254)
+    val FRIENDLY_TRANSPARENT = TileColor.create(42, 42, 254, 99)
 
     val TRANSPARENT = TileColor.transparent()
 

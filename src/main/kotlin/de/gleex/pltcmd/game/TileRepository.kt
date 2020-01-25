@@ -14,7 +14,7 @@ object TileRepository {
     val PLATOON_FRIENDLY =
             Tile.newBuilder().
                 withForegroundColor(ColorRepository.FRIENDLY).
-                withBackgroundColor(ColorRepository.TRANSPARENT).
+                withBackgroundColor(ColorRepository.FRIENDLY_TRANSPARENT).
                 withCharacter('X').
                 withModifiers(BorderBuilder.newBuilder().withBorderColor(ColorRepository.FRIENDLY).build()).
                 buildCharacterTile()
