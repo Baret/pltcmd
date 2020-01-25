@@ -60,6 +60,12 @@
 			<version>${kotlin.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- logging -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.3.0-alpha5</version>
+		</dependency>
 		<!-- This dependency seems to be transient in zircon.
 			As soon as zircon comes with this artifact it can be removed here -->
 		<dependency>
