@@ -6,7 +6,6 @@ import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.TileComposite
-import kotlin.math.log10
 
 /**
  * Draws a part of a coordinate as text. The major coordinate will be highlighted.
@@ -20,15 +19,10 @@ open class CoordinateTileString(
         )
 ) : TileComposite {
     protected val text = coordinateValue.toString()
-    private val majorLength: Int
+    private val majorLength = text.length - 2 // 2 = "00" at end (highlight only hundreds and more)
 
     override val size: Size
         get() = Size.create(text.length, 1)
-
-    init {
-        val majorCoordinateValue = Math.floorDiv(coordinateValue, 100)
-        majorLength = log10(majorCoordinateValue.toDouble()).toInt()
-    }
 
     override val tiles: Map<Position, Tile>
         get() = buildTileMap()
