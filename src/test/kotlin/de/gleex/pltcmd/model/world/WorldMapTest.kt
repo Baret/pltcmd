@@ -7,13 +7,6 @@ import org.junit.jupiter.api.Test
 internal class WorldMapTest {
 
     @Test
-    fun getSizeEmpty() {
-        val expected = Size.create(0, 0)
-        val result = WorldMap(emptySet()).size
-        assertEquals(expected, result)
-    }
-
-    @Test
     fun getSizeSingle() {
         val expected = Size.create(Sector.TILE_COUNT, Sector.TILE_COUNT)
         val result = WorldMap(setOf(createSector(3))).size

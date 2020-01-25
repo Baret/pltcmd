@@ -8,6 +8,10 @@ import kotlin.math.sqrt
  */
 data class WorldMap(val sectors: Set<Sector>) {
 
+    init {
+        require(sectors.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one Sector." }
+    }
+
     /** Returns the number of [WorldTile]s per dimension on the map */
     val size: Size
         get() {
