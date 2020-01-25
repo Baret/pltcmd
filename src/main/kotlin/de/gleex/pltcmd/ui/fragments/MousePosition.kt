@@ -1,11 +1,10 @@
 package de.gleex.pltcmd.ui.fragments
 
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.UIEventResponses
 import org.hexworks.zircon.api.component.Component
 import org.hexworks.zircon.api.component.Fragment
-import org.hexworks.zircon.api.extensions.handleMouseEvents
 import org.hexworks.zircon.api.uievent.MouseEventType
+import org.hexworks.zircon.api.uievent.UIEventResponse
 
 class MousePosition(private val width: Int, private val componentToWatch: Component) : Fragment {
     override val root = Components.hbox().
@@ -21,7 +20,7 @@ class MousePosition(private val width: Int, private val componentToWatch: Compon
                             mouseEvent, _ ->
                         val pos = mouseEvent.position - componentToWatch.absolutePosition
                         text = "Mouse pos: ${pos.x} | ${pos.y}"
-                        UIEventResponses.pass()
+                        UIEventResponse.pass()
                     }
                 })
             }
