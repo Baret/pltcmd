@@ -44,7 +44,7 @@ open class CoordinateTileString(
         return builtTiles
     }
 
-    /** Returns the [Position] where to draw a character that is the given amount offset from the given center */
+    /** Returns the [Position] where to draw a character that is the given amount offset from the start of the text */
     protected open fun getDrawPosition(textOffset: Int) = Position.create(textOffset, 0)
 
     /** Returns the number of characters in front of the middle of the [String] */

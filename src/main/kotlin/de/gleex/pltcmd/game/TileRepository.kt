@@ -11,15 +11,19 @@ import org.hexworks.zircon.api.graphics.Symbols
  */
 object TileRepository {
 
-    val PLATOON_FRIENDLY =
-            Tile.newBuilder().
-                withForegroundColor(ColorRepository.FRIENDLY).
-                withBackgroundColor(ColorRepository.FRIENDLY_TRANSPARENT).
-                withCharacter('X').
-                withModifiers(BorderBuilder.newBuilder().withBorderColor(ColorRepository.FRIENDLY).build()).
-                buildCharacterTile()
+    object Elements {
 
-    fun createTerrainTile(terrain: Terrain) =
+        val PLATOON_FRIENDLY: Tile =
+                Tile.newBuilder().
+                        withForegroundColor(ColorRepository.FRIENDLY).
+                        withBackgroundColor(ColorRepository.FRIENDLY_TRANSPARENT).
+                        withCharacter('X').
+                        withModifiers(BorderBuilder.newBuilder().withBorderColor(ColorRepository.FRIENDLY).build()).
+                        buildCharacterTile()
+
+    }
+
+    fun createTerrainTile(terrain: Terrain): Tile =
             Tile.
                 newBuilder().
                 withForegroundColor(ColorRepository.forType(terrain.type)).

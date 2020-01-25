@@ -85,6 +85,7 @@ class MapGrid(
     }
 
     private fun createTile(character: Char): Tile {
+        // TODO: Move all tiles to TileRepository (as singleton!)
         return Tile.newBuilder().
                 withForegroundColor(ColorRepository.GRID_COLOR).
                 withBackgroundColor(TileColor.transparent()).

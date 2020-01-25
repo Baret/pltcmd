@@ -20,12 +20,12 @@ fun main() {
     val gameWorld = GameWorld(worldMap)
     gameWorld.scrollToCoordinate(initialOrigin)
     val tileGrid = application.tileGrid
-    val screen = tileGrid.toScreen().also { it.dock(GameView(gameWorld, tileGrid)) }
+    tileGrid.toScreen().dock(GameView(gameWorld, tileGrid))
 
     // testing display of units
-    val visibleBlocks = gameWorld.fetchBlocksAt(gameWorld.visibleOffset, gameWorld.visibleSize).toList()
+    val visibleBlocks = gameWorld.visibleBlocks.toList()
     repeat(20) {
         val randomPosition = visibleBlocks.random()
-        randomPosition.second.setUnit(TileRepository.PLATOON_FRIENDLY)
+        randomPosition.second.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
     }
 }
