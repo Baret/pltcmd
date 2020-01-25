@@ -52,4 +52,11 @@ open class CoordinateTileString(
 
     /** Returns the [Position] where to draw a character that is the given amount offset from the given center */
     protected open fun getDrawPosition(textOffset: Int) = Position.create(textOffset, 0)
+
+    /** Returns the number of characters in front of the middle of the [String] */
+    protected open fun offsetForCenteredText() = -(text.length / 2)
+
+    /** Returns the [Position] on which this text starts if centered on the given position. */
+    open fun getStartPositionToCenterOn(center: Position) = center.withRelativeX(offsetForCenteredText())
+
 }
