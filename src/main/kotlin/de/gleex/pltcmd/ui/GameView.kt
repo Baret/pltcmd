@@ -10,9 +10,6 @@ import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.MultiSelect
 import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
-import org.hexworks.cobalt.datatypes.extensions.ifPresent
-import org.hexworks.cobalt.datatypes.extensions.map
-import org.hexworks.cobalt.datatypes.extensions.orElseThrow
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -20,19 +17,18 @@ import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.extensions.processMouseEvents
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
-import org.hexworks.zircon.api.mvc.base.BaseView
 import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.MouseEvent
 import org.hexworks.zircon.api.uievent.MouseEventType
 import org.hexworks.zircon.api.uievent.UIEventPhase
+import org.hexworks.zircon.api.view.base.BaseView
 
 /**
  * The view to display the map, radio log and interaction panel
  */
-class GameView(val gameWorld: GameWorld, val tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
+class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
     companion object {
         val log = LoggerFactory.getLogger(GameView::class)
     }
@@ -72,7 +68,7 @@ class GameView(val gameWorld: GameWorld, val tileGrid: TileGrid) : BaseView(them
                             }.
                             orElseThrow { IllegalStateException("No terrain found at $clickedPosition") }
                     val signal = RadioSignal(200.0, firstTerrain)
-                    line.positions().drop(1).forEach {pos ->
+                    line.positions.drop(1).forEach {pos ->
                         gameWorld.fetchBlockAt(pos.toPosition3D(0)).ifPresent {
                             terrainList += it.terrain
                             it.setUnit(TileRepository.forSignal(signal.along(terrainList)))

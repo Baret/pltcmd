@@ -46,4 +46,9 @@ object ColorRepository {
         TerrainType.HILL      -> TileColor.create(121, 77, 33)
         TerrainType.MOUNTAIN  -> TileColor.create(112, 107, 102)
     }
+
+    fun radioColor(signalStrength: Double): TileColor {
+        println("Creating radio color for signal $signalStrength with alpha ${(255 * signalStrength).toInt()}")
+        return TileColor.create(200, 43, 43, (255 * signalStrength).toInt())
+    }
 }
