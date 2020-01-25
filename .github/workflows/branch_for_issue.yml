@@ -8,5 +8,8 @@ jobs:
     create_issue_branch_job:
         runs-on: ubuntu-latest
         steps:
+        - uses: actions/checkout@v1
         - name: Create Issue Branch
-          uses: robvanderleek/create-issue-branch@master
+          uses: robvanderleek/create-issue-branch@v1.1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

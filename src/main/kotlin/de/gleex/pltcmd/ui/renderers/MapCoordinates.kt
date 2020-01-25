@@ -27,7 +27,7 @@ class MapCoordinates(
     : TileGraphics by backend {
 
     init {
-        setStyleFrom(styleSet)
+        applyStyle(styleSet)
 
         val topLeftCoordinate = world.visibleTopLeftCoordinate()
         val topLeftPos = size.fetchTopLeftPosition()
@@ -38,12 +38,31 @@ class MapCoordinates(
         // grid coordinates (for square)
         for (i in 0 until size.width step 5) {
             // top
-            val topCoord = topLeftCoordinate.withRelativeEasting(i)
-            draw(CoordinateTileString(topCoord.eastingFromLeft), topLeftPos.withRelativeX(i + mapOffset.x))
+            val topCoordinateText = createTopText(topLeftCoordinate, i)
+            val topGridPosition = topLeftPos.withRelativeX(i + mapOffset.x)
+            drawCentered(topCoordinateText, topGridPosition)
             // left
-            val leftCoord = topLeftCoordinate.withRelativeNorthing(-i)
-            draw(VerticalCoordinateTileString(leftCoord.northingFromBottom), topLeftPos.withRelativeY(i + mapOffset.y))
+            val leftCoordinateText = createLeftText(topLeftCoordinate, i)
+            val leftGridPosition = topLeftPos.withRelativeY(i + mapOffset.y)
+            drawCentered(leftCoordinateText, leftGridPosition)
         }
+    }
+
+    /** Moves the given [Coordinate] by the given offset to the east and creates a drawable text of that coordinate. */
+    private fun createTopText(topLeftCoordinate: Coordinate, offsetToEast: Int): CoordinateTileString {
+        val topCoordinate = topLeftCoordinate.withRelativeEasting(offsetToEast)
+        return CoordinateTileString(topCoordinate.eastingFromLeft)
+    }
+
+    /** Moves the given [Coordinate] by the given offset to the south and creates a drawable text of that coordinate. */
+    private fun createLeftText(topLeftCoordinate: Coordinate, offsetToSouth: Int): CoordinateTileString {
+        val leftCoordinate = topLeftCoordinate.withRelativeNorthing(-offsetToSouth)
+        return VerticalCoordinateTileString(leftCoordinate.northingFromBottom)
+    }
+
+    private fun drawCentered(coordinateTiles: CoordinateTileString, center: Position) {
+        val textStartPosition = coordinateTiles.getStartPositionToCenterOn(center)
+        draw(coordinateTiles, textStartPosition)
     }
 
     override fun toString() = "MapCoordinates $backend"

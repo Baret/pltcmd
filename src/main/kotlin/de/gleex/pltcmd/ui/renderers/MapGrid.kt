@@ -1,13 +1,11 @@
 package de.gleex.pltcmd.ui.renderers
 
 import de.gleex.pltcmd.game.ColorRepository
-import org.hexworks.zircon.api.Tiles
 import org.hexworks.zircon.api.builder.graphics.TileGraphicsBuilder
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.graphics.StyleSet
 import org.hexworks.zircon.api.graphics.Symbols
 import org.hexworks.zircon.api.graphics.TileGraphics
 import org.hexworks.zircon.api.resource.TilesetResource
@@ -19,7 +17,6 @@ import org.hexworks.zircon.api.shape.LineFactory
 // inspired by [DefaultBox]
 class MapGrid(
         size: Size,
-        styleSet: StyleSet,
         tileset: TilesetResource,
         private val backend: TileGraphics = TileGraphicsBuilder.newBuilder()
                 .withTileset(tileset)
@@ -28,9 +25,6 @@ class MapGrid(
     : TileGraphics by backend {
 
     init {
-        // much copied from DefaulBox.init
-        setStyleFrom(styleSet)
-
         val topLeftPos = size.fetchTopLeftPosition()
         val majorGridMarker =
             TileGraphicsBuilder.newBuilder().
@@ -55,20 +49,20 @@ class MapGrid(
         val bottomRightPos = size.fetchBottomRightPosition()
 
         // corners
-        setTileAt(topLeftPos, createTile(Symbols.SINGLE_LINE_TOP_LEFT_CORNER))
-        setTileAt(topRightPos, createTile(Symbols.SINGLE_LINE_TOP_RIGHT_CORNER))
-        setTileAt(bottomLeftPos, createTile(Symbols.SINGLE_LINE_BOTTOM_LEFT_CORNER))
-        setTileAt(bottomRightPos, createTile(Symbols.SINGLE_LINE_BOTTOM_RIGHT_CORNER))
+        draw(createTile(Symbols.SINGLE_LINE_TOP_LEFT_CORNER), topLeftPos)
+        draw(createTile(Symbols.SINGLE_LINE_TOP_RIGHT_CORNER), topRightPos)
+        draw(createTile(Symbols.SINGLE_LINE_BOTTOM_LEFT_CORNER), bottomLeftPos)
+        draw(createTile(Symbols.SINGLE_LINE_BOTTOM_RIGHT_CORNER), bottomRightPos)
     }
 
     private fun drawEdges(topLeftPos: Position) {
         val horizontalLine = LineFactory.buildLine(Position.create(0, 0), Position.create(size.width - 3, 0))
-                .toTileGraphics(createTile(Symbols.SINGLE_LINE_HORIZONTAL), currentTileset())
+                .toTileGraphics(createTile(Symbols.SINGLE_LINE_HORIZONTAL), tileset)
         draw(horizontalLine, topLeftPos + Position.create(1, 0))
         draw(horizontalLine, topLeftPos + Position.create(1, size.height - 1))
 
         val verticalLine = LineFactory.buildLine(Position.create(0, 0), Position.create(0, size.height - 3))
-                .toTileGraphics(createTile(Symbols.SINGLE_LINE_VERTICAL), currentTileset())
+                .toTileGraphics(createTile(Symbols.SINGLE_LINE_VERTICAL), tileset)
         draw(verticalLine, topLeftPos + Position.create(0, 1))
         draw(verticalLine, topLeftPos + Position.create(size.width - 1, 1))
     }
@@ -91,7 +85,8 @@ class MapGrid(
     }
 
     private fun createTile(character: Char): Tile {
-        return Tiles.newBuilder().
+        // TODO: Move all tiles to TileRepository (as singleton!)
+        return Tile.newBuilder().
                 withForegroundColor(ColorRepository.GRID_COLOR).
                 withBackgroundColor(TileColor.transparent()).
                 withCharacter(character).

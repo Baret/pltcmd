@@ -21,8 +21,8 @@ import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.extensions.processMouseEvents
-import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.graphics.BoxType
+import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.mvc.base.BaseView
 import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.MouseEvent
@@ -32,7 +32,7 @@ import org.hexworks.zircon.api.uievent.UIEventPhase
 /**
  * The view to display the map, radio log and interaction panel
  */
-class GameView(val gameWorld: GameWorld) : BaseView() {
+class GameView(val gameWorld: GameWorld, val tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
     companion object {
         val log = LoggerFactory.getLogger(GameView::class)
     }
@@ -52,38 +52,36 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 
         var oldClick: Position? = null
 
-        val map = GameComponents.
-            newGameComponentBuilder<Tile, MapBlock>().
-            withGameArea(gameWorld).
-            withProjectionMode(ProjectionMode.TOP_DOWN).
-            withVisibleSize(gameWorld.visibleSize()).
-            withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
-            build(). apply {
-                processMouseEvents(MouseEventType.MOUSE_CLICKED) { mouseEvent: MouseEvent, uiEventPhase: UIEventPhase ->
-                    val clickedPosition = mouseEvent.position - absolutePosition
-                    if(oldClick == null) {
-                        oldClick = clickedPosition
-                    } else {
-                        log.debug("Drawing line from $oldClick to $clickedPosition")
-                        val line = LineFactory.buildLine(oldClick!!, clickedPosition)
-                        val terrainList: MutableList<Terrain> = mutableListOf()
-                        val firstTerrain = gameWorld.
-                                fetchBlockAt(clickedPosition.toPosition3D(0)).
-                                map {
-                                    it.terrain
-                                }.
-                                orElseThrow { IllegalStateException("No terrain found at $clickedPosition") }
-                        val signal = RadioSignal(200.0, firstTerrain)
-                        line.positions().drop(1).forEach {pos ->
-                            gameWorld.fetchBlockAt(pos.toPosition3D(0)).ifPresent {
-                                terrainList += it.terrain
-                                it.setUnit(TileRepository.forSignal(signal.along(terrainList)))
-                            }
+        val map = GameComponents.newGameComponentBuilder<Tile, MapBlock>().
+                withGameArea(gameWorld).
+                withSize(gameWorld.visibleSize.to2DSize()).
+                withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
+                build(). apply {
+            processMouseEvents(MouseEventType.MOUSE_CLICKED) { mouseEvent: MouseEvent, uiEventPhase: UIEventPhase ->
+                val clickedPosition = mouseEvent.position - absolutePosition
+                if(oldClick == null) {
+                    oldClick = clickedPosition
+                } else {
+                    log.debug("Drawing line from $oldClick to $clickedPosition")
+                    val line = LineFactory.buildLine(oldClick!!, clickedPosition)
+                    val terrainList: MutableList<Terrain> = mutableListOf()
+                    val firstTerrain = gameWorld.
+                            fetchBlockAt(clickedPosition.toPosition3D(0)).
+                            map {
+                                it.terrain
+                            }.
+                            orElseThrow { IllegalStateException("No terrain found at $clickedPosition") }
+                    val signal = RadioSignal(200.0, firstTerrain)
+                    line.positions().drop(1).forEach {pos ->
+                        gameWorld.fetchBlockAt(pos.toPosition3D(0)).ifPresent {
+                            terrainList += it.terrain
+                            it.setUnit(TileRepository.forSignal(signal.along(terrainList)))
                         }
-                        oldClick = null
                     }
+                    oldClick = null
                 }
             }
+        }
         mainPart.addComponent(map)
 
         val logArea = Components.logArea().
@@ -97,7 +95,7 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
         screen.addComponent(mainPart)
 
         log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
-        log.debug("It currently shows ${gameWorld.visibleSize()} offset by ${gameWorld.visibleOffset()}")
+        log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
 
         // playing around with stuff...
         val sidebarWidth = sidebar.contentSize.width

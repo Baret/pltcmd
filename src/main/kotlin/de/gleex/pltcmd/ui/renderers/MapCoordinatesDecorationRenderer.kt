@@ -5,7 +5,7 @@ import org.hexworks.zircon.api.component.renderer.ComponentDecorationRenderConte
 import org.hexworks.zircon.api.component.renderer.ComponentDecorationRenderer
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
-import org.hexworks.zircon.api.graphics.impl.SubTileGraphics
+import org.hexworks.zircon.api.graphics.TileGraphics
 
 /** Draws major grid coordinates around a component. It will be displayed on the top and left side. Designed to work with [MapGridDecorationRenderer]. */
 class MapCoordinateDecorationRenderer(private val world: GameWorld) : ComponentDecorationRenderer {
@@ -14,12 +14,12 @@ class MapCoordinateDecorationRenderer(private val world: GameWorld) : ComponentD
     override val occupiedSize = Size.create(1, 1)
     override val offset = Position.create(1, 1)
 
-    override fun render(tileGraphics: SubTileGraphics, context: ComponentDecorationRenderContext) {
+    override fun render(tileGraphics: TileGraphics, context: ComponentDecorationRenderContext) {
         val size = tileGraphics.size
         val style = context.component.componentStyleSet.currentStyle()
-        val contentOffset = context.component.contentPosition
-        val grid = MapCoordinates(world, size, contentOffset, style, context.component.currentTileset())
-        grid.drawOnto(tileGraphics)
+        val contentOffset = context.component.contentOffset
+        val grid = MapCoordinates(world, size, contentOffset, style, context.component.tileset)
+        tileGraphics.draw(grid)
     }
 
 }

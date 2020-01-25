@@ -26,7 +26,7 @@ open class RadioSignal(private val initialStrength: Double, private val initialT
         private const val BASE_LOSS_FACTOR = .98
     }
 
-    private val attenuation: AttenuationModel = GameOptions.attenuationModel
+    private val attenuation: AttenuationModel by GameOptions.attenuationModel.asDelegate()
 
     /**
      * Calculates the signal loss along the given terrain. The result will be a value from 0.0 to 1.0.
