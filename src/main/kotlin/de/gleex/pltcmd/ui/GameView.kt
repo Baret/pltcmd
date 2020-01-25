@@ -62,7 +62,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                     val line = LineFactory.buildLine(oldClick!!, clickedPosition)
                     val terrainList: MutableList<Terrain> = mutableListOf()
                     val firstTerrain = gameWorld.
-                            fetchBlockAt(clickedPosition.toPosition3D(0)).
+                            fetchBlockAtVisiblePosition(clickedPosition).
                             map {
                                 it.terrain
                             }.

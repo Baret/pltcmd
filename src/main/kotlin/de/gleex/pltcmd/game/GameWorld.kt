@@ -5,6 +5,7 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
@@ -59,5 +60,7 @@ class GameWorld(worldMap: WorldMap):
     fun scrollToCoordinate(coord: Coordinate) {
         scrollTo(coord.toPosition())
     }
+
+    fun fetchBlockAtVisiblePosition(position: Position) = fetchBlockAt(visibleOffset.plus(position.to3DPosition(0)))
 
 }

@@ -45,7 +45,7 @@ object TileRepository {
                 newBuilder().
                 withForegroundColor(ColorRepository.radioColor(signalStrength)).
                 withBackgroundColor(ColorRepository.radioColor(signalStrength)).
-                withCharacter(Symbols.BULLET_SMALL).
+                withCharacter(' ').
                 buildCharacterTile()
     }
 }
