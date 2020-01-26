@@ -13,14 +13,14 @@ import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.graphics.BoxType
-import org.hexworks.zircon.api.mvc.base.BaseView
+import org.hexworks.zircon.api.grid.TileGrid
+import org.hexworks.zircon.api.view.base.BaseView
 
 /**
  * The view to display the map, radio log and interaction panel
  */
-class GameView(val gameWorld: GameWorld) : BaseView() {
+class GameView(val gameWorld: GameWorld, val tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
     companion object {
         val log = LoggerFactory.getLogger(GameView::class)
     }
@@ -40,8 +40,7 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
 
         val map = GameComponents.newGameComponentBuilder<Tile, MapBlock>().
                 withGameArea(gameWorld).
-                withProjectionMode(ProjectionMode.TOP_DOWN).
-                withVisibleSize(gameWorld.visibleSize()).
+                withSize(gameWorld.visibleSize.to2DSize()).
                 withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
                 build()
         mainPart.addComponent(map)
@@ -57,7 +56,7 @@ class GameView(val gameWorld: GameWorld) : BaseView() {
         screen.addComponent(mainPart)
 
         log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
-        log.debug("It currently shows ${gameWorld.visibleSize()} offset by ${gameWorld.visibleOffset()}")
+        log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
 
         // playing around with stuff...
         val sidebarWidth = sidebar.contentSize.width

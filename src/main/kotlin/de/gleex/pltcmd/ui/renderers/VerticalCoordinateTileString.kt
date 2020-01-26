@@ -2,6 +2,7 @@ package de.gleex.pltcmd.ui.renderers
 
 import de.gleex.pltcmd.game.ColorRepository
 import org.hexworks.zircon.api.data.Position
+import org.hexworks.zircon.api.data.Size
 
 class VerticalCoordinateTileString(
         coordinateValue: Int,
@@ -11,6 +12,11 @@ class VerticalCoordinateTileString(
         )
 ) : CoordinateTileString(coordinateValue, drawParams) {
 
-    override fun getDrawPosition(center: Position, textOffset: Int) = center.withRelativeY(textOffset)
+    override val size: Size
+        get() = Size.create(1, text.length)
+
+    override fun getDrawPosition(textOffset: Int) = Position.create(0, textOffset)
+
+    override fun getStartPositionToCenterOn(center: Position) = center.withRelativeY(offsetForCenteredText())
 
 }

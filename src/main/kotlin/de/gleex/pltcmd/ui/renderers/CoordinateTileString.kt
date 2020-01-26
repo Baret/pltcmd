@@ -1,13 +1,11 @@
 package de.gleex.pltcmd.ui.renderers
 
 import de.gleex.pltcmd.game.ColorRepository
-import org.hexworks.zircon.api.Tiles
-import org.hexworks.zircon.api.behavior.Drawable
-import org.hexworks.zircon.api.builder.data.TileBuilder
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Position
-import org.hexworks.zircon.api.graphics.DrawSurface
-import kotlin.math.log10
+import org.hexworks.zircon.api.data.Size
+import org.hexworks.zircon.api.data.Tile
+import org.hexworks.zircon.api.graphics.TileComposite
 
 /**
  * Draws a part of a coordinate as text. The major coordinate will be highlighted.
@@ -19,44 +17,40 @@ open class CoordinateTileString(
                 ColorRepository.GRID_COLOR,
                 ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
         )
-) : Drawable {
-    private val text = coordinateValue.toString()
-    private val majorLength: Int
+) : TileComposite {
+    protected val text = coordinateValue.toString()
+    private val majorLength = text.length - 2 // 2 = "00" at end (highlight only hundreds and more)
 
-    init {
-        val majorCoordinateValue = Math.floorDiv(coordinateValue, 100)
-        majorLength = log10(majorCoordinateValue.toDouble()).toInt()
-    }
+    override val size: Size
+        get() = Size.create(text.length, 1)
 
-    override fun drawOnto(surface: DrawSurface, position: Position) {
-        val builder = Tiles.newBuilder()
+    override val tiles: Map<Position, Tile>
+        get() = buildTileMap()
+
+    private fun buildTileMap(): Map<Position, Tile> {
+        val builtTiles = mutableMapOf<Position, Tile>()
+        val builder = Tile.newBuilder()
                 .withBackgroundColor(TileColor.transparent())
-        drawCentered(surface, position, builder)
-    }
-
-    private fun drawCentered(surface: DrawSurface, textCenter: Position, builder: TileBuilder) {
-        // center text on position
-        var textOffset = offsetForCenteredText(text)
         // highlight first number
         builder.withForegroundColor(drawParams.highlightColor)
+        var textOffset = 0
         text.forEachIndexed { index, letter ->
-            val letterPos = getDrawPosition(textCenter, textOffset)
-            draw(surface, letter, letterPos, builder)
-            textOffset++
             if (index >= majorLength) {
                 builder.withForegroundColor(drawParams.defaultColor)
             }
+            builtTiles[getDrawPosition(textOffset)] = builder.withCharacter(letter).buildCharacterTile()
+            textOffset++
         }
+        return builtTiles
     }
 
-    /** Returns the [Position] where to draw a character that is the given amount offset from the given center */
-    protected open fun getDrawPosition(center: Position, textOffset: Int) = center.withRelativeX(textOffset)
+    /** Returns the [Position] where to draw a character that is the given amount offset from the start of the text */
+    protected open fun getDrawPosition(textOffset: Int) = Position.create(textOffset, 0)
 
     /** Returns the number of characters in front of the middle of the [String] */
-    protected open fun offsetForCenteredText(text: String) = -(text.length / 2)
+    protected open fun offsetForCenteredText() = -(text.length / 2)
 
-    /** Draws a single character at the given position */
-    protected open fun draw(surface: DrawSurface, letter: Char, pos: Position, builder: TileBuilder) =
-            surface.draw(builder.withCharacter(letter).buildCharacterTile(), pos)
+    /** Returns the [Position] on which this text starts if centered on the given position. */
+    open fun getStartPositionToCenterOn(center: Position) = center.withRelativeX(offsetForCenteredText())
 
 }
