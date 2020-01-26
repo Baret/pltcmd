@@ -8,6 +8,7 @@ import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.MultiSelect
+import de.gleex.pltcmd.ui.fragments.RadioSignalFragment
 import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -97,7 +98,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
         val sidebarWidth = sidebar.contentSize.width
         sidebar.addFragment(MousePosition(sidebarWidth, map))
 
-        //sidebar.addFragment(RadioSignalFragment(sidebarWidth))
+        sidebar.addFragment(RadioSignalFragment(sidebarWidth))
 
         sidebar.addComponent(Components.panel().withSize(sidebarWidth, 5))
 
