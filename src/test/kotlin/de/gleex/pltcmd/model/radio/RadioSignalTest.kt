@@ -3,35 +3,46 @@ package de.gleex.pltcmd.model.radio
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
+import io.kotlintest.data.forall
+import io.kotlintest.matchers.doubles.shouldBeExactly
+import io.kotlintest.specs.StringSpec
+import io.kotlintest.tables.row
 import kotlin.math.pow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class RadioSignalTest {
+class RadioSignalTest: StringSpec() {
     private class RadioSignalTestExtension : RadioSignal(200.0, Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE)) {
-        fun testToPercent(testValue: Double) = testValue.toPercent()
+        fun convertedToPercent(testValue: Double) = testValue.toPercent()
     }
 
-    @Test
-    fun `test radio strength percentage`() {
-        val rs = RadioSignalTestExtension()
-        assertEquals(1.0, rs.testToPercent(Double.MAX_VALUE))
-        assertEquals(1.0, rs.testToPercent(110.0))
-        assertEquals(1.0, rs.testToPercent(100.0))
-        assertEquals(0.998997, rs.testToPercent(99.8997))
-        assertEquals(.90, rs.testToPercent(90.0))
-        assertEquals(.80, rs.testToPercent(80.0))
-        assertEquals(.71987654321, rs.testToPercent(71.987654321))
-        assertEquals(.60, rs.testToPercent(60.0))
-        assertEquals(.50, rs.testToPercent(50.0))
-        assertEquals(.40, rs.testToPercent(40.0))
-        assertEquals(.30, rs.testToPercent(30.0))
-        assertEquals(.20, rs.testToPercent(20.0))
-        assertEquals(.10, rs.testToPercent(10.0))
-        assertEquals(.01000000001, rs.testToPercent(1.000000001))
-        assertEquals(0.0, rs.testToPercent(0.0))
-        assertEquals(0.0, rs.testToPercent(-0.01))
-        assertEquals(0.0, rs.testToPercent(Double.MIN_VALUE))
+    init {
+        "Remaining signal strength converted to percent" {
+            val radioSignal = RadioSignalTestExtension()
+            forall(
+                row(Double.MAX_VALUE, 1.0),
+                row(110.0, 1.0),
+                row(100.0, 1.0),
+                row(99.8997, 0.998997),
+                row(90.0, 0.90),
+                row(80.0, 0.80),
+                row(71.987654321, 0.71987654321),
+                row(70.0, 0.70),
+                row(60.0, 0.60),
+                row(50.0, 0.50),
+                row(40.0, 0.40),
+                row(30.0, 0.30),
+                row(20.0, 0.20),
+                row(10.0, 0.10),
+                row(1.000000001, 0.01000000001),
+                row(0.0, 0.0),
+                row(-0.01, 0.0),
+                row(-0.0000000000000000000004, 0.0),
+                row(Double.MIN_VALUE, 0.0)
+            ) { signalStrength, expectedPercent ->
+                radioSignal.convertedToPercent(signalStrength) shouldBeExactly expectedPercent
+            }
+        }
     }
 
     @Test
