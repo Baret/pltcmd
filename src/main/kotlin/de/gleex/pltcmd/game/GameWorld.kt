@@ -4,7 +4,7 @@ import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import org.hexworks.zircon.api.Sizes
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
@@ -18,7 +18,7 @@ import org.hexworks.zircon.internal.game.impl.TopDownProjectionStrategy
 class GameWorld(worldMap: WorldMap):
         BaseGameArea<Tile, MapBlock>(
                 initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
-                initialActualSize = Sizes.from2DTo3D(worldMap.size, 1),
+                initialActualSize = Size3D.from2DSize(worldMap.size, 1),
                 initialContents = mapOf(),
                 projectionStrategy = TopDownProjectionStrategy())
 {
@@ -39,7 +39,7 @@ class GameWorld(worldMap: WorldMap):
 
     init {
         toBlocks(worldMap)
-        log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = ${visibleSize()}")
+        log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = ${visibleSize}")
     }
 
     private fun toBlocks(worldMap: WorldMap) {
@@ -64,10 +64,10 @@ class GameWorld(worldMap: WorldMap):
     }
 
     // model size
-    private fun getMaxY() = actualSize().yLength - 1 // -1 because y is zero-based
+    private fun getMaxY() = actualSize.yLength - 1 // -1 because y is zero-based
 
     // ui size
-    private fun getMaxVisibleY() = visibleSize().yLength - 1 // -1 because y is zero-based
+    private fun getMaxVisibleY() = visibleSize.yLength - 1 // -1 because y is zero-based
 
     private fun WorldMap.getTopLeftOffset(): Position {
         // we translate the world map coordinates which start with an arbitrary value to our game area coordinates which start with (0, 0)
