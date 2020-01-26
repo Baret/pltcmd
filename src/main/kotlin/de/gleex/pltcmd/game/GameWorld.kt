@@ -38,17 +38,15 @@ class GameWorld(private val worldMap: WorldMap):
             get() = worldMap.getTopLeftOffset()
 
     init {
-        toBlocks(worldMap)
-        log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = ${visibleSize}")
+        worldMap.sectors.forEach(::putSector)
+        log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = $visibleSize")
     }
 
-    private fun toBlocks(worldMap: WorldMap) {
-        worldMap.sectors.forEach { sector ->
-            sector.tiles.forEach {
-                val position = it.coordinate.toPosition()
-                val block = MapBlock(it.terrain)
-                setBlockAt(position, block)
-            }
+    private fun putSector(sector: Sector) {
+        sector.tiles.forEach {
+            val position = it.coordinate.toPosition()
+            val block = MapBlock(it.terrain)
+            setBlockAt(position, block)
         }
     }
 
@@ -71,7 +69,7 @@ class GameWorld(private val worldMap: WorldMap):
 
     private fun WorldMap.getTopLeftOffset(): Position {
         // we translate the world map coordinates which start with an arbitrary value to our game area coordinates which start with (0, 0)
-        // use minimal numeric value of coordinate to calculate the offset
+        // use origin of world (minimal numeric value of coordinate) to calculate the offset
         return Position.create(-origin.eastingFromLeft, -origin.northingFromBottom)
     }
 
