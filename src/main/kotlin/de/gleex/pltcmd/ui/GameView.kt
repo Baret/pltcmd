@@ -69,7 +69,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                             orElseThrow { IllegalStateException("No terrain found at $clickedPosition") }
                     val signal = RadioSignal(200.0, firstTerrain)
                     line.positions.drop(1).forEach {pos ->
-                        gameWorld.fetchBlockAt(pos.toPosition3D(0)).ifPresent {
+                        gameWorld.fetchBlockAtVisiblePosition(pos).ifPresent {
                             terrainList += it.terrain
                             it.setUnit(TileRepository.forSignal(signal.along(terrainList)))
                         }
