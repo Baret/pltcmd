@@ -55,6 +55,10 @@ class GameWorld(private val worldMap: WorldMap):
         return visibleOffset.toCoordinate()
     }
 
+    /**
+     * Make the given coordinate and ascending ones visible.
+     * If the visible area has the size of a [Sector] and the origin of a [Sector] is given, the full sector will be visible.
+     */
     fun scrollToCoordinate(bottomLeft: Coordinate) {
         val bottomLeftPos = bottomLeft.toPosition()
         val visibleTopLeftPos = bottomLeftPos.withRelativeY(-getMaxVisibleY())
@@ -67,8 +71,11 @@ class GameWorld(private val worldMap: WorldMap):
     // ui size
     private fun getMaxVisibleY() = visibleSize.yLength - 1 // -1 because y is zero-based
 
+    /**
+     * Returns the difference between the origin of the world and the absolute origin (0, 0).
+     * Used to translate the world map coordinates which start with an arbitrary value to our game area coordinates which start with (0, 0).
+     */
     private fun WorldMap.getTopLeftOffset(): Position {
-        // we translate the world map coordinates which start with an arbitrary value to our game area coordinates which start with (0, 0)
         // use origin of world (minimal numeric value of coordinate) to calculate the offset
         return Position.create(-origin.eastingFromLeft, -origin.northingFromBottom)
     }
