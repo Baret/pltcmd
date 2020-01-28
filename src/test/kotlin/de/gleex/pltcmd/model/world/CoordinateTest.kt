@@ -34,7 +34,7 @@ internal class CoordinateTest {
         val expected = Coordinate(testCoordinate.eastingFromLeft + delta, testCoordinate.northingFromBottom)
         val withRelativeEasting = testCoordinate.withRelativeEasting(delta)
         assertEquals(expected, withRelativeEasting)
-        assertTrue("New easting should be bigger") { withRelativeEasting.eastingFromLeft < testCoordinate.eastingFromLeft }
+        assertTrue("New easting should be lower") { withRelativeEasting.eastingFromLeft < testCoordinate.eastingFromLeft }
     }
 
     @Test
