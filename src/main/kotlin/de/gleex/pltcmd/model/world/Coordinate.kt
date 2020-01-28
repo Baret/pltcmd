@@ -7,7 +7,7 @@ package de.gleex.pltcmd.model.world
  *
  * It is like the numerical location of the Military Grid Reference System (see https://en.wikipedia.org/wiki/Military_Grid_Reference_System#Numerical_location).
  */
-data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) {
+data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : Comparable<Coordinate> {
     /**
      * Converts this coordinate to a [MainCoordinate]
      */
@@ -18,5 +18,17 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) {
 
     /** Creates a new [Coordinate] that is moved by the given amount to the north from this coordinate */
     fun withRelativeNorthing(toNorth: Int) = Coordinate(eastingFromLeft, northingFromBottom + toNorth)
+
+    /**
+     * Sort from most south-west to most north-east. Going line wise first east and then north.
+     * Example: 2|2, 3|2, 1|3
+     */
+    override fun compareTo(other: Coordinate): Int {
+        val northDiff = northingFromBottom - other.northingFromBottom
+        if (northDiff == 0) {
+            return eastingFromLeft - other.eastingFromLeft
+        }
+        return northDiff
+    }
 
 }
