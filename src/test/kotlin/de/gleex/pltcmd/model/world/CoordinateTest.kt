@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.world
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import kotlin.test.assertTrue
 
 internal class CoordinateTest {
 
@@ -25,6 +26,24 @@ internal class CoordinateTest {
         val delta = 789
         val expected = Coordinate(testCoordinate.eastingFromLeft, testCoordinate.northingFromBottom + delta)
         assertEquals(expected, testCoordinate.withRelativeNorthing(delta))
+    }
+
+    @Test
+    fun withNegtiveRelativeEasting() {
+        val delta = -19
+        val expected = Coordinate(testCoordinate.eastingFromLeft + delta, testCoordinate.northingFromBottom)
+        val withRelativeEasting = testCoordinate.withRelativeEasting(delta)
+        assertEquals(expected, withRelativeEasting)
+        assertTrue("New easting should be bigger") { withRelativeEasting.eastingFromLeft < testCoordinate.eastingFromLeft }
+    }
+
+    @Test
+    fun withNegativeRelativeNorthing() {
+        val delta = -198549
+        val expected = Coordinate(testCoordinate.eastingFromLeft, testCoordinate.northingFromBottom + delta)
+        val withRelativeNorthing = testCoordinate.withRelativeNorthing(delta)
+        assertEquals(expected, withRelativeNorthing)
+        assertTrue("New northing should be lower") { withRelativeNorthing.northingFromBottom < testCoordinate.northingFromBottom }
     }
 
     @Test
