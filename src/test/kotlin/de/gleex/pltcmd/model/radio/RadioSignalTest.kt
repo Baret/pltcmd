@@ -64,7 +64,7 @@ class RadioSignalTest: WordSpec() {
 
             for (i in 1..6) {
                 val lowerTiles = i.lowestTerrainTiles()
-                "travelling through $i tiles of air" should {
+                "travelling through ${lowerTiles.size} tiles of air" should {
                     val airLossFactor = 0.98
                     "lose strength with the base loss factor of $airLossFactor" {
                         rs.along(lowerTiles).shouldBe(airLossFactor.pow(i).plusOrMinus(0.001))
@@ -72,10 +72,10 @@ class RadioSignalTest: WordSpec() {
                 }
 
                 val higherTiles = i.highestTerrainTiles()
-                "travelling through $i tiles of ground" should {
+                "travelling through ${lowerTiles.size} tiles of ground" should {
                     val groundLossFactor = 0.70
                     "lose strength with the ground loss factor of $groundLossFactor" {
-                        rs.along(higherTiles).shouldBe(groundLossFactor.pow(i).toDouble().plusOrMinus(0.001))
+                        rs.along(higherTiles).shouldBe(groundLossFactor.pow(i).plusOrMinus(0.001))
                     }
                 }
             }
@@ -86,21 +86,11 @@ class RadioSignalTest: WordSpec() {
 /**
  * Creates a list of n "tiles" of [TerrainHeight] ONE.
  */
-private fun Int.lowestTerrainTiles(): List<Terrain> {
-    val terrainList = mutableListOf<Terrain>()
-    repeat(this) {
-        terrainList.add(Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE))
-    }
-    return terrainList.toList()
-}
+private fun Int.lowestTerrainTiles() =
+        List(this) { _ -> Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE)}
 
 /**
  * Creates a list of n "tiles" of [TerrainHeight] TEN.
  */
-private fun Int.highestTerrainTiles(): List<Terrain> {
-    val terrainList = mutableListOf<Terrain>()
-    repeat(this) {
-        terrainList.add(Terrain(TerrainType.GRASSLAND, TerrainHeight.TEN))
-    }
-    return terrainList.toList()
-}
+private fun Int.highestTerrainTiles() =
+        List(this) { _ -> Terrain(TerrainType.GRASSLAND, TerrainHeight.TEN)}
