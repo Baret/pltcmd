@@ -6,6 +6,12 @@ package de.gleex.pltcmd.model.elements
 data class Element(val callSign: CallSign, val members: Set<Unit>, val superordinate: Element? = null) {
     private val _subordinates: MutableSet<Element> = mutableSetOf()
 
+    /**
+     * The count of all units in this Element and all its subordinates
+     */
+    val allUnits: Int
+        get() { return members.size + subordinates.map { it.allUnits }.sum() }
+
     init {
         // link from element to its subordinates
         superordinate?.addSubordinate(this)
@@ -26,5 +32,7 @@ data class Element(val callSign: CallSign, val members: Set<Unit>, val superordi
     private fun isSuperordinate(element: Element): Boolean {
         return superordinate == element || superordinate?.isSuperordinate(element) ?: false
     }
+
+    override fun toString() = callSign.toString()
 
 }
