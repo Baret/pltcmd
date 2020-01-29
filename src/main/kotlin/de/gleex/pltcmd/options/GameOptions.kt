@@ -11,8 +11,8 @@ import org.hexworks.zircon.api.data.Size3D
 object GameOptions {
     val attenuationModel = createPropertyFrom(PercentageReducingAttenuation())
 
-    private const val SECTORS_COUNT_H = 10
-    private const val SECTORS_COUNT_V = 10
+    const val SECTORS_COUNT_H = 10
+    const val SECTORS_COUNT_V = 10
     /**
      * The size of the complete world in tiles as [Size3D].
      */
