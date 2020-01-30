@@ -31,4 +31,6 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         return northDiff
     }
 
+    override fun toString() = "(${eastingFromLeft.toString().padStart(3, '0')}|${northingFromBottom.toString().padStart(3, '0')})"
+
 }
