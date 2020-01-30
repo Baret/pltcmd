@@ -89,5 +89,10 @@ class CoordinateTest: WordSpec({
             }
             log.info("checked $checkedCoordinates different string representations of Coordinate")
         }
+
+        val expectedString = "(123|345)"
+        "be $expectedString for $testCoordinate" {
+            testCoordinate.toString() shouldBe expectedString
+        }
     }
 })
