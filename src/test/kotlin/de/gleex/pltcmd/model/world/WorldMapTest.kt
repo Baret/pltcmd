@@ -24,7 +24,7 @@ class WorldMapTest: WordSpec({
                     row(36, 6),
                     row(49, 7),
                     row(100, 10),
-                    row(10000, 100)
+                    row(900, 30)
             ) { sectorCount, sideLengthInSectors ->
                 val expectedSize = Size.create(
                         sideLengthInSectors * Sector.TILE_COUNT,
