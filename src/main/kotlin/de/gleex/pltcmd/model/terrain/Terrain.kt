@@ -18,4 +18,6 @@ class Terrain private constructor(val type: TerrainType, val height: TerrainHeig
         fun random() = of(TerrainType.values().random(), TerrainHeight.values().random())
     }
 
+    operator fun component1() = type
+    operator fun component2() = height
 }
