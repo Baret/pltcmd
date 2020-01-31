@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.world
 
+import io.kotlintest.assertSoftly
 import io.kotlintest.forAll
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.shouldBeInRange
@@ -20,8 +21,10 @@ class SectorTest: WordSpec({
         val validNorthings = validOrigin.northingFromBottom until validOrigin.northingFromBottom + Sector.TILE_COUNT
         "have only tiles with easting in $validEastings and northing in $validNorthings" {
             forAll(sector.tiles) { tile ->
-                tile.coordinate.eastingFromLeft shouldBeInRange validEastings
-                tile.coordinate.northingFromBottom shouldBeInRange validNorthings
+                assertSoftly {
+                    tile.coordinate.eastingFromLeft shouldBeInRange validEastings
+                    tile.coordinate.northingFromBottom shouldBeInRange validNorthings
+                }
             }
         }
     }

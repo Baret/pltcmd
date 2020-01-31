@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.world
 
+import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.collections.containDuplicates
 import io.kotlintest.matchers.collections.shouldContainInOrder
 import io.kotlintest.matchers.collections.shouldHaveSize
@@ -71,9 +72,11 @@ class CoordinateTest: WordSpec({
     "A list of ${unorderedListOfCoordinates.size} coordinates" should {
         "have the correct order when sorted" {
             val sorted = unorderedListOfCoordinates.sorted()
-            sorted shouldHaveSize 9
-            sorted shouldNot containDuplicates()
-            sorted shouldContainInOrder listOf(c11, c21, c31, c12, c22, c32, c13, c23, c33)
+            assertSoftly {
+                sorted shouldHaveSize 9
+                sorted shouldNot containDuplicates()
+                sorted shouldContainInOrder listOf(c11, c21, c31, c12, c22, c32, c13, c23, c33)
+            }
         }
     }
 
@@ -83,8 +86,10 @@ class CoordinateTest: WordSpec({
             var checkedCoordinates = 0
             assertAll { x: Int, y: Int ->
                 val coordinateString = Coordinate(x, y).toString()
-                coordinateString shouldHaveMinLength 9
-                coordinateString shouldMatch regex
+                assertSoftly {
+                    coordinateString shouldHaveMinLength 9
+                    coordinateString shouldMatch regex
+                }
                 checkedCoordinates++
             }
             log.info("checked $checkedCoordinates different string representations of Coordinate")

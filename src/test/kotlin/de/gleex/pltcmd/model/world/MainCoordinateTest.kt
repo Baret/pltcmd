@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.world
 
+import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.string.shouldHaveMinLength
 import io.kotlintest.matchers.string.shouldMatch
 import io.kotlintest.properties.assertAll
@@ -28,8 +29,10 @@ class MainCoordinateTest: WordSpec({
         "always have a length of at least 5 and match '$regex'" {
             assertAll { x: Int, y: Int ->
                 val coordinateString = MainCoordinate(x, y).toString()
-                coordinateString shouldHaveMinLength 5
-                coordinateString shouldMatch regex
+                assertSoftly {
+                    coordinateString shouldHaveMinLength 5
+                    coordinateString shouldMatch regex
+                }
             }
         }
 
