@@ -9,7 +9,7 @@ import io.kotlintest.tables.row
 import org.hexworks.zircon.api.data.Size
 
 class WorldMapTest: WordSpec({
-    "A WorldMaps" should {
+    "A WorldMap" should {
         "not be empty" {
             shouldThrow<IllegalArgumentException> { WorldMap(setOf()) }
         }
@@ -41,7 +41,7 @@ private fun Int.sectors(): Set<Sector> {
         for (i in 0 until this) {
             sectors.add(
                     Sector.generateAt(
-                            Coordinate(i * 50, i * 50)))
+                            Coordinate(i * Sector.TILE_COUNT, i * Sector.TILE_COUNT)))
         }
         return sectors
     }
