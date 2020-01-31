@@ -1,10 +1,42 @@
 package de.gleex.pltcmd.model.world
 
+import io.kotlintest.data.forall
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.WordSpec
+import io.kotlintest.tables.row
 import org.hexworks.zircon.api.data.Size
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-internal class WorldMapTest {
+class WorldMapTest: WordSpec({
+    "A WorldMaps" should {
+        "not be empty" {
+            shouldThrow<IllegalArgumentException> { WorldMap(setOf()) }
+        }
+
+        "be square when calculating its size" {
+            forall(
+                    row(1, 1),
+                    row(4, 2),
+                    row(9, 3),
+                    row(16, 4),
+                    row(25, 5),
+                    row(36, 6),
+                    row(49, 7),
+                    row(100, 10),
+                    row(10000, 100)
+            ) { sectorCount, sideLengthInSectors ->
+                val expectedSize = Size.create(
+                        sideLengthInSectors * Sector.TILE_COUNT,
+                        sideLengthInSectors * Sector.TILE_COUNT)
+                sectorCount.sectors() shouldHaveSize sectorCount
+                WorldMap(sectorCount.sectors()).size shouldBe expectedSize
+            }
+        }
+    }
+}) {
 
     @Test
     fun getSizeSingle() {
@@ -43,3 +75,13 @@ internal class WorldMapTest {
     }
 
 }
+
+private fun Int.sectors(): Set<Sector> {
+        val sectors = mutableSetOf<Sector>()
+        for (i in 0 until this) {
+            sectors.add(
+                    Sector.generateAt(
+                            Coordinate(i * 50, i * 50)))
+        }
+        return sectors
+    }
