@@ -25,11 +25,11 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
                         type = TerrainType.values()[3]
                     }
                     if (coordinate.eastingFromLeft % 5 == 0 && coordinate.northingFromBottom % 5 == 0) {
-                        sectorTiles.add(WorldTile(coordinate, Terrain(type, TerrainHeight.TEN)))
+                        sectorTiles.add(WorldTile(coordinate, Terrain.of(type, TerrainHeight.TEN)))
                     } else if (coordinate.eastingFromLeft % 5 == 0 || coordinate.northingFromBottom % 5 == 0) {
-                        sectorTiles.add(WorldTile(coordinate, Terrain(type, TerrainHeight.ONE)))
+                        sectorTiles.add(WorldTile(coordinate, Terrain.of(type, TerrainHeight.ONE)))
                     } else {
-                        sectorTiles.add(WorldTile(coordinate, Terrain(type, height)))
+                        sectorTiles.add(WorldTile(coordinate, Terrain.of(type, height)))
                     }
 
                 }

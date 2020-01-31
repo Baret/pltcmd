@@ -36,6 +36,10 @@ class ProjectConfig: AbstractProjectConfig() {
                 log.info("Starting tests ${spec.description().fullName()}")
             }
 
+            override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+                logMemoryUsage()
+            }
+
             override fun beforeTest(testCase: TestCase) {
                 Runtime.getRuntime().gc()
                 testStartedAt = System.currentTimeMillis()

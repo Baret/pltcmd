@@ -13,8 +13,8 @@ import io.kotlintest.specs.StringSpec
 class WorldTileTest: StringSpec({
     "Two WorldTiles with the same coordinate should be equal" {
         val position = Coordinate(12, 34)
-        val grassland = WorldTile(position, Terrain(TerrainType.GRASSLAND, TerrainHeight.TWO))
-        val mountain = WorldTile(position, Terrain(TerrainType.MOUNTAIN, TerrainHeight.EIGHT))
+        val grassland = WorldTile(position, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.TWO))
+        val mountain = WorldTile(position, Terrain.of(TerrainType.MOUNTAIN, TerrainHeight.EIGHT))
         grassland shouldBe mountain
         grassland.hashCode() shouldBe mountain.hashCode()
         setOf(grassland, mountain) shouldHaveSize 1

@@ -12,7 +12,7 @@ import io.kotlintest.tables.row
 import kotlin.math.pow
 
 class RadioSignalTest: WordSpec() {
-    private class RadioSignalTestExtension : RadioSignal(200.0, Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE)) {
+    private class RadioSignalTestExtension : RadioSignal(200.0, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.ONE)) {
         fun convertedToPercent(testValue: Double) = testValue.toPercent()
     }
 
@@ -46,7 +46,7 @@ class RadioSignalTest: WordSpec() {
             }
         }
 
-        val testTerrain = Terrain(TerrainType.GRASSLAND, TerrainHeight.SEVEN)
+        val testTerrain = Terrain.of(TerrainType.GRASSLAND, TerrainHeight.SEVEN)
         val rs = RadioSignal(100.0, testTerrain)
         "A $rs" When {
             "getting an empty list to travel along" should {
@@ -87,10 +87,10 @@ class RadioSignalTest: WordSpec() {
  * Creates a list of n "tiles" of [TerrainHeight] ONE.
  */
 private fun Int.lowestTerrainTiles() =
-        List(this) { _ -> Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE)}
+        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.ONE)}
 
 /**
  * Creates a list of n "tiles" of [TerrainHeight] TEN.
  */
 private fun Int.highestTerrainTiles() =
-        List(this) { _ -> Terrain(TerrainType.GRASSLAND, TerrainHeight.TEN)}
+        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.TEN)}
