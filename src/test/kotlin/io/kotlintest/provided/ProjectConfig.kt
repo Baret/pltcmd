@@ -7,19 +7,19 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 
 class ProjectConfig: AbstractProjectConfig() {
     val log = LoggerFactory.getLogger(ProjectConfig::class)
-    private var time = 0L
+    private var allStartTime = 0L
     val executionTimes = mutableListOf<Long>()
     val heapSizes = mutableListOf<Long>()
 
     override fun beforeAll() {
         log.info("Starting tests, measuring time")
         logMemoryUsage()
-        time = System.currentTimeMillis()
+        allStartTime = System.currentTimeMillis()
     }
 
     override fun afterAll() {
-        val delta = System.currentTimeMillis() - time
-        log.info("Tests complete! Execution took $delta ms")
+        val executionTime = System.currentTimeMillis() - allStartTime
+        log.info("Tests complete! Execution took $executionTime ms")
         log.info("Average test execution time: ${executionTimes.average()} ms")
         logMemoryUsage()
         log.info("Maximum memory usage was ${heapSizes.max()} MB")
@@ -27,13 +27,14 @@ class ProjectConfig: AbstractProjectConfig() {
 
     override fun listeners(): List<TestListener> =
         listOf(object: TestListener {
-            var testStartedAt = 0L
+            private var testStartedAt = 0L
 
             override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
                 log.info("Starting tests ${spec.description().fullName()}")
             }
 
             override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+                log.info("Finished tests ${spec.description().fullName()}")
                 logMemoryUsage()
             }
 
