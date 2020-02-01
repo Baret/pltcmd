@@ -1,14 +1,15 @@
 package de.gleex.pltcmd.model.world
 
 import io.kotlintest.assertSoftly
+import io.kotlintest.matchers.beGreaterThan
+import io.kotlintest.matchers.beLessThan
 import io.kotlintest.matchers.collections.containDuplicates
 import io.kotlintest.matchers.collections.shouldContainInOrder
 import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.numerics.shouldBeGreaterThanOrEqual
-import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.string.shouldHaveMinLength
 import io.kotlintest.matchers.string.shouldMatch
 import io.kotlintest.properties.assertAll
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.specs.WordSpec
@@ -26,14 +27,14 @@ class CoordinateTest: WordSpec({
         }
 
         "return the correct Coordinate when moving it east/west" {
-            for(eastingDelta in -1000..1000) {
+            for (eastingDelta in -1000..1000) {
                 testCoordinate.withRelativeEasting(eastingDelta) shouldBe Coordinate(123 + eastingDelta, 345)
             }
         }
 
         "return the correct Coordinate when moving it north/south" {
-            for(northingDelta in -1000..1000) {
-                testCoordinate.withRelativeNorthing(northingDelta) shouldBe Coordinate(123, 345 +  + northingDelta)
+            for (northingDelta in -1000..1000) {
+                testCoordinate.withRelativeNorthing(northingDelta) shouldBe Coordinate(123, 345 + +northingDelta)
             }
         }
     }
@@ -42,13 +43,13 @@ class CoordinateTest: WordSpec({
         val otherCoordinate = Coordinate(124, 344)
         "compared to $otherCoordinate" should {
             "be bigger (because of higher northing)" {
-                testCoordinate.compareTo(otherCoordinate) shouldBeGreaterThanOrEqual 1
+                testCoordinate should beGreaterThan(otherCoordinate)
             }
         }
 
         "being compared with $otherCoordinate" should {
             "be less (because of lower northing)" {
-                otherCoordinate.compareTo(testCoordinate) shouldBeLessThanOrEqual -1
+                otherCoordinate should beLessThan(testCoordinate)
             }
         }
 
@@ -99,5 +100,22 @@ class CoordinateTest: WordSpec({
         "be $expectedString for $testCoordinate" {
             testCoordinate.toString() shouldBe expectedString
         }
+
+        "be padded for single digits" {
+            toCoordinateString(1, 1) shouldBe "(001|001)"
+            toCoordinateString(2, 9) shouldBe "(002|009)"
+            toCoordinateString(-1, -9) shouldBe "(-01|-09)"
+        }
+
+        "be padded for two digits" {
+            toCoordinateString(99, 10) shouldBe "(099|010)"
+            toCoordinateString(33, 33) shouldBe "(033|033)"
+            toCoordinateString(-11, -99) shouldBe "(-11|-99)"
+        }
     }
+
 })
+
+fun toCoordinateString(easting: Int, northing: Int): String {
+    return Coordinate(easting, northing).toString()
+}
