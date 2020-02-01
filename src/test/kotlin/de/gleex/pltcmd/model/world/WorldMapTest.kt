@@ -29,8 +29,9 @@ class WorldMapTest: WordSpec({
                 val expectedSize = Size.create(
                         sideLengthInSectors * Sector.TILE_COUNT,
                         sideLengthInSectors * Sector.TILE_COUNT)
-                sectorCount.sectors() shouldHaveSize sectorCount
-                WorldMap(sectorCount.sectors()).size shouldBe expectedSize
+                val sectors = sectorCount.sectors()
+                sectors shouldHaveSize sectorCount
+                WorldMap(sectors).size shouldBe expectedSize
             }
         }
     }
