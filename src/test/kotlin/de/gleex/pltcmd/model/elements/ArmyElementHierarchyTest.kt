@@ -22,7 +22,7 @@ class ArmyElementHierarchyTest: FreeSpec({
 
         val divisionSoldierCount = 7024
         "have $divisionSoldierCount units" {
-            division.allUnits shouldBe divisionSoldierCount
+            division.totalSize shouldBe divisionSoldierCount
             GenericUnit.IdCounter.next() shouldBe divisionSoldierCount
         }
 
@@ -106,7 +106,7 @@ class ArmyElementHierarchyTest: FreeSpec({
 
                 val gruntCount = 3840
                 "with $gruntCount soldier in them" {
-                    buddyteams.map { it.allUnits }.sum() shouldBe gruntCount
+                    buddyteams.map { it.totalSize }.sum() shouldBe gruntCount
                     buddyteams.map { it.members.size }.sum() shouldBe gruntCount
                 }
                 val expectedLeaderCount = divisionSoldierCount - gruntCount

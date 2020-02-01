@@ -9,8 +9,8 @@ data class Element(val callSign: CallSign, val members: Set<Unit>, val superordi
     /**
      * The count of all units in this Element and all its subordinates
      */
-    val allUnits: Int
-        get() { return members.size + subordinates.map { it.allUnits }.sum() }
+    val totalSize: Int
+        get() { return members.size + subordinates.map { it.totalSize }.sum() }
 
     init {
         // link from element to its subordinates
