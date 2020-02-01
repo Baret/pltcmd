@@ -104,13 +104,17 @@ class CoordinateTest: WordSpec({
         "be padded for single digits" {
             toCoordinateString(1, 1) shouldBe "(001|001)"
             toCoordinateString(2, 9) shouldBe "(002|009)"
-            toCoordinateString(-1, -9) shouldBe "(-01|-09)"
+            toCoordinateString(-1, -9) shouldBe "(-001|-009)"
+            toCoordinateString(7, -9) shouldBe "(007|-009)"
+            toCoordinateString(-2, 8) shouldBe "(-002|008)"
         }
 
         "be padded for two digits" {
             toCoordinateString(99, 10) shouldBe "(099|010)"
             toCoordinateString(33, 33) shouldBe "(033|033)"
-            toCoordinateString(-11, -99) shouldBe "(-11|-99)"
+            toCoordinateString(-11, -99) shouldBe "(-011|-099)"
+            toCoordinateString(58, -10) shouldBe "(058|-010)"
+            toCoordinateString(-75, 45) shouldBe "(-075|045)"
         }
     }
 
