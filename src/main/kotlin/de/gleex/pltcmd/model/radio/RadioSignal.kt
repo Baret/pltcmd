@@ -18,12 +18,12 @@ open class RadioSignal(private val initialStrength: Double, private val initialT
         /**
          * The factor to apply when a signal travels <i>through</i> terrain instead of over it
          */
-        private const val TERRAIN_LOSS_FACTOR = .70
+        const val TERRAIN_LOSS_FACTOR = .70
 
         /**
          * The factor to apply when a signal travels through air
          */
-        private const val BASE_LOSS_FACTOR = .98
+        const val BASE_LOSS_FACTOR = .98
     }
 
     private val attenuation: AttenuationModel by GameOptions.attenuationModel.asDelegate()

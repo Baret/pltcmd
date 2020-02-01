@@ -16,7 +16,8 @@ class RadioSignalTest: WordSpec() {
         fun convertedToPercent(testValue: Double) = testValue.toPercent()
     }
 
-    init {
+    init
+    {
         "Remaining signal strength converted to percent" should {
             "be 1.0 when > 100 and 0.0 when < 0" {
                 val radioSignal = RadioSignalTestExtension()
@@ -65,7 +66,7 @@ class RadioSignalTest: WordSpec() {
             for (i in 1..6) {
                 val lowerTiles = i.lowestTerrainTiles()
                 "travelling through ${lowerTiles.size} tiles of air" should {
-                    val airLossFactor = 0.98
+                    val airLossFactor = RadioSignal.BASE_LOSS_FACTOR
                     "lose strength with the base loss factor of $airLossFactor" {
                         rs.along(lowerTiles).shouldBe(airLossFactor.pow(i).plusOrMinus(0.001))
                     }
@@ -73,7 +74,7 @@ class RadioSignalTest: WordSpec() {
 
                 val higherTiles = i.highestTerrainTiles()
                 "travelling through ${lowerTiles.size} tiles of ground" should {
-                    val groundLossFactor = 0.70
+                    val groundLossFactor = RadioSignal.TERRAIN_LOSS_FACTOR
                     "lose strength with the ground loss factor of $groundLossFactor" {
                         rs.along(higherTiles).shouldBe(groundLossFactor.pow(i).plusOrMinus(0.001))
                     }
@@ -84,13 +85,13 @@ class RadioSignalTest: WordSpec() {
 }
 
 /**
- * Creates a list of n "tiles" of [TerrainHeight] ONE.
+ * Creates a list of n "tiles" of lowest [TerrainHeight].
  */
 private fun Int.lowestTerrainTiles() =
-        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.ONE)}
+        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.values().first())}
 
 /**
- * Creates a list of n "tiles" of [TerrainHeight] TEN.
+ * Creates a list of n "tiles" of highest [TerrainHeight].
  */
 private fun Int.highestTerrainTiles() =
-        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.TEN)}
+        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.values().last())}
