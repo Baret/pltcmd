@@ -4,15 +4,14 @@ import io.kotlintest.forAll
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.types.beNull
-import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
 class ArmyElementHierarchyTest: FreeSpec({
     val division = ArmyElementHierarchy.Division.createElement()
-    "A division called $division should" - {
-        "have no superordinates" {
+    "A division called ${division.callSign} should" - {
+        "have no superordinate" {
             division.superordinate should beNull()
         }
 
@@ -25,19 +24,18 @@ class ArmyElementHierarchyTest: FreeSpec({
             division.totalSize shouldBe divisionSoldierCount
             GenericUnit.IdCounter.next() shouldBe divisionSoldierCount
         }
+        val divisions = setOf(division)
 
-        val brigades = division.subordinates
+        val brigades = allDirectSubordinates(divisions)
         "have 3 brigades"-  {
-            brigades shouldHaveSize 3
-            "and each should have the division as superordinate" - {
-                    forAll(brigades) { brigade ->
-                        brigade.superordinate shouldBeSameInstanceAs division
-                        brigade shouldHaveSoldiers 1
-                }
-            }
+            checkHierarchy(
+                    superElements = divisions,
+                    subElementsInEach = 3,
+                    subElements = brigades
+            )
         }
 
-        val battalions = brigades.flatMap { it.subordinates }.toSet()
+        val battalions = allDirectSubordinates(brigades)
         "have 4 battalions in each brigade" {
             checkHierarchy(
                     superElements = brigades,
@@ -46,7 +44,7 @@ class ArmyElementHierarchyTest: FreeSpec({
             )
         }
 
-        val companies = battalions.flatMap { it.subordinates }.toSet()
+        val companies = allDirectSubordinates(battalions)
         "have 4 companies in each battalion" {
             checkHierarchy(
                     superElements = battalions,
@@ -55,7 +53,7 @@ class ArmyElementHierarchyTest: FreeSpec({
             )
         }
 
-        val platoons = companies.flatMap { it.subordinates }.toSet()
+        val platoons = allDirectSubordinates(companies)
         "have 5 platoons in each company" {
             checkHierarchy(
                     superElements = companies,
@@ -64,7 +62,7 @@ class ArmyElementHierarchyTest: FreeSpec({
             )
         }
 
-        val squads = platoons.flatMap { it.subordinates }.toSet()
+        val squads = allDirectSubordinates(platoons)
         "have 4 squads in each platoon" {
             checkHierarchy(
                     superElements = platoons,
@@ -73,7 +71,7 @@ class ArmyElementHierarchyTest: FreeSpec({
             )
         }
 
-        val fireteams = squads.flatMap { it.subordinates }.toSet()
+        val fireteams = allDirectSubordinates(squads)
         "have 2 fireteams in each squad" {
             checkHierarchy(
                     superElements = squads,
@@ -82,7 +80,7 @@ class ArmyElementHierarchyTest: FreeSpec({
             )
         }
 
-        val buddyteams = fireteams.flatMap { it.subordinates }.toSet()
+        val buddyteams = allDirectSubordinates(fireteams)
         "have 1 buddyteam in each fireteam" - {
             checkHierarchy(
                     superElements = fireteams,
@@ -95,7 +93,7 @@ class ArmyElementHierarchyTest: FreeSpec({
                 buddyteams shouldHaveSize 1920
 
                 "which have no further subelements" {
-                    val noMoreSubelements = buddyteams.flatMap { it.subordinates }.toSet()
+                    val noMoreSubelements = allDirectSubordinates(buddyteams)
                     checkHierarchy(
                             superElements = buddyteams,
                             subElementsInEach = 0,
@@ -117,13 +115,15 @@ class ArmyElementHierarchyTest: FreeSpec({
                     do {
                         actualLeaderCount += superOrdinates.map { it.members.size }.sum()
                         superOrdinates = superOrdinates.mapNotNull { it.superordinate }.toSet()
-                    } while (superOrdinates.isEmpty().not())
+                    } while (superOrdinates.isNotEmpty())
                     actualLeaderCount shouldBe expectedLeaderCount
                 }
             }
         }
     }
 })
+
+private fun allDirectSubordinates(elements: Iterable<Element>) = elements.flatMap { it.subordinates }.toSet()
 
 fun checkHierarchy(superElements: Set<Element>, subElementsInEach: Int, subElements: Set<Element>, soldierCountInSubElement: Int = 1) {
     forAll(superElements) {
