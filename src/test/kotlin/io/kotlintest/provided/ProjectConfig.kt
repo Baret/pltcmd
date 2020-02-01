@@ -39,7 +39,6 @@ class ProjectConfig: AbstractProjectConfig() {
             }
 
             override fun beforeTest(testCase: TestCase) {
-                Runtime.getRuntime().gc()
                 testStartedAt = System.currentTimeMillis()
             }
 
