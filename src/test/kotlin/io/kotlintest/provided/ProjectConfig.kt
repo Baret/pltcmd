@@ -1,9 +1,6 @@
 package io.kotlintest.provided
 
-import io.kotlintest.AbstractProjectConfig
-import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
+import io.kotlintest.*
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.extensions.TopLevelTest
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -46,6 +43,9 @@ class ProjectConfig: AbstractProjectConfig() {
             }
 
             override fun afterTest(testCase: TestCase, result: TestResult) {
+                if (testCase.type == TestType.Container) {
+                    return;
+                }
                 val executionTime = System.currentTimeMillis() - testStartedAt
                 log.info("Execution of '${testCase.description.names().drop(1).joinToString(" ")}' took $executionTime ms")
                 executionTimes.add(executionTime)
