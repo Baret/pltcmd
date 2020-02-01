@@ -30,10 +30,12 @@ class SectorTest: WordSpec({
     }
 
     "A sector" should {
-        val invalidOrigin = Coordinate(123, 450)
-        "not be valid if created at $invalidOrigin" {
+        "fail to generate if the origin is not a sector origin" {
             shouldThrow<IllegalArgumentException> {
-                Sector.generateAt(invalidOrigin)
+                Sector.generateAt(Coordinate(123, 450))
+            }
+            shouldThrow<IllegalArgumentException> {
+                Sector.generateAt(Coordinate(120, 459))
             }
         }
 
