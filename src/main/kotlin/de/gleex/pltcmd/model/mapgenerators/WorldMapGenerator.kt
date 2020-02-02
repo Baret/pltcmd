@@ -18,13 +18,13 @@ class WorldMapGenerator(seed: Long) {
 
     private val generators: List<IntermediateGenerator> = listOf(
             // different generators go here
-            MountainTopGenerator(context)
+            MountainTopGenerator()
     )
 
     fun generateWorld(widthInTiles: Int, heightInTiles: Int, bottomLeftCoordinate: Coordinate = Coordinate(0, 0)): WorldMap {
         // The map has to be mutable while it is being generated
         // And intermediate generators might only be interested in either type or height and if a tile has already been generated
-        val terrainMap = mapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
+        val terrainMap = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
         val topRightCoordinate = bottomLeftCoordinate.
                 withRelativeEasting(widthInTiles).
                 withRelativeNorthing(heightInTiles)

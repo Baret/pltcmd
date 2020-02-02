@@ -22,16 +22,10 @@ class RandomMapGenerator(squareSideLengthInSectors: Int) : AbstractSquareMapGene
         return super.generateWorld()
     }
 
-    override fun createTile(tileCoordinate: Coordinate): WorldTile {
-        return WorldTile(tileCoordinate, randomTerrain())
-    }
+    override fun createTerrain(tileCoordinate: Coordinate) = Terrain.of(randomType(), randomHeight())
 
-    private fun randomTerrain(): Terrain {
-        val type = TerrainType.values()
-                .random()
-        val height = TerrainHeight.values()
-                .random()
-        return Terrain.of(type, height)
-    }
+    private fun randomType() = TerrainType.values().random()
+
+    private fun randomHeight() = TerrainHeight.values().random()
 
 }
