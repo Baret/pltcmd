@@ -1,45 +1,48 @@
 package de.gleex.pltcmd.model.world
 
+import io.kotlintest.data.forall
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.WordSpec
+import io.kotlintest.tables.row
 import org.hexworks.zircon.api.data.Size
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
 
-internal class WorldMapTest {
+class WorldMapTest: WordSpec({
+    "A WorldMap" should {
+        "not be empty" {
+            shouldThrow<IllegalArgumentException> { WorldMap(setOf()) }
+        }
 
-    @Test
-    fun getSizeSingle() {
-        val expected = Size.create(Sector.TILE_COUNT, Sector.TILE_COUNT)
-        val result = WorldMap(setOf(createSector(3))).size
-        assertEquals(expected, result)
+        "be square when calculating its size" {
+            forall(
+                    row(1, 1),
+                    row(4, 2),
+                    row(9, 3),
+                    row(16, 4),
+                    row(25, 5),
+                    row(36, 6),
+                    row(49, 7),
+                    row(100, 10),
+                    row(900, 30)
+            ) { sectorCount, sideLengthInSectors ->
+                val expectedSize = Size.create(
+                        sideLengthInSectors * Sector.TILE_COUNT,
+                        sideLengthInSectors * Sector.TILE_COUNT)
+                val sectors = sectorCount.sectors()
+                sectors shouldHaveSize sectorCount
+                WorldMap(sectors).size shouldBe expectedSize
+            }
+        }
     }
+})
 
-    @Test
-    fun getSizeCalculated() {
-        testSize(2)
-        testSize(3)
-        testSize(11)
-    }
-
-    private fun testSize(sideLengthInSectors: Int) {
-        val sectors = createSectors(sideLengthInSectors)
-        val expected = Size.create(sideLengthInSectors * Sector.TILE_COUNT, sideLengthInSectors * Sector.TILE_COUNT)
-
-        val result = WorldMap(sectors).size
-
-        assertEquals(expected, result)
-    }
-
-    fun createSectors(sideLength: Int): Set<Sector> {
+private fun Int.sectors(): Set<Sector> {
         val sectors = mutableSetOf<Sector>()
-        for (i in 0 until (sideLength * sideLength)) {
-            sectors.add(createSector(i))
+        for (i in 0 until this) {
+            sectors.add(
+                    Sector.generateAt(
+                            Coordinate(i * Sector.TILE_COUNT, i * Sector.TILE_COUNT)))
         }
         return sectors
     }
-
-    fun createSector(index: Int): Sector {
-        val origin = Coordinate(index * 50, index * 50)
-        return Sector.generateAt(origin)
-    }
-
-}

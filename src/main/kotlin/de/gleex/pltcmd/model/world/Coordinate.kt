@@ -31,4 +31,22 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         return northDiff
     }
 
+    override fun toString(): String {
+        val eastingString = toCoordinateText(eastingFromLeft)
+        val northingString = toCoordinateText(northingFromBottom)
+        return "($eastingString|$northingString)"
+    }
+
+    private fun toCoordinateText(coordinateValue: Int): String {
+        return if (coordinateValue >= 0) {
+            FORMAT_POSITIVE.format(coordinateValue)
+        } else {
+            FORMAT_NEGATIVE.format(coordinateValue)
+        }
+    }
+
+    companion object {
+        const val FORMAT_POSITIVE = "%03d"
+        const val FORMAT_NEGATIVE = "%04d"
+    }
 }
