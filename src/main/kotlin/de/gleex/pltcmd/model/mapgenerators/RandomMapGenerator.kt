@@ -31,7 +31,7 @@ class RandomMapGenerator(squareSideLengthInSectors: Int) : AbstractSquareMapGene
                 .random()
         val height = TerrainHeight.values()
                 .random()
-        return Terrain(type, height)
+        return Terrain.of(type, height)
     }
 
 }
