@@ -47,16 +47,12 @@ abstract class AbstractSquareMapGenerator(protected val squareSideLengthInSector
     override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableMap<Coordinate, Pair<TerrainHeight?, TerrainType?>>) {
         for (x in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft) {
             for (y in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom) {
-                val tileCoordinate = tileCoordinate(bottomLeftCoordinate, x, y)
+                val tileCoordinate = Coordinate(x, y)
                 val terrain = createTerrain(tileCoordinate)
                 terrainMap[tileCoordinate] = Pair(terrain.height, terrain.type)
             }
         }
     }
-
-    protected open fun tileCoordinate(sectorOrigin: Coordinate, relativeEasting: Int, relativeNorthing: Int) =
-            sectorOrigin.withRelativeEasting(relativeEasting)
-                    .withRelativeNorthing(relativeNorthing)
 
     abstract fun createTerrain(tileCoordinate: Coordinate): Terrain
 
