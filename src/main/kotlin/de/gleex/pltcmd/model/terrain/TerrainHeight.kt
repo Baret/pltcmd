@@ -1,6 +1,9 @@
 package de.gleex.pltcmd.model.terrain
 
-enum class TerrainHeight(val value: Int) {
+/**
+ * Represents the height of a tile.
+ */
+enum class TerrainHeight(val value: Int): Comparable<TerrainHeight> {
     ONE(1),
     TWO(2),
     THREE(3),
@@ -12,15 +15,16 @@ enum class TerrainHeight(val value: Int) {
     NINE(9),
     TEN(10);
 
-    operator fun inc() =
+    operator fun plus(valueToAdd: Int) =
             when (this) {
                 TEN  -> TEN
-                else -> enumValues<TerrainHeight>()[ordinal + 1]
+                else -> enumValues<TerrainHeight>()[ordinal + valueToAdd]
             }
 
-    operator fun dec() =
+    operator fun minus(valueToSubtract: Int) =
             when (this) {
                 ONE  -> ONE
-                else -> enumValues<TerrainHeight>()[ordinal - 1]
+                else -> enumValues<TerrainHeight>()[ordinal - valueToSubtract]
             }
+
 }

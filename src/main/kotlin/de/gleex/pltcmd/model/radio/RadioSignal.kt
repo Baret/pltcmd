@@ -18,12 +18,12 @@ open class RadioSignal(private val initialStrength: Double, private val initialT
         /**
          * The factor to apply when a signal travels <i>through</i> terrain instead of over it
          */
-        private const val TERRAIN_LOSS_FACTOR = .70
+        const val TERRAIN_LOSS_FACTOR = .70
 
         /**
          * The factor to apply when a signal travels through air
          */
-        private const val BASE_LOSS_FACTOR = .98
+        const val BASE_LOSS_FACTOR = .98
     }
 
     private val attenuation: AttenuationModel by GameOptions.attenuationModel.asDelegate()
@@ -34,6 +34,9 @@ open class RadioSignal(private val initialStrength: Double, private val initialT
      * (i.e. signalStrength of 80 -> 80% -> 0.80).
      */
     fun along(terrain: List<Terrain>): Double {
+        if(terrain.isEmpty()) {
+            return initialStrength.toPercent()
+        }
         val (_, targetHeight) = terrain.last()
         val startHeight = initialTerrain.height
         val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrain.size.toDouble()
@@ -61,4 +64,8 @@ open class RadioSignal(private val initialStrength: Double, private val initialT
     protected fun Double.toPercent(): Double = this.toBigDecimal().divide(100.0.toBigDecimal()).toDouble().coerceIn(0.0, 1.0)
 
     private fun TerrainHeight.toDouble(): Double = value.toDouble()
+
+    override fun toString(): String {
+        return "radio signal with strength $initialStrength (${initialStrength.toPercent() * 100.0}%)"
+    }
 }

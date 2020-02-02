@@ -73,6 +73,13 @@
 			<artifactId>kotlinx-collections-immutable-jvm</artifactId>
 			<version>0.3</version>
 		</dependency>
+		<!-- test dependencies -->
+		<dependency>
+			<groupId>io.kotlintest</groupId>
+			<artifactId>kotlintest-runner-junit5</artifactId>
+			<version>3.4.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
