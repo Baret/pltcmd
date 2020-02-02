@@ -4,6 +4,7 @@ import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
+import de.gleex.pltcmd.model.world.MainCoordinate
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 
@@ -21,6 +22,16 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
     private val topRightCoordinate = bottomLeftCoordinate.
             withRelativeEasting(worldSizeWidthInTiles).
             withRelativeNorthing(worldSizeHeightInTiles)
+
+    val mainCoordinates: Set<MainCoordinate>
+        get() {
+            val coords = mutableSetOf<MainCoordinate>()
+            // TODO: add step(100) to not ask every single coordinate when you only need every 100th
+            for(c in bottomLeftCoordinate..topRightCoordinate) {
+                coords.add(c.toMainCoordinate())
+            }
+            return coords
+        }
 
     init {
         require(bottomLeftCoordinate.eastingFromLeft % Sector.TILE_COUNT == 0

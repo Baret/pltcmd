@@ -31,6 +31,19 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         return northDiff
     }
 
+    operator fun rangeTo(other: Coordinate): Progression {
+        require(other > this) {
+            "Cannot range from $this to lower or equal coordinate $other"
+        }
+        val values = mutableListOf<Coordinate>()
+        for(y in northingFromBottom..other.northingFromBottom) {
+            for(x in eastingFromLeft..other.eastingFromLeft) {
+                values.add(Coordinate(x, y))
+            }
+        }
+        return Progression(values)
+    }
+
     override fun toString(): String {
         val eastingString = toCoordinateText(eastingFromLeft)
         val northingString = toCoordinateText(northingFromBottom)
@@ -48,5 +61,12 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     companion object {
         const val FORMAT_POSITIVE = "%03d"
         const val FORMAT_NEGATIVE = "%04d"
+    }
+
+    class Progression(private val coordinates: List<Coordinate>): Iterable<Coordinate> {
+        override fun iterator(): Iterator<Coordinate> {
+            return coordinates.iterator()
+        }
+
     }
 }
