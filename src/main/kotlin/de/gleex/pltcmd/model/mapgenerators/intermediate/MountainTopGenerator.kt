@@ -6,7 +6,7 @@ import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
 
 class MountainTopGenerator(override val context: GenerationContext) : IntermediateGenerator {
-    fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: Map<Coordinate, Pair<TerrainHeight?, TerrainType?>>, context: GenerationContext) {
+    override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: Map<Coordinate, Pair<TerrainHeight?, TerrainType?>>) {
         // pick random positions for mountain tops
         // set those to max height
         // from each position find the four neighbours that have no height yet
