@@ -1,67 +1,144 @@
 package de.gleex.pltcmd.model.elements
 
-import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import io.kotlintest.forAll
+import io.kotlintest.matchers.collections.shouldContain
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.types.beNull
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.FreeSpec
 
-class ArmyElementHierarchyTest {
+class ArmyElementHierarchyTest: FreeSpec({
+    val division = ArmyElementHierarchy.Division.createElement()
+    "A division called ${division.callSign} should" - {
+        "have no superordinate" {
+            division.superordinate should beNull()
+        }
 
-    @Test
-    fun createElement() {
-        val division = ArmyElementHierarchy.Division.createElement(null)
+        "have one leader" {
+            division shouldHaveSoldiers 1
+        }
 
-        assertHierarchy(
-                division,
-                3/*brigades*/,
-                4/*battalions*/,
-                4/*companies*/,
-                5/*platoons*/,
-                4/*squads*/,
-                2/*fireteams*/,
-                1/*buddy team*/
-        )
-        assertEquals(7024, GenericUnit.IdCounter.next())
-    }
+        val divisionSoldierCount = 7024
+        "have $divisionSoldierCount units" {
+            division.totalSize shouldBe divisionSoldierCount
+            GenericUnit.IdCounter.next() shouldBe divisionSoldierCount
+        }
+        val divisions = setOf(division)
 
-    private fun assertHierarchy(actual: Element, vararg expectedCounts: Int) {
-        assertNotNull(actual)
+        val brigades = allDirectSubordinates(divisions)
+        "have 3 brigades"-  {
+            checkHierarchy(
+                    superElements = divisions,
+                    subElementsInEach = 3,
+                    subElements = brigades
+            )
+        }
 
-        val actualSubordinates = actual.subordinates
-        val actualMembers = actual.members
-        if (actualSubordinates.isEmpty()) {
-            assertBuddyTeam(actualMembers)
-        } else {
-            assertLeader(actualMembers)
-            assertSubHierarchy(actual, *expectedCounts)
+        val battalions = allDirectSubordinates(brigades)
+        "have 4 battalions in each brigade" {
+            checkHierarchy(
+                    superElements = brigades,
+                    subElementsInEach = 4,
+                    subElements = battalions
+            )
+        }
+
+        val companies = allDirectSubordinates(battalions)
+        "have 4 companies in each battalion" {
+            checkHierarchy(
+                    superElements = battalions,
+                    subElementsInEach = 4,
+                    subElements = companies
+            )
+        }
+
+        val platoons = allDirectSubordinates(companies)
+        "have 5 platoons in each company" {
+            checkHierarchy(
+                    superElements = companies,
+                    subElementsInEach = 5,
+                    subElements = platoons
+            )
+        }
+
+        val squads = allDirectSubordinates(platoons)
+        "have 4 squads in each platoon" {
+            checkHierarchy(
+                    superElements = platoons,
+                    subElementsInEach = 4,
+                    subElements = squads
+            )
+        }
+
+        val fireteams = allDirectSubordinates(squads)
+        "have 2 fireteams in each squad" {
+            checkHierarchy(
+                    superElements = squads,
+                    subElementsInEach = 2,
+                    subElements = fireteams
+            )
+        }
+
+        val buddyteams = allDirectSubordinates(fireteams)
+        "have 1 buddyteam in each fireteam" - {
+            checkHierarchy(
+                    superElements = fireteams,
+                    subElementsInEach = 1,
+                    subElements = buddyteams,
+                    soldierCountInSubElement = 2
+            )
+            // this check is redundant but it's nice to know this absurdly high number :)
+            "and 1920 buddyteams total" - {
+                buddyteams shouldHaveSize 1920
+
+                "which have no further subelements" {
+                    val noMoreSubelements = allDirectSubordinates(buddyteams)
+                    checkHierarchy(
+                            superElements = buddyteams,
+                            subElementsInEach = 0,
+                            subElements = noMoreSubelements,
+                            soldierCountInSubElement = 0
+                    )
+                }
+
+                val gruntCount = 3840
+                "with $gruntCount soldier in them" {
+                    buddyteams.map { it.totalSize }.sum() shouldBe gruntCount
+                    buddyteams.map { it.members.size }.sum() shouldBe gruntCount
+                }
+                val expectedLeaderCount = divisionSoldierCount - gruntCount
+                "which means there are $expectedLeaderCount leaders" {
+                    // looking the hierarchy back up
+                    var actualLeaderCount = 0
+                    var superOrdinates = buddyteams.mapNotNull { it.superordinate }.toSet()
+                    do {
+                        actualLeaderCount += superOrdinates.map { it.members.size }.sum()
+                        superOrdinates = superOrdinates.mapNotNull { it.superordinate }.toSet()
+                    } while (superOrdinates.isNotEmpty())
+                    actualLeaderCount shouldBe expectedLeaderCount
+                }
+            }
         }
     }
+})
 
-    private fun assertLeader(actualMembers: Set<Unit>) {
-        assertEquals(1, actualMembers.size)
-        assertSoldiers(actualMembers)
+private fun allDirectSubordinates(elements: Iterable<Element>) = elements.flatMap { it.subordinates }.toSet()
+
+fun checkHierarchy(superElements: Set<Element>, subElementsInEach: Int, subElements: Set<Element>, soldierCountInSubElement: Int = 1) {
+    forAll(superElements) {
+        it.subordinates shouldHaveSize subElementsInEach
     }
-
-    private fun assertBuddyTeam(actualMembers: Set<Unit>) {
-        assertEquals(2, actualMembers.size)
-        assertSoldiers(actualMembers)
+    subElements shouldHaveSize superElements.size * subElementsInEach
+    forAll(subElements) { subElement ->
+        superElements shouldContain subElement.superordinate
+        subElement shouldHaveSoldiers soldierCountInSubElement
     }
+}
 
-    private fun assertSoldiers(actualMembers: Set<Unit>) {
-        actualMembers.forEach() {
-            assertTrue(it.isOfType(UnitType.Soldier))
-        }
+private infix fun Element.shouldHaveSoldiers(soldierCount: Int) {
+    this.members shouldHaveSize soldierCount
+    forAll(this.members) {
+        it.isOfType(UnitType.Soldier) shouldBe true
     }
-
-    private fun assertSubHierarchy(actual: Element, vararg expectedCounts: Int) {
-        val expectedSubordinateCounts = expectedCounts.firstOrNull() ?: 0;
-        val remainingCounts = expectedCounts.drop(1)
-        val actualSubordinates = actual.subordinates
-        assertEquals(expectedSubordinateCounts, actualSubordinates.size)
-        actualSubordinates.forEach {
-            assertEquals(actual, it.superordinate)
-            assertHierarchy(it, *remainingCounts.toIntArray())
-        }
-    }
-
 }
