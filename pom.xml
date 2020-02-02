@@ -10,7 +10,7 @@
 
 	<properties>
 		<kotlin.version>1.3.61</kotlin.version>
-		<zircon.version>2019.1.2-PREVIEW</zircon.version>
+		<zircon.version>2020.0.1-PREVIEW</zircon.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
@@ -20,6 +20,14 @@
 		<repository>
 			<id>jitpack</id>
 			<url>https://jitpack.io</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>jcenter</id>
+			<name>jcenter</name>
+			<url>https://jcenter.bintray.com/</url>
 		</repository>
 	</repositories>
 
@@ -50,6 +58,26 @@
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-test-junit5</artifactId>
 			<version>${kotlin.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- logging -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.3.0-alpha5</version>
+		</dependency>
+		<!-- This dependency seems to be transient in zircon.
+			As soon as zircon comes with this artifact it can be removed here -->
+		<dependency>
+			<groupId>org.jetbrains.kotlinx</groupId>
+			<artifactId>kotlinx-collections-immutable-jvm</artifactId>
+			<version>0.3</version>
+		</dependency>
+		<!-- test dependencies -->
+		<dependency>
+			<groupId>io.kotlintest</groupId>
+			<artifactId>kotlintest-runner-junit5</artifactId>
+			<version>3.4.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

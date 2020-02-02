@@ -3,7 +3,6 @@ package de.gleex.pltcmd.ui.fragments
 import org.hexworks.cobalt.databinding.api.createPropertyFrom
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.Fragment
-import org.hexworks.zircon.api.extensions.processComponentEvents
 import org.hexworks.zircon.api.graphics.Symbols
 import org.hexworks.zircon.api.uievent.ComponentEventType
 import kotlin.math.min

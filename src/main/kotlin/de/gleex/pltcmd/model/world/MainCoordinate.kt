@@ -10,4 +10,6 @@ data class MainCoordinate(val eastingFromLeft: Int, val northingFromBottom: Int)
      * Converts this main coordinate o a [Coordinate]
      */
     fun toCoordinate() = Coordinate(eastingFromLeft * 100, northingFromBottom * 100)
+
+    override fun toString() = "($eastingFromLeft|$northingFromBottom)"
 }

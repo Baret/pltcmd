@@ -12,7 +12,7 @@ data class WorldTile(val coordinate: Coordinate, val terrain: Terrain) {
     /** creates a tile at the given location with a default terrain (useful for tests) */
     constructor(east: Int, north: Int) : this(
             Coordinate(east, north),
-            Terrain(TerrainType.GRASSLAND, TerrainHeight.THREE)
+            Terrain.of(TerrainType.GRASSLAND, TerrainHeight.THREE)
     )
 
     /** Only a single tile per coordinate, as the place on the map is unique */
