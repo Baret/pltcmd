@@ -38,7 +38,7 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     }
 
     private fun toCoordinateText(coordinateValue: Int): String {
-        return if (coordinateValue > 0) {
+        return if (coordinateValue >= 0) {
             FORMAT_POSITIVE.format(coordinateValue)
         } else {
             FORMAT_NEGATIVE.format(coordinateValue)

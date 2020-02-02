@@ -103,6 +103,7 @@ class CoordinateTest: WordSpec({
 
         "be padded for single digits" {
             toCoordinateString(1, 1) shouldBe "(001|001)"
+            toCoordinateString(0, 0) shouldBe "(000|000)"
             toCoordinateString(2, 9) shouldBe "(002|009)"
             toCoordinateString(-1, -9) shouldBe "(-001|-009)"
             toCoordinateString(7, -9) shouldBe "(007|-009)"
