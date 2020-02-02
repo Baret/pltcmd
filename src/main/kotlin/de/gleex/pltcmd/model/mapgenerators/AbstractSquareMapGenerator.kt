@@ -1,9 +1,8 @@
 package de.gleex.pltcmd.model.mapgenerators
 
+import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.mapgenerators.intermediate.IntermediateGenerator
 import de.gleex.pltcmd.model.terrain.Terrain
-import de.gleex.pltcmd.model.terrain.TerrainHeight
-import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
@@ -34,9 +33,13 @@ abstract class AbstractSquareMapGenerator(protected val squareSideLengthInSector
      */
     protected open fun createSectorTiles(sectorOrigin: Coordinate): Set<WorldTile> {
         val sectorEnd = sectorOrigin.withRelativeEasting(Sector.TILE_COUNT - 1).withRelativeNorthing(Sector.TILE_COUNT - 1)
-        val tileData = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
+        val tileData = MutableWorld(
+                sectorOrigin,
+                squareSideLengthInSectors * Sector.TILE_COUNT,
+                squareSideLengthInSectors * Sector.TILE_COUNT
+        )
         generateArea(sectorOrigin, sectorEnd, tileData)
-        return tileData.map { WorldTile(it.key, Terrain.of(it.value.second!!, it.value.first!!)) }.toSet()
+        return tileData.terrainMap.map { WorldTile(it.key, Terrain.of(it.value.second!!, it.value.first!!)) }.toSet()
     }
 
     /**
@@ -44,12 +47,12 @@ abstract class AbstractSquareMapGenerator(protected val squareSideLengthInSector
      * fill the map with `Pair<TerrainHeight, TerrainType>` (no nullable values) or also override [createSectorTiles]
      * (which relies on values for each tile).
      */
-    override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableMap<Coordinate, Pair<TerrainHeight?, TerrainType?>>) {
+    override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld) {
         for (x in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft) {
             for (y in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom) {
                 val tileCoordinate = Coordinate(x, y)
                 val terrain = createTerrain(tileCoordinate)
-                terrainMap[tileCoordinate] = Pair(terrain.height, terrain.type)
+                terrainMap[tileCoordinate] = terrain
             }
         }
     }

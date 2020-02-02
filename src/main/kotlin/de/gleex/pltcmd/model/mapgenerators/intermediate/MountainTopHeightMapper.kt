@@ -1,11 +1,10 @@
 package de.gleex.pltcmd.model.mapgenerators.intermediate
 
-import de.gleex.pltcmd.model.terrain.TerrainHeight
-import de.gleex.pltcmd.model.terrain.TerrainType
+import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Coordinate
 
-class MountainTopGenerator() : IntermediateGenerator {
-    override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableMap<Coordinate, Pair<TerrainHeight?, TerrainType?>>) {
+class MountainTopHeightMapper() : IntermediateGenerator {
+    override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld) {
         // pick random positions for mountain tops
         // set those to max height
         // from each position find the four neighbours that have no height yet

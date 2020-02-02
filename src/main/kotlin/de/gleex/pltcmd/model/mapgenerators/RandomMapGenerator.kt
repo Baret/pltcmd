@@ -1,8 +1,6 @@
 package de.gleex.pltcmd.model.mapgenerators
 
 import de.gleex.pltcmd.model.terrain.Terrain
-import de.gleex.pltcmd.model.terrain.TerrainHeight
-import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
@@ -19,13 +17,12 @@ class RandomMapGenerator(squareSideLengthInSectors: Int) : AbstractSquareMapGene
 
     override fun generateWorld(): WorldMap {
         log.info("Generating a random world of ${squareSideLengthInSectors * squareSideLengthInSectors} sectors...")
-        return super.generateWorld()
+        val started = System.currentTimeMillis()
+        val generatedWorld = super.generateWorld()
+        val generationTime = System.currentTimeMillis() - started
+        log.info("Map generation took $generationTime ms")
+        return generatedWorld
     }
 
-    override fun createTerrain(tileCoordinate: Coordinate) = Terrain.of(randomType(), randomHeight())
-
-    private fun randomType() = TerrainType.values().random()
-
-    private fun randomHeight() = TerrainHeight.values().random()
-
+    override fun createTerrain(tileCoordinate: Coordinate) = Terrain.random()
 }

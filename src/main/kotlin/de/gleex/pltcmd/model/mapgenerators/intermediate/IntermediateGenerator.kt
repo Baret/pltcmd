@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.model.mapgenerators.intermediate
 
-import de.gleex.pltcmd.model.terrain.TerrainHeight
-import de.gleex.pltcmd.model.terrain.TerrainType
+import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Coordinate
 
 /**
@@ -9,5 +8,5 @@ import de.gleex.pltcmd.model.world.Coordinate
  * intermediate generators. And it might be called to generate only a part of the whole world.
  */
 interface IntermediateGenerator {
-    fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableMap<Coordinate, Pair<TerrainHeight?, TerrainType?>>)
+    fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld)
 }
