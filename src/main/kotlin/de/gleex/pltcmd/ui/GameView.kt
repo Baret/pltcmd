@@ -65,21 +65,23 @@ class GameView(val gameWorld: GameWorld, val tileGrid: TileGrid) : BaseView(them
             when (event.code) {
                 KeyCode.LEFT -> {
                         gameWorld.scrollLeftBy(Sector.TILE_COUNT)
+                        // re-rendering of the decorations does not correctly work yet
+                        map.requestFocus()
                         Processed
                     }
                 KeyCode.RIGHT   -> {
                         gameWorld.scrollRightBy(Sector.TILE_COUNT)
-                        map.render()
+                        map.requestFocus()
                         Processed
                     }
                 KeyCode.DOWN    -> {
                         gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
-                        map.render()
+                        map.requestFocus()
                         Processed
                     }
                 KeyCode.UP      -> {
                         gameWorld.scrollForwardBy(Sector.TILE_COUNT)
-                        map.render()
+                        map.requestFocus()
                         Processed
                     }
                 else            -> Pass

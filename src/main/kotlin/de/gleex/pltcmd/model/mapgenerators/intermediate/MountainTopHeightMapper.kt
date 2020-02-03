@@ -16,6 +16,10 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
         private val MIN_TERRAIN = TerrainHeight.FOUR
     }
 
+    /**
+     * x % of main coordinates are picked to put a mountain in them
+     */
+    private val mainCoordinateQuotaForMountains = 0.10
     private val steepness = 0.60
 
     override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld) {
@@ -68,7 +72,7 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
     private fun findMountainTops(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld): Set<Coordinate> {
         val mainCoordinates = terrainMap.mainCoordinates
         // lets create mountain tops in about 10% of the map
-        val mountainTopsToFind = (mainCoordinates.size.toDouble() * 0.10).toInt()
+        val mountainTopsToFind = (mainCoordinates.size.toDouble() * mainCoordinateQuotaForMountains).toInt()
         log.debug("Trying to find locations for $mountainTopsToFind mountain tops in ${mainCoordinates.size} main coordinates")
         val pickedAreas = mutableSetOf<MainCoordinate>()
         var tries = 0

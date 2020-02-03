@@ -23,12 +23,8 @@ fun main() {
     val worldMap = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED).generateWorld()
     // - - - Testing WorldMapGenerator - - -
 
-    val initialOrigin = Coordinate(350, 400)
-    //val worldMap = RandomMapGenerator(GameOptions.SECTORS_COUNT_H, Random(GameOptions.DEBUG_MAP_SEED)).generateWorld()
-
     val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
     val gameWorld = GameWorld(worldMap)
-    gameWorld.scrollToCoordinate(initialOrigin)
     val tileGrid = application.tileGrid
     val screen = tileGrid.toScreen()
     screen.dock(GameView(gameWorld, tileGrid))
