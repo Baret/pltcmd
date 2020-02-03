@@ -5,11 +5,12 @@ import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import kotlin.random.Random
 
 /**
  * Generates a square world full of random [WorldTile]s.
  */
-class RandomMapGenerator(squareSideLengthInSectors: Int) : AbstractSquareMapGenerator(squareSideLengthInSectors) {
+class RandomMapGenerator(squareSideLengthInSectors: Int, override val rand: Random) : AbstractSquareMapGenerator(squareSideLengthInSectors, rand) {
 
     companion object {
         private val log = LoggerFactory.getLogger(RandomMapGenerator::class)

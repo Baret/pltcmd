@@ -7,7 +7,7 @@ import de.gleex.pltcmd.model.world.MainCoordinate
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 
-class MountainTopHeightMapper() : IntermediateGenerator {
+class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator {
     companion object {
         private val log = LoggerFactory.getLogger(this::class)
         // TODO: make max (and maybe also min) values a range
@@ -47,7 +47,7 @@ class MountainTopHeightMapper() : IntermediateGenerator {
 
     private fun lowerOrEqualThan(height: TerrainHeight): TerrainHeight {
         // and go down one or none with a chance of let's say 50%
-        return if(Random.nextDouble() < 0.50) {
+        return if(rand.nextDouble() < 0.50) {
             height - 1
         } else {
             height
@@ -74,10 +74,10 @@ class MountainTopHeightMapper() : IntermediateGenerator {
             pickedLocations.add(
                     mainCoordinate.
                             toCoordinate().
-                            withRelativeEasting(Random.nextInt(100)).
-                            withRelativeNorthing(Random.nextInt(100)))
+                            withRelativeEasting(rand.nextInt(100)).
+                            withRelativeNorthing(rand.nextInt(100)))
         }
-        log.debug("Found mountain top locations $pickedLocations")
+        log.debug("Found mountain top locations ${pickedLocations.sorted()}")
         return pickedLocations.toSet()
     }
 }

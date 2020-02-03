@@ -24,8 +24,8 @@ class WorldMapGenerator(
     private val generators: List<IntermediateGenerator> = listOf(
             // different generators go here
             // GenericHeightMapper()
-            RandomMapGenerator(worldSizeWidthInTiles / Sector.TILE_COUNT),
-            MountainTopHeightMapper()
+            RandomMapGenerator(worldSizeWidthInTiles / Sector.TILE_COUNT, random),
+            MountainTopHeightMapper(random)
 
             // examples...
             // terrain type generator(s)

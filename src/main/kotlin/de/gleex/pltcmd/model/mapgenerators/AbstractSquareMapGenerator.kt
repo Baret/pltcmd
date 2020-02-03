@@ -7,11 +7,12 @@ import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
+import kotlin.random.Random
 
 /**
  * Generates a square world for a given amount of sectors on each side. Implementations must provide each tile.
  */
-abstract class AbstractSquareMapGenerator(protected val squareSideLengthInSectors: Int) : MapGenerator, IntermediateGenerator {
+abstract class AbstractSquareMapGenerator(protected val squareSideLengthInSectors: Int, override val rand: Random) : MapGenerator, IntermediateGenerator {
 
     /**
      * Generates a square world sector by sector. Sub classes must provide the [WorldTile]s.
