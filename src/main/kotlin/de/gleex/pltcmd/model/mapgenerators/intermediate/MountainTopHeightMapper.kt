@@ -16,6 +16,8 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
         private val MIN_TERRAIN = TerrainHeight.FOUR
     }
 
+    private val steepness = 0.60
+
     override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld) {
         // pick random positions for mountain tops
         val mountainTopLocations = findMountainTops(bottomLeftCoordinate, topRightCoordinate, terrainMap)
@@ -56,8 +58,7 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
     }
 
     private fun lowerOrEqualThan(height: TerrainHeight): TerrainHeight {
-        // and go down one or none with a chance of let's say 50%
-        return if(rand.nextDouble() < 0.50) {
+        return if(rand.nextDouble() < steepness) {
             height - 1
         } else {
             height

@@ -2,6 +2,7 @@ package de.gleex.pltcmd.ui
 
 import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.game.MapBlock
+import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.MultiSelect
@@ -15,6 +16,7 @@ import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
+import org.hexworks.zircon.api.uievent.*
 import org.hexworks.zircon.api.view.base.BaseView
 
 /**
@@ -57,6 +59,32 @@ class GameView(val gameWorld: GameWorld, val tileGrid: TileGrid) : BaseView(them
 
         log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
         log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
+
+        log.debug("Adding keyboardlistener to screen")
+        screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, _ ->
+            when (event.code) {
+                KeyCode.LEFT -> {
+                        gameWorld.scrollLeftBy(Sector.TILE_COUNT)
+                        Processed
+                    }
+                KeyCode.RIGHT   -> {
+                        gameWorld.scrollRightBy(Sector.TILE_COUNT)
+                        map.render()
+                        Processed
+                    }
+                KeyCode.DOWN    -> {
+                        gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
+                        map.render()
+                        Processed
+                    }
+                KeyCode.UP      -> {
+                        gameWorld.scrollForwardBy(Sector.TILE_COUNT)
+                        map.render()
+                        Processed
+                    }
+                else            -> Pass
+            }
+        }
 
         // playing around with stuff...
         val sidebarWidth = sidebar.contentSize.width
