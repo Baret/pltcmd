@@ -15,11 +15,11 @@ import kotlin.random.Random
 fun main() {
 
     // - - - Testing WorldMapGenerator - - -
-    WorldMapGenerator(GameOptions.DEBUG_MAP_SEED).generateWorld()
+    val worldMap = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED).generateWorld()
     // - - - Testing WorldMapGenerator - - -
 
-    val initialOrigin = Coordinate(350, 200)
-    val worldMap = RandomMapGenerator(GameOptions.SECTORS_COUNT_H, Random(GameOptions.DEBUG_MAP_SEED)).generateWorld()
+    val initialOrigin = Coordinate(350, 400)
+    //val worldMap = RandomMapGenerator(GameOptions.SECTORS_COUNT_H, Random(GameOptions.DEBUG_MAP_SEED)).generateWorld()
 
     val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
     val gameWorld = GameWorld(worldMap)
@@ -31,6 +31,6 @@ fun main() {
     val visibleBlocks = gameWorld.visibleBlocks.toList()
     repeat(20) {
         val randomPosition = visibleBlocks.random()
-        randomPosition.second.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
+        //randomPosition.second.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
     }
 }

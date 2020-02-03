@@ -3,10 +3,8 @@ package de.gleex.pltcmd.model.mapgenerators.data
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
-import de.gleex.pltcmd.model.world.Coordinate
-import de.gleex.pltcmd.model.world.MainCoordinate
-import de.gleex.pltcmd.model.world.Sector
-import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.model.world.*
+import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * A world that is currently being generated. When created it has a size but none of its tiles are filled yet.
@@ -20,8 +18,8 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
     val terrainMap = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
 
     private val topRightCoordinate = bottomLeftCoordinate.
-            withRelativeEasting(worldSizeWidthInTiles).
-            withRelativeNorthing(worldSizeHeightInTiles)
+            withRelativeEasting(worldSizeWidthInTiles - 1).
+            withRelativeNorthing(worldSizeHeightInTiles - 1)
 
     val mainCoordinates: Set<MainCoordinate>
         get() {
@@ -32,6 +30,10 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
             }
             return coords
         }
+
+    companion object {
+        private val log = LoggerFactory.getLogger(this::class)
+    }
 
     init {
         require(bottomLeftCoordinate.eastingFromLeft % Sector.TILE_COUNT == 0
@@ -46,9 +48,26 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
 
     fun toWorldMap(): WorldMap {
         // some require() checks to validate a full map has been generated -> i.e. no null terrain types and heights
+        log.debug("Creating world map from ${terrainMap.size} tiles")
 
         // generate sectors out of terrainMap
-        val sectors = setOf<Sector>()
+        val sectors = mutableSetOf<Sector>()
+        for(sectorOriginNorthing in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom step Sector.TILE_COUNT) {
+            for(sectorOriginEasting in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft step Sector.TILE_COUNT) {
+                val tiles = mutableSetOf<WorldTile>()
+                val sectorEndEasting = sectorOriginEasting + Sector.TILE_COUNT - 1
+                val sectorEndNorthing = sectorOriginNorthing + Sector.TILE_COUNT - 1
+                for(y in sectorOriginNorthing..sectorEndNorthing) {
+                    for(x in sectorOriginEasting..sectorEndEasting) {
+                        val currentCoordinate = Coordinate(x, y)
+                        // expecting no null values here
+                        val (height, type) = terrainMap[currentCoordinate]!!
+                        tiles.add(WorldTile(currentCoordinate, Terrain.of(type!!, height!!)))
+                    }
+                }
+                sectors.add(Sector(Coordinate(sectorOriginEasting, sectorOriginNorthing), tiles))
+            }
+        }
         return WorldMap(sectors)
     }
 

@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.mapgenerators.intermediate
 
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.terrain.TerrainHeight
+import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.MainCoordinate
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -23,6 +24,7 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
         // set those to max height
         mountainTopLocations.forEach {
             terrainMap[it] = MAX_TERRAIN
+            terrainMap[it] = TerrainType.MOUNTAIN
             frontier.add(it)
         }
         // from each position find the four neighbours that have no height yet
@@ -31,18 +33,26 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
             frontier.forEach { currentCoordinate ->
                 val currentHeight = terrainMap.heightAt(currentCoordinate)!!
                 if(currentHeight > MIN_TERRAIN) {
-                    val unprocessedNeighbors = terrainMap.
-                            neighborsOf(currentCoordinate).
+                    val neighbors = terrainMap.neighborsOf(currentCoordinate)
+                    val unprocessedNeighbors = neighbors.
                             filter { processedTiles.contains(it).not() }
                     unprocessedNeighbors.forEach { neighbor ->
                         terrainMap[neighbor] = lowerOrEqualThan(currentHeight)
-                        processedTiles.add(neighbor)
+                        // for better visibility setting a uniform terrainType. But later this will be done
+                        // by another intermeidate generator
+                        terrainMap[neighbor] = TerrainType.MOUNTAIN
+                        newFrontier.add(neighbor)
                     }
                 }
             }
+            processedTiles.addAll(frontier)
             frontier.clear()
             frontier.addAll(newFrontier)
+            if(processedTiles.size > 400 && processedTiles.size % 500 < 100) {
+                log.debug("Processed ${processedTiles.size} tiles. Max height to descend from is currenlty ${frontier.map { c -> terrainMap.terrainMap[c]!!.first!! }.map { it.value }.max()}")
+            }
         }
+        log.debug("Processed ${processedTiles.size} tiles to create ${mountainTopLocations.size} mountains")
     }
 
     private fun lowerOrEqualThan(height: TerrainHeight): TerrainHeight {
@@ -62,7 +72,7 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
         val pickedAreas = mutableSetOf<MainCoordinate>()
         var tries = 0
         do {
-            val candidate = mainCoordinates.random()
+            val candidate = mainCoordinates.random(rand)
             if(candidate.toCoordinate() in bottomLeftCoordinate..topRightCoordinate) {
                 pickedAreas.add(candidate)
             }

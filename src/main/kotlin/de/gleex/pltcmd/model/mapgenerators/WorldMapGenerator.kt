@@ -38,19 +38,22 @@ class WorldMapGenerator(
         // And intermediate generators might only be interested in either type or height and if a tile has already been generated
         val partiallyGeneratedWorld = MutableWorld(bottomLeftCoordinate, worldSizeWidthInTiles, worldSizeHeightInTiles)
         val topRightCoordinate = bottomLeftCoordinate.
-                withRelativeEasting(worldSizeWidthInTiles).
-                withRelativeNorthing(worldSizeHeightInTiles)
-        log.info("Generating a random world of ${worldSizeWidthInTiles * worldSizeHeightInTiles} tiles...")
+                withRelativeEasting(worldSizeWidthInTiles - 1).
+                withRelativeNorthing(worldSizeHeightInTiles - 1)
+        //log.debug("Mutable world of size $worldSizeWidthInTiles * $worldSizeHeightInTiles tiles from $bottomLeftCoordinate to $topRightCoordinate is ready to be created.")
+        log.info("Generating a random world of $worldSizeWidthInTiles * $worldSizeHeightInTiles = ${worldSizeWidthInTiles * worldSizeHeightInTiles} tiles between $bottomLeftCoordinate and $topRightCoordinate")
         val started = System.currentTimeMillis()
         // Maybe use forEachIndexed and tell each generator which position it has? Or even the whole chain?
         generators.forEach {
             // this part might be more complicated later
             // for example each generator could only be called for certain areas of the map, depending on previous generation results.
             // There could also be a context for each MainCoordinate to have some kind of "biomes" (which could actually be introduced later).
+            val intermediateStarted = System.currentTimeMillis()
             it.generateArea(
                     bottomLeftCoordinate,
                     topRightCoordinate,
                     partiallyGeneratedWorld)
+            log.debug("Generator ${it::class.simpleName} took ${System.currentTimeMillis() - intermediateStarted} ms")
         }
         val generationTime = System.currentTimeMillis() - started
         log.info("Map generation took $generationTime ms")
