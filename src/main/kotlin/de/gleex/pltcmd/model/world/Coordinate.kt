@@ -19,6 +19,14 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     /** Creates a new [Coordinate] that is moved by the given amount to the north from this coordinate */
     fun withRelativeNorthing(toNorth: Int) = Coordinate(eastingFromLeft, northingFromBottom + toNorth)
 
+    /** gets the four neighboring coordinates **/
+    fun neighbors() = listOf(
+            withRelativeNorthing(-1),
+            withRelativeEasting(-1),
+            withRelativeEasting(1),
+            withRelativeNorthing(1)
+    ).sorted()
+
     /**
      * Sort from most south-west to most north-east. Going line wise first east and then north.
      * Example: 2|2, 3|2, 1|3

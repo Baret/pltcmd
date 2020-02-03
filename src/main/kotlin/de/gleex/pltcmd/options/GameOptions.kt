@@ -9,6 +9,7 @@ import org.hexworks.zircon.api.data.Size3D
  * Options that change the behaviour of the game.
  */
 object GameOptions {
+    val DEBUG_MAP_SEED: Long = 5488540751658L
     val attenuationModel = createPropertyFrom(PercentageReducingAttenuation())
 
     const val SECTORS_COUNT_H = 10

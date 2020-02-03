@@ -72,4 +72,15 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
     operator fun set(coordinate: Coordinate, terrainType: TerrainType) {
         terrainMap[coordinate] = Pair(terrainMap[coordinate]?.first, terrainType)
     }
+
+    /**
+     * Returns the neighbors of the given coordinate that are in range of this world.
+     */
+    fun neighborsOf(coordinate: Coordinate): List<Coordinate> =
+            coordinate.neighbors().filter { it in bottomLeftCoordinate..topRightCoordinate }
+
+    /**
+     * Gets the height at the given coordinate, if present
+     */
+    fun heightAt(coordinate: Coordinate) = terrainMap[coordinate]?.first
 }
