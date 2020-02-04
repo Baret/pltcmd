@@ -18,11 +18,12 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
         private val MIN_TERRAIN = TerrainHeight.FOUR
     }
 
+    private val mountainTopsPerMainCoordinate: Int = 2
     /**
      * x % of main coordinates are picked to put a mountain in them
      */
-    private val mainCoordinateQuotaForMountains = 0.10
-    private val steepness = 0.50
+    private val mainCoordinateQuotaForMountains = 0.05
+    private val steepness = 0.60
 
     override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld) {
         // pick random positions for mountain tops
@@ -45,13 +46,12 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
         while (frontier.isNotEmpty()) {
             val newFrontier = mutableSetOf<Coordinate>()
                 frontier.forEach { currentCoordinate ->
-                    executor.execute {
+//                    executor.execute {
                         val currentHeight = terrainMap.heightAt(currentCoordinate)!!
                         if (currentHeight > MIN_TERRAIN) {
                             val neighbors = terrainMap.neighborsOf(currentCoordinate)
                             val unprocessedNeighbors = neighbors.filter {
-                                processedTiles.contains(it)
-                                        .not()
+                                processedTiles.contains(it).not()
                             }
                             unprocessedNeighbors.forEach { neighbor ->
                                 terrainMap[neighbor] = lowerOrEqualThan(currentHeight)
@@ -60,7 +60,7 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
                                 terrainMap[neighbor] = TerrainType.MOUNTAIN
                                 newFrontier.add(neighbor)
                             }
-                        }
+//                        }
                     }
             }
             processedTiles.addAll(frontier)
@@ -70,7 +70,7 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
                 log.debug("Processed ${processedTiles.size} tiles. Max height to descend from is currenlty ${frontier.map { c -> terrainMap.terrainMap[c]!!.first!! }.map { it.value }.max()}")
             }
         }
-        executor.awaitTermination(30, TimeUnit.SECONDS)
+        executor.awaitTermination(10, TimeUnit.SECONDS)
         executor.shutdown()
     }
 
@@ -99,6 +99,7 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
 
         val pickedLocations = mutableSetOf<Coordinate>()
         pickedAreas.forEach { mainCoordinate ->
+            for(i in 0 until mountainTopsPerMainCoordinate)
             pickedLocations.add(
                     mainCoordinate.
                             toCoordinate().
