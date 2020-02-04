@@ -16,7 +16,10 @@ import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
-import org.hexworks.zircon.api.uievent.*
+import org.hexworks.zircon.api.uievent.KeyCode
+import org.hexworks.zircon.api.uievent.KeyboardEventType
+import org.hexworks.zircon.api.uievent.Pass
+import org.hexworks.zircon.api.uievent.Processed
 import org.hexworks.zircon.api.view.base.BaseView
 
 /**
@@ -75,12 +78,12 @@ class GameView(val gameWorld: GameWorld, val tileGrid: TileGrid) : BaseView(them
                         Processed
                     }
                 KeyCode.DOWN    -> {
-                        gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
+                        gameWorld.scrollForwardBy(Sector.TILE_COUNT)
                         map.requestFocus()
                         Processed
                     }
                 KeyCode.UP      -> {
-                        gameWorld.scrollForwardBy(Sector.TILE_COUNT)
+                        gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
                         map.requestFocus()
                         Processed
                     }

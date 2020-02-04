@@ -6,6 +6,8 @@ import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.MainCoordinate
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator {
@@ -20,7 +22,7 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
      * x % of main coordinates are picked to put a mountain in them
      */
     private val mainCoordinateQuotaForMountains = 0.10
-    private val steepness = 0.60
+    private val steepness = 0.50
 
     override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld) {
         // pick random positions for mountain tops
@@ -34,31 +36,42 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
             frontier.add(it)
         }
         // from each position find the four neighbours that have no height yet
+        generateMountains(frontier, terrainMap, processedTiles)
+        log.debug("Processed ${processedTiles.size} tiles to create ${mountainTopLocations.size} mountains")
+    }
+
+    private fun generateMountains(frontier: MutableSet<Coordinate>, terrainMap: MutableWorld, processedTiles: MutableSet<Coordinate>) {
+        val executor = Executors.newFixedThreadPool(10)
         while (frontier.isNotEmpty()) {
             val newFrontier = mutableSetOf<Coordinate>()
-            frontier.forEach { currentCoordinate ->
-                val currentHeight = terrainMap.heightAt(currentCoordinate)!!
-                if(currentHeight > MIN_TERRAIN) {
-                    val neighbors = terrainMap.neighborsOf(currentCoordinate)
-                    val unprocessedNeighbors = neighbors.
-                            filter { processedTiles.contains(it).not() }
-                    unprocessedNeighbors.forEach { neighbor ->
-                        terrainMap[neighbor] = lowerOrEqualThan(currentHeight)
-                        // for better visibility setting a uniform terrainType. But later this will be done
-                        // by another intermeidate generator
-                        terrainMap[neighbor] = TerrainType.MOUNTAIN
-                        newFrontier.add(neighbor)
+                frontier.forEach { currentCoordinate ->
+                    executor.execute {
+                        val currentHeight = terrainMap.heightAt(currentCoordinate)!!
+                        if (currentHeight > MIN_TERRAIN) {
+                            val neighbors = terrainMap.neighborsOf(currentCoordinate)
+                            val unprocessedNeighbors = neighbors.filter {
+                                processedTiles.contains(it)
+                                        .not()
+                            }
+                            unprocessedNeighbors.forEach { neighbor ->
+                                terrainMap[neighbor] = lowerOrEqualThan(currentHeight)
+                                // for better visibility setting a uniform terrainType. But later this will be done
+                                // by another intermediate generator
+                                terrainMap[neighbor] = TerrainType.MOUNTAIN
+                                newFrontier.add(neighbor)
+                            }
+                        }
                     }
-                }
             }
             processedTiles.addAll(frontier)
             frontier.clear()
             frontier.addAll(newFrontier)
-            if(processedTiles.size > 400 && processedTiles.size % 500 < 100) {
+            if (processedTiles.size > 400 && processedTiles.size % 500 < 100) {
                 log.debug("Processed ${processedTiles.size} tiles. Max height to descend from is currenlty ${frontier.map { c -> terrainMap.terrainMap[c]!!.first!! }.map { it.value }.max()}")
             }
         }
-        log.debug("Processed ${processedTiles.size} tiles to create ${mountainTopLocations.size} mountains")
+        executor.awaitTermination(30, TimeUnit.SECONDS)
+        executor.shutdown()
     }
 
     private fun lowerOrEqualThan(height: TerrainHeight): TerrainHeight {
