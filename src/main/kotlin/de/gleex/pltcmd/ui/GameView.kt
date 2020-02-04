@@ -25,9 +25,9 @@ import org.hexworks.zircon.api.view.base.BaseView
 /**
  * The view to display the map, radio log and interaction panel
  */
-class GameView(val gameWorld: GameWorld, val tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
+class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
     companion object {
-        val log = LoggerFactory.getLogger(GameView::class)
+        private val log = LoggerFactory.getLogger(GameView::class)
     }
 
     override fun onDock() {
