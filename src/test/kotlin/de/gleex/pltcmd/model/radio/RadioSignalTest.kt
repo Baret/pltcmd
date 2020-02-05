@@ -88,10 +88,10 @@ class RadioSignalTest: WordSpec() {
  * Creates a list of n "tiles" of lowest [TerrainHeight].
  */
 private fun Int.lowestTerrainTiles() =
-        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.values().first())}
+        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.MIN)}
 
 /**
  * Creates a list of n "tiles" of highest [TerrainHeight].
  */
 private fun Int.highestTerrainTiles() =
-        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.values().last())}
+        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.MAX)}

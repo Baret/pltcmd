@@ -15,16 +15,26 @@ enum class TerrainHeight(val value: Int): Comparable<TerrainHeight> {
     NINE(9),
     TEN(10);
 
+    companion object {
+        fun random() = values().random()
+
+        /**
+         * The hi
+         */
+        val MAX = values().last()
+        val MIN = values().first()
+    }
+
     operator fun plus(valueToAdd: Int) =
             when (this) {
                 TEN  -> TEN
-                else -> enumValues<TerrainHeight>()[ordinal + valueToAdd]
+                else -> values()[ordinal + valueToAdd]
             }
 
     operator fun minus(valueToSubtract: Int) =
             when (this) {
                 ONE  -> ONE
-                else -> enumValues<TerrainHeight>()[ordinal - valueToSubtract]
+                else -> values()[ordinal - valueToSubtract]
             }
 
 }

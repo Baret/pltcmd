@@ -14,7 +14,7 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
     companion object {
         private val log = LoggerFactory.getLogger(this::class)
         // TODO: make max (and maybe also min) values a range
-        private val MAX_TERRAIN = TerrainHeight.values().last()
+        private val MAX_TERRAIN = TerrainHeight.MAX
         private val MIN_TERRAIN = TerrainHeight.FOUR
     }
 
