@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.model.mapgenerators
 
+import de.gleex.pltcmd.mapping.dijkstra.DijkstraMap
+import de.gleex.pltcmd.model.world.Coordinate
 import kotlin.random.Random
 
 /**
@@ -14,4 +16,6 @@ data class GenerationContext(
     companion object {
         fun fromRandom(random: Random) = GenerationContext(random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble())
     }
+
+    val mountainTops = DijkstraMap<Coordinate>()
 }
