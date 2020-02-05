@@ -19,9 +19,12 @@ enum class TerrainHeight(val value: Int): Comparable<TerrainHeight> {
         fun random() = values().random()
 
         /**
-         * The hi
+         * The highest possible terrain
          */
         val MAX = values().last()
+        /**
+         * The lowest possible terrain
+         */
         val MIN = values().first()
     }
 
