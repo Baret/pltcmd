@@ -20,4 +20,24 @@ class TerrainHeightTest: StringSpec({
             it.value shouldBeGreaterThanOrEqual TerrainHeight.MIN.value
         }
     }
+
+    "One plus one is two :)" {
+        TerrainHeight.ONE + 1 shouldBe TerrainHeight.TWO
+    }
+
+    "Adding to the max should have no effect" {
+        for(i in 0..50) {
+            TerrainHeight.MAX + i shouldBe TerrainHeight.MAX
+        }
+    }
+
+    "Subtraction should work, too" {
+        TerrainHeight.FOUR - 2 shouldBe TerrainHeight.TWO
+    }
+
+    "Subtracting from min should have no effect" {
+        for(i in 0..50) {
+            TerrainHeight.MIN - i shouldBe TerrainHeight.MIN
+        }
+    }
 })
