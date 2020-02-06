@@ -12,7 +12,6 @@ import kotlin.random.Random
 interface IntermediateGenerator {
     val rand: Random
     val context: GenerationContext
-        get() = GenerationContext.fromRandom(rand)
 
     fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld)
 }

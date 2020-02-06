@@ -2,6 +2,12 @@ package de.gleex.pltcmd.mapping.dijkstra
 
 import org.hexworks.cobalt.datatypes.Maybe
 
+/**
+ * A generic and rather simple implementation of a DijkstraMap (http://www.roguebasin.com/index.php?title=Dijkstra_Maps_Visualized)
+ * It must be built node by node, which is handy when a map generator sets one tile after another and wants to
+ * provide a way of tracing a path back to the origin.
+ *
+ */
 class DijkstraMap<T>(vararg initialTargets: T) {
     private val targets = initialTargets.toMutableSet()
 

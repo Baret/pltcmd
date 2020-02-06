@@ -12,7 +12,11 @@ import kotlin.random.Random
 /**
  * Generates a square world for a given amount of sectors on each side. Implementations must provide each tile.
  */
-abstract class AbstractSquareMapGenerator(protected val squareSideLengthInSectors: Int, override val rand: Random) : MapGenerator, IntermediateGenerator {
+abstract class AbstractSquareMapGenerator(
+        protected val squareSideLengthInSectors: Int,
+        override val rand: Random,// This is not correct, but we don't want to fiddle with constructors here for now
+        override val context: GenerationContext = GenerationContext.fromRandom(rand)
+) : MapGenerator, IntermediateGenerator {
 
     /**
      * Generates a square world sector by sector. Sub classes must provide the [WorldTile]s.

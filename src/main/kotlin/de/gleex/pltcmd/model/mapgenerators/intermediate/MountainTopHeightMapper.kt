@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.mapgenerators.intermediate
 
+import de.gleex.pltcmd.model.mapgenerators.GenerationContext
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
@@ -13,7 +14,7 @@ import kotlin.random.Random
 /**
  * Creates a number of mountain tops and slowly decreases the terrain around them.
  */
-class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator {
+class MountainTopHeightMapper(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator {
     companion object {
         private val log = LoggerFactory.getLogger(this::class)
         // TODO: make max (and maybe also min) values a range, depending on the context
@@ -50,7 +51,6 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
         val executor = Executors.newFixedThreadPool(10)
         var targetDistance = 0
         // TESTING
-        val firstTop = frontier.first()
         var lastCoord = Coordinate(0,0)
         while (frontier.isNotEmpty()) {
             val newFrontier = mutableSetOf<Coordinate>()
@@ -87,13 +87,17 @@ class MountainTopHeightMapper(override val rand: Random) : IntermediateGenerator
         executor.shutdown()
 
         // TESTING
-        log.debug("First top is $firstTop and distance is ${context.mountainTops.distanceFrom(firstTop)}")
+        log.debug("Getting path from $lastCoord to closest mountain top and 'painting' it with HILL")
         val path = context.mountainTops.pathFrom(lastCoord).fold({"not found!"}) {
             it.forEach { c -> terrainMap[c] = TerrainType.HILL }
             it.joinToString(" -> ")
         }
-        log.debug("Path from $lastCoord to the closest mountainTop has distance ${context.mountainTops.distanceFrom(lastCoord)} is: $path")
-        log.debug("Distance from 0,0 is ${context.mountainTops.distanceFrom(Coordinate(0,0))}")
+        log.debug("The (probably) longest path has distance ${context.mountainTops.distanceFrom(lastCoord)} and is: $path")
+        val randomCoord = processedTiles.random()
+        log.debug("painting a path with length ${context.mountainTops.distanceFrom(randomCoord).get()} from random coordinate $randomCoord to closest mountain top with GRASSLAND")
+        context.mountainTops.pathFrom(randomCoord).ifPresent {
+            it.forEach { c -> terrainMap[c] = TerrainType.GRASSLAND }
+        }
     }
 
     private fun lowerOrEqualThan(height: TerrainHeight): TerrainHeight {

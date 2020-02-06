@@ -68,7 +68,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
             when (event.code) {
                 KeyCode.LEFT -> {
                         gameWorld.scrollLeftBy(Sector.TILE_COUNT)
-                        // re-rendering of the decorations does not correctly work yet
+                        // TODO: re-rendering of the decorations does not correctly work yet (might be fixed by Zircon in GameComponent)
                         Processed
                     }
                 KeyCode.RIGHT   -> {

@@ -19,12 +19,13 @@ class WorldMapGenerator(
         private val worldSizeHeightInTiles: Int = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
 ) {
     private val random = Random(seed)
+    private val context = GenerationContext.fromRandom(random)
 
     private val generators: List<IntermediateGenerator> = listOf(
             // different generators go here
             // GenericHeightMapper()
             RandomMapGenerator(worldSizeWidthInTiles / Sector.TILE_COUNT, random),
-            MountainTopHeightMapper(random)
+            MountainTopHeightMapper(random, context)
 
             // examples...
             // terrain type generator(s)
