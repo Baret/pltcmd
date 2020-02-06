@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.model.terrain
 
+import kotlin.random.Random
+
 /**
  * Represents the height of a tile.
  */
@@ -16,7 +18,7 @@ enum class TerrainHeight(val value: Int): Comparable<TerrainHeight> {
     TEN(10);
 
     companion object {
-        fun random() = values().random()
+        fun random(r: Random = Random) = values().random(r)
 
         /**
          * The highest possible terrain

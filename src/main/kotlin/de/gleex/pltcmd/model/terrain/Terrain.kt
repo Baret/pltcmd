@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.model.terrain
 
+import kotlin.random.Random
+
 data class Terrain private constructor(val type: TerrainType, val height: TerrainHeight) {
 
     companion object {
@@ -16,7 +18,7 @@ data class Terrain private constructor(val type: TerrainType, val height: Terrai
         /**
          * Return a randomly created terrain.
          */
-        fun random() = of(TerrainType.values().random(), TerrainHeight.random())
+        fun random(r: Random = Random) = of(TerrainType.values().random(r), TerrainHeight.random(r))
     }
 
 }

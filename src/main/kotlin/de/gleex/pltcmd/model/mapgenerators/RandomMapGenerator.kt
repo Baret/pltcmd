@@ -25,5 +25,5 @@ class RandomMapGenerator(squareSideLengthInSectors: Int, override val rand: Rand
         return generatedWorld
     }
 
-    override fun createTerrain(tileCoordinate: Coordinate) = Terrain.random()
+    override fun createTerrain(tileCoordinate: Coordinate) = Terrain.random(rand)
 }
