@@ -10,7 +10,7 @@ import org.hexworks.zircon.api.graphics.TileGraphics
 class MapGridDecorationRenderer : ComponentDecorationRenderer {
 
     override val occupiedSize = Size.create(2, 2)
-    override val offset = Position.create(1, 1)
+    override val offset = Position.offset1x1()
 
     override fun render(tileGraphics: TileGraphics, context: ComponentDecorationRenderContext) {
         val size = tileGraphics.size
