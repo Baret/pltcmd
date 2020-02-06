@@ -28,7 +28,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
     /**
      * x % of main coordinates are picked to put a mountain in them
      */
-    private val mainCoordinateQuotaForMountains = 0.05
+    private val mainCoordinateQuotaForMountains = 0.15
     private val steepness = 0.60
 
     override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
@@ -49,12 +49,12 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
     }
 
     private fun generateMountains(frontier: MutableSet<Coordinate>, terrainMap: MutableWorld, processedTiles: MutableSet<Coordinate>) {
-        val executor = Executors.newFixedThreadPool(10)
+        //val executor = Executors.newFixedThreadPool(10)
         var targetDistance = 0
         while (frontier.isNotEmpty()) {
             val newFrontier = mutableSetOf<Coordinate>()
                 frontier.forEach { currentCoordinate ->
-//                    executor.execute {
+                    //executor.submit {
                         val currentHeight = terrainMap.heightAt(currentCoordinate)!!
                         if (currentHeight > MIN_TERRAIN) {
                             val neighbors = terrainMap.neighborsOf(currentCoordinate)
@@ -69,8 +69,8 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
                                 newFrontier.add(neighbor)
                                 context.mountainTops.add(neighbor, currentCoordinate, targetDistance)
                             }
-//                        }
-                    }
+                        }
+                    //}
             }
             processedTiles.addAll(frontier)
             frontier.clear()
@@ -80,8 +80,14 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
                 log.debug("Processed ${processedTiles.size} tiles. Max height to descend from is currently ${frontier.map { c -> terrainMap.terrainMap[c]!!.first!! }.map { it.value }.max()}")
             }
         }
-        executor.awaitTermination(10, TimeUnit.SECONDS)
-        executor.shutdown()
+        /*
+        if(!executor.awaitTermination(5, TimeUnit.MINUTES)) {
+            executor.shutdown()
+            if(!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                executor.shutdownNow()
+            }
+        }
+         */
     }
 
     private fun lowerOrEqualThan(height: TerrainHeight): TerrainHeight {

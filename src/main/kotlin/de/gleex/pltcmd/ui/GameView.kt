@@ -12,9 +12,13 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
+import org.hexworks.zircon.api.Modifiers
+import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.component.ComponentAlignment
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
+import org.hexworks.zircon.api.graphics.Symbols
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.uievent.KeyCode
 import org.hexworks.zircon.api.uievent.KeyboardEventType
@@ -65,23 +69,32 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
 
         log.debug("Adding keyboardlistener to screen")
         screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, _ ->
+            val arrow = Tile.newBuilder().withForegroundColor(TileColor.create(255, 0, 0)).withModifiers(Modifiers.fadeOut())
             when (event.code) {
                 KeyCode.LEFT -> {
-                        gameWorld.scrollLeftBy(Sector.TILE_COUNT)
-                        // TODO: re-rendering of the decorations does not correctly work yet (might be fixed by Zircon in GameComponent)
-                        Processed
+                    val centerposition = map.absolutePosition + Position.create(-1, map.size.height / 2)
+                    screen.draw(arrow.withCharacter(Symbols.ARROW_LEFT).buildCharacterTile(), centerposition)
+                    gameWorld.scrollLeftBy(Sector.TILE_COUNT)
+                    // TODO: re-rendering of the decorations does not correctly work yet (might be fixed by Zircon in GameComponent)
+                    Processed
                     }
                 KeyCode.RIGHT   -> {
-                        gameWorld.scrollRightBy(Sector.TILE_COUNT)
-                        Processed
+                    val centerposition = map.absolutePosition + Position.create(map.size.width, map.size.height / 2)
+                    screen.draw(arrow.withCharacter(Symbols.ARROW_RIGHT).buildCharacterTile(), centerposition)
+                    gameWorld.scrollRightBy(Sector.TILE_COUNT)
+                    Processed
                     }
                 KeyCode.DOWN    -> {
-                        gameWorld.scrollForwardBy(Sector.TILE_COUNT)
-                        Processed
+                    val centerposition = map.absolutePosition + Position.create(map.size.width / 2, map.size.height)
+                    screen.draw(arrow.withCharacter(Symbols.ARROW_DOWN).buildCharacterTile(), centerposition)
+                    gameWorld.scrollForwardBy(Sector.TILE_COUNT)
+                    Processed
                     }
                 KeyCode.UP      -> {
-                        gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
-                        Processed
+                    val centerposition = map.absolutePosition + Position.create(map.size.width / 2, -1)
+                    screen.draw(arrow.withCharacter(Symbols.ARROW_UP).buildCharacterTile(), centerposition)
+                    gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
+                    Processed
                     }
                 else            -> Pass
             }
