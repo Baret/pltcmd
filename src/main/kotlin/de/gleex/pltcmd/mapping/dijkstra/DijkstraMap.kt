@@ -9,12 +9,20 @@ import org.hexworks.cobalt.datatypes.Maybe
  *
  */
 class DijkstraMap<T>(vararg initialTargets: T) {
-    private val targets = initialTargets.toMutableSet()
+    private val _targets = initialTargets.toMutableSet()
+    val targets
+        get() = _targets.toSet()
+
 
     private val downstreamMap = mutableMapOf<T, Pair<T, Int>>()
 
+    val maxDistance: Int
+        get() {
+            return downstreamMap.map { it.value.second }.max() ?: 0
+        }
+
     fun addTarget(target: T) {
-        targets.add(target)
+        _targets.add(target)
     }
 
     fun add(from: T, to: T, targetDistance: Int) {
@@ -22,7 +30,7 @@ class DijkstraMap<T>(vararg initialTargets: T) {
     }
 
     fun pathFrom(from: T): Maybe<Sequence<T>> {
-        if(targets.contains(from)) {
+        if(_targets.contains(from)) {
             return Maybe.of(sequenceOf(from))
         }
         if(downstreamMap.containsKey(from)) {
@@ -45,7 +53,7 @@ class DijkstraMap<T>(vararg initialTargets: T) {
     }
 
     fun distanceFrom(from: T): Maybe<Int> {
-        if(targets.contains(from)) {
+        if(_targets.contains(from)) {
             return Maybe.of(0)
         }
         val distance = downstreamMap[from]?.let {
@@ -53,4 +61,11 @@ class DijkstraMap<T>(vararg initialTargets: T) {
         }
         return Maybe.ofNullable(distance)
     }
+
+    /**
+     * Finds all nodes with the given distance to a target.
+     */
+    fun allWithDistance(distance: Int): Set<T> = downstreamMap.
+                                                    filter { (_, value) -> (value.second + 1) == distance}.
+                                                    keys
 }

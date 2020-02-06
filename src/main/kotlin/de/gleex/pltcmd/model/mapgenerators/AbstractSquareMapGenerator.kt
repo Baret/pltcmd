@@ -3,10 +3,7 @@ package de.gleex.pltcmd.model.mapgenerators
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.mapgenerators.intermediate.IntermediateGenerator
 import de.gleex.pltcmd.model.terrain.Terrain
-import de.gleex.pltcmd.model.world.Coordinate
-import de.gleex.pltcmd.model.world.Sector
-import de.gleex.pltcmd.model.world.WorldMap
-import de.gleex.pltcmd.model.world.WorldTile
+import de.gleex.pltcmd.model.world.*
 import kotlin.random.Random
 
 /**
@@ -43,7 +40,7 @@ abstract class AbstractSquareMapGenerator(
                 squareSideLengthInSectors * Sector.TILE_COUNT,
                 squareSideLengthInSectors * Sector.TILE_COUNT
         )
-        generateArea(sectorOrigin, sectorEnd, tileData)
+        generateArea(CoordinateRectangle(sectorOrigin, sectorEnd), tileData)
         return tileData.terrainMap.map { WorldTile(it.key, Terrain.of(it.value.second!!, it.value.first!!)) }.toSet()
     }
 
@@ -52,13 +49,10 @@ abstract class AbstractSquareMapGenerator(
      * fill the map with `Pair<TerrainHeight, TerrainType>` (no nullable values) or also override [createSectorTiles]
      * (which relies on values for each tile).
      */
-    override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld) {
-        for (x in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft) {
-            for (y in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom) {
-                val tileCoordinate = Coordinate(x, y)
-                val terrain = createTerrain(tileCoordinate)
-                terrainMap[tileCoordinate] = terrain
-            }
+    override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
+        for (tileCoordinate in area) {
+            val terrain = createTerrain(tileCoordinate)
+            terrainMap[tileCoordinate] = terrain
         }
     }
 

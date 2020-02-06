@@ -5,6 +5,7 @@ import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
+import de.gleex.pltcmd.model.world.CoordinateArea
 import de.gleex.pltcmd.model.world.MainCoordinate
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.concurrent.Executors
@@ -30,9 +31,9 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
     private val mainCoordinateQuotaForMountains = 0.05
     private val steepness = 0.60
 
-    override fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld) {
+    override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
         // pick random positions for mountain tops
-        val mountainTopLocations = findMountainTops(bottomLeftCoordinate, topRightCoordinate, terrainMap)
+        val mountainTopLocations = findMountainTops(area, terrainMap)
         val processedTiles = mutableSetOf<Coordinate>()
         val frontier = mutableSetOf<Coordinate>()
         // set those to max height
@@ -50,8 +51,6 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
     private fun generateMountains(frontier: MutableSet<Coordinate>, terrainMap: MutableWorld, processedTiles: MutableSet<Coordinate>) {
         val executor = Executors.newFixedThreadPool(10)
         var targetDistance = 0
-        // TESTING
-        var lastCoord = Coordinate(0,0)
         while (frontier.isNotEmpty()) {
             val newFrontier = mutableSetOf<Coordinate>()
                 frontier.forEach { currentCoordinate ->
@@ -69,8 +68,6 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
                                 terrainMap[neighbor] = TerrainType.MOUNTAIN
                                 newFrontier.add(neighbor)
                                 context.mountainTops.add(neighbor, currentCoordinate, targetDistance)
-                                // TESTING
-                                lastCoord = neighbor
                             }
 //                        }
                     }
@@ -85,19 +82,6 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         }
         executor.awaitTermination(10, TimeUnit.SECONDS)
         executor.shutdown()
-
-        // TESTING
-        log.debug("Getting path from $lastCoord to closest mountain top and 'painting' it with HILL")
-        val path = context.mountainTops.pathFrom(lastCoord).fold({"not found!"}) {
-            it.forEach { c -> terrainMap[c] = TerrainType.HILL }
-            it.joinToString(" -> ")
-        }
-        log.debug("The (probably) longest path has distance ${context.mountainTops.distanceFrom(lastCoord)} and is: $path")
-        val randomCoord = processedTiles.random()
-        log.debug("painting a path with length ${context.mountainTops.distanceFrom(randomCoord).get()} from random coordinate $randomCoord to closest mountain top with GRASSLAND")
-        context.mountainTops.pathFrom(randomCoord).ifPresent {
-            it.forEach { c -> terrainMap[c] = TerrainType.GRASSLAND }
-        }
     }
 
     private fun lowerOrEqualThan(height: TerrainHeight): TerrainHeight {
@@ -108,7 +92,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         }
     }
 
-    private fun findMountainTops(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld): Set<Coordinate> {
+    private fun findMountainTops(area: CoordinateArea, terrainMap: MutableWorld): Set<Coordinate> {
         val mainCoordinates = terrainMap.mainCoordinates
         // lets create mountain tops in about 10% of the map
         val mountainTopAreasToFind = (mainCoordinates.size.toDouble() * mainCoordinateQuotaForMountains).toInt()
@@ -117,7 +101,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         var tries = 0
         do {
             val candidate = mainCoordinates.random(rand)
-            if(candidate.toCoordinate() in bottomLeftCoordinate..topRightCoordinate) {
+            if(area.contains(candidate.toCoordinate())) {
                 pickedAreas.add(candidate)
             }
             tries++

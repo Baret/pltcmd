@@ -45,5 +45,7 @@ object ColorRepository {
         TerrainType.FOREST    -> TileColor.create(35, 104, 10)
         TerrainType.HILL      -> TileColor.create(121, 77, 33)
         TerrainType.MOUNTAIN  -> TileColor.create(112, 107, 102)
+        TerrainType.WATER_DEEP -> TileColor.create(0, 0, 102)
+        TerrainType.WATER_SHALLOW -> TileColor.create(40, 40, 222)
     }
 }

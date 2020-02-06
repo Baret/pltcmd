@@ -3,6 +3,8 @@ package de.gleex.pltcmd.model.mapgenerators.intermediate
 import de.gleex.pltcmd.model.mapgenerators.GenerationContext
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Coordinate
+import de.gleex.pltcmd.model.world.CoordinateArea
+import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 
 /**
@@ -13,5 +15,5 @@ interface IntermediateGenerator {
     val rand: Random
     val context: GenerationContext
 
-    fun generateArea(bottomLeftCoordinate: Coordinate, topRightCoordinate: Coordinate, terrainMap: MutableWorld)
+    fun generateArea(area: CoordinateArea, terrainMap: MutableWorld)
 }

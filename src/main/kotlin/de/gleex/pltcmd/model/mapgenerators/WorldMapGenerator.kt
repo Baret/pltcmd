@@ -3,7 +3,9 @@ package de.gleex.pltcmd.model.mapgenerators
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.mapgenerators.intermediate.IntermediateGenerator
 import de.gleex.pltcmd.model.mapgenerators.intermediate.MountainTopHeightMapper
+import de.gleex.pltcmd.model.mapgenerators.intermediate.RiverTyper
 import de.gleex.pltcmd.model.world.Coordinate
+import de.gleex.pltcmd.model.world.CoordinateRectangle
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.options.GameOptions
@@ -25,7 +27,8 @@ class WorldMapGenerator(
             // different generators go here
             // GenericHeightMapper()
             RandomMapGenerator(worldSizeWidthInTiles / Sector.TILE_COUNT, random),
-            MountainTopHeightMapper(random, context)
+            MountainTopHeightMapper(random, context),
+            RiverTyper(random, context)
 
             // examples...
             // terrain type generator(s)
@@ -50,8 +53,7 @@ class WorldMapGenerator(
             // There could also be a context for each MainCoordinate to have some kind of "biomes" (which could actually be introduced later).
             val intermediateStarted = System.currentTimeMillis()
             it.generateArea(
-                    bottomLeftCoordinate,
-                    topRightCoordinate,
+                    CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate),
                     partiallyGeneratedWorld)
             log.debug("Generator ${it::class.simpleName} took ${System.currentTimeMillis() - intermediateStarted} ms")
         }

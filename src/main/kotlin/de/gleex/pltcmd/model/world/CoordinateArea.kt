@@ -16,4 +16,6 @@ open class CoordinateArea(private val coordinates: Set<Coordinate>) {
      * Returns an ordered sequence of all [Coordinate]s in this area.
      */
     fun asSequence() = coordinates.sorted().asSequence()
+
+    operator fun iterator() = coordinates.iterator()
 }
