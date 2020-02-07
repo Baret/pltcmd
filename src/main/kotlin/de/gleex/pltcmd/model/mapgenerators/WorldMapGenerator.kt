@@ -23,6 +23,8 @@ class WorldMapGenerator(
     private val random = Random(seed)
     private val context = GenerationContext.fromRandom(random)
 
+    private val log = LoggerFactory.getLogger(this::class)
+
     private val generators: List<IntermediateGenerator> = listOf(
             // different generators go here
             //PlainWorldGenerator(worldSizeWidthInTiles / Sector.TILE_COUNT, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.THREE), random),
@@ -60,9 +62,5 @@ class WorldMapGenerator(
         val generationTime = System.currentTimeMillis() - started
         log.info("Map generation took $generationTime ms")
         return partiallyGeneratedWorld.toWorldMap()
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(this::class)
     }
 }

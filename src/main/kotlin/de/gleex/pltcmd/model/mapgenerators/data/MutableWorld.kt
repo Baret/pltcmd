@@ -31,9 +31,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
             return coords
         }
 
-    companion object {
-        private val log = LoggerFactory.getLogger(this::class)
-    }
+    private val log = LoggerFactory.getLogger(this::class)
 
     init {
         require(bottomLeftCoordinate.eastingFromLeft % Sector.TILE_COUNT == 0

@@ -8,10 +8,8 @@ import de.gleex.pltcmd.model.world.CoordinateArea
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 
-class RiverTyper(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator {
-    companion object {
-        private val log = LoggerFactory.getLogger(this::class)
-    }
+class RiverTyper(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
+    private val log = LoggerFactory.getLogger(this::class)
 
     override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
         // for now create one river on every mountain (expecting every mountain top to be a "target")

@@ -13,7 +13,7 @@ abstract class AbstractSquareMapGenerator(
         protected val squareSideLengthInSectors: Int,
         override val rand: Random,// This is not correct, but we don't want to fiddle with constructors here for now
         override val context: GenerationContext = GenerationContext.fromRandom(rand)
-) : MapGenerator, IntermediateGenerator {
+) : MapGenerator, IntermediateGenerator() {
 
     /**
      * Generates a square world sector by sector. Sub classes must provide the [WorldTile]s.
