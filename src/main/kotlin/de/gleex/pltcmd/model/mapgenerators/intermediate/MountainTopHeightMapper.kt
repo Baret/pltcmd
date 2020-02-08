@@ -81,8 +81,11 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
     }
 
     private fun findMountainTops(area: CoordinateArea, terrainMap: MutableWorld): Set<Coordinate> {
-        val mainCoordinates = terrainMap.mainCoordinates
-        // lets create mountain tops in about 10% of the map
+        val mainCoordinates = terrainMap.mainCoordinatesEmpty.
+            ifEmpty {
+                log.debug("No empty space found for mountains!")
+                return emptySet()
+            }
         val mountainTopAreasToFind = (mainCoordinates.size.toDouble() * mainCoordinateQuotaForMountains).toInt()
         log.debug("Trying to find $mountainTopAreasToFind areas for mountain tops in ${mainCoordinates.size} main coordinates")
         val pickedAreas = mutableSetOf<MainCoordinate>()

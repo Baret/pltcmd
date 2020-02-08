@@ -16,11 +16,13 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
                    val worldSizeHeightInTiles: Int) {
     // public for now because of AbstractSquareMapGenerator
     val terrainMap = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
-
     private val topRightCoordinate = bottomLeftCoordinate.
             withRelativeEasting(worldSizeWidthInTiles - 1).
             withRelativeNorthing(worldSizeHeightInTiles - 1)
 
+    /**
+     * The set of all [MainCoordinate]s contained in the area of this world.
+     */
     val mainCoordinates: Set<MainCoordinate>
         get() {
             val coords = mutableSetOf<MainCoordinate>()
@@ -29,6 +31,26 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
                 coords.add(c.toMainCoordinate())
             }
             return coords
+        }
+
+    /**
+     * The set of [MainCoordinate]s that contain tiles that have already been generated.
+     */
+    val mainCoordinatesNotEmpty: Set<MainCoordinate>
+        get() {
+            val notEmptyOnes = terrainMap.keys.map { it.toMainCoordinate() }.toSet()
+            log.debug("Found ${notEmptyOnes.size} main coordinates with generated tiles")
+            return notEmptyOnes
+        }
+
+    /**
+     * All [MainCoordinate]s that are completely empty yet.
+     */
+    val mainCoordinatesEmpty: Set<MainCoordinate>
+        get() {
+            val emptyOnes = mainCoordinates - mainCoordinatesNotEmpty
+            log.debug("Found ${emptyOnes.size} empty main coordinates")
+            return emptyOnes
         }
 
     private val log = LoggerFactory.getLogger(this::class)
