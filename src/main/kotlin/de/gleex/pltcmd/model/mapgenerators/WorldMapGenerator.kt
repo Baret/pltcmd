@@ -52,7 +52,6 @@ class WorldMapGenerator(
         log.info("Generating a random world of $worldSizeWidthInTiles * $worldSizeHeightInTiles = ${worldSizeWidthInTiles * worldSizeHeightInTiles} tiles between $bottomLeftCoordinate and $topRightCoordinate")
         val started = System.currentTimeMillis()
         // Maybe use forEachIndexed and tell each generator which position it has? Or even the whole chain?
-        log.debug("Running with parallelStream from StreamSupport in workFrontier and find")
         generators.forEach {
             // this part might be more complicated later
             // for example each generator could only be called for certain areas of the map, depending on previous generation results.

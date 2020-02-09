@@ -121,7 +121,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
      * Returns the neighbors of the given coordinate that are in range of this world.
      */
     fun neighborsOf(coordinate: Coordinate): List<Coordinate> =
-            coordinate.neighbors().filter { it in bottomLeftCoordinate..topRightCoordinate }
+            coordinate.neighbors().filter { bottomLeftCoordinate <= it && it <= topRightCoordinate }
 
     /**
      * Gets the height at the given coordinate, if present
