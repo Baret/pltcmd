@@ -51,8 +51,8 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         workFrontier(
             initialFrontier,
             { currentCoordinate: Coordinate ->
-                val currentHeight = terrainMap.heightAt(currentCoordinate)!!
-                if (currentHeight > MIN_TERRAIN) {
+                val currentHeight: TerrainHeight? = terrainMap.heightAt(currentCoordinate)
+                if (currentHeight != null && currentHeight > MIN_TERRAIN) {
                     terrainMap.
                         neighborsOf(currentCoordinate).
                         filter {
