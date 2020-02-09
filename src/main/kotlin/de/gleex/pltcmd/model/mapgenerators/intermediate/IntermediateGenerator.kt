@@ -48,7 +48,7 @@ abstract class IntermediateGenerator {
         while(frontier.isNotEmpty()) {
             nextFrontier.clear()
             StreamSupport.stream(frontier.spliterator(), true).forEach(atEachNode)
-            //frontier.parallelStream().forEach(atEachNode)
+//            frontier.forEach(atEachNode)
             afterFrontier.invoke()
             processedTiles.addAll(frontier)
             log.debug("Processed ${processedTiles.size} tiles after $frontiersProcessed iterations")

@@ -129,7 +129,11 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
     fun heightAt(coordinate: Coordinate) = terrainMap[coordinate]?.first
 
     fun find(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean): Set<Coordinate> {
-        log.debug("Finding in ${terrainMap.keys.size} coordinates...")
+        log.debug("Finding in ${terrainMap.keys.size} coordinates WITH parallel stream...")
+//        return terrainMap.keys.
+//                filter { it in area }.
+//                filter(predicate).
+//                toSet()
         return StreamSupport.
                 stream(terrainMap.keys.spliterator(), true).
                 filter { it in area }.

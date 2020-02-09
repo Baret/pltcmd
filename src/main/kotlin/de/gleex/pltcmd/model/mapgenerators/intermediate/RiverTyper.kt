@@ -38,12 +38,13 @@ class RiverTyper(override val rand: Random, override val context: GenerationCont
             context.mountainTops.allWithDistance(tryingDistance)
                     .shuffled(rand)
                     .forEach { riverEndCandidate ->
-                        val riverCandidate = context.mountainTops.pathFrom(riverEndCandidate)
-                        // if we the path leads to a mountain top that does not yet have a river to it
-                        val currentMountainTop = riverCandidate.get().last()
-                        if (riverCandidate.isPresent && mountainTopsToReach.contains(currentMountainTop)) {
-                            fullRivers.add(riverCandidate.get())
-                            mountainTopsToReach.remove(currentMountainTop)
+                        context.mountainTops.pathFrom(riverEndCandidate).ifPresent { riverCandidate ->
+                            // if we the path leads to a mountain top that does not yet have a river to it
+                            val currentMountainTop = riverCandidate.last()
+                            if (mountainTopsToReach.contains(currentMountainTop)) {
+                                fullRivers.add(riverCandidate)
+                                mountainTopsToReach.remove(currentMountainTop)
+                            }
                         }
                     }
             tryingDistance--
