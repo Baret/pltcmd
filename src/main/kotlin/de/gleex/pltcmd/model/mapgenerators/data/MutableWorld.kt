@@ -20,6 +20,8 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
             withRelativeEasting(worldSizeWidthInTiles - 1).
             withRelativeNorthing(worldSizeHeightInTiles - 1)
 
+    private val completeArea: CoordinateArea
+
     /**
      * The set of all [MainCoordinate]s contained in the area of this world.
      */
@@ -64,6 +66,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
                 && worldSizeHeightInTiles % Sector.TILE_COUNT == 0) {
             "Only full sectors may fit in the world dimensions ($worldSizeWidthInTiles by $worldSizeHeightInTiles tiles is not valid)."
         }
+        completeArea = CoordinateArea(bottomLeftCoordinate..topRightCoordinate)
     }
 
     fun toWorldMap(): WorldMap {
@@ -122,4 +125,13 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
      * Gets the height at the given coordinate, if present
      */
     fun heightAt(coordinate: Coordinate) = terrainMap[coordinate]?.first
+
+    fun find(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean): Set<Coordinate> {
+        return terrainMap.
+                filterKeys { it in area }.
+                filterKeys(predicate).
+                keys
+    }
+
+    operator fun contains(coordinate: Coordinate) = terrainMap.keys.contains(coordinate)
 }

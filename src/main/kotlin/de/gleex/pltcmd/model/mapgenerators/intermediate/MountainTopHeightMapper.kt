@@ -92,7 +92,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         var tries = 0
         do {
             val candidate = mainCoordinates.random(rand)
-            if(area.contains(candidate.toCoordinate())) {
+            if(candidate.toCoordinate() in area) {
                 pickedAreas.add(candidate)
             }
             tries++

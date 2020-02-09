@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.mapgenerators
 
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
+import de.gleex.pltcmd.model.mapgenerators.intermediate.HeightFiller
 import de.gleex.pltcmd.model.mapgenerators.intermediate.IntermediateGenerator
 import de.gleex.pltcmd.model.mapgenerators.intermediate.MountainTopHeightMapper
 import de.gleex.pltcmd.model.mapgenerators.intermediate.RiverTyper
@@ -28,9 +29,11 @@ class WorldMapGenerator(
     private val generators: List<IntermediateGenerator> = listOf(
             // different generators go here
             //PlainWorldGenerator(worldSizeWidthInTiles / Sector.TILE_COUNT, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.THREE), random),
-            RandomMapGenerator(worldSizeWidthInTiles / Sector.TILE_COUNT, random),
+
             MountainTopHeightMapper(random, context),
-            RiverTyper(random, context)
+            RiverTyper(random, context),
+            HeightFiller(random, context),
+            RandomMapGenerator(worldSizeWidthInTiles / Sector.TILE_COUNT, random)
 
             // examples...
             // terrain type generator(s)
