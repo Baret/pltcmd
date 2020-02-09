@@ -5,6 +5,8 @@ import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.*
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import java.util.stream.Collectors
+import java.util.stream.StreamSupport
 
 /**
  * A world that is currently being generated. When created it has a size but none of its tiles are filled yet.
@@ -127,10 +129,12 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
     fun heightAt(coordinate: Coordinate) = terrainMap[coordinate]?.first
 
     fun find(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean): Set<Coordinate> {
-        return terrainMap.
-                filterKeys { it in area }.
-                filterKeys(predicate).
-                keys
+        log.debug("Finding in ${terrainMap.keys.size} coordinates...")
+        return StreamSupport.
+                stream(terrainMap.keys.spliterator(), true).
+                filter { it in area }.
+                filter(predicate).
+                collect(Collectors.toSet())
     }
 
     operator fun contains(coordinate: Coordinate) = terrainMap.keys.contains(coordinate)

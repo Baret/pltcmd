@@ -15,9 +15,22 @@ class HeightFiller(override val rand: Random, override val context: GenerationCo
     val log = LoggerFactory.getLogger(this::class)
 
     override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
-        val edges = terrainMap.find(area) {
-            coordinate: Coordinate -> terrainMap.neighborsOf(coordinate).filterNot { it in terrainMap }.isNotEmpty()
+        var edges = setOf<Coordinate>()
+        val runs = 10
+        val times = mutableListOf<Double>()
+        repeat(runs) {
+            val start = System.currentTimeMillis()
+            edges = terrainMap.find(area) {
+                coordinate: Coordinate -> terrainMap.neighborsOf(coordinate).filterNot { it in terrainMap }.isNotEmpty()
+            }
+            val time = System.currentTimeMillis() - start
+            log.debug("Find took $time ms")
+            times.add(time.toDouble())
         }
+        log.debug("Averege time for find after $runs runs: ${times.average()}")
+//        val edges = terrainMap.find(area) {
+//            coordinate: Coordinate -> terrainMap.neighborsOf(coordinate).filterNot { it in terrainMap }.isNotEmpty()
+//        }
         log.debug("found ${edges.size} edge tiles.")
     }
 }
