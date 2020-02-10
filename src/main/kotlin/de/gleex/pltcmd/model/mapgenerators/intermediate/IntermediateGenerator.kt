@@ -5,7 +5,6 @@ import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateArea
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import java.util.stream.StreamSupport
 import kotlin.random.Random
 
 /**
@@ -47,8 +46,7 @@ abstract class IntermediateGenerator {
         var frontiersProcessed = 1
         while(frontier.isNotEmpty()) {
             nextFrontier.clear()
-            StreamSupport.stream(frontier.spliterator(), true).forEach(atEachNode)
-//            frontier.forEach(atEachNode)
+            frontier.forEach(atEachNode)
             afterFrontier.invoke()
             processedTiles.addAll(frontier)
             log.debug("Processed ${processedTiles.size} tiles after $frontiersProcessed iterations")
