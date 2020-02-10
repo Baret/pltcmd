@@ -1,10 +1,7 @@
 package de.gleex.pltcmd.model.mapgenerators
 
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
-import de.gleex.pltcmd.model.mapgenerators.intermediate.HeightFiller
-import de.gleex.pltcmd.model.mapgenerators.intermediate.IntermediateGenerator
-import de.gleex.pltcmd.model.mapgenerators.intermediate.MountainTopHeightMapper
-import de.gleex.pltcmd.model.mapgenerators.intermediate.RiverTyper
+import de.gleex.pltcmd.model.mapgenerators.intermediate.*
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateRectangle
 import de.gleex.pltcmd.model.world.Sector
@@ -32,7 +29,7 @@ class WorldMapGenerator(
 
             MountainTopHeightMapper(random, context),
             RiverTyper(random, context),
-            RandomMapGenerator(worldSizeWidthInTiles / Sector.TILE_COUNT, random),
+            RandomTerrainFiller(random, context),
             HeightFiller(random, context)
 
             // examples...

@@ -16,8 +16,8 @@ import java.util.stream.StreamSupport
 class MutableWorld(val bottomLeftCoordinate: Coordinate,
                    val worldSizeWidthInTiles: Int,
                    val worldSizeHeightInTiles: Int) {
-    // public for now because of AbstractSquareMapGenerator
-    val terrainMap = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
+
+    private val terrainMap = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
     private val topRightCoordinate = bottomLeftCoordinate.
             withRelativeEasting(worldSizeWidthInTiles - 1).
             withRelativeNorthing(worldSizeHeightInTiles - 1)
@@ -128,7 +128,15 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
      */
     fun heightAt(coordinate: Coordinate) = terrainMap[coordinate]?.first
 
-    fun find(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean): Set<Coordinate> {
+    /**
+     * Gets the terrain type at the given coordinate, if present
+     */
+    fun typeAt(coordinate: Coordinate) = terrainMap[coordinate]?.second
+
+    /**
+     * Returns all [Coordinate]s in the given area (default is the complete world) that match the given predicate (and are already present).
+     */
+    fun find(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): Set<Coordinate> {
         log.debug("Finding in ${terrainMap.keys.size} coordinates WITH parallel stream...")
 //        return terrainMap.keys.
 //                filter { it in area }.
