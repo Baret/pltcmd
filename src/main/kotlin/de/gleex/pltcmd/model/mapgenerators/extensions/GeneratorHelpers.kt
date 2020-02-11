@@ -8,7 +8,7 @@ import kotlin.random.Random
  *
  * The higher [steepness] the higher the chance that a lower terrain will be returned (1.0 means always lower)
  */
-fun TerrainHeight.lowerOrEqualThan(rand: Random, steepness: Double): TerrainHeight {
+fun TerrainHeight.lowerOrEqual(rand: Random, steepness: Double): TerrainHeight {
     return if(rand.nextDouble() < steepness) {
         this - 1
     } else {
@@ -21,7 +21,7 @@ fun TerrainHeight.lowerOrEqualThan(rand: Random, steepness: Double): TerrainHeig
  *
  * The higher [steepness] the higher the chance that a higher terrain will be returned (1.0 means always higher)
  */
-fun TerrainHeight.higherOrEqualThan(rand: Random, steepness: Double): TerrainHeight {
+fun TerrainHeight.higherOrEqual(rand: Random, steepness: Double): TerrainHeight {
     return if(rand.nextDouble() < steepness) {
         this + 1
     } else {

@@ -14,8 +14,8 @@ class GeneratorHelpersTesters: StringSpec({
     "With a probability of $probAlways terrain should always be higher/lower" {
         repeat(times) {
             assertSoftly {
-                TerrainHeight.FIVE.higherOrEqualThan(rand, probAlways) shouldBe TerrainHeight.SIX
-                TerrainHeight.FIVE.lowerOrEqualThan(rand, probAlways) shouldBe TerrainHeight.FOUR
+                TerrainHeight.FIVE.higherOrEqual(rand, probAlways) shouldBe TerrainHeight.SIX
+                TerrainHeight.FIVE.lowerOrEqual(rand, probAlways) shouldBe TerrainHeight.FOUR
             }
         }
     }
@@ -24,8 +24,8 @@ class GeneratorHelpersTesters: StringSpec({
     "With a probability of $probNever terrain should never be higher/lower" {
         repeat(times) {
             assertSoftly {
-                TerrainHeight.FIVE.higherOrEqualThan(rand, probNever) shouldBe TerrainHeight.FIVE
-                TerrainHeight.FIVE.lowerOrEqualThan(rand, probNever) shouldBe TerrainHeight.FIVE
+                TerrainHeight.FIVE.higherOrEqual(rand, probNever) shouldBe TerrainHeight.FIVE
+                TerrainHeight.FIVE.lowerOrEqual(rand, probNever) shouldBe TerrainHeight.FIVE
             }
         }
     }
