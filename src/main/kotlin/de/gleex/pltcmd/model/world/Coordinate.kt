@@ -46,12 +46,19 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     }
 
     operator fun rangeTo(other: Coordinate): Progression {
-        require(other > this) {
-            "Cannot range from $this to lower or equal coordinate $other"
-        }
         val values = mutableListOf<Coordinate>()
-        for(y in northingFromBottom..other.northingFromBottom) {
-            for(x in eastingFromLeft..other.eastingFromLeft) {
+        val northingRange = if(northingFromBottom <= other.northingFromBottom) {
+                northingFromBottom..other.northingFromBottom
+            } else {
+                northingFromBottom downTo other.northingFromBottom
+            }
+        val eastingRange = if(eastingFromLeft <= other.eastingFromLeft) {
+                eastingFromLeft..other.eastingFromLeft
+            } else {
+                eastingFromLeft downTo other.eastingFromLeft
+            }
+        for(y in northingRange) {
+            for(x in eastingRange) {
                 values.add(Coordinate(x, y))
             }
         }
