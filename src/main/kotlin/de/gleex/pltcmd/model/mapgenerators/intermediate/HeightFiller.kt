@@ -43,9 +43,6 @@ class HeightFiller(override val rand: Random, override val context: GenerationCo
                 }
                 unprocessed.addToNextFrontier()
             }
-        },
-        {
-            log.debug("${terrainMap.mainCoordinatesEmpty.size}/${terrainMap.mainCoordinatesNotEmpty.size} main coordinates still empty!")
         })
     }
 }
