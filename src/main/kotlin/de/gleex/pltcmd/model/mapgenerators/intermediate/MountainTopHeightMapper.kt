@@ -24,12 +24,12 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
     private val log = LoggerFactory.getLogger(this::class)
 
     // TODO: More values depending on the context
-    private val mountainTopsPerMainCoordinate: Int = 2
+    private val mountainTopsPerMainCoordinate: Int = 3
     /**
      * x % of main coordinates are picked to put a mountain in them
      */
-    private val mainCoordinateQuotaForMountains = 0.05
-    private val steepness = 0.60
+    private val mainCoordinateQuotaForMountains = 0.25
+    private val steepness = 0.55
 
     override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
         // pick random positions for mountain tops
