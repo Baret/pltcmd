@@ -42,11 +42,12 @@ class HeightFiller(override val rand: Random, override val context: GenerationCo
     }
 
     private fun MutableWorld.peekAhead(current: Coordinate, toGenerate: Coordinate): PeekResult {
+        val peekRange = 21
         val direction = when {
-            current.eastingFromLeft > toGenerate.eastingFromLeft       -> current..current.withRelativeEasting(-11)
-            current.eastingFromLeft < toGenerate.eastingFromLeft       -> current..current.withRelativeEasting(11)
-            current.northingFromBottom > toGenerate.northingFromBottom -> current..current.withRelativeNorthing(-11)
-            else                                                       -> current..current.withRelativeNorthing(11)
+            current.eastingFromLeft > toGenerate.eastingFromLeft       -> current..current.withRelativeEasting(-peekRange)
+            current.eastingFromLeft < toGenerate.eastingFromLeft       -> current..current.withRelativeEasting(peekRange)
+            current.northingFromBottom > toGenerate.northingFromBottom -> current..current.withRelativeNorthing(-peekRange)
+            else                                                       -> current..current.withRelativeNorthing(peekRange)
         }
         val peekedTile = direction.firstOrNull { heightAt(it) != null }
         return PeekResult(current, toGenerate, peekedTile, this, rand)
@@ -63,7 +64,6 @@ private class PeekResult(
     fun generateNext() {
         val currentHeight = mutableWorld.heightAt(current)!!
         val heightDifferences = mutableWorld.neighborsOf(current).
-                union(mutableWorld.neighborsOf(toGenerate)).
                 mapNotNull { mutableWorld.heightAt(it) }.
                 map { currentHeight.value - it.value }
         // check if the difference to a neighbor is too big -> we MUST go up/down!
@@ -92,7 +92,14 @@ private class PeekResult(
     }
 
     private fun fullRandom(currentHeight: TerrainHeight): TerrainHeight {
-        return listOf(currentHeight - 1, currentHeight, currentHeight + 1).random(rand)
+        val options = mutableListOf(currentHeight)
+        if(currentHeight < TerrainHeight.MAX) {
+            options += currentHeight + 1
+        }
+        if(currentHeight > TerrainHeight.MIN) {
+            options += currentHeight - 1
+        }
+        return options.random(rand)
     }
 
     /**
