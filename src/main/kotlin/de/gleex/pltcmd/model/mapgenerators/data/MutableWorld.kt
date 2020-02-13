@@ -16,7 +16,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
                    val worldSizeHeightInTiles: Int) {
 
     private val terrainMap = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
-    private val topRightCoordinate = bottomLeftCoordinate.
+    val topRightCoordinate = bottomLeftCoordinate.
             withRelativeEasting(worldSizeWidthInTiles - 1).
             withRelativeNorthing(worldSizeHeightInTiles - 1)
 
@@ -39,21 +39,13 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
      * The set of [MainCoordinate]s that contain tiles that have already been generated.
      */
     val mainCoordinatesNotEmpty: Set<MainCoordinate>
-        get() {
-            val notEmptyOnes = terrainMap.keys.map { it.toMainCoordinate() }.toSet()
-            log.debug("Found ${notEmptyOnes.size} main coordinates with generated tiles")
-            return notEmptyOnes
-        }
+        get() = terrainMap.keys.map { it.toMainCoordinate() }.toSet()
 
     /**
      * All [MainCoordinate]s that are completely empty yet.
      */
     val mainCoordinatesEmpty: Set<MainCoordinate>
-        get() {
-            val emptyOnes = mainCoordinates - mainCoordinatesNotEmpty
-            log.debug("Found ${emptyOnes.size} empty main coordinates")
-            return emptyOnes
-        }
+        get() = mainCoordinates - mainCoordinatesNotEmpty
 
     private val log = LoggerFactory.getLogger(this::class)
 
@@ -70,7 +62,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
     }
 
     fun toWorldMap(): WorldMap {
-        // some require() checks to validate a full map has been generated -> i.e. no null terrain types and heights
+        // TODO: some require() checks to validate a full map has been generated -> i.e. no null terrain types and heights
         log.debug("Creating world map from ${terrainMap.size} tiles")
 
         // generate sectors out of terrainMap
@@ -116,10 +108,16 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
     }
 
     /**
-     * Returns the neighbors of the given coordinate that are in range of this world.
+     * Returns the neighbors of the given coordinate that are in range of this world if it is also inside this world.
+     * Otherwise an empty list will be returned.
      */
-    fun neighborsOf(coordinate: Coordinate): List<Coordinate> =
-            coordinate.neighbors().filter { bottomLeftCoordinate <= it && it <= topRightCoordinate }
+    fun neighborsOf(coordinate: Coordinate): List<Coordinate> {
+        return if (coordinate isInBounds this) {
+            coordinate.neighbors().filter { it isInBounds this }
+        } else {
+            emptyList()
+        }
+    }
 
     /**
      * Gets the height at the given coordinate, if present
@@ -141,5 +139,20 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
                 toSet()
     }
 
+    /**
+     * Checks if the given coordinate is inside the bounds of this mutable world
+     */
+    fun isInBounds(coordinate: Coordinate): Boolean {
+        return bottomLeftCoordinate.eastingFromLeft <= coordinate.eastingFromLeft
+                && bottomLeftCoordinate.northingFromBottom <= coordinate.northingFromBottom
+                && topRightCoordinate.eastingFromLeft >= coordinate.eastingFromLeft
+                && topRightCoordinate.northingFromBottom >= coordinate.northingFromBottom
+    }
+
+    private infix fun Coordinate.isInBounds(world: MutableWorld) = world.isInBounds(this)
+
+    /**
+     * Returns true if the given coordinate has already been (partly) generated.
+     */
     operator fun contains(coordinate: Coordinate) = terrainMap.keys.contains(coordinate)
 }

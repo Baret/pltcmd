@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.mapgenerators
 
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.mapgenerators.intermediate.*
+import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateRectangle
 import de.gleex.pltcmd.model.world.Sector
@@ -29,8 +30,9 @@ class WorldMapGenerator(
 
             MountainTopHeightMapper(random, context),
             RiverTyper(random, context),
-            RandomTerrainFiller(random, context),
-            HeightFiller(random, context)
+            HeightFiller(random, context),
+            TerrainFiller(random, context, TerrainType.GRASSLAND),
+            RandomTerrainFiller(random, context)
 
             // examples...
             // terrain type generator(s)

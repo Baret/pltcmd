@@ -40,16 +40,29 @@ class CoordinateTest: WordSpec({
     }
 
     "A coordinate $testCoordinate" When {
-        val otherCoordinate = Coordinate(124, 344)
-        "compared to $otherCoordinate" should {
+        val coordinateWithDifferentNorthing = Coordinate(123, 344)
+        "compared to $coordinateWithDifferentNorthing" should {
             "be bigger (because of higher northing)" {
-                testCoordinate should beGreaterThan(otherCoordinate)
+                testCoordinate should beGreaterThan(coordinateWithDifferentNorthing)
             }
         }
 
-        "being compared with $otherCoordinate" should {
+        "being compared with $coordinateWithDifferentNorthing" should {
             "be less (because of lower northing)" {
-                otherCoordinate should beLessThan(testCoordinate)
+                coordinateWithDifferentNorthing should beLessThan(testCoordinate)
+            }
+        }
+
+        val coordinateWithDifferentEasting = Coordinate(122, 345)
+        "compared to $coordinateWithDifferentEasting" should {
+            "be bigger (because of higher easting)" {
+                testCoordinate should beGreaterThan(coordinateWithDifferentEasting)
+            }
+        }
+
+        "being compared with $coordinateWithDifferentEasting" should {
+            "be less (because of lower easting)" {
+                coordinateWithDifferentEasting should beLessThan(testCoordinate)
             }
         }
 
