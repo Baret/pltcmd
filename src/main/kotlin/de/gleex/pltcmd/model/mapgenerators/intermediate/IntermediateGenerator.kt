@@ -56,6 +56,12 @@ abstract class IntermediateGenerator {
         }
     }
 
+    /**
+     * Extension function to directly use [workFrontier]
+     */
+    protected fun Set<Coordinate>.work(atEachNode: (currentCoordinate: Coordinate) -> Unit,
+                                       afterFrontier: () -> Unit = {}) = workFrontier(this, atEachNode, afterFrontier)
+
     protected fun Coordinate.addToNextFrontier() = nextFrontier.add(this)
 
     /**

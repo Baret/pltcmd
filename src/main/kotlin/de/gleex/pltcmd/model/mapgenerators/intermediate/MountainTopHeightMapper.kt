@@ -4,7 +4,6 @@ import de.gleex.pltcmd.model.mapgenerators.GenerationContext
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.mapgenerators.extensions.lowerOrEqual
 import de.gleex.pltcmd.model.terrain.TerrainHeight
-import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateArea
 import de.gleex.pltcmd.model.world.MainCoordinate
@@ -38,7 +37,6 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         // set those to max height
         mountainTopLocations.forEach {
             terrainMap[it] = MAX_TERRAIN
-            terrainMap[it] = TerrainType.MOUNTAIN
             frontier.add(it)
             context.mountainTops.addTarget(it)
         }
@@ -61,10 +59,6 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
                         }.
                         forEach { neighbor ->
                             terrainMap[neighbor] = currentHeight.lowerOrEqual(rand, steepness)
-                            // TODO: Do not set terrainType in HeightMapper
-                            // for better visibility setting a uniform terrainType. But later this will be done
-                            // by another intermediate generator
-                            terrainMap[neighbor] = TerrainType.MOUNTAIN
                             neighbor.addToNextFrontier()
                             context.mountainTops.add(neighbor, currentCoordinate, targetDistance)
                         }

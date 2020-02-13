@@ -10,7 +10,13 @@ import kotlin.random.Random
 /**
  * Simply fills the given area with the given [TerrainType] at all locations that do not yet have a type.
  */
-class TerrainFiller(override val rand: Random, override val context: GenerationContext, private val terrainType: TerrainType) : IntermediateGenerator() {
+class FixedTypeFiller(private val terrainType: TerrainType) : IntermediateGenerator() {
+
+    override val rand: Random
+        get() = Random
+
+    override val context: GenerationContext
+        get() = GenerationContext.fromRandom(rand)
 
     private val log = LoggerFactory.getLogger(this::class)
 
