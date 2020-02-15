@@ -24,6 +24,10 @@ class MapGrid(
                 .build())
     : TileGraphics by backend {
 
+    companion object {
+        const val GRID_WIDTH = 5
+    }
+
     init {
         val topLeftPos = size.fetchTopLeftPosition()
         val majorGridMarker =
@@ -68,19 +72,32 @@ class MapGrid(
     }
 
     private fun drawGridMarkers(topLeftPos: Position, majorGridMarker: TileGraphics, minorGridMarker: TileGraphics) {
-        // grid markers (for square)
-        for (i in 1 until size.width step 5) {
-            val gridMarker = if ((i - 1) % 10 == 0) majorGridMarker else minorGridMarker
-            val top = topLeftPos.withRelativeX(i)
+        // grid markers (for square), start at 1 to skipt the top left corner
+        for (i in 0 until size.width step GRID_WIDTH) {
+            val gridMarker = if (i % (GRID_WIDTH * 2) == 0) majorGridMarker else minorGridMarker
+            val top = topLeftPos.withRelativeX(i + 1) // 1 = with of vertical bar that is already used by this grid
             val left = topLeftPos.withRelativeY(i)
             // top
-            draw(gridMarker, top)
+            if (!top.isCorner()) draw(gridMarker, top)
             // left
-            draw(gridMarker, left)
+            if (!left.isCorner()) draw(gridMarker, left)
             // bottom
-            draw(gridMarker, top.withRelativeY(size.height - 1))
+            val bottom = top.withRelativeY(size.height - 1)
+            if (!bottom.isCorner()) draw(gridMarker, bottom)
             // right
-            draw(gridMarker, left.withRelativeX(size.width - 1))
+            val right = left.withRelativeX(size.width - 1)
+            if (!right.isCorner()) draw(gridMarker, right)
+        }
+    }
+
+    private fun Position.isCorner(): Boolean {
+        return when (x) {
+            0, size.width - 1 -> {
+                y == 0 || y == size.width - 1
+            }
+            else              -> {
+                false
+            }
         }
     }
 

@@ -35,12 +35,17 @@ class MapCoordinates(
     }
 
     private fun drawGridCoordinates(topLeftCoordinate: Coordinate, topLeftPos: Position, mapOffset: Position) {
-        // grid coordinates (for square)
-        for (i in 0 until size.width step 5) {
+        // move to next grid marker
+        val offsetToGridX = topLeftCoordinate.eastingFromLeft % MapGrid.GRID_WIDTH
+        for (i in offsetToGridX until size.width - 1 step MapGrid.GRID_WIDTH) {
             // top
             val topCoordinateText = createTopText(topLeftCoordinate, i)
             val topGridPosition = topLeftPos.withRelativeX(i + mapOffset.x)
             drawCentered(topCoordinateText, topGridPosition)
+        }
+
+        val offsetToGridY = topLeftCoordinate.northingFromBottom % MapGrid.GRID_WIDTH
+        for (i in offsetToGridY until size.width - 1 step MapGrid.GRID_WIDTH) {
             // left
             val leftCoordinateText = createLeftText(topLeftCoordinate, i)
             val leftGridPosition = topLeftPos.withRelativeY(i + mapOffset.y)
@@ -62,7 +67,11 @@ class MapCoordinates(
 
     private fun drawCentered(coordinateTiles: CoordinateTileString, center: Position) {
         val textStartPosition = coordinateTiles.getStartPositionToCenterOn(center)
-        draw(coordinateTiles, textStartPosition)
+        val textEndPosition = textStartPosition.withRelativeX(coordinateTiles.width)
+        // prevent truncated text
+        if (backend.size.containsPosition(textStartPosition) && backend.size.containsPosition(textEndPosition)) {
+            draw(coordinateTiles, textStartPosition)
+        }
     }
 
     override fun toString() = "MapCoordinates $backend"
