@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.world
 
+import de.gleex.pltcmd.testhelpers.randomSectorAt
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
@@ -41,8 +42,7 @@ private fun Int.sectors(): Set<Sector> {
         val sectors = mutableSetOf<Sector>()
         for (i in 0 until this) {
             sectors.add(
-                    Sector.generateAt(
-                            Coordinate(i * Sector.TILE_COUNT, i * Sector.TILE_COUNT)))
+                    randomSectorAt(Coordinate(i * Sector.TILE_COUNT, i * Sector.TILE_COUNT)))
         }
         return sectors
     }
