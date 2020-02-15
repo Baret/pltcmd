@@ -8,6 +8,7 @@ import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateArea
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import kotlin.math.absoluteValue
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -44,12 +45,12 @@ class HeightFiller(override val rand: Random, override val context: GenerationCo
     private fun MutableWorld.peekAhead(current: Coordinate, toGenerate: Coordinate): PeekResult {
         val peekRange = 21
         val direction = when {
-            current.eastingFromLeft > toGenerate.eastingFromLeft       -> current..current.withRelativeEasting(-peekRange)
-            current.eastingFromLeft < toGenerate.eastingFromLeft       -> current..current.withRelativeEasting(peekRange)
-            current.northingFromBottom > toGenerate.northingFromBottom -> current..current.withRelativeNorthing(-peekRange)
-            else                                                       -> current..current.withRelativeNorthing(peekRange)
+            current.eastingFromLeft > toGenerate.eastingFromLeft       -> toGenerate..toGenerate.withRelativeEasting(-peekRange)
+            current.eastingFromLeft < toGenerate.eastingFromLeft       -> toGenerate..toGenerate.withRelativeEasting(peekRange)
+            current.northingFromBottom > toGenerate.northingFromBottom -> toGenerate..toGenerate.withRelativeNorthing(-peekRange)
+            else                                                       -> toGenerate..toGenerate.withRelativeNorthing(peekRange)
         }
-        val peekedTile = direction.firstOrNull { heightAt(it) != null }
+        val peekedTile = direction.flatMap { it.neighbors() }.filter { it != current }.firstOrNull { heightAt(it) != null }
         return PeekResult(current, toGenerate, peekedTile, this, rand)
     }
 }
@@ -72,22 +73,23 @@ private class PeekResult(
         } else if(heightDifferences.max()?:0 >= 3) {
             mutableWorld[toGenerate] = currentHeight - 1
         } else {
-            // else check if we approach a target height
-            if(peekedTile != null) {
-                val targetHeight = mutableWorld.heightAt(peekedTile)!!
-                val heightDiff = targetHeight.value - currentHeight.value
-                val steepness = calcSteepness(heightDiff)
-                if(targetHeight > currentHeight) {
-                    mutableWorld[toGenerate] = currentHeight.higherOrEqual(rand, steepness)
-                } else if(targetHeight < currentHeight) {
-                    mutableWorld[toGenerate] = currentHeight.lowerOrEqual(rand, steepness)
+            // else check how we approach a target height
+            val targetHeight = if (peekedTile != null) {
+                mutableWorld.heightAt(peekedTile)!!
+            } else {
+                // if nothing peeked, target a random height
+                TerrainHeight.random(rand)
+            }
+            val heightDiff = targetHeight.value - currentHeight.value
+            val steepness = calcSteepness(heightDiff)
+            mutableWorld[toGenerate] = when {
+                targetHeight > currentHeight -> currentHeight.higherOrEqual(rand, steepness)
+                targetHeight < currentHeight -> currentHeight.lowerOrEqual(rand, steepness)
+                else                         -> {
+                    // same height has a chance to change
+                    fullRandom(currentHeight)
                 }
             }
-        }
-
-        // nothing happened? Let's go full random
-        if(mutableWorld.heightAt(toGenerate) == null) {
-            mutableWorld[toGenerate] = fullRandom(currentHeight)
         }
     }
 
@@ -108,7 +110,7 @@ private class PeekResult(
      * A difference >= 3 means we MUST go up/down, which means steepness must be 1.0
      */
     private fun calcSteepness(heightDiff: Int): Double {
-        return min(((0.5 / 3) * heightDiff.toDouble()) + 0.5, 1.0)
+        return min(((0.5 / 3) * heightDiff.absoluteValue.toDouble()) + 0.5, 1.0)
     }
 
 }
