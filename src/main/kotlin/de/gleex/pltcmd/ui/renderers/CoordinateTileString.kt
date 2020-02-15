@@ -53,4 +53,7 @@ open class CoordinateTileString(
     /** Returns the [Position] on which this text starts if centered on the given position. */
     open fun getStartPositionToCenterOn(center: Position) = center.withRelativeX(offsetForCenteredText())
 
+    /** Returns the [Position] on which this text ends if centered on the given position. */
+    open fun getEndPositionToCenterOn(center: Position) = getStartPositionToCenterOn(center).withRelativeX(text.length - 1)
+
 }

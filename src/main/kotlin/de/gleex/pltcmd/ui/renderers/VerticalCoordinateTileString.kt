@@ -19,4 +19,6 @@ class VerticalCoordinateTileString(
 
     override fun getStartPositionToCenterOn(center: Position) = center.withRelativeY(offsetForCenteredText())
 
+    override fun getEndPositionToCenterOn(center: Position) = getStartPositionToCenterOn(center).withRelativeY(text.length - 1)
+
 }
