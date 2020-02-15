@@ -28,6 +28,9 @@ class MapGrid(
         const val GRID_WIDTH = 5
     }
 
+    // we assume that the map has a grid crossing at Position(1,0) or in other words: A full sector is visible with its origin in the bottom left corner.
+    private val mapToDrawOffset = Position.create(1,0)
+
     init {
         val topLeftPos = size.fetchTopLeftPosition()
         val majorGridMarker =
@@ -72,11 +75,11 @@ class MapGrid(
     }
 
     private fun drawGridMarkers(topLeftPos: Position, majorGridMarker: TileGraphics, minorGridMarker: TileGraphics) {
-        // grid markers (for square), start at 1 to skipt the top left corner
+        // grid markers (for square)
         for (i in 0 until size.width step GRID_WIDTH) {
             val gridMarker = if (i % (GRID_WIDTH * 2) == 0) majorGridMarker else minorGridMarker
-            val top = topLeftPos.withRelativeX(i + 1) // 1 = with of vertical bar that is already used by this grid
-            val left = topLeftPos.withRelativeY(i)
+            val top = topLeftPos.withRelativeX(i + mapToDrawOffset.x)
+            val left = topLeftPos.withRelativeY(i + mapToDrawOffset.y)
             // top
             if (!top.isCorner()) draw(gridMarker, top)
             // left
