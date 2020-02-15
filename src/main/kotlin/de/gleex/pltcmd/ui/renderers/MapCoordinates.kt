@@ -67,7 +67,7 @@ class MapCoordinates(
 
     private fun drawCentered(coordinateTiles: CoordinateTileString, center: Position) {
         val textStartPosition = coordinateTiles.getStartPositionToCenterOn(center)
-        val textEndPosition = textStartPosition.withRelativeX(coordinateTiles.width)
+        val textEndPosition = textStartPosition.withRelativeX(coordinateTiles.width - 1)
         // prevent truncated text
         if (backend.size.containsPosition(textStartPosition) && backend.size.containsPosition(textEndPosition)) {
             draw(coordinateTiles, textStartPosition)
