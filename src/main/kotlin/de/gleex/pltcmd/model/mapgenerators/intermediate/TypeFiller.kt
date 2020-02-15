@@ -5,7 +5,6 @@ import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.terrain.TerrainType.*
-import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateArea
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
@@ -35,50 +34,52 @@ class TypeFiller(override val rand: Random, override val context: GenerationCont
             terrainMap.neighborsOf(currentCoordinate).
                 filter { it in area && terrainMap.typeAt(it) == null && it.isNotProcessed() }.
                 forEach { neighbor ->
-                    val probabilities = when(terrainMap.heightAt(neighbor)) {
-                        TerrainHeight.NINE -> mapOf(
-                                        0.7 to MOUNTAIN,
-                                        0.9 to HILL,
-                                        1.0 to FOREST)
-                        TerrainHeight.EIGHT -> mapOf(
-                                        0.4 to MOUNTAIN,
-                                        0.8 to HILL,
-                                        1.0 to FOREST)
-                        TerrainHeight.SEVEN -> mapOf(
-                                        0.5 to MOUNTAIN,
-                                        0.75 to HILL,
-                                        0.95 to FOREST,
-                                        1.0 to GRASSLAND)
-
-                        TerrainHeight.SIX, TerrainHeight.FIVE, TerrainHeight.FOUR, TerrainHeight.THREE
-                                            -> if(terrainMap.typeAt(currentCoordinate) == GRASSLAND) {
-                                            mapOf(
-                                                0.7 to GRASSLAND,
-                                                1.0 to FOREST
-                                            )
-                                        } else {
-                                            mapOf(
-                                                0.7 to FOREST,
-                                                1.0 to GRASSLAND
-                                            )
-                                        }
-                        TerrainHeight.TWO -> mapOf(
-                                        0.8 to WATER_SHALLOW,
-                                        1.0 to GRASSLAND)
-                        TerrainHeight.ONE -> mapOf(
-                                            1.0 to WATER_DEEP
-                                        )
-                        else              -> mapOf(1.0 to GRASSLAND)
-                    }
-                    generateWith(neighbor, terrainMap, probabilities)
+                    val probabilities = probabilities(terrainMap.heightAt(neighbor), terrainMap.typeAt(currentCoordinate))
+                    terrainMap[neighbor] = generateType(probabilities)
                     neighbor.addToNextFrontier()
                 }
         })
     }
 
-    private fun generateWith(toGenerate: Coordinate, terrainMap: MutableWorld, typeProbabilities: Map<Double, TerrainType>) {
+    private fun probabilities(terrainHeight: TerrainHeight?, neighborType: TerrainType?): Map<Double, TerrainType> {
+        return when (terrainHeight) {
+            TerrainHeight.NINE  -> mapOf(
+                    0.7 to MOUNTAIN,
+                    0.9 to HILL,
+                    1.0 to FOREST)
+            TerrainHeight.EIGHT -> mapOf(
+                    0.4 to MOUNTAIN,
+                    0.8 to HILL,
+                    1.0 to FOREST)
+            TerrainHeight.SEVEN -> mapOf(
+                    0.5 to MOUNTAIN,
+                    0.75 to HILL,
+                    0.95 to FOREST,
+                    1.0 to GRASSLAND)
+            TerrainHeight.SIX, TerrainHeight.FIVE, TerrainHeight.FOUR, TerrainHeight.THREE
+            -> if (neighborType == GRASSLAND) {
+                mapOf(
+                        0.7 to GRASSLAND,
+                        1.0 to FOREST
+                )
+            } else {
+                mapOf(
+                        0.7 to FOREST,
+                        1.0 to GRASSLAND
+                )
+            }
+            TerrainHeight.TWO   -> mapOf(
+                    0.8 to WATER_SHALLOW,
+                    1.0 to GRASSLAND)
+            TerrainHeight.ONE   -> mapOf(
+                    1.0 to WATER_DEEP
+            )
+            else                -> mapOf(1.0 to GRASSLAND)
+        }
+    }
+
+    private fun generateType(typeProbabilities: Map<Double, TerrainType>): TerrainType {
         val randomValue = rand.nextDouble()
-        val type = typeProbabilities[typeProbabilities.keys.first { randomValue < it }] ?: typeProbabilities.values.random(rand)
-        terrainMap[toGenerate] = type
+        return typeProbabilities.entries.first { randomValue <= it.key }.value
     }
 }
