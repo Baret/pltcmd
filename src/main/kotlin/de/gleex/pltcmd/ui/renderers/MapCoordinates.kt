@@ -56,13 +56,13 @@ class MapCoordinates(
     /** Moves the given [Coordinate] by the given offset to the east and creates a drawable text of that coordinate. */
     private fun createTopText(topLeftCoordinate: Coordinate, offsetToEast: Int): CoordinateTileString {
         val topCoordinate = topLeftCoordinate.withRelativeEasting(offsetToEast)
-        return CoordinateTileString(topCoordinate.eastingFromLeft)
+        return CoordinateTileString(topCoordinate.formattedEasting())
     }
 
     /** Moves the given [Coordinate] by the given offset to the south and creates a drawable text of that coordinate. */
     private fun createLeftText(topLeftCoordinate: Coordinate, offsetToSouth: Int): CoordinateTileString {
         val leftCoordinate = topLeftCoordinate.withRelativeNorthing(-offsetToSouth)
-        return VerticalCoordinateTileString(leftCoordinate.northingFromBottom)
+        return VerticalCoordinateTileString(leftCoordinate.formattedNorthing())
     }
 
     private fun drawCentered(coordinateTiles: CoordinateTileString, center: Position) {

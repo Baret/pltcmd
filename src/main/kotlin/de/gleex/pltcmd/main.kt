@@ -11,7 +11,7 @@ import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
 
 fun main() {
-    val initialOrigin = Coordinate(350, 200)
+    val initialOrigin = Coordinate(0, 200)
     val worldMap = WorldMap(
             setOf(
                     Sector.generateAt(initialOrigin)))
