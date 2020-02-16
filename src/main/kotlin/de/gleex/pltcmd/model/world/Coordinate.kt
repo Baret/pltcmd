@@ -65,11 +65,11 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         return Progression(values)
     }
 
-    override fun toString(): String {
-        val eastingString = toCoordinateText(eastingFromLeft)
-        val northingString = toCoordinateText(northingFromBottom)
-        return "($eastingString|$northingString)"
-    }
+    override fun toString() = "(${formattedEasting()}|${formattedNorthing()})"
+
+    fun formattedEasting() = toCoordinateText(eastingFromLeft)
+
+    fun formattedNorthing() = toCoordinateText(northingFromBottom)
 
     private fun toCoordinateText(coordinateValue: Int): String {
         return if (coordinateValue >= 0) {
