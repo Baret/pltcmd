@@ -1,6 +1,7 @@
 package de.gleex.pltcmd
 
 import de.gleex.pltcmd.game.GameWorld
+import de.gleex.pltcmd.game.TileRepository
 import de.gleex.pltcmd.model.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
@@ -10,9 +11,7 @@ import org.hexworks.zircon.api.extensions.toScreen
 
 fun main() {
 
-    // - - - Testing WorldMapGenerator - - -
     val worldMap = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED).generateWorld()
-    // - - - Testing WorldMapGenerator - - -
 
     val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
     val gameWorld = GameWorld(worldMap)

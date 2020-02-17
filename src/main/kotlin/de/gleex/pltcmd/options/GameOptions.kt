@@ -2,7 +2,7 @@ package de.gleex.pltcmd.options
 
 import de.gleex.pltcmd.model.radio.PercentageReducingAttenuation
 import de.gleex.pltcmd.model.world.Sector
-import org.hexworks.cobalt.databinding.api.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.zircon.api.data.Size3D
 
 /**
