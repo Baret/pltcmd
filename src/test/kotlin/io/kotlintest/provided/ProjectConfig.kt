@@ -11,6 +11,8 @@ class ProjectConfig: AbstractProjectConfig() {
     val executionTimes = mutableListOf<Long>()
     val heapSizes = mutableListOf<Long>()
 
+    override fun parallelism() = 1
+
     override fun beforeAll() {
         log.info("Starting tests, measuring time")
         logMemoryUsage()

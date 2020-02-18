@@ -15,7 +15,7 @@ import kotlin.random.Random
  * The WorldMapGenerator is the only class you need outside this package. It generates the world for the game given a seed.
  */
 class WorldMapGenerator(
-        seed: Long,
+        private val seed: Long,
         private val worldSizeWidthInTiles: Int = GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT,
         private val worldSizeHeightInTiles: Int = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
 ) {
@@ -49,7 +49,7 @@ class WorldMapGenerator(
                 withRelativeEasting(worldSizeWidthInTiles - 1).
                 withRelativeNorthing(worldSizeHeightInTiles - 1)
         //log.debug("Mutable world of size $worldSizeWidthInTiles * $worldSizeHeightInTiles tiles from $bottomLeftCoordinate to $topRightCoordinate is ready to be created.")
-        log.info("Generating a random world of $worldSizeWidthInTiles * $worldSizeHeightInTiles = ${worldSizeWidthInTiles * worldSizeHeightInTiles} tiles between $bottomLeftCoordinate and $topRightCoordinate")
+        log.info("Generating a random world with seed $seed of $worldSizeWidthInTiles * $worldSizeHeightInTiles = ${worldSizeWidthInTiles * worldSizeHeightInTiles} tiles between $bottomLeftCoordinate and $topRightCoordinate")
         val started = System.currentTimeMillis()
         // Maybe use forEachIndexed and tell each generator which position it has? Or even the whole chain?
         generators.forEach {

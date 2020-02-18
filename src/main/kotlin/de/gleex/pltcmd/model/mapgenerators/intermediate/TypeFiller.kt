@@ -79,7 +79,8 @@ class TypeFiller(override val rand: Random, override val context: GenerationCont
     }
 
     private fun generateType(typeProbabilities: Map<Double, TerrainType>): TerrainType {
-        val randomValue = rand.nextDouble()
+        val localSeed = System.currentTimeMillis()
+        val randomValue = Random(localSeed).nextDouble()
         return typeProbabilities.entries.first { randomValue <= it.key }.value
     }
 }

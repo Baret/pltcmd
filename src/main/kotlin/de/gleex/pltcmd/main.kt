@@ -23,6 +23,6 @@ fun main() {
     val visibleBlocks = gameWorld.visibleBlocks.toList()
     repeat(20) {
         val randomPosition = visibleBlocks.random()
-        //randomPosition.second.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
+        randomPosition.second.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
     }
 }
