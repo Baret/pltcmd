@@ -3,7 +3,6 @@ package de.gleex.pltcmd.testhelpers
 import arrow.core.firstOrNone
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
-import de.gleex.pltcmd.model.world.WorldTile
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
 import io.kotlintest.should
@@ -39,12 +38,9 @@ infix fun WorldMap.shouldHaveSameTerrain(other: WorldMap) = this should haveSame
 
 fun haveSameTerrain(expected: WorldMap) = object: Matcher<WorldMap> {
     override fun test(value: WorldMap): MatcherResult {
-        var errorMessage = Maybe.empty<String>()
-        val firstFail: WorldTile? = null
-
         val sectors = value.sectors.toList()
         val expectedSectors = expected.sectors.toList()
-        errorMessage = when {
+        val errorMessage = when {
             value.origin != expected.origin -> {
                 Maybe.of("origin ${value.origin} does not equal expected ${expected.origin}")
             }

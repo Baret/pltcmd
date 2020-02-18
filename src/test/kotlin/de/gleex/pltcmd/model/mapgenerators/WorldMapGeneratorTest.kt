@@ -16,14 +16,12 @@ class WorldMapGeneratorTest: WordSpec() {
         val width = 50
         val height = 50
         val generatedWorld1 = WorldMapGenerator(seed, width, height).generateWorld()
-        println("First tile: ${generatedWorld1.sectors.first().tiles.first()}")
         var lastTimestamp = System.currentTimeMillis()
         "The generator" should {
             delay(500)
             "always generate the same world with the seed $seed" {
                 delay(500)
                 val generatedWorld2 = WorldMapGenerator(seed, width, height).generateWorld()
-                println("First tile with same seed: ${generatedWorld2.sectors.first().tiles.first()}")
                 assertSoftly {
                     val newTimestamp = System.currentTimeMillis()
                     lastTimestamp shouldNotBe newTimestamp
@@ -37,7 +35,6 @@ class WorldMapGeneratorTest: WordSpec() {
             "always generate a different world with different seed".config(invocations = 10, threads = 1) {
                 delay(500)
                 val generatedWorld3 = WorldMapGenerator(differentSeed.getAndIncrement(), width, height).generateWorld()
-                println("First tile with seed $differentSeed: ${generatedWorld3.sectors.first().tiles.first()}")
                 assertSoftly {
                     val newTimestamp = System.currentTimeMillis()
                     lastTimestamp shouldNotBe newTimestamp
@@ -49,7 +46,7 @@ class WorldMapGeneratorTest: WordSpec() {
         }
 
         "Map generation" should {
-            val timeout = 6
+            val timeout = 10
             "never take longer than $timeout seconds".config(timeout = timeout.seconds) {
                 WorldMapGenerator(System.currentTimeMillis()).generateWorld()
             }

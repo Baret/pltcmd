@@ -6,7 +6,6 @@ import io.kotlintest.data.suspend.forall
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 class MutableWorldTest: WordSpec()
 {
@@ -19,8 +18,6 @@ class MutableWorldTest: WordSpec()
     private val eastBorder = listOf(north(), west(), south())
     private val northBorder = listOf(west(), south(), east())
     private val southBorder = listOf(west(), north(), east())
-
-    private val log = LoggerFactory.getLogger(this::class)
 
     init {
         val bottomLeftCoordinate = Coordinate(0, 0)
@@ -55,7 +52,6 @@ class MutableWorldTest: WordSpec()
             ) { easting, northing, neighborGenerators ->
                 val c = Coordinate(easting, northing)
                 val validNeighbors = neighborGenerators.map {
-                    log.debug("Invoking on $c")
                     it.invoke(c)
                 }
                 "have ${validNeighbors.size} neighbors at $c" {

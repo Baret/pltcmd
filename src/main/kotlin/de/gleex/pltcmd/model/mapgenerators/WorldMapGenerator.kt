@@ -63,7 +63,7 @@ class WorldMapGenerator(
             log.debug("Generator ${it::class.simpleName} took ${System.currentTimeMillis() - intermediateStarted} ms")
         }
         val generationTime = System.currentTimeMillis() - started
-        log.info("Map generation took $generationTime ms")
+        log.info("Map generation with seed $seed took $generationTime ms")
         return partiallyGeneratedWorld.toWorldMap()
     }
 }
