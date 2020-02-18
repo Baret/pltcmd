@@ -8,7 +8,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * A world that is currently being generated. When created it has a size but none of its tiles are filled yet.
- * It is a data container for coordinates and their corresponding terrain heights and maps but also provides
+ * It is a data container for coordinates and their corresponding terrain heights and types but also provides
  * helpful methods for IntermediateGenerators.
  */
 class MutableWorld(val bottomLeftCoordinate: Coordinate,
@@ -61,9 +61,18 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
         completeArea = CoordinateArea(bottomLeftCoordinate..topRightCoordinate)
     }
 
+    /**
+     * Creates a [WorldMap] from the Coordinates that have been set so far. This method fails if the current state of
+     * this mutable world can not be used to generate a valid map.
+     */
     fun toWorldMap(): WorldMap {
-        // TODO: some require() checks to validate a full map has been generated -> i.e. no null terrain types and heights
         log.debug("Creating world map from ${terrainMap.size} tiles")
+        require(terrainMap.size == completeArea.size) {
+            "${terrainMap.size} coordinates have been generated, but ${completeArea.size} are needed."
+        }
+        require(terrainMap.values.any { it.first == null || it.second == null }.not()) {
+            "Not all coordinates contain generated terrain."
+        }
 
         // generate sectors out of terrainMap
         val sectors = mutableSetOf<Sector>()

@@ -77,13 +77,13 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         log.debug("Trying to find $mountainTopAreasToFind areas for mountain tops in ${mainCoordinates.size} main coordinates")
         val pickedAreas = mutableSetOf<MainCoordinate>()
         var tries = 0
-        do {
+        while (pickedAreas.size < mountainTopAreasToFind && tries < 1000) {
             val candidate = mainCoordinates.random(rand)
             if(candidate.toCoordinate() in area) {
                 pickedAreas.add(candidate)
             }
             tries++
-        } while (pickedAreas.size < mountainTopAreasToFind && tries < 1000)
+        }
 
         val pickedLocations = mutableSetOf<Coordinate>()
         pickedAreas.forEach { mainCoordinate ->
