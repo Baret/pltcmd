@@ -60,7 +60,7 @@ private class PeekResult(
         private val toGenerate: Coordinate,
         private val peekedTile: Coordinate?,
         private val mutableWorld: MutableWorld,
-        val rand: Random
+        private val rand: Random
 ) {
     fun generateNext() {
         val currentHeight = mutableWorld.heightAt(current)!!
@@ -68,26 +68,30 @@ private class PeekResult(
                 mapNotNull { mutableWorld.heightAt(it) }.
                 map { currentHeight.value - it.value }
         // check if the difference to a neighbor is too big -> we MUST go up/down!
-        if(heightDifferences.min()?:0 <= -3) {
-            mutableWorld[toGenerate] = currentHeight + 1
-        } else if(heightDifferences.max()?:0 >= 3) {
-            mutableWorld[toGenerate] = currentHeight - 1
-        } else {
-            // else check how we approach a target height
-            val targetHeight = if (peekedTile != null) {
-                mutableWorld.heightAt(peekedTile)!!
-            } else {
-                // if nothing peeked, target a random height
-                TerrainHeight.random(rand)
+        when {
+            heightDifferences.min()?:0 <= -3 -> {
+                mutableWorld[toGenerate] = currentHeight + 1
             }
-            val heightDiff = targetHeight.value - currentHeight.value
-            val steepness = calcSteepness(heightDiff)
-            mutableWorld[toGenerate] = when {
-                targetHeight > currentHeight -> currentHeight.higherOrEqual(rand, steepness)
-                targetHeight < currentHeight -> currentHeight.lowerOrEqual(rand, steepness)
-                else                         -> {
-                    // same height has a chance to change
-                    fullRandom(currentHeight)
+            heightDifferences.max()?:0 >= 3  -> {
+                mutableWorld[toGenerate] = currentHeight - 1
+            }
+            else                             -> {
+                // else check how we approach a target height
+                val targetHeight = if (peekedTile != null) {
+                    mutableWorld.heightAt(peekedTile)!!
+                } else {
+                    // if nothing peeked, target a random height
+                    TerrainHeight.random(rand)
+                }
+                val heightDiff = targetHeight.value - currentHeight.value
+                val steepness = calcSteepness(heightDiff)
+                mutableWorld[toGenerate] = when {
+                    targetHeight > currentHeight -> currentHeight.higherOrEqual(rand, steepness)
+                    targetHeight < currentHeight -> currentHeight.lowerOrEqual(rand, steepness)
+                    else                         -> {
+                        // same height has a chance to change
+                        fullRandom(currentHeight)
+                    }
                 }
             }
         }
