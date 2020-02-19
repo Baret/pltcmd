@@ -19,22 +19,22 @@ class HeightFiller(override val rand: Random, override val context: GenerationCo
 
     private val log = LoggerFactory.getLogger(this::class)
 
-    override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
-        require(terrainMap.mainCoordinatesNotEmpty.isNotEmpty()) {
+    override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
+        require(mutableWorld.mainCoordinatesNotEmpty.isNotEmpty()) {
             "Can not fill up a completely empty world!"
         }
-        val edges = terrainMap.find(area) {
-            coordinate: Coordinate -> terrainMap.neighborsOf(coordinate).filterNot { it in terrainMap }.isNotEmpty()
+        val edges = mutableWorld.find(area) {
+            coordinate: Coordinate -> mutableWorld.neighborsOf(coordinate).filterNot { it in mutableWorld }.isNotEmpty()
         }
         log.debug("found ${edges.size} edge tiles, filling up with terrain height...")
         workFrontier(edges, {currentCoordinate ->
             val unprocessedNeighbors =
-                    terrainMap.
+                    mutableWorld.
                             neighborsOf(currentCoordinate).
-                            filter { terrainMap.heightAt(it) == null }
+                            filter { mutableWorld.heightAt(it) == null }
 
             unprocessedNeighbors.forEach { unprocessedNeighbor ->
-                terrainMap.
+                mutableWorld.
                         peekAhead(currentCoordinate, unprocessedNeighbor).
                         generateNext()
                 unprocessedNeighbor.addToNextFrontier()

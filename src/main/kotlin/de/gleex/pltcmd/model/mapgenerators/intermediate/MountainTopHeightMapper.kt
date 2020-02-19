@@ -30,35 +30,35 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
     private val mainCoordinateQuotaForMountains = 0.25
     private val steepness = 0.55
 
-    override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
+    override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         // pick random positions for mountain tops
-        val mountainTopLocations = findMountainTops(area, terrainMap)
+        val mountainTopLocations = findMountainTops(area, mutableWorld)
         val frontier = mutableSetOf<Coordinate>()
         // set those to max height
         mountainTopLocations.forEach {
-            terrainMap[it] = MAX_TERRAIN
+            mutableWorld[it] = MAX_TERRAIN
             frontier.add(it)
             context.mountainTops.addTarget(it)
         }
         // from each position find the four neighbours that have no height yet
-        generateMountains(frontier, terrainMap)
+        generateMountains(frontier, mutableWorld)
         log.debug("Processed ${processedTiles.size} tiles to create ${mountainTopLocations.size} mountains")
     }
 
-    private fun generateMountains(initialFrontier: Set<Coordinate>, terrainMap: MutableWorld) {
+    private fun generateMountains(initialFrontier: Set<Coordinate>, mutableWorld: MutableWorld) {
         var targetDistance = 0
         workFrontier(
             initialFrontier,
             { currentCoordinate: Coordinate ->
-                val currentHeight: TerrainHeight? = terrainMap.heightAt(currentCoordinate)
+                val currentHeight: TerrainHeight? = mutableWorld.heightAt(currentCoordinate)
                 if (currentHeight != null && currentHeight > MIN_TERRAIN) {
-                    terrainMap.
+                    mutableWorld.
                         neighborsOf(currentCoordinate).
                         filter {
                             it.isNotProcessed()
                         }.
                         forEach { neighbor ->
-                            terrainMap[neighbor] = currentHeight.lowerOrEqual(rand, steepness)
+                            mutableWorld[neighbor] = currentHeight.lowerOrEqual(rand, steepness)
                             neighbor.addToNextFrontier()
                             context.mountainTops.add(neighbor, currentCoordinate, targetDistance)
                         }
@@ -67,8 +67,8 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
             { targetDistance++ })
     }
 
-    private fun findMountainTops(area: CoordinateArea, terrainMap: MutableWorld): Set<Coordinate> {
-        val mainCoordinates = terrainMap.mainCoordinatesEmpty.
+    private fun findMountainTops(area: CoordinateArea, mutableWorld: MutableWorld): Set<Coordinate> {
+        val mainCoordinates = mutableWorld.mainCoordinatesEmpty.
             ifEmpty {
                 log.debug("No empty space found for mountains!")
                 return emptySet()

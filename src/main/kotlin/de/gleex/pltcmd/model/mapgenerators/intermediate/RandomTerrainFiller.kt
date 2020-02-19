@@ -15,15 +15,15 @@ class RandomTerrainFiller(override val rand: Random, override val context: Gener
 
     private val log = LoggerFactory.getLogger(RandomTerrainFiller::class)
 
-    override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
+    override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         var emptyOnes = 0
         var missingTypeOnes = 0
         area.asSequence().forEach {
-            if(it !in terrainMap) {
-                terrainMap[it] = Terrain.random(rand)
+            if(it !in mutableWorld) {
+                mutableWorld[it] = Terrain.random(rand)
                 emptyOnes++
-            } else if(terrainMap.heightAt(it) != null && terrainMap.typeAt(it) == null) {
-                terrainMap[it] = TerrainType.random(rand)
+            } else if(mutableWorld.heightAt(it) != null && mutableWorld.typeAt(it) == null) {
+                mutableWorld[it] = TerrainType.random(rand)
                 missingTypeOnes++
             }
         }

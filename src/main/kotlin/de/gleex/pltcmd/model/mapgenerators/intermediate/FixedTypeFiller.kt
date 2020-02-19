@@ -20,13 +20,13 @@ class FixedTypeFiller(private val terrainType: TerrainType) : IntermediateGenera
 
     private val log = LoggerFactory.getLogger(this::class)
 
-    override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
-        terrainMap.find(area) {
-            terrainMap.typeAt(it) == null
+    override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
+        mutableWorld.find(area) {
+            mutableWorld.typeAt(it) == null
         }.also {
             log.debug("Filling up ${it.size} tiles with type $terrainType")
         }.forEach {
-            terrainMap[it] = terrainType
+            mutableWorld[it] = terrainType
         }
     }
 }

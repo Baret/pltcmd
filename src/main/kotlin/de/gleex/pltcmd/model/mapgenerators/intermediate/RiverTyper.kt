@@ -11,14 +11,14 @@ import kotlin.random.Random
 class RiverTyper(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
     private val log = LoggerFactory.getLogger(this::class)
 
-    override fun generateArea(area: CoordinateArea, terrainMap: MutableWorld) {
+    override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         // for now create one river on every mountain (expecting every mountain top to be a "target")
         val fullRivers = findRivers()
         fullRivers.forEach {
             val river = it.toList().dropLast(rand.nextInt(2, 6))
             log.debug("Generating river of length ${river.size} from ${river.first()} to ${river.last()}")
             river.forEach { coordinate ->
-                terrainMap[coordinate] = TerrainType.WATER_SHALLOW
+                mutableWorld[coordinate] = TerrainType.WATER_SHALLOW
             }
         }
     }

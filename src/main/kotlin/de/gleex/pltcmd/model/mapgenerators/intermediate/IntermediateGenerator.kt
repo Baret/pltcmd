@@ -15,7 +15,7 @@ abstract class IntermediateGenerator {
     abstract val rand: Random
     abstract val context: GenerationContext
 
-    abstract fun generateArea(area: CoordinateArea, terrainMap: MutableWorld)
+    abstract fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld)
 
     private val log = LoggerFactory.getLogger(this::class)
 
