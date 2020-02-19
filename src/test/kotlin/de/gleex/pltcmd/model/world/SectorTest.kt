@@ -1,38 +1,52 @@
 package de.gleex.pltcmd.model.world
 
-import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
+import de.gleex.pltcmd.testhelpers.randomSectorAt
+import io.kotlintest.assertSoftly
+import io.kotlintest.forAll
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.shouldBeInRange
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.WordSpec
 
-class SectorTest {
+class SectorTest: WordSpec() {
 
-    @Test
-    fun createAt() {
-        val origin = Coordinate(150, 700)
+    init {
+        val validOrigin = Coordinate(150, 700)
+        "A sector created at origin $validOrigin" should {
+            val sector = randomSectorAt(validOrigin)
 
-        val result = Sector.generateAt(origin)
+            val expectedTilecount = Sector.TILE_COUNT * Sector.TILE_COUNT
+            "have $expectedTilecount tiles" {
+                sector.tiles shouldHaveSize expectedTilecount
+            }
 
-        val tiles = result.tiles
-        assertEquals(Sector.TILE_COUNT * Sector.TILE_COUNT, tiles.size)
-        val validEastings = origin.eastingFromLeft until (origin.eastingFromLeft + Sector.TILE_COUNT)
-        val validNorthings = origin.northingFromBottom until (origin.northingFromBottom + Sector.TILE_COUNT)
-        tiles.forEach {
-            assertTrue(
-                    it.coordinate.eastingFromLeft in validEastings,
-                    "easting ${it.coordinate.eastingFromLeft} in $validEastings"
-            )
-            assertTrue(
-                    it.coordinate.northingFromBottom in validNorthings,
-                    "northing ${it.coordinate.northingFromBottom} in $validNorthings"
-            )
+            val validEastings = validOrigin.eastingFromLeft until validOrigin.eastingFromLeft + Sector.TILE_COUNT
+            val validNorthings = validOrigin.northingFromBottom until validOrigin.northingFromBottom + Sector.TILE_COUNT
+            "have only tiles with easting in $validEastings and northing in $validNorthings" {
+                forAll(sector.tiles) { tile ->
+                    assertSoftly {
+                        tile.coordinate.eastingFromLeft shouldBeInRange validEastings
+                        tile.coordinate.northingFromBottom shouldBeInRange validNorthings
+                    }
+                }
+            }
+        }
+
+        "A sector" should {
+            "fail to generate if the origin is not a sector origin" {
+                shouldThrow<IllegalArgumentException> {
+                    randomSectorAt(Coordinate(123, 450))
+                }
+                shouldThrow<IllegalArgumentException> {
+                    randomSectorAt(Coordinate(120, 459))
+                }
+            }
+
+            "not be valid with only one tile" {
+                shouldThrow<IllegalArgumentException> {
+                    Sector(validOrigin, setOf(WorldTile(validOrigin.eastingFromLeft, validOrigin.northingFromBottom)))
+                }
+            }
         }
     }
-
-    @Test
-    fun createAtInvalidOrigin() {
-        val origin = Coordinate(123, 456)
-        assertFailsWith(IllegalArgumentException::class) { Sector.generateAt(origin) }
-    }
-
 }

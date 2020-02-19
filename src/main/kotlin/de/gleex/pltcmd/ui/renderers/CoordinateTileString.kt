@@ -12,13 +12,12 @@ import org.hexworks.zircon.api.graphics.TileComposite
  * It can be drawn horizontally or vertically.
  **/
 open class CoordinateTileString(
-        coordinateValue: Int,
+        protected val text: String,
         protected val drawParams: CoordinateDrawParameters = CoordinateDrawParameters(
                 ColorRepository.GRID_COLOR,
                 ColorRepository.COORDINATE_COLOR_HIGHLIGHT_X
         )
 ) : TileComposite {
-    protected val text = coordinateValue.toString()
     private val majorLength = text.length - 2 // 2 = "00" at end (highlight only hundreds and more)
 
     override val size: Size
@@ -52,5 +51,8 @@ open class CoordinateTileString(
 
     /** Returns the [Position] on which this text starts if centered on the given position. */
     open fun getStartPositionToCenterOn(center: Position) = center.withRelativeX(offsetForCenteredText())
+
+    /** Returns the [Position] on which this text ends if centered on the given position. */
+    open fun getEndPositionToCenterOn(center: Position) = getStartPositionToCenterOn(center).withRelativeX(text.length - 1)
 
 }

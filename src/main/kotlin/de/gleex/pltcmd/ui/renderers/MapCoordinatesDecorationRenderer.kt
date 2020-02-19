@@ -11,8 +11,8 @@ import org.hexworks.zircon.api.graphics.TileGraphics
 class MapCoordinateDecorationRenderer(private val world: GameWorld) : ComponentDecorationRenderer {
 
     // one line on top and a column left
-    override val occupiedSize = Size.create(1, 1)
-    override val offset = Position.create(1, 1)
+    override val occupiedSize = Size.one()
+    override val offset = Position.offset1x1()
 
     override fun render(tileGraphics: TileGraphics, context: ComponentDecorationRenderContext) {
         val size = tileGraphics.size

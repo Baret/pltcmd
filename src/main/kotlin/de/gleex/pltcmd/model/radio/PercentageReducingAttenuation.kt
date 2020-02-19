@@ -17,5 +17,6 @@ class PercentageReducingAttenuation : AttenuationModel {
                 FOREST    -> 0.85
                 HILL      -> 0.90
                 MOUNTAIN  -> 0.80
+                WATER_DEEP, WATER_SHALLOW -> RadioSignal.BASE_LOSS_FACTOR
             }
 }

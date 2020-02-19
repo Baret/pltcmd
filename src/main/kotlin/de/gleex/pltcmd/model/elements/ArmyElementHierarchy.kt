@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.elements
 
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 
 /**
@@ -36,7 +37,7 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
     }
 
     /** Creates a default Element with the average number of constituent units for every subordinate element. */
-    open fun createElement(superordinate: Element?): Element {
+    open fun createElement(superordinate: Element? = null): Element {
         val leader = GenericUnit(UnitType.Soldier)
         val callSign = getCallSign(superordinate)
         val element = Element(callSign, setOf(leader), superordinate)
@@ -54,7 +55,7 @@ enum class ArmyElementHierarchy(val minCountOfConstituentElements: Int, val maxC
     open fun getCallSign(superordinate: Element?): CallSign {
         if (superordinate == null) {
             // TODO ensure unique name for a lot of calls
-            return CallSign(name + " " + Random.nextInt())
+            return CallSign(name + " " + Random.nextInt(0..Int.MAX_VALUE))
         }
         val superCallSign = superordinate.callSign
         val siblingCount = superordinate.subordinates.size

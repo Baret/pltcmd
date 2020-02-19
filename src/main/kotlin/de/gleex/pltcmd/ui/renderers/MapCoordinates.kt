@@ -35,12 +35,17 @@ class MapCoordinates(
     }
 
     private fun drawGridCoordinates(topLeftCoordinate: Coordinate, topLeftPos: Position, mapOffset: Position) {
-        // grid coordinates (for square)
-        for (i in 0 until size.width step 5) {
+        // move to next grid marker
+        val offsetToGridX = topLeftCoordinate.eastingFromLeft % MapGrid.GRID_WIDTH
+        for (i in offsetToGridX until size.width - 1 step MapGrid.GRID_WIDTH) {
             // top
             val topCoordinateText = createTopText(topLeftCoordinate, i)
             val topGridPosition = topLeftPos.withRelativeX(i + mapOffset.x)
             drawCentered(topCoordinateText, topGridPosition)
+        }
+
+        val offsetToGridY = topLeftCoordinate.northingFromBottom % MapGrid.GRID_WIDTH
+        for (i in offsetToGridY until size.width - 1 step MapGrid.GRID_WIDTH) {
             // left
             val leftCoordinateText = createLeftText(topLeftCoordinate, i)
             val leftGridPosition = topLeftPos.withRelativeY(i + mapOffset.y)
@@ -51,18 +56,22 @@ class MapCoordinates(
     /** Moves the given [Coordinate] by the given offset to the east and creates a drawable text of that coordinate. */
     private fun createTopText(topLeftCoordinate: Coordinate, offsetToEast: Int): CoordinateTileString {
         val topCoordinate = topLeftCoordinate.withRelativeEasting(offsetToEast)
-        return CoordinateTileString(topCoordinate.eastingFromLeft)
+        return CoordinateTileString(topCoordinate.formattedEasting())
     }
 
     /** Moves the given [Coordinate] by the given offset to the south and creates a drawable text of that coordinate. */
     private fun createLeftText(topLeftCoordinate: Coordinate, offsetToSouth: Int): CoordinateTileString {
         val leftCoordinate = topLeftCoordinate.withRelativeNorthing(-offsetToSouth)
-        return VerticalCoordinateTileString(leftCoordinate.northingFromBottom)
+        return VerticalCoordinateTileString(leftCoordinate.formattedNorthing())
     }
 
     private fun drawCentered(coordinateTiles: CoordinateTileString, center: Position) {
         val textStartPosition = coordinateTiles.getStartPositionToCenterOn(center)
-        draw(coordinateTiles, textStartPosition)
+        val textEndPosition = coordinateTiles.getEndPositionToCenterOn(center)
+        // prevent truncated text
+        if (backend.size.containsPosition(textStartPosition) && backend.size.containsPosition(textEndPosition)) {
+            draw(coordinateTiles, textStartPosition)
+        }
     }
 
     override fun toString() = "MapCoordinates $backend"

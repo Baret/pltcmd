@@ -5,6 +5,7 @@ import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.game.TileRepository
 import de.gleex.pltcmd.model.radio.RadioSignal
 import de.gleex.pltcmd.model.terrain.Terrain
+import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.MultiSelect
@@ -20,6 +21,10 @@ import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
+import org.hexworks.zircon.api.uievent.KeyCode
+import org.hexworks.zircon.api.uievent.KeyboardEventType
+import org.hexworks.zircon.api.uievent.Pass
+import org.hexworks.zircon.api.uievent.Processed
 import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.MouseEvent
 import org.hexworks.zircon.api.uievent.MouseEventType
@@ -31,7 +36,7 @@ import org.hexworks.zircon.api.view.base.BaseView
  */
 class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
     companion object {
-        val log = LoggerFactory.getLogger(GameView::class)
+        private val log = LoggerFactory.getLogger(GameView::class)
     }
 
     override fun onDock() {
@@ -93,6 +98,30 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
 
         log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
         log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
+
+        log.debug("Adding keyboardlistener to screen")
+        screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, _ ->
+            when (event.code) {
+                KeyCode.LEFT -> {
+                    gameWorld.scrollLeftBy(Sector.TILE_COUNT)
+                    // TODO: re-rendering of the decorations does not correctly work yet (might be fixed by Zircon in GameComponent)
+                    Processed
+                    }
+                KeyCode.RIGHT   -> {
+                    gameWorld.scrollRightBy(Sector.TILE_COUNT)
+                    Processed
+                    }
+                KeyCode.DOWN    -> {
+                    gameWorld.scrollForwardBy(Sector.TILE_COUNT)
+                    Processed
+                    }
+                KeyCode.UP      -> {
+                    gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
+                    Processed
+                    }
+                else            -> Pass
+            }
+        }
 
         // playing around with stuff...
         val sidebarWidth = sidebar.contentSize.width
