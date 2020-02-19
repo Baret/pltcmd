@@ -17,5 +17,6 @@ class AbsoluteSignalLossAttenuation : AttenuationModel {
                 FOREST    -> 15.0
                 HILL      -> 10.0
                 MOUNTAIN  -> 20.0
+                WATER_DEEP, WATER_SHALLOW -> 2.0
             }
 }

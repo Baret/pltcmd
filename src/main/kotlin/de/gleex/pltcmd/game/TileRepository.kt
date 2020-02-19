@@ -36,6 +36,7 @@ object TileRepository {
         TerrainType.FOREST    -> Symbols.SPADES
         TerrainType.HILL      -> Symbols.INTERSECTION
         TerrainType.MOUNTAIN  -> Symbols.TRIANGLE_UP_POINTING_BLACK
+        TerrainType.WATER_DEEP, TerrainType.WATER_SHALLOW -> Symbols.APPROXIMATION
     }
 
     fun empty() = Tile.empty()

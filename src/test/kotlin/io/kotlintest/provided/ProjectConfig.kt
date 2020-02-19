@@ -11,6 +11,8 @@ class ProjectConfig: AbstractProjectConfig() {
     val executionTimes = mutableListOf<Long>()
     val heapSizes = mutableListOf<Long>()
 
+    override fun parallelism() = 1
+
     override fun beforeAll() {
         log.info("Starting tests, measuring time")
         logMemoryUsage()
@@ -48,6 +50,7 @@ class ProjectConfig: AbstractProjectConfig() {
                 }
                 val executionTime = System.currentTimeMillis() - testStartedAt
                 log.info("Execution of '${testCase.description.names().drop(1).joinToString(" ")}' took $executionTime ms")
+                log.info(" - - - - - - - - - - - - - - - - - -")
                 executionTimes.add(executionTime)
                 heapSizes.add(heapSize())
             }

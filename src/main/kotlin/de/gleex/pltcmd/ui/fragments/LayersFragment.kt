@@ -16,7 +16,6 @@ class LayersFragment(private val width: Int, private val layers: List<Layer>) : 
                         withSpacing(2).
                         build()
                 layers.forEachIndexed { i, layer ->
-                    val checkBoxWidth = width / layers.size
                     checkBoxes.addComponent(
                             Components.checkBox().
                                 withText((i + 1).toString()).
