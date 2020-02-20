@@ -23,9 +23,25 @@ class MapBlock(val terrain: Terrain) : BaseBlock<Tile>(emptyTile = TileRepositor
     }
 
     /**
+     * Sets an overlay tile. It should preferably be transparent. May be used for debug features or markers.
+     */
+    fun setOverlay(tile: Tile) {
+        bottom = tile
+    }
+
+    /**
      * Removes the currently visible unit in this block.
      */
     fun resetUnit() = setUnit(TileRepository.empty())
 
+    /**
+     * Resets the overlay (sets it to empty).
+     */
+    fun resetOverlay() = setOverlay(TileRepository.empty())
+
+    /**
+     * True if this block contains a unit tile.
+     * @see setUnit
+     */
     fun hasUnit() = content != TileRepository.empty()
 }

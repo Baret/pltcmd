@@ -67,7 +67,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                     line.positions.forEach {pos ->
                         gameWorld.fetchBlockAtVisiblePosition(pos).ifPresent {
                             terrainList += it.terrain
-                            it.setUnit(TileRepository.forSignal(signal.along(terrainList)))
+                            it.setOverlay(TileRepository.forSignal(signal.along(terrainList)))
                         }
                     }
                     oldClick = null
