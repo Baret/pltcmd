@@ -4,7 +4,7 @@ import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import java.math.MathContext
+import java.math.RoundingMode
 import kotlin.math.floor
 
 /**
@@ -68,7 +68,7 @@ open class RadioSignal(private val initialStrength: Double) {
      * Translates a signalStrength to a percentage value from 0.0 to 1.0.
      * Strength >= 100 means full strength of 100%, lower values equal the percentage value.
      */
-    protected fun Double.toPercent(): Double = this.toBigDecimal().divide(100.0.toBigDecimal()).round(MathContext(10)).toDouble().coerceIn(0.0, 1.0)
+    protected fun Double.toPercent(): Double = this.toBigDecimal().divide(100.0.toBigDecimal()).setScale(5, RoundingMode.HALF_DOWN).toDouble().coerceIn(0.0, 1.0)
 
     private fun TerrainHeight.toDouble(): Double = value.toDouble()
 

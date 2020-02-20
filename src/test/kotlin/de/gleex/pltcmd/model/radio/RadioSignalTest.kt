@@ -22,13 +22,14 @@ class RadioSignalTest: WordSpec() {
             "be 1.0 when > 100 and 0.0 when < 0" {
                 val radioSignal = RadioSignalTestExtension()
                 forall(
+                        // Rounding precision is 5 digits
                         row(Double.MAX_VALUE, 1.0),
                         row(110.0, 1.0),
                         row(100.0, 1.0),
-                        row(99.8997, 0.998997),
+                        row(99.8997, 0.999),
                         row(90.0, 0.90),
                         row(80.0, 0.80),
-                        row(71.987654321, 0.71987654321),
+                        row(71.987654321, 0.71988),
                         row(70.0, 0.70),
                         row(60.0, 0.60),
                         row(50.0, 0.50),
@@ -36,7 +37,7 @@ class RadioSignalTest: WordSpec() {
                         row(30.0, 0.30),
                         row(20.0, 0.20),
                         row(10.0, 0.10),
-                        row(1.000000001, 0.01000000001),
+                        row(1.000000001, 0.0100000000),
                         row(0.0, 0.0),
                         row(-0.01, 0.0),
                         row(-0.0000000000000000000004, 0.0),
