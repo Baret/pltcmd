@@ -15,6 +15,7 @@ class ThemeSelectorFragment(override val width: Int, private val screen: Screen)
             build().apply {
                 addFragment(Fragments.
                         multiSelect(contentSize.width, ColorThemeResource.values().toList()).
+                        // TODO: Set default value to current theme with the next zircon version
                         withCallback { _, newValue -> screen.theme = newValue.getTheme() }.
                         withCenteredText(true).
                         build())

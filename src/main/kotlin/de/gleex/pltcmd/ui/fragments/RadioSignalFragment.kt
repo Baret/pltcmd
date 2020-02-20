@@ -17,12 +17,19 @@ class RadioSignalFragment(override val width: Int): BaseFragment {
 
     override val root = Components.
             vbox().
-            withSize(width, 7).
+            withSize(width, 6).
             withSpacing(0).
             build().
             apply {
-                val strengthLabel = Components.
+
+                val header = Components.
                         header().
+                        withSize(this@RadioSignalFragment.width, 1).
+                        withText("Radio signal settings").
+                        build()
+
+                val strengthLabel = Components.
+                        label().
                         withSize(this@RadioSignalFragment.width, 1).
                         build()
                 val strengthInput = Components.
@@ -35,9 +42,10 @@ class RadioSignalFragment(override val width: Int): BaseFragment {
 
                 strengthLabel.textProperty.updateFrom(createPropertyFrom("Strength: ") bindPlusWith strengthInput.currentValueProperty.bindToString())
                 selectedStrength.updateFrom(strengthInput.currentValueProperty)
+                strengthInput.currentValueProperty.value = 100
 
                 val rangeLabel = Components.
-                        header().
+                        label().
                         withSize(this@RadioSignalFragment.width, 1).
                         build()
                 val rangeInput = Components.
@@ -49,8 +57,15 @@ class RadioSignalFragment(override val width: Int): BaseFragment {
 
                 rangeLabel.textProperty.updateFrom(createPropertyFrom("Range: ") bindPlusWith rangeInput.currentValueProperty.bindToString())
                 selectedRange.updateFrom(rangeInput.currentValueProperty)
+                rangeInput.currentValueProperty.value = 5
 
 
-                addComponents(strengthLabel, strengthInput, rangeLabel, rangeInput)
+                addComponents(
+                        header,
+                        strengthLabel,
+                        strengthInput,
+                        rangeLabel,
+                        rangeInput
+                )
             }
 }
