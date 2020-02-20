@@ -44,4 +44,10 @@ class MapBlock(val terrain: Terrain) : BaseBlock<Tile>(emptyTile = TileRepositor
      * @see setUnit
      */
     fun hasUnit() = content != TileRepository.empty()
+
+    /**
+     * True if this block contains an overlay tile.
+     * @see setOverlay
+     */
+    fun hasOverlay() = bottom != TileRepository.empty()
 }

@@ -19,8 +19,8 @@ object ColorRepository {
     val COORDINATE_COLOR_HIGHLIGHT_X = TileColor.create(128, 102, 64) // brown
     val COORDINATE_COLOR_HIGHLIGHT_Y = TileColor.create(255, 128, 0) // orange
 
-    private val SIGNAL_FULL = TileColor.create(0, 255, 0, 130)
-    private val SIGNAL_EMPTY = TileColor.create(255, 0, 0, SIGNAL_FULL.alpha)
+    val SIGNAL_FULL = TileColor.create(0, 255, 0, 130)
+    val SIGNAL_EMPTY = TileColor.create(255, 0, 0, SIGNAL_FULL.alpha)
 
     private val MAX_HEIGHT = TileColor.create(230, 230, 230, 254)
 
@@ -52,14 +52,10 @@ object ColorRepository {
         TerrainType.WATER_SHALLOW -> TileColor.create(40, 109, 222)
     }
 
-    fun radioColor(signalStrength: Double): TileColor {
-        val c = TileColor.create(
-                red = SIGNAL_EMPTY.red + ((SIGNAL_FULL.red - SIGNAL_EMPTY.red) * signalStrength).toInt(),
-                green = SIGNAL_EMPTY.green + ((SIGNAL_FULL.green - SIGNAL_EMPTY.green) * signalStrength).toInt(),
-                blue = SIGNAL_EMPTY.blue + ((SIGNAL_FULL.blue - SIGNAL_EMPTY.blue) * signalStrength).toInt(),
-                alpha = if(signalStrength > 0.0) SIGNAL_FULL.alpha else 0
+    fun radioColor(signalStrength: Double) = TileColor.create(
+            red = SIGNAL_EMPTY.red + ((SIGNAL_FULL.red - SIGNAL_EMPTY.red) * signalStrength).toInt(),
+            green = SIGNAL_EMPTY.green + ((SIGNAL_FULL.green - SIGNAL_EMPTY.green) * signalStrength).toInt(),
+            blue = SIGNAL_EMPTY.blue + ((SIGNAL_FULL.blue - SIGNAL_EMPTY.blue) * signalStrength).toInt(),
+            alpha = if(signalStrength > 0.0) SIGNAL_FULL.alpha else 0
         )
-        println("$signalStrength% between $SIGNAL_FULL and $SIGNAL_EMPTY = $c")
-        return c
-    }
 }

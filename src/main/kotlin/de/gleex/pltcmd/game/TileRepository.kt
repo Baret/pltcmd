@@ -2,17 +2,21 @@ package de.gleex.pltcmd.game
 
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainType
+import org.hexworks.zircon.api.Modifiers
 import org.hexworks.zircon.api.builder.modifier.BorderBuilder
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.Symbols
+import org.hexworks.zircon.api.modifier.BorderType
 
 /**
  * Serves all Tile that are needed in the game.
  */
 object TileRepository {
 
+    /**
+     * All tiles used to display elements (aka units) on the map.
+     */
     object Elements {
-
         val PLATOON_FRIENDLY: Tile =
                 Tile.newBuilder().
                         withForegroundColor(ColorRepository.FRIENDLY).
@@ -42,11 +46,15 @@ object TileRepository {
     fun empty() = Tile.empty()
 
     fun forSignal(signalStrength: Double): Tile {
-        return Tile.
-                newBuilder().
-                withForegroundColor(ColorRepository.radioColor(signalStrength)).
-                withBackgroundColor(ColorRepository.radioColor(signalStrength)).
-                withCharacter(' ').
+        val signalColor = ColorRepository.radioColor(signalStrength)
+        val tileBuilder = Tile.newBuilder()
+                .withForegroundColor(signalColor)
+                .withBackgroundColor(signalColor)
+                .withCharacter(' ')
+        if(signalColor.alpha == 0) {
+            tileBuilder.withModifiers(Modifiers.crossedOut(), BorderBuilder.newBuilder().withBorderType(BorderType.SOLID).withBorderColor(ColorRepository.SIGNAL_EMPTY).build())
+        }
+        return tileBuilder.
                 buildCharacterTile()
     }
 }

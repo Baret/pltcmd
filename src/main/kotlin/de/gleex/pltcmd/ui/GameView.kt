@@ -2,9 +2,6 @@ package de.gleex.pltcmd.ui
 
 import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.game.MapBlock
-import de.gleex.pltcmd.game.TileRepository
-import de.gleex.pltcmd.model.radio.RadioSignal
-import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
@@ -12,6 +9,7 @@ import de.gleex.pltcmd.ui.fragments.RadioSignalFragment
 import de.gleex.pltcmd.ui.fragments.ThemeSelectorFragment
 import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
+import de.gleex.pltcmd.ui.renderers.RadioSignalVisualizer
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -21,7 +19,6 @@ import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
-import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.*
 import org.hexworks.zircon.api.view.base.BaseView
 
@@ -53,27 +50,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                 withGameArea(gameWorld).
                 withSize(gameWorld.visibleSize.to2DSize()).
                 withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
-                build(). apply {
-//                    handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer())
-            processMouseEvents(MouseEventType.MOUSE_CLICKED) { mouseEvent: MouseEvent, uiEventPhase: UIEventPhase ->
-                val clickedPosition = mouseEvent.position - absolutePosition
-                if(oldClick == null) {
-                    oldClick = clickedPosition
-                } else {
-                    log.debug("Drawing line from $oldClick to $clickedPosition")
-                    val line = LineFactory.buildLine(oldClick!!, clickedPosition)
-                    val terrainList: MutableList<Terrain> = mutableListOf()
-                    val signal = RadioSignal(200.0)
-                    line.positions.forEach {pos ->
-                        gameWorld.fetchBlockAtVisiblePosition(pos).ifPresent {
-                            terrainList += it.terrain
-                            it.setOverlay(TileRepository.forSignal(signal.along(terrainList)))
-                        }
-                    }
-                    oldClick = null
-                }
-            }
-        }
+                build()
         mainPart.addComponent(map)
 
         val logArea = Components.logArea().
@@ -115,7 +92,9 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
         val sidebarWidth = sidebar.contentSize.width
         sidebar.addFragment(MousePosition(sidebarWidth, map))
 
-        sidebar.addFragment(RadioSignalFragment(sidebarWidth))
+        val radioSignalFragment = RadioSignalFragment(sidebarWidth)
+        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer(gameWorld, radioSignalFragment.selectedStrength, radioSignalFragment.selectedRange, map.absolutePosition))
+        sidebar.addFragment(radioSignalFragment)
 
         val themeSelector = ThemeSelectorFragment(sidebarWidth, screen)
 

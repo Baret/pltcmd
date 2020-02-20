@@ -92,6 +92,18 @@ class GameWorld(private val worldMap: WorldMap):
         return Coordinate(translatedPos.x, translatedPos.y + getMaxY())
     }
 
-    fun fetchBlockAtVisiblePosition(position: Position) = fetchBlockAt(visibleOffset.plus(position.to3DPosition(0)))
+    /**
+     * Adds the current [visibleOffset] to the given position to translate it to the corresponding [Position3D]
+     * and returns the [MapBlock] at the location, if present.
+     */
+    fun fetchBlockAtVisiblePosition(position: Position) = fetchBlockAt(position.toVisiblePosition3D())
 
+    /**
+     * Returns the [Coordinate] at the currently visible position
+     * @see fetchBlockAtVisiblePosition
+     */
+    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D().toCoordinate()
+
+    private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.to3DPosition(0))
 }
+

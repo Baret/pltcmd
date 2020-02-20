@@ -3,7 +3,6 @@ package de.gleex.pltcmd.model.radio
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.options.GameOptions
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.math.RoundingMode
 import kotlin.math.floor
 
@@ -30,8 +29,6 @@ open class RadioSignal(private val initialStrength: Double) {
 
     private val attenuation: AttenuationModel by GameOptions.attenuationModel.asDelegate()
 
-    private val log = LoggerFactory.getLogger(this::class)
-
     /**
      * Calculates the signal loss along the given terrain. The result will be a value from 0.0 to 1.0.
      * A final strength >= 100 means full strength of 100%, lower values equal the percentage value
@@ -44,7 +41,6 @@ open class RadioSignal(private val initialStrength: Double) {
         val startHeight = terrain.first().height
         val targetHeight = terrain.last().height
         val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrain.size.toDouble()
-        log.debug("Signal from $startHeight to $targetHeight along ${terrain.size} fields has slope of $slope")
         var signal = initialStrength
         terrain.
             drop(1).
