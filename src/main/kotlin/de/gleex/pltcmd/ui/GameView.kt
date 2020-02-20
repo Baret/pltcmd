@@ -21,14 +21,8 @@ import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
-import org.hexworks.zircon.api.uievent.KeyCode
-import org.hexworks.zircon.api.uievent.KeyboardEventType
-import org.hexworks.zircon.api.uievent.Pass
-import org.hexworks.zircon.api.uievent.Processed
 import org.hexworks.zircon.api.shape.LineFactory
-import org.hexworks.zircon.api.uievent.MouseEvent
-import org.hexworks.zircon.api.uievent.MouseEventType
-import org.hexworks.zircon.api.uievent.UIEventPhase
+import org.hexworks.zircon.api.uievent.*
 import org.hexworks.zircon.api.view.base.BaseView
 
 /**
@@ -59,6 +53,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                 withSize(gameWorld.visibleSize.to2DSize()).
                 withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
                 build(). apply {
+//                    handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer())
             processMouseEvents(MouseEventType.MOUSE_CLICKED) { mouseEvent: MouseEvent, uiEventPhase: UIEventPhase ->
                 val clickedPosition = mouseEvent.position - absolutePosition
                 if(oldClick == null) {
@@ -73,8 +68,8 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                                 it.terrain
                             }.
                             orElseThrow { IllegalStateException("No terrain found at $clickedPosition") }
-                    val signal = RadioSignal(200.0, firstTerrain)
-                    line.positions.drop(1).forEach {pos ->
+                    val signal = RadioSignal(200.0)
+                    line.positions.forEach {pos ->
                         gameWorld.fetchBlockAtVisiblePosition(pos).ifPresent {
                             terrainList += it.terrain
                             it.setUnit(TileRepository.forSignal(signal.along(terrainList)))
@@ -99,7 +94,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
         log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
         log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
 
-        log.debug("Adding keyboardlistener to screen")
+        log.debug("Adding keyboard listener to screen")
         screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, _ ->
             when (event.code) {
                 KeyCode.LEFT -> {

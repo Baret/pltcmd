@@ -12,7 +12,7 @@ import io.kotlintest.tables.row
 import kotlin.math.pow
 
 class RadioSignalTest: WordSpec() {
-    private class RadioSignalTestExtension : RadioSignal(200.0, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.ONE)) {
+    private class RadioSignalTestExtension : RadioSignal(200.0) {
         fun convertedToPercent(testValue: Double) = testValue.toPercent()
     }
 
@@ -48,7 +48,7 @@ class RadioSignalTest: WordSpec() {
         }
 
         val testTerrain = Terrain.of(TerrainType.GRASSLAND, TerrainHeight.SEVEN)
-        val rs = RadioSignal(100.0, testTerrain)
+        val rs = RadioSignal(100.0)
         "A $rs" When {
             "getting an empty list to travel along" should {
                 "be full strength" {
@@ -56,15 +56,16 @@ class RadioSignalTest: WordSpec() {
                 }
             }
 
-            // TODO: activate this test (remove "!") and fix implementation of RadioSignal
-            "!getting a single field to travel along" should {
+            "getting a single field to travel along" should {
                 "be full strength because it is the field it is originating from" {
                     rs.along(1.highestTerrainTiles()) shouldBeExactly 1.0
+                    rs.along(1.lowestTerrainTiles()) shouldBeExactly 1.0
+                    rs.along(listOf(testTerrain)) shouldBeExactly 1.0
                 }
             }
 
-            for (i in 1..6) {
-                val lowerTiles = i.lowestTerrainTiles()
+            for (i in 1..10) {
+                val lowerTiles = listOf (testTerrain) + i.lowestTerrainTiles()
                 "travelling through ${lowerTiles.size} tiles of air" should {
                     val airLossFactor = RadioSignal.BASE_LOSS_FACTOR
                     "lose strength with the base loss factor of $airLossFactor" {
@@ -72,7 +73,7 @@ class RadioSignalTest: WordSpec() {
                     }
                 }
 
-                val higherTiles = i.highestTerrainTiles()
+                val higherTiles = listOf (testTerrain) + i.highestTerrainTiles()
                 "travelling through ${lowerTiles.size} tiles of ground" should {
                     val groundLossFactor = RadioSignal.TERRAIN_LOSS_FACTOR
                     "lose strength with the ground loss factor of $groundLossFactor" {
@@ -88,10 +89,10 @@ class RadioSignalTest: WordSpec() {
  * Creates a list of n "tiles" of lowest [TerrainHeight].
  */
 private fun Int.lowestTerrainTiles() =
-        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.MIN)}
+        List(this) { _ -> Terrain.of(TerrainType.WATER_DEEP, TerrainHeight.MIN)}
 
 /**
  * Creates a list of n "tiles" of highest [TerrainHeight].
  */
 private fun Int.highestTerrainTiles() =
-        List(this) { _ -> Terrain.of(TerrainType.GRASSLAND, TerrainHeight.MAX)}
+        List(this) { _ -> Terrain.of(TerrainType.MOUNTAIN, TerrainHeight.MAX)}
