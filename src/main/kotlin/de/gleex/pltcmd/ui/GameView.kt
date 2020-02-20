@@ -8,8 +8,8 @@ import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
-import de.gleex.pltcmd.ui.fragments.MultiSelect
 import de.gleex.pltcmd.ui.fragments.RadioSignalFragment
+import de.gleex.pltcmd.ui.fragments.ThemeSelectorFragment
 import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -35,6 +35,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
 
     override fun onDock() {
         val sidebar = Components.vbox().
+                withSpacing(2).
                 withSize(UiOptions.INTERFACE_PANEL_WIDTH, UiOptions.INTERFACE_PANEL_HEIGHT).
                 withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT).
                 withDecorations(ComponentDecorations.halfBlock()).
@@ -62,12 +63,6 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                     log.debug("Drawing line from $oldClick to $clickedPosition")
                     val line = LineFactory.buildLine(oldClick!!, clickedPosition)
                     val terrainList: MutableList<Terrain> = mutableListOf()
-                    val firstTerrain = gameWorld.
-                            fetchBlockAtVisiblePosition(clickedPosition).
-                            map {
-                                it.terrain
-                            }.
-                            orElseThrow { IllegalStateException("No terrain found at $clickedPosition") }
                     val signal = RadioSignal(200.0)
                     line.positions.forEach {pos ->
                         gameWorld.fetchBlockAtVisiblePosition(pos).ifPresent {
@@ -87,9 +82,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                 withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
                 build()
 
-        screen.addComponent(sidebar)
-        screen.addComponent(logArea)
-        screen.addComponent(mainPart)
+        screen.addComponents(sidebar, logArea, mainPart)
 
         log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
         log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
@@ -124,9 +117,9 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
 
         sidebar.addFragment(RadioSignalFragment(sidebarWidth))
 
-        sidebar.addComponent(Components.panel().withSize(sidebarWidth, 5))
+        val themeSelector = ThemeSelectorFragment(sidebarWidth, screen)
 
-        sidebar.addFragment(MultiSelect(sidebarWidth, listOf("value1", "a longer value", "a", "a value so long you cant even read it!"), { newValue -> logArea.addParagraph(newValue, false) }))
+        sidebar.addFragment(themeSelector)
     }
 }
 
