@@ -2,7 +2,6 @@ package de.gleex.pltcmd.game
 
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainType
-import org.hexworks.zircon.api.Modifiers
 import org.hexworks.zircon.api.builder.modifier.BorderBuilder
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.Symbols
@@ -52,7 +51,14 @@ object TileRepository {
                 .withBackgroundColor(signalColor)
                 .withCharacter(' ')
         if(signalColor.alpha == 0) {
-            tileBuilder.withModifiers(Modifiers.crossedOut(), BorderBuilder.newBuilder().withBorderType(BorderType.SOLID).withBorderColor(ColorRepository.SIGNAL_EMPTY).build())
+            tileBuilder.
+                withCharacter(Symbols.SINGLE_LINE_CROSS).
+                withModifiers(
+                    BorderBuilder.newBuilder().
+                        withBorderType(BorderType.SOLID).
+                        withBorderWidth(2).
+                        withBorderColor(ColorRepository.SIGNAL_EMPTY).
+                        build())
         }
         return tileBuilder.
                 buildCharacterTile()

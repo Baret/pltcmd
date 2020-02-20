@@ -5,7 +5,6 @@ import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.game.TileRepository
 import de.gleex.pltcmd.model.radio.RadioSignal
 import org.hexworks.cobalt.databinding.api.property.Property
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.shape.EllipseFactory
@@ -25,8 +24,6 @@ class RadioSignalVisualizer(
     private var clickedPosition = Position.defaultPosition()
     private val lastBlocks = mutableSetOf<MapBlock>()
 
-    private val log = LoggerFactory.getLogger(this::class)
-
     init {
         strengthProperty.onChange { drawSignal() }
         rangeProperty.onChange { drawSignal() }
@@ -41,7 +38,6 @@ class RadioSignalVisualizer(
     }
 
     private fun drawSignal() {
-        log.debug("Drawing radio signal at position $clickedPosition -> ${world.coordinateAtVisiblePosition(clickedPosition)}")
         reset()
         world.
             fetchBlockAtVisiblePosition(clickedPosition).
@@ -49,24 +45,29 @@ class RadioSignalVisualizer(
                 clickedBlock.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
                 lastBlocks.add(clickedBlock)
                 val signal = RadioSignal(strengthProperty.value.toDouble())
-                EllipseFactory.
-                    buildEllipse(EllipseParameters(clickedPosition, Size.create(rangeProperty.value, rangeProperty.value))).
-                    positions.
-                    forEach {ringPosition ->
-                        val terrainList = mutableListOf(clickedBlock.terrain)
-                        LineFactory.
-                            buildLine(clickedPosition, ringPosition).
-                            drop(1).
-                            forEach { linePosition ->
-                                world.fetchBlockAtVisiblePosition(linePosition).ifPresent {
-                                    terrainList.add(it.terrain)
-                                    if(it.hasOverlay().not()) {
-                                        it.setOverlay(TileRepository.forSignal(signal.along(terrainList)))
-                                        lastBlocks.add(it)
-                                    }
+                // To not miss any tiles we create growing ellipses...
+                for(circleRadius in 1..rangeProperty.value) {
+                    EllipseFactory.buildEllipse(EllipseParameters(clickedPosition, Size.create(circleRadius, circleRadius))).
+                        positions.
+                        forEach { ringPosition ->
+                            // and draw lines from the center to every position on the circle
+                            // (When drawing lines to very large circles the lines are too thin to cover every position within the circle)
+                            // (And Zircon does not seem to know a filled ellipse...)
+                            val terrainList = mutableListOf(clickedBlock.terrain)
+                            LineFactory.buildLine(clickedPosition, ringPosition)
+                                .drop(1)
+                                .forEach { linePosition ->
+                                    world.fetchBlockAtVisiblePosition(linePosition)
+                                            .ifPresent {
+                                                terrainList.add(it.terrain)
+                                                if (it.hasOverlay().not()) {
+                                                    it.setOverlay(TileRepository.forSignal(signal.along(terrainList)))
+                                                    lastBlocks.add(it)
+                                                }
+                                            }
                                 }
-                            }
                     }
+                }
             }
     }
 

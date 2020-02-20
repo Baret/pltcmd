@@ -15,7 +15,6 @@ import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
-import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
@@ -44,8 +43,6 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                 withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld)).
                 build()
 
-        var oldClick: Position? = null
-
         val map = GameComponents.newGameComponentBuilder<Tile, MapBlock>().
                 withGameArea(gameWorld).
                 withSize(gameWorld.visibleSize.to2DSize()).
@@ -65,26 +62,30 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
         log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
 
         log.debug("Adding keyboard listener to screen")
-        screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, _ ->
-            when (event.code) {
-                KeyCode.LEFT -> {
-                    gameWorld.scrollLeftBy(Sector.TILE_COUNT)
-                    // TODO: re-rendering of the decorations does not correctly work yet (might be fixed by Zircon in GameComponent)
-                    Processed
+        screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, phase ->
+            if(phase == UIEventPhase.TARGET) {
+                when (event.code) {
+                    KeyCode.LEFT  -> {
+                        gameWorld.scrollLeftBy(Sector.TILE_COUNT)
+                        // TODO: re-rendering of the decorations does not correctly work yet (might be fixed by Zircon in GameComponent)
+                        Processed
                     }
-                KeyCode.RIGHT   -> {
-                    gameWorld.scrollRightBy(Sector.TILE_COUNT)
-                    Processed
+                    KeyCode.RIGHT -> {
+                        gameWorld.scrollRightBy(Sector.TILE_COUNT)
+                        Processed
                     }
-                KeyCode.DOWN    -> {
-                    gameWorld.scrollForwardBy(Sector.TILE_COUNT)
-                    Processed
+                    KeyCode.DOWN  -> {
+                        gameWorld.scrollForwardBy(Sector.TILE_COUNT)
+                        Processed
                     }
-                KeyCode.UP      -> {
-                    gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
-                    Processed
+                    KeyCode.UP    -> {
+                        gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
+                        Processed
                     }
-                else            -> Pass
+                    else          -> Pass
+                }
+            } else {
+                Pass
             }
         }
 
