@@ -25,6 +25,12 @@ open class RadioSignal(private val initialStrength: Double) {
          * The factor to apply when a signal travels through air
          */
         const val BASE_LOSS_FACTOR = .98
+
+        /**
+         * The minimal absolute strength a signal need to have to be considered > 0%.
+         * In other words: Signals lower than this are cut off.
+         */
+        const val MIN_STRENGTH_THRESHOLD = 8
     }
 
     private val attenuation: AttenuationModel by GameOptions.attenuationModel.asDelegate()
@@ -64,7 +70,13 @@ open class RadioSignal(private val initialStrength: Double) {
      * Translates a signalStrength to a percentage value from 0.0 to 1.0.
      * Strength >= 100 means full strength of 100%, lower values equal the percentage value.
      */
-    protected fun Double.toPercent(): Double = this.toBigDecimal().divide(100.0.toBigDecimal()).setScale(5, RoundingMode.HALF_DOWN).toDouble().coerceIn(0.0, 1.0)
+    protected fun Double.toPercent(): Double {
+        return if(this < MIN_STRENGTH_THRESHOLD) {
+            0.0
+        } else {
+            this.toBigDecimal().divide(100.0.toBigDecimal()).setScale(5, RoundingMode.HALF_DOWN).toDouble().coerceIn(0.0, 1.0)
+        }
+    }
 
     private fun TerrainHeight.toDouble(): Double = value.toDouble()
 
