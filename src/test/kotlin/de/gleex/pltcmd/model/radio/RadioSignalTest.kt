@@ -19,7 +19,7 @@ class RadioSignalTest: WordSpec() {
     init
     {
         "Remaining signal strength converted to percent" should {
-            "be 1.0 when > 100 and 0.0 when < 0" {
+            "be 1.0 when > 100 and 0.0 when < ${RadioSignal.MIN_STRENGTH_THRESHOLD}" {
                 val radioSignal = RadioSignalTestExtension()
                 forall(
                         // Rounding precision is 5 digits
@@ -37,7 +37,8 @@ class RadioSignalTest: WordSpec() {
                         row(30.0, 0.30),
                         row(20.0, 0.20),
                         row(10.0, 0.10),
-                        row(1.000000001, 0.0100000000),
+                        row(10.000000001, 0.100000000),
+                        row(1.000000001, 0.0),
                         row(0.0, 0.0),
                         row(-0.01, 0.0),
                         row(-0.0000000000000000000004, 0.0),
@@ -65,7 +66,7 @@ class RadioSignalTest: WordSpec() {
                 }
             }
 
-            for (i in 1..10) {
+            for (i in 1..6) {
                 val lowerTiles = listOf (testTerrain) + i.lowestTerrainTiles()
                 "travelling through ${lowerTiles.size} tiles of air" should {
                     val airLossFactor = RadioSignal.BASE_LOSS_FACTOR
