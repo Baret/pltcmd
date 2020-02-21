@@ -1,8 +1,10 @@
 package de.gleex.pltcmd.options
 
+import de.gleex.pltcmd.model.radio.AttenuationModel
 import de.gleex.pltcmd.model.radio.PercentageReducingAttenuation
 import de.gleex.pltcmd.model.world.Sector
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.zircon.api.data.Size3D
 
 /**
@@ -10,7 +12,7 @@ import org.hexworks.zircon.api.data.Size3D
  */
 object GameOptions {
     val DEBUG_MAP_SEED: Long = 5488540751658L
-    val attenuationModel = createPropertyFrom(PercentageReducingAttenuation())
+    val attenuationModel: Property<AttenuationModel> = createPropertyFrom(PercentageReducingAttenuation())
 
     const val SECTORS_COUNT_H = 10
     const val SECTORS_COUNT_V = 10

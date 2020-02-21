@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.game.TileRepository
 import de.gleex.pltcmd.model.radio.RadioSignal
+import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
@@ -27,12 +28,18 @@ class RadioSignalVisualizer(
     init {
         strengthProperty.onChange { drawSignal() }
         rangeProperty.onChange { drawSignal() }
+        GameOptions.attenuationModel.onChange { drawSignal() }
     }
 
     override fun invoke(event: MouseEvent, phase: UIEventPhase): UIEventResponse {
         if(phase == UIEventPhase.TARGET && event.type == MouseEventType.MOUSE_CLICKED) {
-            clickedPosition = event.position.minus(mapOffset)
-            drawSignal()
+            val newPosition = event.position.minus(mapOffset)
+            if(clickedPosition == newPosition && lastBlocks.isNotEmpty()) {
+                reset()
+            } else {
+                clickedPosition = newPosition
+                drawSignal()
+            }
         }
         return Pass
     }
@@ -42,7 +49,7 @@ class RadioSignalVisualizer(
         world.
             fetchBlockAtVisiblePosition(clickedPosition).
             ifPresent {clickedBlock ->
-                clickedBlock.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
+                clickedBlock.setOverlay(TileRepository.Elements.PLATOON_FRIENDLY)
                 lastBlocks.add(clickedBlock)
                 val signal = RadioSignal(strengthProperty.value.toDouble())
                 // To not miss any tiles we create growing ellipses...
