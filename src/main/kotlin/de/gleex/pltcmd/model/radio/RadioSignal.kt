@@ -41,7 +41,7 @@ open class RadioSignal(private val initialStrength: Double) {
      * (i.e. signalStrength of 80 -> 80% -> 0.80).
      */
     fun along(terrain: List<Terrain>): Double {
-        if(terrain.isEmpty() || terrain.size == 1) {
+        if(terrain.size <= 1) {
             return initialStrength.toPercent()
         }
         val startHeight = terrain.first().height
@@ -53,7 +53,7 @@ open class RadioSignal(private val initialStrength: Double) {
             forEachIndexed { index, t ->
                 // Calculate if the signal is above, at or through the current field
                 // currentHeight (y) = mx + b
-                val currentHeight = floor(slope * (index+1) + startHeight.toDouble())
+                val currentHeight = floor(slope * (index + 1) + startHeight.toDouble())
                 signal = when {
                     // signal travels through the air (above ground)
                     currentHeight > t.height.toDouble() -> signal * BASE_LOSS_FACTOR
