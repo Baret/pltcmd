@@ -11,8 +11,17 @@ import org.hexworks.zircon.api.data.Size3D
  * Options that change the behaviour of the game.
  */
 object GameOptions {
-    val DEBUG_MAP_SEED: Long = 5488540751658L
     val attenuationModel: Property<AttenuationModel> = createPropertyFrom(PercentageReducingAttenuation())
+
+    /**
+     * Option to turn on the RadioSignalVisualizer and corresponding UI elements.
+     */
+    val displayRadioSignals = createPropertyFrom(true)
+
+    /**
+     * Seed used to always create the same map which is useful for development.
+     */
+    const val DEBUG_MAP_SEED: Long = 5488540751658L
 
     const val SECTORS_COUNT_H = 10
     const val SECTORS_COUNT_V = 10
