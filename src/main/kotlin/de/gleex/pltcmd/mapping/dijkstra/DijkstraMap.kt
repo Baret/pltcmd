@@ -35,7 +35,7 @@ class DijkstraMap<T>(vararg initialTargets: T) {
         }
         if(downstreamMap.containsKey(from)) {
             return Maybe.of(sequence {
-                val path = mutableListOf<T>(from)
+                val path = ArrayList<T>(maxDistance + 1)
                 var current = downstreamMap[from]?.first
                 do {
                     current?.let { path.add(it) }

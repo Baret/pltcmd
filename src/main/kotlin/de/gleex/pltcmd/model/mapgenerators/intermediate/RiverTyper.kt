@@ -41,7 +41,7 @@ class RiverTyper(override val rand: Random, override val context: GenerationCont
                     .shuffled(rand)
                     .forEach { riverEndCandidate ->
                         context.mountainTops.pathFrom(riverEndCandidate).ifPresent { riverCandidate ->
-                            // if we the path leads to a mountain top that does not yet have a river to it
+                            // if the path leads to a mountain top that does not yet have a river to it
                             val currentMountainTop = riverCandidate.last()
                             if (mountainTopsToReach.contains(currentMountainTop)) {
                                 fullRivers.add(riverCandidate)

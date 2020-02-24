@@ -13,7 +13,7 @@ import kotlin.math.min
 import kotlin.random.Random
 
 /**
- * Finds empty spaces and fills them with more or less smooth height.
+ * Finds empty spaces and fills them with more or less smooth height (ignoring the context).
  */
 class HeightFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
@@ -26,7 +26,7 @@ class HeightFiller(override val rand: Random, override val context: GenerationCo
         val edges = mutableWorld.find(area) {
             coordinate: Coordinate -> mutableWorld.neighborsOf(coordinate).filterNot { it in mutableWorld }.isNotEmpty()
         }
-        log.debug("found ${edges.size} edge tiles, filling up with terrain height...")
+        log.debug("Found ${edges.size} edge tiles, filling up with terrain height...")
         workFrontier(edges, {currentCoordinate ->
             val unprocessedNeighbors =
                     mutableWorld.

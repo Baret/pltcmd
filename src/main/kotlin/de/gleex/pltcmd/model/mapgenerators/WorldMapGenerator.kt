@@ -35,7 +35,10 @@ class WorldMapGenerator(
 
     fun generateWorld(bottomLeftCoordinate: Coordinate = Coordinate(0, 0)): WorldMap {
         val partiallyGeneratedWorld = MutableWorld(bottomLeftCoordinate, worldWidthInTiles, worldHeightInTiles)
-        log.info("Generating a random world with seed $seed of $worldWidthInTiles * $worldHeightInTiles = ${worldWidthInTiles * worldHeightInTiles} tiles between $bottomLeftCoordinate and ${partiallyGeneratedWorld.topRightCoordinate}")
+        log.info("Generating a random world with seed $seed")
+        log.info("\tContext: $context")
+        log.info("\tWorld size: $worldWidthInTiles * $worldHeightInTiles = ${worldWidthInTiles * worldHeightInTiles} tiles")
+        log.info("\tRanging from $bottomLeftCoordinate to ${partiallyGeneratedWorld.topRightCoordinate}")
 
         val started = System.currentTimeMillis()
 
