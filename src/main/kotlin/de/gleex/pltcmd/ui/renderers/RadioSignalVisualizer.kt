@@ -48,15 +48,16 @@ class RadioSignalVisualizer(
     private fun drawSignal() {
         reset()
         if(GameOptions.displayRadioSignals.value) {
-            world.fetchBlockAtVisiblePosition(clickedPosition)
-                    .ifPresent { clickedBlock ->
+            world.fetchBlockAtVisiblePosition(clickedPosition).
+                    ifPresent { clickedBlock ->
                         clickedBlock.setOverlay(TileRepository.Elements.PLATOON_FRIENDLY)
                         lastBlocks.add(clickedBlock)
                         val signal = RadioSignal(strengthProperty.value.toDouble())
                         // To not miss any tiles we create growing ellipses...
                         for (circleRadius in 1..rangeProperty.value) {
-                            EllipseFactory.buildEllipse(EllipseParameters(clickedPosition, Size.create(circleRadius, circleRadius)))
-                                    .positions.forEach { ringPosition ->
+                            EllipseFactory.buildEllipse(EllipseParameters(clickedPosition, Size.create(circleRadius, circleRadius))).
+                                positions.
+                                forEach { ringPosition ->
                                 // and draw lines from the center to every position on the circle
                                 // (When drawing lines to very large circles the lines are too thin to cover every position within the circle)
                                 // (And Zircon does not seem to know a filled ellipse...)

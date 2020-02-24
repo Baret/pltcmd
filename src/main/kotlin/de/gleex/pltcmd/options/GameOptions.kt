@@ -25,6 +25,7 @@ object GameOptions {
 
     const val SECTORS_COUNT_H = 10
     const val SECTORS_COUNT_V = 10
+
     /**
      * The size of the complete world in tiles as [Size3D].
      */

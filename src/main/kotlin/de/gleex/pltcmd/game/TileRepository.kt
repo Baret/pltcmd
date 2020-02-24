@@ -50,7 +50,8 @@ object TileRepository {
                 .withForegroundColor(signalColor)
                 .withBackgroundColor(signalColor)
                 .withCharacter(' ')
-        if(signalColor.alpha == 0) {
+
+        if(signalStrength <= 0.0) {
             tileBuilder.
                 withCharacter(Symbols.SINGLE_LINE_CROSS).
                 withModifiers(
@@ -60,6 +61,17 @@ object TileRepository {
                         withBorderColor(ColorRepository.SIGNAL_EMPTY).
                         build())
         }
+
+        if(signalStrength >= 1.0) {
+            tileBuilder.
+                withModifiers(
+                    BorderBuilder.newBuilder().
+                        withBorderType(BorderType.SOLID).
+                        withBorderWidth(2).
+                        withBorderColor(ColorRepository.SIGNAL_FULL_HIGHLIGHT).
+                        build())
+        }
+
         return tileBuilder.
                 buildCharacterTile()
     }

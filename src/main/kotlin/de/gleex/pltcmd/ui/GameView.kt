@@ -3,6 +3,7 @@ package de.gleex.pltcmd.ui
 import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.model.world.Sector
+import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.RadioSignalFragment
@@ -65,20 +66,20 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
         screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, phase ->
             if(phase == UIEventPhase.TARGET) {
                 when (event.code) {
-                    KeyCode.LEFT  -> {
+                    KeyCode.KEY_A  -> {
                         gameWorld.scrollLeftBy(Sector.TILE_COUNT)
                         // TODO: re-rendering of the decorations does not correctly work yet (might be fixed by Zircon in GameComponent)
                         Processed
                     }
-                    KeyCode.RIGHT -> {
+                    KeyCode.KEY_D -> {
                         gameWorld.scrollRightBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.DOWN  -> {
+                    KeyCode.KEY_S  -> {
                         gameWorld.scrollForwardBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.UP    -> {
+                    KeyCode.KEY_W  -> {
                         gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
                         Processed
                     }
@@ -93,9 +94,11 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
         val sidebarWidth = sidebar.contentSize.width
         sidebar.addFragment(MousePosition(sidebarWidth, map))
 
-        val radioSignalFragment = RadioSignalFragment(sidebarWidth)
-        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer(gameWorld, radioSignalFragment.selectedStrength, radioSignalFragment.selectedRange, map.absolutePosition))
-        sidebar.addFragment(radioSignalFragment)
+        if(GameOptions.displayRadioSignals.value) {
+            val radioSignalFragment = RadioSignalFragment(sidebarWidth)
+            map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer(gameWorld, radioSignalFragment.selectedStrength, radioSignalFragment.selectedRange, map.absolutePosition))
+            sidebar.addFragment(radioSignalFragment)
+        }
 
         val themeSelector = ThemeSelectorFragment(sidebarWidth, screen)
 

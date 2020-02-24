@@ -20,6 +20,7 @@ object ColorRepository {
     val COORDINATE_COLOR_HIGHLIGHT_Y = TileColor.create(255, 128, 0) // orange
 
     val SIGNAL_FULL = TileColor.create(2, 238, 255, 130)
+    val SIGNAL_FULL_HIGHLIGHT = TileColor.create(72, 255, 109)
     val SIGNAL_EMPTY = TileColor.create(255, 2, 112, SIGNAL_FULL.alpha)
 
     private val MAX_HEIGHT = TileColor.create(230, 230, 230, 254)
