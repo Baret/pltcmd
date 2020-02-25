@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.mapping.dijkstra
 
 import de.gleex.pltcmd.model.world.Coordinate
+import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * not yet implemented!
@@ -16,7 +17,30 @@ class DijkstraMapOfCoordinates(private val map: Map<Coordinate, Int>) {
     // It should be possible to abstract this implementation to also use zircon positions instead of coordinates
     // because you never know... :)
 
-    private val targets = map.filterValues { it == 0 }.keys
+    private val log = LoggerFactory.getLogger(this::class)
+
+    private val lowestValue = map.values.min() ?: 0
+
+    /**
+     * The highest value present in this map.
+     */
+    val maxDistance: Int = map.values.max() ?: 0
+
+    /**
+     * Targets are all fields with the lowest value in the map (not necessarily 0, negative values are possible).
+     */
+    val targets = map.filterValues { it == lowestValue }.keys
+
+    init {
+        require(map.isNotEmpty()) {
+            "Can not create a dijkstra map without any entries! Given map is empty."
+        }
+
+        if(lowestValue > 0) {
+            log.warn("Created dijkstra map with lowest value $lowestValue. Targets usually have value 0 (or lower).")
+        }
+    }
+
 
     /**
      * Calculates the path from the given coordinate to a desired value (default 0) along this map.
