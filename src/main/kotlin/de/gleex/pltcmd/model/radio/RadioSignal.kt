@@ -24,7 +24,7 @@ open class RadioSignal(private val initialStrength: Double) {
         /**
          * The factor to apply when a signal travels through air
          */
-        const val BASE_LOSS_FACTOR = .98
+        const val AIR_LOSS_FACTOR = .98
 
         /**
          * The minimal absolute strength a signal need to have to be considered > 0%.
