@@ -55,7 +55,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
                 val modelInput = buildModelInput()
                 addFragment(modelInput)
 
-                hiddenProperty.updateFrom(GameOptions.displayRadioSignals, true) {it.not()}
+                hiddenProperty.updateFrom(GameOptions.displayRadioSignals, true) { it.not() }
             }
 
     private fun buildHeader(): Header {
