@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.mapping.dijkstra
 
 import org.hexworks.cobalt.datatypes.Maybe
+import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * A generic and rather simple implementation of a DijkstraMap (http://www.roguebasin.com/index.php?title=Dijkstra_Maps_Visualized)
@@ -9,6 +10,9 @@ import org.hexworks.cobalt.datatypes.Maybe
  *
  */
 class DijkstraMap<T>(vararg initialTargets: T) {
+
+    private val log = LoggerFactory.getLogger(this::class)
+
     private val _targets = initialTargets.toMutableSet()
     val targets
         get() = _targets.toSet()
@@ -29,25 +33,23 @@ class DijkstraMap<T>(vararg initialTargets: T) {
         downstreamMap[from] = Pair(to, targetDistance)
     }
 
-    fun pathFrom(from: T): Maybe<Sequence<T>> {
+    fun pathFrom(from: T): Maybe<List<T>> {
         if(_targets.contains(from)) {
-            return Maybe.of(sequenceOf(from))
+            return Maybe.of(listOf(from))
         }
         if(downstreamMap.containsKey(from)) {
-            return Maybe.of(sequence {
-                val path = ArrayList<T>(maxDistance + 1)
-                var current = downstreamMap[from]?.first
-                do {
-                    current?.let { path.add(it) }
-                    if(downstreamMap[current]?.second == 0) {
-                        // last node, next would be a target
-                        path.add(downstreamMap[current]?.first!!)
-                    }
-                    val nextNode = downstreamMap[current]?.first
-                    current = nextNode
-                } while (current != null && downstreamMap.containsKey(current))
-                yieldAll(path)
-            })
+            val path = ArrayList<T>(maxDistance).apply { add(from) }
+            var current = downstreamMap[from]?.first
+            while (current != null) {
+                path.add(current)
+                val nextNode = downstreamMap[current]?.first
+                if(downstreamMap[current]?.second == 0 && nextNode != null) {
+                    // last node, next would be a target
+                    path.add(nextNode)
+                }
+                current = nextNode
+            }
+            return Maybe.of(path)
         }
         return Maybe.empty()
     }

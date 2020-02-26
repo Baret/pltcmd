@@ -26,15 +26,15 @@ class RiverTyper(override val rand: Random, override val context: GenerationCont
     /**
      * finds one river to every mountaintop (aka targets in context.mountainTops
      */
-    private fun findRivers(): MutableList<Sequence<Coordinate>> {
+    private fun findRivers(): MutableList<List<Coordinate>> {
         val mountainTopsToReach = context.mountainTops.targets.toMutableSet().
             ifEmpty {
                 log.debug("No mountain tops found to create rivers.")
-                return emptyList<Sequence<Coordinate>>().toMutableList()
+                return emptyList<List<Coordinate>>().toMutableList()
             }
         log.debug("Creating rivers from ${mountainTopsToReach.size} mountain tops")
         var tryingDistance = context.mountainTops.maxDistance
-        val fullRivers = mutableListOf<Sequence<Coordinate>>()
+        val fullRivers = mutableListOf<List<Coordinate>>()
         log.debug("Longest distance: $tryingDistance tiles. Starting to search river candidates...")
         while (mountainTopsToReach.isNotEmpty() && tryingDistance >= 0) {
             context.mountainTops.allWithDistance(tryingDistance)

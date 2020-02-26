@@ -72,9 +72,9 @@ class DijkstraMapOfCoordinates(private val map: Map<Coordinate, Int>) {
             internalPath(from, targetValue, false)
 
     private fun internalPath(from: Coordinate, targetValue: Int, downstream: Boolean): Sequence<Coordinate> {
-        var next: Coordinate? = from
-        var currentValue = map[from]
         return sequence {
+            var currentValue = map[from]
+            var next: Coordinate? = from
             if(next != null || currentValue == targetValue) {
                 yield(next!!)
                 val allNeighbors = neighborsOf(next!!).
