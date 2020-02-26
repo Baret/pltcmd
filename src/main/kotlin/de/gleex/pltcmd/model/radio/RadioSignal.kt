@@ -56,7 +56,7 @@ open class RadioSignal(private val initialStrength: Double) {
                 val currentHeight = floor(slope * (index + 1) + startHeight.toDouble())
                 signal = when {
                     // signal travels through the air (above ground)
-                    currentHeight > t.height.toDouble() -> signal * BASE_LOSS_FACTOR
+                    currentHeight > t.height.toDouble() -> signal * AIR_LOSS_FACTOR
                     // signal travels through the ground
                     currentHeight < t.height.toDouble() -> signal * TERRAIN_LOSS_FACTOR
                     // signal travels along the terrain

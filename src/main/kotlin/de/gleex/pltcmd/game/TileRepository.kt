@@ -72,7 +72,6 @@ object TileRepository {
                         build())
         }
 
-        return tileBuilder.
-                buildCharacterTile()
+        return tileBuilder.buildCharacterTile()
     }
 }
