@@ -35,7 +35,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
                 val legend = buildLegend()
 
                 val strengthLabel = buildLabelLine()
-                val strengthInput = buildStrengthInputh(strengthLabel)
+                val strengthInput = buildStrengthInput(strengthLabel)
 
                 val rangeLabel = buildLabelLine()
                 val rangeInput = buildRangeInput(rangeLabel)
@@ -87,7 +87,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
         )
     }
 
-    private fun buildStrengthInputh(strengthLabel: Label): Slider {
+    private fun buildStrengthInput(strengthLabel: Label): Slider {
         val strengthInput = Components.
                 horizontalSlider().
                 withMinValue(1).
