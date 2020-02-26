@@ -45,27 +45,30 @@ class DijkstraMapOfCoordinatesTest: WordSpec() {
                 assertSoftly {
                     // Assertions with sequences look awkward, so they are converted to lists
                     minimalMap.pathFrom(Coordinate(3, 1)) shouldHaveCount 0
-                    minimalMap.pathFrom(Coordinate(1, 1)).toList() shouldContainInOrder sequenceOf(
-                            Coordinate(1, 1)).toList()
-                    minimalMap.pathFrom(Coordinate(0, 1)).toList() shouldContainInOrder sequenceOf(
+
+                    minimalMap.pathFrom(Coordinate(1, 1)).toList() shouldContainInOrder listOf(
+                            Coordinate(1, 1))
+
+                    minimalMap.pathFrom(Coordinate(0, 1)).toList() shouldContainInOrder listOf(
                             Coordinate(0, 1),
-                            Coordinate(1, 1)).toList()
-                    minimalMap.pathFrom(Coordinate(2, 2)).toList() shouldContainInOrder sequenceOf(
+                            Coordinate(1, 1))
+
+                    minimalMap.pathFrom(Coordinate(2, 2)).toList() shouldContainInOrder listOf(
                             Coordinate(2, 2),
                             Coordinate(2, 1),
-                            Coordinate(1, 1)).toList()
+                            Coordinate(1, 1))
                 }
             }
 
             "create a path to a negative target value" {
-                minimalMap.pathFrom(Coordinate(1, 2), -2).toList() shouldContainInOrder sequenceOf(
+                minimalMap.pathFrom(Coordinate(1, 2), -2).toList() shouldContainInOrder listOf(
                         Coordinate(1, 2),
-                        Coordinate(1, 1)).toList()
+                        Coordinate(1, 1))
             }
 
             "never create paths longer than 3 entries" {
                 forAll(minimalMapValues.keys) {
-                    minimalMap.pathFrom(it).count() shouldNotBeGreaterThan 2
+                    minimalMap.pathFrom(it).count() shouldNotBeGreaterThan 3
                 }
             }
         }
