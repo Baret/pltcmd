@@ -100,7 +100,8 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
                     selectedStrength.updateFrom(currentValueProperty)
                 }
 
-        strengthLabel.textProperty.updateFrom(createPropertyFrom("Strength: ") bindPlusWith strengthInput.currentValueProperty.bindToString())
+        strengthLabel.textProperty.updateFrom(
+                createPropertyFrom("Strength: ") bindPlusWith strengthInput.currentValueProperty.bindToString())
         return strengthInput
     }
 
@@ -124,14 +125,18 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
                     selectedRange.updateFrom(currentValueProperty)
                 }
 
-        rangeLabel.textProperty.updateFrom(createPropertyFrom("Range: ") bindPlusWith rangeInput.currentValueProperty.bindToString())
+        rangeLabel.textProperty.updateFrom(
+                createPropertyFrom("Range: ") bindPlusWith rangeInput.currentValueProperty.bindToString())
         return rangeInput
     }
 
     private fun buildModelLabel(): Label = buildLabelLine("Attenuation model")
 
     private fun buildModelInput(): MultiSelect<Pair<String, AttenuationModel>> {
-        val models = listOf(Pair("by percentage", PercentageReducingAttenuation()), Pair("absolute", AbsoluteSignalLossAttenuation()))
+        val models = listOf(
+                Pair("by percentage", PercentageReducingAttenuation()),
+                Pair("absolute", AbsoluteSignalLossAttenuation())
+        )
 
         return Fragments.
                 multiSelect(width, models).
