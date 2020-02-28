@@ -29,7 +29,7 @@ open class RadioSignal(private val power: Double) {
          * The minimal absolute power a signal needs to have to be considered > 0%.
          * In other words: Signals lower than this are cut off.
          */
-        const val MIN_STRENGTH_THRESHOLD = 8
+        const val MIN_STRENGTH_THRESHOLD = 8.0
     }
 
     private val attenuation: AttenuationModel by GameOptions.attenuationModel.asDelegate()
