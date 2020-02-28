@@ -1,10 +1,7 @@
 package de.gleex.pltcmd.ui.fragments
 
 import de.gleex.pltcmd.game.TileRepository
-import de.gleex.pltcmd.model.radio.AbsoluteSignalLossAttenuation
-import de.gleex.pltcmd.model.radio.AttenuationModel
-import de.gleex.pltcmd.model.radio.PercentageReducingAttenuation
-import de.gleex.pltcmd.model.radio.RadioSignal
+import de.gleex.pltcmd.model.radio.*
 import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindToString
@@ -79,11 +76,11 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
     private fun buildLegendText(): Array<Builder<Component>> {
         return arrayOf(
                 Components.label().withText("100%"),
-                Components.icon().withIcon(TileRepository.forSignal(1.0)),
+                Components.icon().withIcon(TileRepository.forSignal(SignalStrength.full)),
                 Components.label().withText(" ${RadioSignal.MIN_STRENGTH_THRESHOLD}%(min)"),
-                Components.icon().withIcon(TileRepository.forSignal(RadioSignal.MIN_STRENGTH_THRESHOLD / 100.0)),
+                Components.icon().withIcon(TileRepository.forSignal(RadioSignal.MIN_STRENGTH_THRESHOLD.toDouble().toSignalStrength())),
                 Components.label().withText(" 0%"),
-                Components.icon().withIcon(TileRepository.forSignal(0.0))
+                Components.icon().withIcon(TileRepository.forSignal(SignalStrength.none))
         )
     }
 
