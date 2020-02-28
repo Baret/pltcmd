@@ -12,8 +12,8 @@ data class SignalStrength(val strength: Double) {
         private const val MIN_ALLOWED_VALUE = 0.0
         private const val MAX_ALLOWED_VALUE = 1.0
 
-        val full = SignalStrength(MAX_ALLOWED_VALUE)
-        val none = SignalStrength(MIN_ALLOWED_VALUE)
+        val FULL = SignalStrength(MAX_ALLOWED_VALUE)
+        val NONE = SignalStrength(MIN_ALLOWED_VALUE)
     }
 
     init {
