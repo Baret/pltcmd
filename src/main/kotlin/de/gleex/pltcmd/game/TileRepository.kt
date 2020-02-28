@@ -66,7 +66,11 @@ object TileRepository {
             signalStrength.isFull() -> {
                 tileBuilder.
                         withModifiers(
-                            BorderBuilder.newBuilder().withBorderType(BorderType.SOLID).withBorderWidth(2).withBorderColor(ColorRepository.SIGNAL_FULL_HIGHLIGHT).build())
+                            BorderBuilder.newBuilder().
+                                    withBorderType(BorderType.SOLID).
+                                    withBorderWidth(2).
+                                    withBorderColor(ColorRepository.SIGNAL_FULL_HIGHLIGHT).
+                                    build())
             }
         }
 
