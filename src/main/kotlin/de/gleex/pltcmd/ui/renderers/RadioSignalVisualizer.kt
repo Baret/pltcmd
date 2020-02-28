@@ -39,7 +39,9 @@ class RadioSignalVisualizer(
     }
 
     override fun invoke(event: MouseEvent, phase: UIEventPhase): UIEventResponse {
-        if(phase == UIEventPhase.TARGET && event.type == MouseEventType.MOUSE_CLICKED) {
+        if(phase == UIEventPhase.TARGET
+                && event.type == MouseEventType.MOUSE_CLICKED
+                && drawingAllowed()) {
             val newPosition = event.position.minus(mapOffset)
             if(clickedPosition == newPosition && lastBlocks.isNotEmpty()) {
                 reset()
@@ -53,12 +55,14 @@ class RadioSignalVisualizer(
 
     private fun drawSignal() {
         reset()
-        if (GameOptions.displayRadioSignals.value.not()) {
+        if (drawingAllowed().not()) {
             return
         }
         world.fetchBlockAtVisiblePosition(clickedPosition).
                 ifPresent(this::buildCirclesAround)
     }
+
+    private fun drawingAllowed() = GameOptions.displayRadioSignals.value
 
     private fun buildCirclesAround(clickedBlock: MapBlock) {
         clickedBlock.setOverlay(TileRepository.Elements.PLATOON_FRIENDLY)
