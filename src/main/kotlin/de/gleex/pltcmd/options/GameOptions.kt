@@ -16,15 +16,22 @@ object GameOptions {
     /**
      * Option to turn on the RadioSignalVisualizer and corresponding UI elements.
      */
-    val displayRadioSignals = createPropertyFrom(true)
+    val displayRadioSignals: Property<Boolean> = createPropertyFrom(true)
 
     /**
      * Seed used to always create the same map which is useful for development.
      */
     const val DEBUG_MAP_SEED: Long = 5488540751658L
 
-    const val SECTORS_COUNT_H = 10
-    const val SECTORS_COUNT_V = 10
+    /**
+     * Horizontal number of sectors in the world.
+     */
+    const val SECTORS_COUNT_H: Int = 10
+
+    /**
+     * Vertical number of sectors in the world.
+     */
+    const val SECTORS_COUNT_V: Int = 10
 
     /**
      * The size of the complete world in tiles as [Size3D].
