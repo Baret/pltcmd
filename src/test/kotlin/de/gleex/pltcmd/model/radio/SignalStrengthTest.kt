@@ -7,7 +7,7 @@ import io.kotlintest.tables.row
 
 class SignalStrengthTest:WordSpec( {
     "Absolute radio signal power converted to a signal strength" should {
-        "be 1.0 when > 100 and 0.0 when < ${RadioSignal.MIN_STRENGTH_THRESHOLD}" {
+        "be 1.0 when > 100 and 0.0 when < ${RadioSignal.MIN_POWER_THRESHOLD}" {
             forall(
                     // Rounding precision is 5 digits
                     row(Double.MAX_VALUE, 1.0),
@@ -25,16 +25,16 @@ class SignalStrengthTest:WordSpec( {
                     row(20.0, 0.20),
                     row(10.0, 0.10),
                     row(10.000000001, 0.10),
-                    row(RadioSignal.MIN_STRENGTH_THRESHOLD + 1.0E-5, RadioSignal.MIN_STRENGTH_THRESHOLD / 100.0),
-                    row(RadioSignal.MIN_STRENGTH_THRESHOLD, RadioSignal.MIN_STRENGTH_THRESHOLD / 100.0),
-                    row(RadioSignal.MIN_STRENGTH_THRESHOLD - 1.0E-5, 0.0),
+                    row(RadioSignal.MIN_POWER_THRESHOLD + 1.0E-5, RadioSignal.MIN_POWER_THRESHOLD / 100.0),
+                    row(RadioSignal.MIN_POWER_THRESHOLD, RadioSignal.MIN_POWER_THRESHOLD / 100.0),
+                    row(RadioSignal.MIN_POWER_THRESHOLD - 1.0E-5, 0.0),
                     row(1.000000001, 0.0),
                     row(0.0, 0.0),
                     row(-0.01, 0.0),
                     row(-0.0000000000000000000004, 0.0),
                     row(Double.MIN_VALUE, 0.0)
-            ) { signalStrength, expectedPercent ->
-                signalStrength.toSignalStrength() shouldBeExactly expectedPercent
+            ) { signalPower, expectedPercent ->
+                signalPower.toSignalStrength() shouldBeExactly expectedPercent
             }
         }
     }

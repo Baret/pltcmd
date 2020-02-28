@@ -44,7 +44,7 @@ data class SignalStrength(val strength: Double) {
  * @see RadioSignal.along
  */
 fun Double.toSignalStrength(): SignalStrength {
-    return if(this < RadioSignal.MIN_STRENGTH_THRESHOLD) {
+    return if(this < RadioSignal.MIN_POWER_THRESHOLD) {
         SignalStrength.NONE
     } else {
         SignalStrength(this.toBigDecimal().

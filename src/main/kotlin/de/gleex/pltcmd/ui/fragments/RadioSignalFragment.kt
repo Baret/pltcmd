@@ -74,12 +74,12 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
     }
 
     private fun buildLegendText(): Array<Builder<Component>> {
-        val minSignalStrength = RadioSignal.MIN_STRENGTH_THRESHOLD.toSignalStrength()
+        val minPower = RadioSignal.MIN_POWER_THRESHOLD
         return arrayOf(
                 Components.label().withText("100%"),
                 Components.icon().withIcon(TileRepository.forSignal(SignalStrength.FULL)),
-                Components.label().withText(" $minSignalStrength%(min)"),
-                Components.icon().withIcon(TileRepository.forSignal(minSignalStrength)),
+                Components.label().withText(" ${minPower.toInt()}%(min)"),
+                Components.icon().withIcon(TileRepository.forSignal(minPower.toSignalStrength())),
                 Components.label().withText(" 0%"),
                 Components.icon().withIcon(TileRepository.forSignal(SignalStrength.NONE))
         )
