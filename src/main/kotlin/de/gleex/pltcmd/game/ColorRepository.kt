@@ -1,8 +1,10 @@
 package de.gleex.pltcmd.game
 
+import de.gleex.pltcmd.model.radio.SignalStrength
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import org.hexworks.zircon.api.color.TileColor
+import kotlin.math.roundToInt
 
 /**
  * Serves all colors needed in the game.
@@ -18,6 +20,10 @@ object ColorRepository {
     val GRID_COLOR_HIGHLIGHT = TileColor.create(77, 77, 77)
     val COORDINATE_COLOR_HIGHLIGHT_X = TileColor.create(128, 102, 64) // brown
     val COORDINATE_COLOR_HIGHLIGHT_Y = TileColor.create(255, 128, 0) // orange
+
+    val SIGNAL_FULL = TileColor.create(2, 238, 255, 130)
+    val SIGNAL_FULL_HIGHLIGHT = TileColor.create(72, 255, 109)
+    val SIGNAL_EMPTY = TileColor.create(255, 2, 112, SIGNAL_FULL.alpha)
 
     private val MAX_HEIGHT = TileColor.create(230, 230, 230, 254)
 
@@ -48,4 +54,11 @@ object ColorRepository {
         TerrainType.WATER_DEEP -> TileColor.create(0, 0, 102)
         TerrainType.WATER_SHALLOW -> TileColor.create(40, 109, 222)
     }
+
+    fun radioColor(signalStrength: SignalStrength) = TileColor.create(
+            red = SIGNAL_EMPTY.red + (signalStrength * (SIGNAL_FULL.red - SIGNAL_EMPTY.red)).roundToInt(),
+            green = SIGNAL_EMPTY.green + (signalStrength * (SIGNAL_FULL.green - SIGNAL_EMPTY.green)).roundToInt(),
+            blue = SIGNAL_EMPTY.blue + (signalStrength * (SIGNAL_FULL.blue - SIGNAL_EMPTY.blue)).roundToInt(),
+            alpha = if (signalStrength.isNone()) 0 else SIGNAL_FULL.alpha
+        )
 }

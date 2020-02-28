@@ -1,11 +1,10 @@
 package de.gleex.pltcmd.ui.fragments
 
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.extensions.onDisabledChanged
 import org.hexworks.zircon.api.graphics.Layer
 
-class LayersFragment(private val width: Int, private val layers: List<Layer>) : Fragment {
+class LayersFragment(override val width: Int, private val layers: List<Layer>) : BaseFragment {
     override val root = Components.vbox().
             withSize(width, 2).
             build()
@@ -22,7 +21,7 @@ class LayersFragment(private val width: Int, private val layers: List<Layer>) : 
                                 build().
                                 apply {
                                     isSelected = true
-                                    onDisabledChanged { event -> layer.isHidden = event.newValue.not() }
+                                    onDisabledChanged() { event -> layer.isHidden = event.newValue.not() }
                                 }
                             )
                 }

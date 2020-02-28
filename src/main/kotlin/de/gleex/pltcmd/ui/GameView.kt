@@ -3,11 +3,14 @@ package de.gleex.pltcmd.ui
 import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.model.world.Sector
+import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
-import de.gleex.pltcmd.ui.fragments.MultiSelect
+import de.gleex.pltcmd.ui.fragments.RadioSignalFragment
+import de.gleex.pltcmd.ui.fragments.ThemeSelectorFragment
 import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
+import de.gleex.pltcmd.ui.renderers.RadioSignalVisualizer
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -16,10 +19,7 @@ import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
-import org.hexworks.zircon.api.uievent.KeyCode
-import org.hexworks.zircon.api.uievent.KeyboardEventType
-import org.hexworks.zircon.api.uievent.Pass
-import org.hexworks.zircon.api.uievent.Processed
+import org.hexworks.zircon.api.uievent.*
 import org.hexworks.zircon.api.view.base.BaseView
 
 /**
@@ -32,6 +32,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
 
     override fun onDock() {
         val sidebar = Components.vbox().
+                withSpacing(2).
                 withSize(UiOptions.INTERFACE_PANEL_WIDTH, UiOptions.INTERFACE_PANEL_HEIGHT).
                 withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT).
                 withDecorations(ComponentDecorations.halfBlock()).
@@ -56,34 +57,41 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                 withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
                 build()
 
-        screen.addComponent(sidebar)
-        screen.addComponent(logArea)
-        screen.addComponent(mainPart)
+        screen.addComponents(sidebar, logArea, mainPart)
 
         log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
         log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
 
-        log.debug("Adding keyboardlistener to screen")
-        screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, _ ->
-            when (event.code) {
-                KeyCode.LEFT -> {
-                    gameWorld.scrollLeftBy(Sector.TILE_COUNT)
-                    // TODO: re-rendering of the decorations does not correctly work yet (might be fixed by Zircon in GameComponent)
-                    Processed
+        log.debug("Adding keyboard listener to screen")
+        screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, phase ->
+            if(phase == UIEventPhase.TARGET) {
+                when (event.code) {
+                    KeyCode.KEY_A  -> {
+                        gameWorld.scrollLeftBy(Sector.TILE_COUNT)
+                        // TODO: re-rendering of the decorations does not correctly work yet (might be fixed by Zircon in GameComponent)
+                        Processed
                     }
-                KeyCode.RIGHT   -> {
-                    gameWorld.scrollRightBy(Sector.TILE_COUNT)
-                    Processed
+                    KeyCode.KEY_D -> {
+                        gameWorld.scrollRightBy(Sector.TILE_COUNT)
+                        Processed
                     }
-                KeyCode.DOWN    -> {
-                    gameWorld.scrollForwardBy(Sector.TILE_COUNT)
-                    Processed
+                    KeyCode.KEY_S  -> {
+                        gameWorld.scrollForwardBy(Sector.TILE_COUNT)
+                        Processed
                     }
-                KeyCode.UP      -> {
-                    gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
-                    Processed
+                    KeyCode.KEY_W  -> {
+                        gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
+                        Processed
                     }
-                else            -> Pass
+                    KeyCode.KEY_Q  -> {
+                        GameOptions.displayRadioSignals.value = GameOptions.displayRadioSignals.value.not()
+                        log.debug("Toggled radio signal display to ${if(GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
+                        Processed
+                    }
+                    else          -> Pass
+                }
+            } else {
+                Pass
             }
         }
 
@@ -91,9 +99,15 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
         val sidebarWidth = sidebar.contentSize.width
         sidebar.addFragment(MousePosition(sidebarWidth, map))
 
-        sidebar.addComponent(Components.panel().withSize(sidebarWidth, 5))
+        if(GameOptions.displayRadioSignals.value) {
+            val radioSignalFragment = RadioSignalFragment(sidebarWidth)
+            map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer(gameWorld, radioSignalFragment.selectedStrength, radioSignalFragment.selectedRange, map.absolutePosition))
+            sidebar.addFragment(radioSignalFragment)
+        }
 
-        sidebar.addFragment(MultiSelect(sidebarWidth, listOf("value1", "a longer value", "a", "a value so long you cant even read it!"), { newValue -> logArea.addParagraph(newValue, false) }))
+        val themeSelector = ThemeSelectorFragment(sidebarWidth, screen)
+
+        sidebar.addFragment(themeSelector)
     }
 }
 

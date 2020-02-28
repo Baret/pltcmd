@@ -1,10 +1,12 @@
 package de.gleex.pltcmd.testhelpers
 
 import arrow.core.firstOrNone
+import de.gleex.pltcmd.model.radio.SignalStrength
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
+import io.kotlintest.matchers.doubles.shouldBeExactly
 import io.kotlintest.should
 import org.hexworks.cobalt.datatypes.Maybe
 
@@ -81,5 +83,9 @@ private fun Sector.isNotEqualTo(otherSector: Sector) =
                 }.
                 isDefined()
         }
+
+// - - - Matchers for SignalStrength
+
+infix fun SignalStrength.shouldBeExactly(expected: Double) = this.strength shouldBeExactly expected
 
 // - - -
