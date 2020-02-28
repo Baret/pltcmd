@@ -52,7 +52,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
                 val modelInput = buildModelInput()
                 addFragment(modelInput)
 
-                hiddenProperty.updateFrom(GameOptions.displayRadioSignals, true) { it.not() }
+                hiddenProperty.updateFrom(GameOptions.displayRadioSignals, true, Boolean::not)
             }
 
     private fun buildHeader(): Header {
@@ -138,7 +138,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
         return Fragments.
                 multiSelect(width, models).
                 withCallback { _, newValue -> GameOptions.attenuationModel.value = newValue.second }.
-                withToStringMethod { it.first }.
+                withToStringMethod(Pair<String, AttenuationModel>::first).
                 build()
     }
 

@@ -57,9 +57,7 @@ class RadioSignalVisualizer(
             return
         }
         world.fetchBlockAtVisiblePosition(clickedPosition).
-                ifPresent { clickedBlock ->
-                    buildCirclesAround(clickedBlock)
-                }
+                ifPresent(this::buildCirclesAround)
     }
 
     private fun buildCirclesAround(clickedBlock: MapBlock) {
@@ -97,7 +95,7 @@ class RadioSignalVisualizer(
     }
 
     private fun reset() {
-        lastBlocks.forEach { it.resetOverlay() }
+        lastBlocks.forEach(MapBlock::resetOverlay)
         lastBlocks.clear()
     }
 }
