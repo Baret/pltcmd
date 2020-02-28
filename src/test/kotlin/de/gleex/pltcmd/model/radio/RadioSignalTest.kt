@@ -33,7 +33,7 @@ class RadioSignalTest: WordSpec() {
                 val lowerTiles = listOf (testTerrain) + i.lowestTerrainTiles()
                 "travelling through ${lowerTiles.size} tiles of air" should {
                     val airLossFactor = RadioSignal.AIR_LOSS_FACTOR
-                    "lose strength with the base loss factor of $airLossFactor" {
+                    "lose power with the base loss factor of $airLossFactor" {
                         rs.along(lowerTiles).strength.shouldBe(airLossFactor.pow(i).plusOrMinus(0.001))
                     }
                 }
@@ -41,7 +41,7 @@ class RadioSignalTest: WordSpec() {
                 val higherTiles = listOf (testTerrain) + i.highestTerrainTiles()
                 "travelling through ${lowerTiles.size} tiles of ground" should {
                     val groundLossFactor = RadioSignal.GROUND_LOSS_FACTOR
-                    "lose strength with the ground loss factor of $groundLossFactor" {
+                    "lose power with the ground loss factor of $groundLossFactor" {
                         rs.along(higherTiles).strength.shouldBe(groundLossFactor.pow(i).plusOrMinus(0.001))
                     }
                 }
