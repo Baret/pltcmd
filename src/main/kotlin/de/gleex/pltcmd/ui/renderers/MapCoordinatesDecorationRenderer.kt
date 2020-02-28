@@ -16,7 +16,7 @@ class MapCoordinateDecorationRenderer(private val world: GameWorld) : ComponentD
 
     override fun render(tileGraphics: TileGraphics, context: ComponentDecorationRenderContext) {
         val size = tileGraphics.size
-        val style = context.component.componentStyleSet.currentStyle()
+        val style = context.currentStyle
         val contentOffset = context.component.contentOffset
         val grid = MapCoordinates(world, size, contentOffset, style, context.component.tileset)
         tileGraphics.draw(grid)
