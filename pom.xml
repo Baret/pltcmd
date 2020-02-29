@@ -7,7 +7,12 @@
 	<groupId>de.gleex</groupId>
 	<artifactId>pltcmd</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
+	<scm>
+		<connection>scm:git:https://github.com/Baret/pltcmd.git</connection>
+		<developerConnection>scm:git:git@github.com:Baret/pltcmd.git</developerConnection>
+		<url>https://github.com/Baret/pltcmd</url>
+		<tag>HEAD</tag>
+	</scm>
 	<properties>
 		<kotlin.version>1.3.61</kotlin.version>
 		<zircon.version>2020.1.0-RELEASE</zircon.version>
