@@ -145,6 +145,8 @@
 				<version>3.0.0-M1</version>
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<!-- TODO need a distributionManagement for deploy -->
+					<goals>install</goals>
 				</configuration>
 			</plugin>
 		</plugins>
