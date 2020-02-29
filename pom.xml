@@ -4,12 +4,12 @@
 
 	<groupId>de.gleex</groupId>
 	<artifactId>pltcmd</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<scm>
 		<connection>scm:git:https://github.com/Baret/pltcmd.git</connection>
 		<developerConnection>scm:git:git@github.com:Baret/pltcmd.git</developerConnection>
 		<url>https://github.com/Baret/pltcmd</url>
-		<tag>pltcmd-0.0.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
