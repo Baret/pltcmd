@@ -7,16 +7,24 @@ import io.kotlintest.specs.WordSpec
 
 class CoordinateRectangleTest: WordSpec({
     val start = Coordinate(0, 0)
-    val end = Coordinate(2, 2)
+    val end = Coordinate(2, 3)
     val rectangleToTest = CoordinateRectangle(start, end)
     "A coordinate rectangle from $start to $end" should {
-        val expectedSize = 9
+        val expectedWidth = 3
+        "have a width of $expectedWidth" {
+            rectangleToTest.width shouldBe expectedWidth
+        }
+        val expectedHeight = 4
+        "have a height of $expectedHeight" {
+            rectangleToTest.height shouldBe expectedHeight
+        }
+        val expectedSize = expectedWidth * expectedHeight
         "have a size of $expectedSize" {
             rectangleToTest.size shouldBe expectedSize
         }
 
-        for(y in 0..2) {
-            for(x in 0..2) {
+        for(y in start.northingFromBottom..end.northingFromBottom) {
+            for(x in start.eastingFromLeft..end.eastingFromLeft) {
                 val contained = Coordinate(x, y)
                 "contain $contained" {
                     rectangleToTest.contains(contained) shouldBe true
@@ -24,7 +32,7 @@ class CoordinateRectangleTest: WordSpec({
             }
         }
 
-        for(y in -1..3 step 4) {
+        for(y in -1..4 step 5) {
             for(x in -1..3 step 4) {
                 val notContained = Coordinate(x, y)
                 "not contain $notContained" {
@@ -43,7 +51,10 @@ class CoordinateRectangleTest: WordSpec({
                     Coordinate(2, 1),
                     Coordinate(0, 2),
                     Coordinate(1, 2),
-                    Coordinate(2, 2)
+                    Coordinate(2, 2),
+                    Coordinate(0, 3),
+                    Coordinate(1, 3),
+                    Coordinate(2, 3)
             )
             rectangleToTest.asSequence().toList() shouldContainInOrder correctList
         }

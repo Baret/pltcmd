@@ -2,7 +2,6 @@ package de.gleex.pltcmd.model.mapgenerators.data
 
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateRectangle
-import de.gleex.pltcmd.model.world.Sector
 import io.kotlintest.data.suspend.forall
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.matchers.collections.shouldHaveSize
@@ -23,8 +22,7 @@ class MutableWorldTest: WordSpec()
     private val southBorder = listOf(west(), north(), east())
 
     init {
-        val bottomLeftCoordinate = Coordinate(0, 0)
-        val world = MutableWorld(bottomLeftCoordinate, Sector.TILE_COUNT, Sector.TILE_COUNT)
+        val world = MutableWorld()
         "A world from ${world.bottomLeftCoordinate} to ${world.topRightCoordinate} of size ${world.worldSizeWidthInTiles} by ${world.worldSizeHeightInTiles} tiles" should {
             forall(
                     // SW corner

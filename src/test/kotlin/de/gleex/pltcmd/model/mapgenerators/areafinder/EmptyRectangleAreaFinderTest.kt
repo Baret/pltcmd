@@ -15,23 +15,23 @@ import io.kotlintest.specs.WordSpec
 class EmptyRectangleAreaFinderTest(private val underTest: EmptyRectangleAreaFinder = EmptyRectangleAreaFinder()) : WordSpec({
     val origin = Coordinate(100, 50)
     "empty world" should {
-        val testWorld = MutableWorld(origin, Sector.TILE_COUNT, Sector.TILE_COUNT)
+        val testWorld = MutableWorld(origin)
         "find all in a single rectangle" {
             underTest.findAll(testWorld) shouldBe setOf(CoordinateArea(testWorld.findEmpty()))
         }
     }
     "with terrain type at origin" should {
-        val testWorld = MutableWorld(origin, Sector.TILE_COUNT, Sector.TILE_COUNT)
+        val testWorld = MutableWorld(origin)
         testWorld[origin] = TerrainType.FOREST
         testFilledOrigin(underTest, testWorld, origin)
     }
     "with terrain height" should {
-        val testWorld = MutableWorld(origin, Sector.TILE_COUNT, Sector.TILE_COUNT)
+        val testWorld = MutableWorld(origin)
         testWorld[origin] = TerrainHeight.FIVE
         testFilledOrigin(underTest, testWorld, origin)
     }
     "with full terrain" should {
-        val testWorld = MutableWorld(origin, Sector.TILE_COUNT, Sector.TILE_COUNT)
+        val testWorld = MutableWorld(origin)
         testWorld[origin] = Terrain.of(TerrainType.FOREST, TerrainHeight.FIVE)
         testFilledOrigin(underTest, testWorld, origin)
     }

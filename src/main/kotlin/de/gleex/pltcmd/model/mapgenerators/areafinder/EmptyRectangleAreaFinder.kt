@@ -14,7 +14,7 @@ class EmptyRectangleAreaFinder : AreaFinder {
         private val LOG = LoggerFactory.getLogger(EmptyRectangleAreaFinder::class)
     }
 
-    override fun findAll(partialWorld: MutableWorld): Set<CoordinateArea> {
+    override fun findAll(partialWorld: MutableWorld): Set<CoordinateRectangle> {
         val rectangles = mutableSetOf<CoordinateRectangle>()
         val allEmpty = partialWorld.findEmpty()
                 .sorted()

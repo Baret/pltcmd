@@ -37,7 +37,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
     }
 
     private fun generatePlains(area: CoordinateArea, mutableWorld: MutableWorld) {
-        val plainsHeight = listOf<TerrainHeight>(
+        val plainsHeight = listOf(
                 TerrainHeight.TWO,
                 TerrainHeight.THREE,
                 TerrainHeight.FOUR,

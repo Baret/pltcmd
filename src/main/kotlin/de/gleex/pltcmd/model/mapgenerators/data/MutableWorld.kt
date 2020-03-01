@@ -11,9 +11,9 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * It is a data container for coordinates and their corresponding terrain heights and types but also provides
  * helpful methods for IntermediateGenerators.
  */
-class MutableWorld(val bottomLeftCoordinate: Coordinate,
-                   val worldSizeWidthInTiles: Int,
-                   val worldSizeHeightInTiles: Int) {
+class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
+                   val worldSizeWidthInTiles: Int = Sector.TILE_COUNT,
+                   val worldSizeHeightInTiles: Int = Sector.TILE_COUNT) {
 
     private val terrainMap = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
     val topRightCoordinate = bottomLeftCoordinate.
