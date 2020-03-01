@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.mapgenerators.intermediate
 
 import de.gleex.pltcmd.model.mapgenerators.GenerationContext
+import de.gleex.pltcmd.model.mapgenerators.areafinder.SizedEmptyRectangleAreaFinder
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
@@ -33,7 +34,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
     }
 
     private fun findPlainsLocations(totalPlainsTiles: Int, area: CoordinateArea, mutableWorld: MutableWorld): Set<CoordinateArea> {
-        return TODO()
+        return SizedEmptyRectangleAreaFinder(MIN_WIDTH, MIN_WIDTH, MAX_WIDTH, MAX_WIDTH).findAll(mutableWorld)
     }
 
     private fun generatePlains(area: CoordinateArea, mutableWorld: MutableWorld) {
