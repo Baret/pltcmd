@@ -1,9 +1,12 @@
 package de.gleex.pltcmd.model.mapgenerators.data
 
 import de.gleex.pltcmd.model.world.Coordinate
+import de.gleex.pltcmd.model.world.CoordinateRectangle
 import de.gleex.pltcmd.model.world.Sector
 import io.kotlintest.data.suspend.forall
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
 
@@ -57,6 +60,14 @@ class MutableWorldTest: WordSpec()
                 "have ${validNeighbors.size} neighbors at $c" {
                     world.neighborsOf(c) shouldContainExactlyInAnyOrder validNeighbors
                 }
+            }
+            "find no present coordinates" {
+                world.find() shouldHaveSize 0
+            }
+            "find all coordinates as empty" {
+                val emptyCoordinates = world.findEmpty()
+                emptyCoordinates shouldBe CoordinateRectangle(world.bottomLeftCoordinate, world.topRightCoordinate).toSet()
+                emptyCoordinates shouldHaveSize world.worldSizeWidthInTiles * world.worldSizeHeightInTiles
             }
         }
     }

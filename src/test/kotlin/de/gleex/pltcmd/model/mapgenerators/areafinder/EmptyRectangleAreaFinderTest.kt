@@ -1,0 +1,48 @@
+package de.gleex.pltcmd.model.mapgenerators.areafinder
+
+import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
+import de.gleex.pltcmd.model.terrain.Terrain
+import de.gleex.pltcmd.model.terrain.TerrainHeight
+import de.gleex.pltcmd.model.terrain.TerrainType
+import de.gleex.pltcmd.model.world.Coordinate
+import de.gleex.pltcmd.model.world.CoordinateArea
+import de.gleex.pltcmd.model.world.Sector
+import io.kotlintest.matchers.collections.shouldContain
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.AbstractWordSpec
+import io.kotlintest.specs.WordSpec
+
+class EmptyRectangleAreaFinderTest(private val underTest: EmptyRectangleAreaFinder = EmptyRectangleAreaFinder()) : WordSpec({
+    val origin = Coordinate(100, 50)
+    "empty world" should {
+        val testWorld = MutableWorld(origin, Sector.TILE_COUNT, Sector.TILE_COUNT)
+        "find all in a single rectangle" {
+            underTest.findAll(testWorld) shouldBe setOf(CoordinateArea(testWorld.findEmpty()))
+        }
+    }
+    "with terrain type at origin" should {
+        val testWorld = MutableWorld(origin, Sector.TILE_COUNT, Sector.TILE_COUNT)
+        testWorld[origin] = TerrainType.FOREST
+        testFilledOrigin(underTest, testWorld, origin)
+    }
+    "with terrain height" should {
+        val testWorld = MutableWorld(origin, Sector.TILE_COUNT, Sector.TILE_COUNT)
+        testWorld[origin] = TerrainHeight.FIVE
+        testFilledOrigin(underTest, testWorld, origin)
+    }
+    "with full terrain" should {
+        val testWorld = MutableWorld(origin, Sector.TILE_COUNT, Sector.TILE_COUNT)
+        testWorld[origin] = Terrain.of(TerrainType.FOREST, TerrainHeight.FIVE)
+        testFilledOrigin(underTest, testWorld, origin)
+    }
+})
+
+private suspend fun AbstractWordSpec.WordScope.testFilledOrigin(underTest: EmptyRectangleAreaFinder, testWorld: MutableWorld, origin: Coordinate) {
+    val result = underTest.findAll(testWorld)
+    "find rectangle beside origin to the end of the world" {
+        result shouldContain CoordinateArea(origin.withRelativeEasting(1)..testWorld.topRightCoordinate)
+    }
+    "find column above origin" {
+        result shouldContain CoordinateArea(origin.withRelativeNorthing(1)..origin.withRelativeNorthing(Sector.TILE_COUNT - 1))
+    }
+}

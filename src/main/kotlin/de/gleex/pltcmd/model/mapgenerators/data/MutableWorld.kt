@@ -117,6 +117,13 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
     }
 
     /**
+     * Removes all information for the given [Coordinate].
+     */
+    fun clear(coordinate: Coordinate) {
+        terrainMap.remove(coordinate)
+    }
+
+    /**
      * Returns the neighbors of the given coordinate that are in range of this world if it is also inside this world.
      * Otherwise an empty list will be returned.
      */
@@ -143,6 +150,17 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
      */
     fun find(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): Set<Coordinate> {
         return terrainMap.keys.
+                filter { it in area }.
+                filter(predicate).
+                toSet()
+    }
+
+    /**
+     * Returns all [Coordinate]s in the given area (default is the complete world) that match the given predicate that are not set in this world.
+     */
+    fun findEmpty(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): Set<Coordinate> {
+        val empty = area - terrainMap.keys
+        return empty.
                 filter { it in area }.
                 filter(predicate).
                 toSet()

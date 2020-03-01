@@ -10,7 +10,7 @@ import kotlin.math.roundToInt
 import kotlin.random.Random
 
 /**
- * Generates multiple plains in an area. Plains are rectangles of grass land with a height between two to five. They have a minimum height/width of at least 5 tiles and a maximum of 50. The edges fade out randomly.
+ * Generates multiple plains in an area. Plains are rectangles of grass land with a height between two to five. They have a minimum height/width of at least 5 tiles and a maximum of 50.
  */
 class PlainsGenerator(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
@@ -44,7 +44,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
                 TerrainHeight.FIVE)
                 .random(rand)
         val plains = Terrain.of(TerrainType.GRASSLAND, plainsHeight)
-        for (coordinate in area) {
+        area.forEach { coordinate ->
             mutableWorld[coordinate] = plains
         }
     }
