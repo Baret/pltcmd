@@ -17,7 +17,7 @@ data class GenerationContext(
         val undefined: Double
 ) {
     companion object {
-        fun fromRandom(random: Random) = GenerationContext(random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble())
+        fun fromRandom(random: Random) = GenerationContext(.5, random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(), .5)
     }
 
     val plainsRatio: Double = asRatio(plains)

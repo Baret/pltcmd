@@ -28,6 +28,7 @@ class WorldMapGenerator(
 
             MountainTopHeightMapper(random, context),
             RiverTyper(random, context),
+            PlainsGenerator(random, context),
             HeightFiller(random, context),
             TypeFiller(random, context),
             RandomTerrainFiller(random, context)

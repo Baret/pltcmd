@@ -7,6 +7,7 @@ import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.CoordinateArea
+import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -16,6 +17,7 @@ import kotlin.random.Random
 class PlainsGenerator(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
     companion object {
+        private val LOG = LoggerFactory.getLogger(PlainsGenerator::class)
         private const val MIN_WIDTH = 5  // tiles
         private const val MAX_WIDTH = 50 // tiles
     }
@@ -24,6 +26,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         val totalPlainsTiles = totalTiles(area)
         val plainsRectangles = findPlainsLocations(totalPlainsTiles, area, mutableWorld)
+        LOG.debug("Generating ${plainsRectangles.size} plains")
         plainsRectangles.forEach {
             generatePlains(it, mutableWorld)
         }
@@ -34,6 +37,8 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
     }
 
     private fun findPlainsLocations(totalPlainsTiles: Int, area: CoordinateArea, mutableWorld: MutableWorld): Set<CoordinateArea> {
+        // TODO respect area. But currently the area is the full world o_O
+        // TODO use count of plains to fetch only some of the empty rectangles
         return SizedEmptyRectangleAreaFinder(MIN_WIDTH, MIN_WIDTH, MAX_WIDTH, MAX_WIDTH).findAll(mutableWorld)
     }
 
