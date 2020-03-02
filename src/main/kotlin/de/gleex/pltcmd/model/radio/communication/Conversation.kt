@@ -2,8 +2,6 @@ package de.gleex.pltcmd.model.radio.communication
 
 import de.gleex.pltcmd.model.elements.CallSign
 
-class Conversation(val initiator: CallSign, val receiver:CallSign) {
-    fun init() = ConversationPart(Transmission("$receiver, this is $initiator, over"))
-
-    private val parts: MutableList<ConversationPart> = mutableListOf()
+data class Conversation(val initiator: CallSign, val receiver: CallSign, private val parts: List<ConversationPart>): Iterable<Transmission> {
+    override fun iterator(): Iterator<Transmission> = parts.flatMap { it.transmissions }.iterator()
 }
