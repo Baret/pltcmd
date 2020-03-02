@@ -1,27 +1,26 @@
 package de.gleex.pltcmd.ui.fragments
 
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.Positions
-import org.hexworks.zircon.api.UIEventResponses
-import org.hexworks.zircon.api.component.Fragment
-import org.hexworks.zircon.api.extensions.handleMouseEvents
-import org.hexworks.zircon.api.screen.Screen
+import org.hexworks.zircon.api.component.Component
 import org.hexworks.zircon.api.uievent.MouseEventType
+import org.hexworks.zircon.api.uievent.UIEventResponse
 
-class MousePosition(private val width: Int, private val componentToWatch: Screen) : Fragment {
-    override val root = Components.
-            hbox().
+class MousePosition(override val width: Int, private val componentToWatch: Component) : BaseFragment {
+    override val root = Components.hbox().
             withSize(width, 1).
             build().
             apply {
                 addComponent(Components.
                         label().
-                        withText("Mouse pos: ${Positions.create(0,0)}").
+                        withSize(width, 1).
+                        withText("Mouse pos: 0 | 0").
                         build().
                         apply { componentToWatch.handleMouseEvents(MouseEventType.MOUSE_MOVED) {
                             mouseEvent, _ ->
-                                text = "Mouse pos: ${mouseEvent.position.x} | ${mouseEvent.position.y}"
-                                UIEventResponses.pass()
-                        } })
+                        val pos = mouseEvent.position - componentToWatch.absolutePosition
+                        text = "Mouse pos: ${pos.x} | ${pos.y}"
+                        UIEventResponse.pass()
+                    }
+                })
             }
 }

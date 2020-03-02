@@ -12,10 +12,11 @@ class PercentageReducingAttenuation : AttenuationModel {
     }
 
     private fun TerrainType.lossFactor() =
-        when(this) {
-            GRASSLAND   -> 0.92
-            FOREST      -> 0.85
-            HILL        -> 0.90
-            MOUNTAIN    -> 0.80
-        }
+            when (this) {
+                GRASSLAND -> 0.92
+                FOREST    -> 0.85
+                HILL      -> 0.90
+                MOUNTAIN  -> 0.80
+                WATER_DEEP, WATER_SHALLOW -> RadioSignal.AIR_LOSS_FACTOR
+            }
 }

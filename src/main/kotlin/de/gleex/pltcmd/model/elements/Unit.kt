@@ -5,6 +5,6 @@ package de.gleex.pltcmd.model.elements
  */
 interface Unit {
 
-	fun isOfType(type : UnitType): Boolean
+    fun isOfType(type: UnitType): Boolean
 
 }

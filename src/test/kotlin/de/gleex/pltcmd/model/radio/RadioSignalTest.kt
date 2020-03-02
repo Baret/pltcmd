@@ -3,59 +3,61 @@ package de.gleex.pltcmd.model.radio
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
+import de.gleex.pltcmd.testhelpers.shouldBeExactly
+import io.kotlintest.matchers.doubles.plusOrMinus
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.WordSpec
 import kotlin.math.pow
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
-class RadioSignalTest {
-    private class RadioSignalTestExtension: RadioSignal(200.0, Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE)) {
-        fun testToPercent(testValue: Double) = testValue.toPercent()
-    }
+class RadioSignalTest: WordSpec() {
+    init
+    {
+        val testTerrain = Terrain.of(TerrainType.GRASSLAND, TerrainHeight.SEVEN)
+        val rs = RadioSignal(100.0)
+        "A $rs" When {
+            "getting an empty list to travel along" should {
+                "be full strength" {
+                    rs.along(listOf()) shouldBeExactly 1.0
+                }
+            }
 
-    @Test
-    fun `test radio strength percentage`() {
-        val rs = RadioSignalTestExtension()
-        assertEquals(1.0, rs.testToPercent(Double.MAX_VALUE))
-        assertEquals(1.0, rs.testToPercent(110.0))
-        assertEquals(1.0, rs.testToPercent(100.0))
-        assertEquals(0.998997, rs.testToPercent(99.8997))
-        assertEquals(.90, rs.testToPercent(90.0))
-        assertEquals(.80, rs.testToPercent(80.0))
-        assertEquals(.71987654321, rs.testToPercent(71.987654321))
-        assertEquals(.60, rs.testToPercent(60.0))
-        assertEquals(.50, rs.testToPercent(50.0))
-        assertEquals(.40, rs.testToPercent(40.0))
-        assertEquals(.30, rs.testToPercent(30.0))
-        assertEquals(.20, rs.testToPercent(20.0))
-        assertEquals(.10, rs.testToPercent(10.0))
-        assertEquals(.01000000001, rs.testToPercent(1.000000001))
-        assertEquals(0.0, rs.testToPercent(0.0))
-        assertEquals(0.0, rs.testToPercent(-0.01))
-        assertEquals(0.0, rs.testToPercent(Double.MIN_VALUE))
-    }
+            "getting a single field to travel along" should {
+                "be full strength because it is the field it is originating from" {
+                    rs.along(1.highestTerrainTiles()) shouldBeExactly 1.0
+                    rs.along(1.lowestTerrainTiles()) shouldBeExactly 1.0
+                    rs.along(listOf(testTerrain)) shouldBeExactly 1.0
+                }
+            }
 
-    @Test
-    fun `test base loss factor (signal travels through air)`() {
-        val rs = RadioSignal(100.0, Terrain(TerrainType.GRASSLAND, TerrainHeight.FIVE))
-        assertEquals(
-                .98,
-                rs.along(listOf(Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE))))
-        assertEquals(
-                .98.pow(3),
-                rs.along(listOf(Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE),
-                                Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE),
-                                Terrain(TerrainType.GRASSLAND, TerrainHeight.ONE))))
-    }
+            for (i in 1..6) {
+                val lowerTiles = listOf (testTerrain) + i.lowestTerrainTiles()
+                "travelling through ${lowerTiles.size} tiles of air" should {
+                    val airLossFactor = RadioSignal.AIR_LOSS_FACTOR
+                    "lose power with the base loss factor of $airLossFactor" {
+                        rs.along(lowerTiles).strength.shouldBe(airLossFactor.pow(i).plusOrMinus(0.001))
+                    }
+                }
 
-    @Test
-    fun `test terrain loss factor (signal travels through ground)`() {
-        val rs = RadioSignal(100.0, Terrain(TerrainType.GRASSLAND, TerrainHeight.FIVE))
-        assertEquals(0.70, rs.along(listOf(Terrain(TerrainType.GRASSLAND, TerrainHeight.TEN))))
-
-        assertEquals(
-                0.70.toBigDecimal().pow(3).toDouble(),
-                rs.along(listOf(Terrain(TerrainType.GRASSLAND, TerrainHeight.TEN),
-                        Terrain(TerrainType.GRASSLAND, TerrainHeight.SEVEN),
-                        Terrain(TerrainType.GRASSLAND, TerrainHeight.SIX))))
+                val higherTiles = listOf (testTerrain) + i.highestTerrainTiles()
+                "travelling through ${lowerTiles.size} tiles of ground" should {
+                    val groundLossFactor = RadioSignal.GROUND_LOSS_FACTOR
+                    "lose power with the ground loss factor of $groundLossFactor" {
+                        rs.along(higherTiles).strength.shouldBe(groundLossFactor.pow(i).plusOrMinus(0.001))
+                    }
+                }
+            }
+        }
     }
 }
+
+/**
+ * Creates a list of n "tiles" of lowest [TerrainHeight].
+ */
+private fun Int.lowestTerrainTiles() =
+        List(this) { Terrain.of(TerrainType.WATER_DEEP, TerrainHeight.MIN)}
+
+/**
+ * Creates a list of n "tiles" of highest [TerrainHeight].
+ */
+private fun Int.highestTerrainTiles() =
+        List(this) { Terrain.of(TerrainType.MOUNTAIN, TerrainHeight.MAX)}
