@@ -26,6 +26,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         private const val MIN_WIDTH = 5  // tiles
         private const val MAX_WIDTH = 50 // tiles
         private const val FADING_BORDER = 3 // tiles
+        private const val UNEVENNESS = 0.06 // ratio
     }
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
@@ -66,11 +67,20 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
                 TerrainHeight.FOUR,
                 TerrainHeight.FIVE)
                 .random(rand)
-        val plains = Terrain.of(TerrainType.GRASSLAND, plainsHeight)
+        val type = TerrainType.GRASSLAND
+        val plains = Terrain.of(type, plainsHeight)
+        val plainsPlus1 = Terrain.of(type, plainsHeight + 1)
+        val plainsMinus1 = Terrain.of(type, plainsHeight - 1)
+        val unevennessMinus1 = UNEVENNESS * rand.nextDouble()
+        val unevennessPlus1 = UNEVENNESS * rand.nextDouble()
         val plainsArea = createPlainsArea(emptyRectangle)
         plainsArea.forEach { coordinate ->
             if (!fadedBorder(coordinate, plainsArea)) {
-                mutableWorld[coordinate] = plains
+                mutableWorld[coordinate] = when (rand.nextDouble()) {
+                    in 0.0..unevennessMinus1        -> plainsMinus1
+                    in (1.0 - unevennessPlus1)..1.0 -> plainsPlus1
+                    else                            -> plains
+                }
             }
         }
     }
@@ -82,11 +92,11 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         val distanceTop = rectangle.topRightCoordinate.northingFromBottom - coordinate.northingFromBottom
 
         val fadeChance = when {
-            distanceLeft <= FADING_BORDER -> fade(distanceLeft)
+            distanceLeft <= FADING_BORDER   -> fade(distanceLeft)
             distanceBottom <= FADING_BORDER -> fade(distanceBottom)
-            distanceRight <= FADING_BORDER -> fade(distanceRight)
-            distanceTop <= FADING_BORDER -> fade(distanceTop)
-            else ->  0.0
+            distanceRight <= FADING_BORDER  -> fade(distanceRight)
+            distanceTop <= FADING_BORDER    -> fade(distanceTop)
+            else                            -> 0.0
         }
         return rand.nextDouble() <= fadeChance
     }
