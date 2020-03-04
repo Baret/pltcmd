@@ -1,6 +1,8 @@
-package de.gleex.pltcmd.model.radio.communication
+package de.gleex.pltcmd.model.radio.communication.building
 
 import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.radio.communication.ConversationPart
+import de.gleex.pltcmd.model.radio.communication.Transmission
 
 class PartBuilder(private val sender: CallSign, private val receiver: CallSign, private val message: Transmission) {
     var expected: Transmission? = null

@@ -1,6 +1,8 @@
-package de.gleex.pltcmd.model.radio.communication
+package de.gleex.pltcmd.model.radio.communication.main
 
 import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.radio.communication.Conversation
+import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.world.Coordinate
 import org.hexworks.cobalt.events.api.EventBus
 
