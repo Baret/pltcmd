@@ -6,6 +6,7 @@ import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
+import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateArea
 import de.gleex.pltcmd.model.world.CoordinateRectangle
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -24,6 +25,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         private val LOG = LoggerFactory.getLogger(PlainsGenerator::class)
         private const val MIN_WIDTH = 5  // tiles
         private const val MAX_WIDTH = 50 // tiles
+        private const val FADING_BORDER = 3 // tiles
     }
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
@@ -67,8 +69,32 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         val plains = Terrain.of(TerrainType.GRASSLAND, plainsHeight)
         val plainsArea = createPlainsArea(emptyRectangle)
         plainsArea.forEach { coordinate ->
-            mutableWorld[coordinate] = plains
+            if (!fadedBorder(coordinate, plainsArea)) {
+                mutableWorld[coordinate] = plains
+            }
         }
+    }
+
+    private fun fadedBorder(coordinate: Coordinate, rectangle: CoordinateRectangle): Boolean {
+        val distanceLeft = coordinate.eastingFromLeft - rectangle.bottomLeftCoordinate.eastingFromLeft
+        val distanceBottom = coordinate.northingFromBottom - rectangle.bottomLeftCoordinate.northingFromBottom
+        val distanceRight = rectangle.topRightCoordinate.eastingFromLeft - coordinate.eastingFromLeft
+        val distanceTop = rectangle.topRightCoordinate.northingFromBottom - coordinate.northingFromBottom
+
+        val fadeChance = when {
+            distanceLeft <= FADING_BORDER -> fade(distanceLeft)
+            distanceBottom <= FADING_BORDER -> fade(distanceBottom)
+            distanceRight <= FADING_BORDER -> fade(distanceRight)
+            distanceTop <= FADING_BORDER -> fade(distanceTop)
+            else ->  0.0
+        }
+        return rand.nextDouble() <= fadeChance
+    }
+
+    private fun fade(distance: Int): Double {
+        // more distance should have lower chance so invert it
+        // +1 to have 100% for the tile beside the border
+        return (FADING_BORDER - distance) / (FADING_BORDER + 1.0)
     }
 
     private fun createPlainsArea(emptyRectangle: CoordinateRectangle): CoordinateRectangle {
