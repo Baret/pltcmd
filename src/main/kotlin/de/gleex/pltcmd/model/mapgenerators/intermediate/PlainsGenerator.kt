@@ -10,8 +10,6 @@ import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateArea
 import de.gleex.pltcmd.model.world.CoordinateRectangle
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -129,7 +127,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         val halfRange = (maxValue - MIN_WIDTH) / 2.0
         // therefore we use the middle of the range as center for the random values
         val randomValue = utilRandom.nextGaussian() * halfRange + halfRange
-        return min(max(MIN_WIDTH.toDouble(), randomValue), MAX_WIDTH.toDouble())
+        return randomValue.coerceIn(MIN_WIDTH.toDouble(), maxValue.toDouble())
     }
 
 }
