@@ -20,7 +20,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
             withRelativeEasting(worldSizeWidthInTiles - 1).
             withRelativeNorthing(worldSizeHeightInTiles - 1)
 
-    private val completeArea: CoordinateArea
+    private val completeArea: CoordinateRectangle
 
     /**
      * The set of all [MainCoordinate]s contained in the area of this world.
@@ -58,7 +58,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
                 && worldSizeHeightInTiles % Sector.TILE_COUNT == 0) {
             "Only full sectors may fit in the world dimensions ($worldSizeWidthInTiles by $worldSizeHeightInTiles tiles is not valid)."
         }
-        completeArea = CoordinateArea(bottomLeftCoordinate..topRightCoordinate)
+        completeArea = CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
     }
 
     /**
@@ -99,6 +99,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
      * Puts both the [TerrainHeight] and the [TerrainType] of the given [Coordinate] to the values of the given [Terrain].
      */
     operator fun set(coordinate: Coordinate, terrain: Terrain) {
+        require(isInBounds(coordinate))
         terrainMap[coordinate] = Pair(terrain.height, terrain.type)
     }
 
@@ -106,6 +107,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
      * Puts the [TerrainHeight] at the given [Coordinate] to the given value and keeps the [TerrainType].
      */
     operator fun set(coordinate: Coordinate, terrainHeight: TerrainHeight) {
+        require(isInBounds(coordinate))
         terrainMap[coordinate] = Pair(terrainHeight, terrainMap[coordinate]?.second)
     }
 
@@ -113,6 +115,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
      * Puts the [TerrainType] at the given [Coordinate] to the given value and keeps the [TerrainHeight].
      */
     operator fun set(coordinate: Coordinate, terrainType: TerrainType) {
+        require(isInBounds(coordinate))
         terrainMap[coordinate] = Pair(terrainMap[coordinate]?.first, terrainType)
     }
 
