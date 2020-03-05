@@ -2,8 +2,10 @@ package de.gleex.pltcmd.model.radio.communication.building
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
-import de.gleex.pltcmd.model.radio.communication.ConversationPart
-import de.gleex.pltcmd.model.radio.communication.Transmission
+import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
+import de.gleex.pltcmd.model.radio.communication.transmissions.TerminatingTransmission
+import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
+import de.gleex.pltcmd.model.radio.communication.transmissions.TransmissionWithResponse
 
 class ConversationBuilder(private val sender: CallSign, private val receiver: CallSign) {
 
@@ -11,42 +13,48 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         private val TRANSMISSION_FORMAT = "%s, this is %s, %s, %s."
     }
 
-    private val parts = mutableListOf<ConversationPart>()
+    private lateinit var openingTransaction: Transmission
 
-    fun build() = Conversation(sender, receiver, parts)
+    fun build() = Conversation(sender, receiver, openingTransaction)
 
-    fun init() =
-        part("come in") {
-            expected = receivingTransmission("send it")
+    fun init(nextTransmission: () -> Transmission) {
+        openingTransaction = request("come in") {
+            response("send it", nextTransmission)
         }
-
-    fun copyWithReadback(message: String): Transmission {
-        return receivingTransmissionTerminating("copy that, $message")
     }
 
-    fun part(message: String, function: PartBuilder.() -> Unit) {
-        parts.
-            add(
-                PartBuilder(sender, receiver, sendingTransmission(message)).
-                    apply(function).
-                    build())
+    fun request(message: String, responseSupplier: () -> Transmission): TransmissionWithResponse {
+        return transmissionWithResponse(message, responseSupplier)
     }
 
-    private fun sendingTransmission(message: String, terminating: Boolean = false): Transmission {
-        return Transmission(TRANSMISSION_FORMAT.format(receiver, sender, message, ending(terminating)))
+    fun response(message: String, nextTransmission: () -> Transmission): Transmission {
+        return transmissionWithResponse(message, nextTransmission, false)
+    }
+
+    fun terminatingResponse(message: String) = TerminatingTransmission(message.asTransmission(toReceiver = false, terminating = true))
+
+    fun order(message: String, readbackSupplier: () -> TerminatingTransmission): OrderTransmission {
+        val readback = readbackSupplier.invoke()
+        // TODO: negative() needs to be some kind of "transmission with wildcard" that can be filled with the reason, when it is being sent
+        return OrderTransmission(message.asTransmission(), readback, negative())
+    }
+
+    fun readback(message: String): TerminatingTransmission = terminatingResponse(message)
+
+    private fun negative(): TerminatingTransmission = TerminatingTransmission("negative".asTransmission(toReceiver = false, terminating = true))
+
+    private fun transmissionWithResponse(message: String, responseSupplier: () -> Transmission, toReceiver: Boolean = true): TransmissionWithResponse {
+        val response = responseSupplier.invoke()
+        return TransmissionWithResponse(message.asTransmission(toReceiver), response)
     }
 
     private fun ending(terminating: Boolean) = if (terminating) "out" else "over"
 
-    private fun sendingTransmissionTerminating(message: String): Transmission {
-        return sendingTransmission(message, true)
-    }
-
-    private fun receivingTransmission(message: String, terminating: Boolean = false): Transmission {
-        return Transmission(TRANSMISSION_FORMAT.format(sender, receiver, message, ending(terminating)))
-    }
-
-    private fun receivingTransmissionTerminating(message: String): Transmission {
-        return receivingTransmission(message, true)
+    private fun String.asTransmission(toReceiver: Boolean = true, terminating: Boolean = false): String {
+        return if(toReceiver) {
+            TRANSMISSION_FORMAT.format(receiver, sender, this, ending(terminating))
+        } else {
+            TRANSMISSION_FORMAT.format(sender, receiver, this, ending(terminating))
+        }
     }
 }
