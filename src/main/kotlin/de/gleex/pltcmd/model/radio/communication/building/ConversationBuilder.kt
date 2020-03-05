@@ -39,7 +39,7 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         return OrderTransmission(message.asTransmission(), readback, negative())
     }
 
-    fun readback(message: String): TerminatingTransmission = terminatingResponse(message)
+    fun readback(message: String): TerminatingTransmission = terminatingResponse("roger, $message")
 
     private fun negative(): TerminatingTransmission = TerminatingTransmission("negative".asTransmission(toReceiver = false, terminating = true))
 
