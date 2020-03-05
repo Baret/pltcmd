@@ -67,19 +67,19 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
                 TerrainHeight.FOUR,
                 TerrainHeight.FIVE)
                 .random(rand)
-        val type = TerrainType.GRASSLAND
-        val plains = Terrain.of(type, plainsHeight)
-        val plainsPlus1 = Terrain.of(type, plainsHeight + 1)
-        val plainsMinus1 = Terrain.of(type, plainsHeight - 1)
-        val unevennessMinus1 = UNEVENNESS * rand.nextDouble()
-        val unevennessPlus1 = UNEVENNESS * rand.nextDouble()
+        val plains = Terrain.of(TerrainType.GRASSLAND, plainsHeight)
+        val heightPlus1 = plainsHeight + 1
+        val heightMinus1 = plainsHeight - 1
+        val unevennessHeightChance = UNEVENNESS / 4.0
+        val unevennessForest = UNEVENNESS * 2.0 / 4.0
         val plainsArea = createPlainsArea(emptyRectangle)
         plainsArea.forEach { coordinate ->
             if (!fadedBorder(coordinate, plainsArea)) {
-                mutableWorld[coordinate] = when (rand.nextDouble()) {
-                    in 0.0..unevennessMinus1        -> plainsMinus1
-                    in (1.0 - unevennessPlus1)..1.0 -> plainsPlus1
-                    else                            -> plains
+                mutableWorld[coordinate] = plains
+                when (rand.nextDouble()) {
+                    in 0.0..unevennessHeightChance         -> mutableWorld[coordinate] = heightMinus1
+                    in 0.5..(0.5 + unevennessForest)       -> mutableWorld[coordinate] = TerrainType.FOREST
+                    in (1.0 - unevennessHeightChance)..1.0 -> mutableWorld[coordinate] = heightPlus1
                 }
             }
         }
