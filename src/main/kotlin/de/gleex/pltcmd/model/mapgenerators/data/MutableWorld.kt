@@ -5,6 +5,7 @@ import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.*
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import java.util.*
 
 /**
  * A world that is currently being generated. When created it has a size but none of its tiles are filled yet.
@@ -161,12 +162,12 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
     /**
      * Returns all [Coordinate]s in the given area (default is the complete world) that match the given predicate that are not set in this world.
      */
-    fun findEmpty(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): Set<Coordinate> {
+    fun findEmpty(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): SortedSet<Coordinate> {
         val empty = area - terrainMap.keys
         return empty.
                 filter { it in area }.
                 filter(predicate).
-                toSet()
+                toSortedSet()
     }
 
     /**

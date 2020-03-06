@@ -17,10 +17,9 @@ class EmptyRectangleAreaFinder : AreaFinder {
         val start = System.currentTimeMillis()
         val rectangles = mutableSetOf<CoordinateRectangle>()
         val allEmpty = partialWorld.findEmpty()
-                .sorted()
-                .toMutableList()
+                .toSortedSet()
         while (allEmpty.isNotEmpty()) {
-            val rectangle = getEmptyRectangle(allEmpty)
+            val rectangle = getEmptyRectangle(allEmpty.iterator())
             allEmpty.removeAll(rectangle.toSet())
             rectangles.add(rectangle)
         }
@@ -29,43 +28,63 @@ class EmptyRectangleAreaFinder : AreaFinder {
         return rectangles
     }
 
-    private fun getEmptyRectangle(followingEmpty: List<Coordinate>): CoordinateRectangle {
+    private fun getEmptyRectangle(followingEmpty: Iterator<Coordinate>): CoordinateRectangle {
 //        val startTime = System.currentTimeMillis()
-        val start = followingEmpty[0]
+        val start = followingEmpty.next()
         // prefer horizontal connected tiles (lines)
-        val width = getConnectedLineLength(start, followingEmpty)
-        // check all vertical tiles (lines of same length)
-        var height = 1
-        if (width > 1) {
-            while (getConnectedLineLength(start.withRelativeNorthing(height), followingEmpty) == width) {
-                height++
-            }
-        }
-        val end = start.withRelativeEasting(width - 1)
-                .withRelativeNorthing(height - 1)
+        var lineLengthResult = getConnectedLineLength(start, followingEmpty)
+        var emptyLineLength = lineLengthResult.first
+        var emptyBehindLine = lineLengthResult.second
+        val rectWidth = emptyLineLength + 1 // 1 for start
+        val rectHeight = getHeight(start, emptyBehindLine, followingEmpty, rectWidth)
+        val end = start.withRelativeEasting(rectWidth - 1)
+                .withRelativeNorthing(rectHeight - 1)
 //        val duration = System.currentTimeMillis() - startTime
-//        LOG.debug("Found rectangle from $start to $end ($width x $height) in $duration ms or ${duration / (width * height)} ms per tile")
+//        LOG.debug("Found rectangle from $start to $end ($rectWidth x $height) in $duration ms or ${duration / (rectWidth * height)} ms per tile")
         return CoordinateRectangle(start, end)
     }
 
-    private fun getConnectedLineLength(start: Coordinate, followingEmpty: List<Coordinate>): Int {
-        val startIndex = followingEmpty.indexOf(start)
-        if (startIndex == -1) {
-            // element behind all empty coordinates
-            return 0
-        }
-        var indexToCheck = startIndex + 1
+    // check all vertical tiles (lines of same length)
+    private fun getHeight(start: Coordinate, emptyBehindLine: Coordinate?, followingEmpty: Iterator<Coordinate>, rectWidth: Int): Int {
+        var emptyAfterConnected = emptyBehindLine
+        var lineLengthResult: Pair<Int, Coordinate?>
+        var emptyLineLength: Int
+        var height = 0 // will be increased in `do`
+        do {
+            height++
+            val firstInVerticalLine = start.withRelativeNorthing(height)
+
+            // skip elements in line to get to the next line
+            while (firstInVerticalLine != emptyAfterConnected && followingEmpty.hasNext()) {
+                emptyAfterConnected = followingEmpty.next()
+            }
+
+            if (firstInVerticalLine == emptyAfterConnected) {
+                // next line must start with an empty coordinate
+                lineLengthResult = getConnectedLineLength(emptyAfterConnected, followingEmpty)
+                emptyLineLength = lineLengthResult.first + 1 // 1 for the emptyAfterConnected which was already iterated
+                emptyAfterConnected = lineLengthResult.second
+            } else {
+                emptyLineLength = 0
+            }
+        } while (emptyLineLength >= rectWidth)
+        return height
+    }
+
+    private fun getConnectedLineLength(start: Coordinate, followingEmpty: Iterator<Coordinate>): Pair<Int, Coordinate?> {
+        var connected = 0
         var previous = start
-        while (indexToCheck < followingEmpty.size) {
-            val next = followingEmpty[indexToCheck]
+        var next: Coordinate? = null
+        while (followingEmpty.hasNext()) {
+            next = followingEmpty.next()
             if (next.followsHorizontally(previous)) {
-                indexToCheck++
+                connected++
                 previous = next
             } else {
                 break
             }
         }
-        return indexToCheck - startIndex
+        return Pair<Int, Coordinate?>(connected, next)
     }
 
     private fun Coordinate.followsHorizontally(previous: Coordinate): Boolean {

@@ -6,7 +6,7 @@ package de.gleex.pltcmd.model.world
 class CoordinateRectangle(
         val bottomLeftCoordinate: Coordinate,
         val topRightCoordinate: Coordinate) :
-        CoordinateArea((bottomLeftCoordinate..topRightCoordinate).toSet()) {
+        CoordinateArea(bottomLeftCoordinate..topRightCoordinate) {
 
     val width: Int
         get() = topRightCoordinate.eastingFromLeft - bottomLeftCoordinate.eastingFromLeft + 1 // 1 = include start

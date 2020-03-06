@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.model.world
 
+import java.util.*
+
 /**
  * A location on the map. The map is a rectangle and each coordinate describes the distance (in hundreds of
  * meters) to its origin. A coordinate has two components: The distance to the north or up from the bottom
@@ -84,10 +86,11 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         const val FORMAT_NEGATIVE = "%04d"
     }
 
-    class Progression(private val coordinates: List<Coordinate>): Iterable<Coordinate> {
+    class Progression(val coordinates: List<Coordinate>): Iterable<Coordinate> {
         override fun iterator(): Iterator<Coordinate> {
             return coordinates.iterator()
         }
 
+        fun toSortedSet(): SortedSet<Coordinate> = coordinates.toSortedSet()
     }
 }

@@ -1,10 +1,12 @@
 package de.gleex.pltcmd.model.world
 
+import java.util.*
+
 /**
  * An immutable set of coordinates that should be connected, but there is no check for that.
  */
-open class CoordinateArea(private val coordinates: Set<Coordinate>) : Iterable<Coordinate> {
-    constructor(coordinates: Coordinate.Progression) : this(coordinates.toSet())
+open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iterable<Coordinate> {
+    constructor(coordinates: Coordinate.Progression) : this(coordinates.toSortedSet())
 
     val size
         get() = coordinates.size
