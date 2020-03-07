@@ -16,7 +16,7 @@ class EmptyRectangleAreaFinderTest(private val underTest: EmptyRectangleAreaFind
     val origin = Coordinate(100, 50)
     "empty world" should {
         val testWorld = MutableWorld(origin)
-        "find all in a single rectangle" {
+        "find all coordinates in a single rectangle" {
             underTest.findAll(testWorld) shouldBe setOf(CoordinateArea(testWorld.findEmpty()))
         }
     }
@@ -25,12 +25,12 @@ class EmptyRectangleAreaFinderTest(private val underTest: EmptyRectangleAreaFind
         testWorld[origin] = TerrainType.FOREST
         testFilledOrigin(underTest, testWorld, origin)
     }
-    "with terrain height" should {
+    "with terrain height at origin" should {
         val testWorld = MutableWorld(origin)
         testWorld[origin] = TerrainHeight.FIVE
         testFilledOrigin(underTest, testWorld, origin)
     }
-    "with full terrain" should {
+    "with full terrain at origin" should {
         val testWorld = MutableWorld(origin)
         testWorld[origin] = Terrain.of(TerrainType.FOREST, TerrainHeight.FIVE)
         testFilledOrigin(underTest, testWorld, origin)
