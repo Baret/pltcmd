@@ -119,13 +119,6 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
     }
 
     /**
-     * Removes all information for the given [Coordinate].
-     */
-    fun clear(coordinate: Coordinate) {
-        terrainMap.remove(coordinate)
-    }
-
-    /**
      * Returns the neighbors of the given coordinate that are in range of this world if it is also inside this world.
      * Otherwise an empty list will be returned.
      */
