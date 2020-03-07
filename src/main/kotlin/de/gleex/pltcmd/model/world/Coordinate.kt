@@ -56,7 +56,7 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     }
 
     operator fun rangeTo(other: Coordinate): Progression {
-        val values = mutableListOf<Coordinate>()
+        val values: SortedSet<Coordinate> = TreeSet()
         val northingRange = if(northingFromBottom <= other.northingFromBottom) {
                 northingFromBottom..other.northingFromBottom
             } else {
@@ -94,11 +94,11 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         const val FORMAT_NEGATIVE = "%04d"
     }
 
-    class Progression(val coordinates: List<Coordinate>): Iterable<Coordinate> {
+    class Progression(private val coordinates: SortedSet<Coordinate>): Iterable<Coordinate> {
         override fun iterator(): Iterator<Coordinate> {
             return coordinates.iterator()
         }
 
-        fun toSortedSet(): SortedSet<Coordinate> = coordinates.toSortedSet()
+        fun toSortedSet(): SortedSet<Coordinate> = Collections.unmodifiableSortedSet(coordinates)
     }
 }
