@@ -151,16 +151,18 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
 
     /**
      * Returns all [Coordinate]s in the given area (default is the complete world) that match the given predicate (and are already present).
+     * The result is sorted to easily traverse connected parts.
      */
-    fun find(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): Set<Coordinate> {
+    fun find(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): SortedSet<Coordinate> {
         return terrainMap.keys.
                 filter { it in area }.
                 filter(predicate).
-                toSet()
+                toSortedSet()
     }
 
     /**
      * Returns all [Coordinate]s in the given area (default is the complete world) that match the given predicate that are not set in this world.
+     * The result is sorted to easily traverse connected parts.
      */
     fun findEmpty(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): SortedSet<Coordinate> {
         val empty = area - terrainMap.keys

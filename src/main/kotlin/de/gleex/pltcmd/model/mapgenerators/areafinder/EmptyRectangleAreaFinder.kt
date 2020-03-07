@@ -4,6 +4,7 @@ import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateRectangle
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import java.util.*
 
 /**
  * Groups the empty spaces of a world into rectangles. The rectangles are as wide as possible like lines.
@@ -16,8 +17,7 @@ class EmptyRectangleAreaFinder : AreaFinder {
     override fun findAll(partialWorld: MutableWorld): Set<CoordinateRectangle> {
         val start = System.currentTimeMillis()
         val rectangles = mutableSetOf<CoordinateRectangle>()
-        val allEmpty = partialWorld.findEmpty()
-                .toSortedSet()
+        val allEmpty: SortedSet<Coordinate> = partialWorld.findEmpty()
         while (allEmpty.isNotEmpty()) {
             val rectangle = getEmptyRectangle(allEmpty.iterator())
             allEmpty.removeAll(rectangle.toSet())
