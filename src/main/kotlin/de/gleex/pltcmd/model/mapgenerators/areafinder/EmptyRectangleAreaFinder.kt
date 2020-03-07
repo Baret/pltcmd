@@ -29,41 +29,36 @@ class EmptyRectangleAreaFinder : AreaFinder {
     }
 
     private fun getEmptyRectangle(followingEmpty: Iterator<Coordinate>): CoordinateRectangle {
-//        val startTime = System.currentTimeMillis()
         val start = followingEmpty.next()
         // prefer horizontal connected tiles (lines)
-        var lineLengthResult = getConnectedLineLength(start, followingEmpty)
-        var emptyLineLength = lineLengthResult.first
-        var emptyBehindLine = lineLengthResult.second
+        val (emptyLineLength, notConnectedElementFromIterator) = getConnectedLineLength(start, followingEmpty)
         val rectWidth = emptyLineLength + 1 // 1 for start
-        val rectHeight = getHeight(start, emptyBehindLine, followingEmpty, rectWidth)
+        val rectHeight = getHeight(start, notConnectedElementFromIterator, followingEmpty, rectWidth)
         val end = start.withRelativeEasting(rectWidth - 1)
                 .withRelativeNorthing(rectHeight - 1)
-//        val duration = System.currentTimeMillis() - startTime
-//        LOG.debug("Found rectangle from $start to $end ($rectWidth x $height) in $duration ms or ${duration / (rectWidth * height)} ms per tile")
         return CoordinateRectangle(start, end)
     }
 
     // check all vertical tiles (lines of same length)
-    private fun getHeight(start: Coordinate, emptyBehindLine: Coordinate?, followingEmpty: Iterator<Coordinate>, rectWidth: Int): Int {
-        var emptyAfterConnected = emptyBehindLine
+    private fun getHeight(start: Coordinate, notConnectedElementFromIterator: Coordinate?, followingEmpty: Iterator<Coordinate>, rectWidth: Int): Int {
+        var lastChecked = notConnectedElementFromIterator
         var lineLengthResult: Pair<Int, Coordinate?>
         var emptyLineLength: Int
-        var height = 0 // will be increased in `do`
+        var height = 0
         do {
             height++
             val firstInVerticalLine = start.withRelativeNorthing(height)
 
-            // skip elements in line to get to the next line
-            while (firstInVerticalLine != emptyAfterConnected && followingEmpty.hasNext()) {
-                emptyAfterConnected = followingEmpty.next()
+            // skip elements in previous line to get to the first element in the next line
+            while (firstInVerticalLine != lastChecked && followingEmpty.hasNext()) {
+                lastChecked = followingEmpty.next()
             }
 
-            if (firstInVerticalLine == emptyAfterConnected) {
-                // next line must start with an empty coordinate
-                lineLengthResult = getConnectedLineLength(emptyAfterConnected, followingEmpty)
-                emptyLineLength = lineLengthResult.first + 1 // 1 for the emptyAfterConnected which was already iterated
-                emptyAfterConnected = lineLengthResult.second
+            if (firstInVerticalLine == lastChecked) {
+                // the next line is connected to the start vertically, check how many coordinates are connected in that line
+                lineLengthResult = getConnectedLineLength(lastChecked, followingEmpty)
+                emptyLineLength = lineLengthResult.first + 1 // 1 for the firstInVerticalLine/lastChecked
+                lastChecked = lineLengthResult.second
             } else {
                 emptyLineLength = 0
             }
@@ -73,22 +68,18 @@ class EmptyRectangleAreaFinder : AreaFinder {
 
     private fun getConnectedLineLength(start: Coordinate, followingEmpty: Iterator<Coordinate>): Pair<Int, Coordinate?> {
         var connected = 0
-        var previous = start
-        var next: Coordinate? = null
+        var previousConnected = start
+        var toCheck: Coordinate? = null
         while (followingEmpty.hasNext()) {
-            next = followingEmpty.next()
-            if (next.followsHorizontally(previous)) {
+            toCheck = followingEmpty.next()
+            if (toCheck.followsHorizontally(previousConnected)) {
                 connected++
-                previous = next
+                previousConnected = toCheck
             } else {
                 break
             }
         }
-        return Pair<Int, Coordinate?>(connected, next)
-    }
-
-    private fun Coordinate.followsHorizontally(previous: Coordinate): Boolean {
-        return previous.eastingFromLeft + 1 == eastingFromLeft
+        return Pair(connected, toCheck)
     }
 
 }

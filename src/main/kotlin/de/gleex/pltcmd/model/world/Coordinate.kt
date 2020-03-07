@@ -35,6 +35,11 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
             withRelativeNorthing(1)
     )
 
+    /** Checks if the given coordinate is the direct successor in the horizontal coordinate */
+    fun followsHorizontally(previous: Coordinate): Boolean {
+        return previous.eastingFromLeft + 1 == eastingFromLeft
+    }
+
     /**
      * Sort from most south-west to most north-east. Going line wise first east and then north.
      * Example: 2|2, 3|2, 1|3
