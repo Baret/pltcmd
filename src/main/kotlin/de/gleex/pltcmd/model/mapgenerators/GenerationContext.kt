@@ -18,7 +18,7 @@ data class GenerationContext(
         val undefined: Double
 ) {
     companion object {
-        fun fromRandom(random: Random) = GenerationContext(.35, random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(), .5)
+        fun fromRandom(random: Random) = GenerationContext(random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(0.3, 1.0))
     }
 
     val plainsRatio: Double = asRatio(plains)
@@ -37,6 +37,17 @@ data class GenerationContext(
             return 0.0
         }
         return abs(value) / sum
+    }
+
+    override fun toString(): String {
+        return "GenerationContext: %.1f %% plains, %.1f %% forest, %.1f %% mountain, %.1f %% water, %.1f %% urban, %.1f %% undefined, ".format(
+                plainsRatio * 100,
+                forestRatio * 100,
+                mountainRatio * 100,
+                waterRatio * 100,
+                urbanRatio * 100,
+                undefinedRatio * 100
+        )
     }
 
 }
