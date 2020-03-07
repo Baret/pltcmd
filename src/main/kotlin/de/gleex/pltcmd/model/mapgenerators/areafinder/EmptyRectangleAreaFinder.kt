@@ -34,8 +34,7 @@ class EmptyRectangleAreaFinder : AreaFinder {
         val (emptyLineLength, notConnectedElementFromIterator) = getConnectedLineLength(start, followingEmpty)
         val rectWidth = emptyLineLength + 1 // 1 for start
         val rectHeight = getHeight(start, notConnectedElementFromIterator, followingEmpty, rectWidth)
-        val end = start.withRelativeEasting(rectWidth - 1)
-                .withRelativeNorthing(rectHeight - 1)
+        val end = start.movedBy(rectWidth - 1, rectHeight - 1)
         return CoordinateRectangle(start, end)
     }
 

@@ -21,6 +21,9 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     /** Creates a new [Coordinate] that is moved by the given amount to the north from this coordinate */
     fun withRelativeNorthing(toNorth: Int) = withNorthing(northingFromBottom + toNorth)
 
+    /** Creates a new [Coordinate] that is moved by the given amount to the east and north from this coordinate */
+    fun movedBy(toEast: Int, toNorth: Int) = Coordinate(eastingFromLeft + toEast, northingFromBottom + toNorth)
+
     /** Creates a new [Coordinate] with the given easting and keeping this northing */
     fun withEasting(newEasting: Int) = Coordinate(newEasting, northingFromBottom)
 

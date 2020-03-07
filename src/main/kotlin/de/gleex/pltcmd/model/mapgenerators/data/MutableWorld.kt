@@ -17,9 +17,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
                    val worldSizeHeightInTiles: Int = Sector.TILE_COUNT) {
 
     private val terrainMap = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
-    val topRightCoordinate = bottomLeftCoordinate.
-            withRelativeEasting(worldSizeWidthInTiles - 1).
-            withRelativeNorthing(worldSizeHeightInTiles - 1)
+    val topRightCoordinate = bottomLeftCoordinate.movedBy(worldSizeWidthInTiles - 1, worldSizeHeightInTiles - 1)
 
     private val completeArea: CoordinateRectangle
 

@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.mapgenerators.areafinder
 
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
+import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateRectangle
 import kotlin.math.min
 
@@ -22,25 +23,38 @@ class SizedEmptyRectangleAreaFinder(val minWidth: Int, val minHeight: Int, val m
     private fun hasMinimumSize(coordinateRectangle: CoordinateRectangle) =
             coordinateRectangle.hasMinimumSize(minWidth, minHeight)
 
+    /**
+     * Splits the given rectangle in multiple rectangles if it exceeds the maximum size.
+     * @param rectangle a rectangle with at least minimum size
+     */
     private fun getAllRectangles(rectangle: CoordinateRectangle): Set<CoordinateRectangle> {
-        val splitted = mutableSetOf<CoordinateRectangle>()
+        val rectanglesWithWantedSize = mutableSetOf<CoordinateRectangle>()
         val start = rectangle.bottomLeftCoordinate
-        // x and y are relative to given rectangles origin
-        for (y in 0..rectangle.height step maxHeight) {
-            val height = min(rectangle.height - y, maxHeight)
+        val fullRectHeight = rectangle.height
+        val fullRectWidth = rectangle.width
+        // x and y are relative to the given rectangles origin!
+        for (y in 0..fullRectHeight step maxHeight) {
+            val height = min(fullRectHeight - y, maxHeight)
             val yEnd = y + height - 1 // -1 because the starting coordinate is also part of the rectangle
-            for (x in 0..rectangle.width step maxWidth) {
-                val width = min(rectangle.width - x, maxWidth)
+            for (x in 0..fullRectWidth step maxWidth) {
+                val width = min(fullRectWidth - x, maxWidth)
                 val xEnd = x + width - 1 // -1 because the starting coordinate is also part of the rectangle
-                val part = CoordinateRectangle(start.withRelativeEasting(x).withRelativeNorthing(y), start.withRelativeEasting(xEnd).withRelativeNorthing(yEnd))
+
+                val wantedSizeRectangle = createTranslatedRectangle(start, x, y, xEnd, yEnd)
                 // the last rectangle might be too small
-                if (hasMinimumSize(part)) {
-                    splitted.add(part)
+                if (hasMinimumSize(wantedSizeRectangle)) {
+                    rectanglesWithWantedSize.add(wantedSizeRectangle)
                 }
             }
         }
-        assert(splitted.isNotEmpty()) { "at least one rectangle must fit" }
-        return splitted
+        assert(rectanglesWithWantedSize.isNotEmpty()) { "at least one rectangle must fit into the minimum sized rectangle" }
+        return rectanglesWithWantedSize
+    }
+
+    private fun createTranslatedRectangle(start: Coordinate, relativeEastingBottomLeft: Int, relativeNorthingBottomLeft: Int, relatvieEastingTopRight: Int, relativeNorthingTopRight: Int): CoordinateRectangle {
+        val bottomLeft = start.movedBy(relativeEastingBottomLeft, relativeNorthingBottomLeft)
+        val topRight = start.movedBy(relatvieEastingTopRight, relativeNorthingTopRight)
+        return CoordinateRectangle(bottomLeft, topRight)
     }
 
 }

@@ -12,7 +12,7 @@ fun randomSectorAt(origin: Coordinate) = Sector(origin, tiles(origin))
 private fun tiles(origin: Coordinate) =
         CoordinateRectangle(
                 origin,
-                origin.withRelativeEasting(Sector.TILE_COUNT - 1).withRelativeNorthing( Sector.TILE_COUNT - 1)).
+                origin.movedBy(Sector.TILE_COUNT - 1, Sector.TILE_COUNT - 1)).
                 asSequence().
                 map { WorldTile(it, Terrain.random()) }.
                 toSet()

@@ -20,16 +20,16 @@ class SizedEmptyRectangleAreaFinderTest : StringSpec({
         largeTest.findAll(emptyWorld) shouldBe setOf(
                 CoordinateRectangle(
                         origin,
-                        origin.withRelativeEasting(maxWidth - 1).withRelativeNorthing(maxHeight - 1)),
+                        origin.movedBy(maxWidth - 1, maxHeight - 1)),
                 CoordinateRectangle(
                         origin.withRelativeEasting(maxWidth),
-                        origin.withRelativeEasting(Sector.TILE_COUNT - 1).withRelativeNorthing(maxHeight - 1)),
+                        origin.movedBy(Sector.TILE_COUNT - 1, maxHeight - 1)),
                 CoordinateRectangle(
                         origin.withRelativeNorthing(maxHeight),
-                        origin.withRelativeEasting(maxWidth - 1).withRelativeNorthing(Sector.TILE_COUNT - 1)),
+                        origin.movedBy(maxWidth - 1, Sector.TILE_COUNT - 1)),
                 CoordinateRectangle(
                         origin.withRelativeEasting(maxWidth).withRelativeNorthing(maxHeight),
-                        origin.withRelativeEasting(Sector.TILE_COUNT - 1).withRelativeNorthing(Sector.TILE_COUNT - 1))
+                        origin.movedBy(Sector.TILE_COUNT - 1, Sector.TILE_COUNT - 1))
         )
     }
 
