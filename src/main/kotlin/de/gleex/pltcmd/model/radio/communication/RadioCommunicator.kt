@@ -1,22 +1,26 @@
 package de.gleex.pltcmd.model.radio.communication
 
+import de.gleex.pltcmd.events.EventBus
+import de.gleex.pltcmd.events.RadioComms
+import de.gleex.pltcmd.events.TransmissionEvent
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.TerminatingTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.TransmissionWithResponse
-import org.hexworks.cobalt.events.api.EventBus
 import org.hexworks.cobalt.events.api.simpleSubscribeTo
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 
-class Sender(val callSign: CallSign, private val bus: EventBus) {
+class RadioCommunicator(val callSign: CallSign) {
     
     companion object {
-        private val log = LoggerFactory.getLogger(Sender::class)
+        private val log = LoggerFactory.getLogger(RadioCommunicator::class)
     }
     
     private var conversation: Conversation? = null
+
+    private  val bus = EventBus.instance
 
     init {
         bus.simpleSubscribeTo<TransmissionEvent>(RadioComms) { event ->

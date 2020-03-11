@@ -1,7 +1,7 @@
-package de.gleex.pltcmd.model.radio.communication
+package de.gleex.pltcmd.events
 
 import org.hexworks.cobalt.events.api.EventScope
 
 object RadioComms: EventScope
 
-object Tick: EventScope
+object Ticks: EventScope
