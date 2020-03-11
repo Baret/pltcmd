@@ -3,6 +3,7 @@ package de.gleex.pltcmd.model.radio.communication.main
 import de.gleex.pltcmd.events.EventBus
 import de.gleex.pltcmd.events.RadioComms
 import de.gleex.pltcmd.events.TransmissionEvent
+import de.gleex.pltcmd.events.ticks.Ticker
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit
 fun main() {
     val bus = EventBus.instance
 
-    bus.simpleSubscribeTo<TransmissionEvent>(RadioComms) { println("RADIO: ${it.transmission.message}") }
+    bus.simpleSubscribeTo<TransmissionEvent>(RadioComms) { println("RADIO ${Ticker.currentTime()}: ${it.transmission.message}") }
 
     val hq = CallSign("Command")
     val receivingCallsign = CallSign("Charlie-1")
@@ -41,10 +42,10 @@ fun main() {
                     receiver = receivingCallsign
             ))
 
-    println("sleeping to wait for events")
-    println("sleeping")
-    TimeUnit.SECONDS.sleep(2)
-    println("awake!")
+    repeat(10) {
+        Ticker.tick()
+        TimeUnit.SECONDS.sleep(2)
+    }
 
     bus.close()
 }
