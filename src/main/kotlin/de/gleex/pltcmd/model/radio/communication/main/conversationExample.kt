@@ -17,29 +17,39 @@ fun main() {
     bus.simpleSubscribeTo<TransmissionEvent>(RadioComms) { println("RADIO ${Ticker.currentTime()}: ${it.transmission.message}") }
 
     val hq = CallSign("Command")
-    val receivingCallsign = CallSign("Charlie-1")
+    val charlie = CallSign("Charlie-1")
+    val bravo = CallSign("Bravo-2")
 
     val hqSender = RadioCommunicator(hq)
-    val receiver = RadioCommunicator(receivingCallsign)
-    val notInvolved = RadioCommunicator(CallSign("Bravo-2"))
+    val charlieSender = RadioCommunicator(charlie)
+    val bravoSender = RadioCommunicator(bravo)
 
-    println("testing move to\n\n")
+    println("creating move to from $hq to $charlie")
 
     hqSender.startCommunication(
             Conversations.
             moveTo(
                     sender = hq,
-                    receiver = receivingCallsign,
+                    receiver = charlie,
                     targetLocation = Coordinate(15, 178)
             ))
 
-    println("\n\ntesting report\n\n")
+    println("creating report position from $hq to $charlie")
 
     hqSender.startCommunication(
             Conversations.
             reportPosition(
                     sender = hq,
-                    receiver = receivingCallsign
+                    receiver = charlie
+            ))
+
+    println("creating report position from $bravo to $charlie")
+
+    bravoSender.startCommunication(
+            Conversations.
+            reportPosition(
+                    sender = bravo,
+                    receiver = charlie
             ))
 
     repeat(10) {
