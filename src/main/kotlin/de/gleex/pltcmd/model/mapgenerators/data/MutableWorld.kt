@@ -163,7 +163,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
                 toSortedSet()
     }
 
-    fun requireInBounds(coordinate: Coordinate) {
+    private fun requireInBounds(coordinate: Coordinate) {
         require(isInBounds(coordinate)) { "Coordinate $coordinate is not inside this world $completeArea" }
     }
 
