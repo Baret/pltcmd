@@ -9,14 +9,19 @@ import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.options.UiOptions
+import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
+import org.hexworks.cobalt.databinding.api.binding.bindTransform
+import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.events.api.simpleSubscribeTo
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.SwingApplications
+import org.hexworks.zircon.api.component.Component
 import org.hexworks.zircon.api.component.ComponentAlignment
+import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.graphics.BoxType
-import java.util.concurrent.TimeUnit
+import org.hexworks.zircon.api.uievent.ComponentEventType
 
 fun main() {
     val bus = EventBus.instance
@@ -60,13 +65,6 @@ fun main() {
 //                    sender = bravo,
 //                    receiver = charlie
 //            ))
-
-    repeat(10) {
-        Ticker.tick()
-        TimeUnit.SECONDS.sleep(2)
-    }
-
-    bus.close()
 }
 
 fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlieSender: RadioCommunicator) {
@@ -75,13 +73,51 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
 
     screen.themeProperty.value = UiOptions.THEME
 
-    val mainPanel = Components.panel().
+    val LOG_AREA_HEIGHT = 20
+    val mainPanel = Components.hbox().
             withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER).
-            withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - UiOptions.LOG_AREA_HEIGHT).
-            build()
+            withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - LOG_AREA_HEIGHT).
+            build().
+            apply {
+                val sideBarWidth = 18
+                // sidebar
+                addComponent(Components.
+                        vbox().
+                        withSize(sideBarWidth, contentSize.height).
+                        withDecorations(ComponentDecorations.box(BoxType.DOUBLE)).
+                        build().
+                        apply {
+                            addComponent(Components.header().withText("Current Tick"))
+                            addComponent(Components.label().
+                                withSize(contentSize.width, 1).
+                                build().
+                                apply {
+                                    textProperty.updateFrom(
+                                            Ticker.currentTickProperty.bindTransform { it.toString() }
+                                                    bindPlusWith createPropertyFrom(": ")
+                                                    bindPlusWith Ticker.currentTimeStringProperty)
+                                }
+                            )
+                            addComponent(Components.button().
+                                withText("TICK!").
+                                build().
+                                apply {
+                                    processComponentEvents(ComponentEventType.ACTIVATED) { Ticker.tick() }
+                                })
+                        }
+                    )
+
+                // RadioCommunicator panels
+                val partSize = Size.create((contentSize.width - sideBarWidth) / 3, contentSize.height)
+                println("contentsize of main panel = $contentSize")
+                println("partSize = $partSize")
+                addComponent(ceateRadioCommuicatorPanel(hqSender, partSize))
+                addComponent(ceateRadioCommuicatorPanel(bravoSender, partSize))
+                addComponent(ceateRadioCommuicatorPanel(charlieSender, partSize))
+            }
 
     val logArea = Components.logArea().
-            withSize(UiOptions.WINDOW_WIDTH, UiOptions.LOG_AREA_HEIGHT).
+            withSize(UiOptions.WINDOW_WIDTH, LOG_AREA_HEIGHT).
             withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER).
             withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
             build().
@@ -93,4 +129,14 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
 
     screen.addComponents(mainPanel, logArea)
     screen.display()
+}
+
+fun ceateRadioCommuicatorPanel(communicator: RadioCommunicator, size: Size): Component {
+    return Components.vbox().
+            withSize(size).
+            withDecorations(ComponentDecorations.box(BoxType.DOUBLE, communicator.callSign.toString())).
+            build().
+            apply {
+                addComponent(Components.header().withText(communicator.callSign.toString()))
+            }
 }
