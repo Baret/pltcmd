@@ -7,20 +7,19 @@ import kotlin.math.min
 /**
  * First find rectangles of emptiness in the world. Than filters all rectangles that are smaller than the given size.
  * The large rectangles will be split to multiples of the maximum size if possible. The remainder may form rectangles of
- * up to minimum size.
+ * at least minimum size.
  */
 class SizedEmptyRectangleAreaFinder(val minWidth: Int, val minHeight: Int, val maxWidth: Int, val maxHeight: Int) : AreaFinder {
     private val emptyFinder = EmptyRectangleAreaFinder()
 
     override fun findAll(partialWorld: MutableWorld): Set<CoordinateRectangle> {
         val emptyRectangles = emptyFinder.findAll(partialWorld)
-        return emptyRectangles.filter(this::hasMinimumSize)
+        return emptyRectangles.filter { it.hasMinimumSize() }
                 .flatMap(this::getAllRectangles)
                 .toSet()
     }
 
-    private fun hasMinimumSize(coordinateRectangle: CoordinateRectangle) =
-            coordinateRectangle.hasMinimumSize(minWidth, minHeight)
+    private fun CoordinateRectangle.hasMinimumSize() = hasMinimumSize(minWidth, minHeight)
 
     /**
      * Splits the given rectangle in multiple rectangles if it exceeds the maximum size.
@@ -39,7 +38,7 @@ class SizedEmptyRectangleAreaFinder(val minWidth: Int, val minHeight: Int, val m
 
                 val wantedSizeRectangle = CoordinateRectangle(start.movedBy(x, y), width, height)
                 // the last rectangle might be too small
-                if (hasMinimumSize(wantedSizeRectangle)) {
+                if (wantedSizeRectangle.hasMinimumSize()) {
                     rectanglesWithWantedSize.add(wantedSizeRectangle)
                 }
             }
