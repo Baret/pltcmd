@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.model.mapgenerators.areafinder
 
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
-import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateRectangle
 import kotlin.math.min
 
@@ -35,12 +34,10 @@ class SizedEmptyRectangleAreaFinder(val minWidth: Int, val minHeight: Int, val m
         // x and y are relative to the given rectangles origin!
         for (y in 0..fullRectHeight step maxHeight) {
             val height = min(fullRectHeight - y, maxHeight)
-            val yEnd = y + height - 1 // -1 because the starting coordinate is also part of the rectangle
             for (x in 0..fullRectWidth step maxWidth) {
                 val width = min(fullRectWidth - x, maxWidth)
-                val xEnd = x + width - 1 // -1 because the starting coordinate is also part of the rectangle
 
-                val wantedSizeRectangle = createTranslatedRectangle(start, x, y, xEnd, yEnd)
+                val wantedSizeRectangle = CoordinateRectangle(start.movedBy(x, y), width, height)
                 // the last rectangle might be too small
                 if (hasMinimumSize(wantedSizeRectangle)) {
                     rectanglesWithWantedSize.add(wantedSizeRectangle)
@@ -49,12 +46,6 @@ class SizedEmptyRectangleAreaFinder(val minWidth: Int, val minHeight: Int, val m
         }
         assert(rectanglesWithWantedSize.isNotEmpty()) { "at least one rectangle must fit into the minimum sized rectangle" }
         return rectanglesWithWantedSize
-    }
-
-    private fun createTranslatedRectangle(start: Coordinate, relativeEastingBottomLeft: Int, relativeNorthingBottomLeft: Int, relatvieEastingTopRight: Int, relativeNorthingTopRight: Int): CoordinateRectangle {
-        val bottomLeft = start.movedBy(relativeEastingBottomLeft, relativeNorthingBottomLeft)
-        val topRight = start.movedBy(relatvieEastingTopRight, relativeNorthingTopRight)
-        return CoordinateRectangle(bottomLeft, topRight)
     }
 
 }

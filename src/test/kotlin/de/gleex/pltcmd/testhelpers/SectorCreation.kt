@@ -10,9 +10,7 @@ import de.gleex.pltcmd.model.world.WorldTile
 fun randomSectorAt(origin: Coordinate) = Sector(origin, tiles(origin))
 
 private fun tiles(origin: Coordinate) =
-        CoordinateRectangle(
-                origin,
-                origin.movedBy(Sector.TILE_COUNT - 1, Sector.TILE_COUNT - 1)).
+        CoordinateRectangle(origin, Sector.TILE_COUNT, Sector.TILE_COUNT).
                 asSequence().
                 map { WorldTile(it, Terrain.random()) }.
                 toSet()

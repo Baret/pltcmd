@@ -8,6 +8,9 @@ class CoordinateRectangle(
         val topRightCoordinate: Coordinate) :
         CoordinateArea(bottomLeftCoordinate..topRightCoordinate) {
 
+    constructor(bottomLeftCoordinate: Coordinate, width: Int, height: Int) :
+            this(bottomLeftCoordinate, bottomLeftCoordinate.movedBy(width - 1, height - 1))
+
     val width: Int
         get() = topRightCoordinate.eastingFromLeft - bottomLeftCoordinate.eastingFromLeft + 1 // 1 = include start
     val height: Int
