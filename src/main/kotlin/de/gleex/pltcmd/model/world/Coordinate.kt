@@ -39,8 +39,23 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     )
 
     /** Checks if the given coordinate is the direct successor in the horizontal coordinate */
-    fun followsHorizontally(previous: Coordinate): Boolean {
-        return previous.eastingFromLeft + 1 == eastingFromLeft
+    fun isEastNeighborOf(previous: Coordinate): Boolean {
+        return previous.eastingFromLeft + 1 == eastingFromLeft && northingFromBottom == previous.northingFromBottom
+    }
+
+    /** Checks if the given coordinate is the direct predecessor in the horizontal coordinate */
+    fun isWestNeighborOf(next: Coordinate): Boolean {
+        return next.eastingFromLeft == eastingFromLeft + 1 && northingFromBottom == next.northingFromBottom
+    }
+
+    /** Checks if the given coordinate is the direct successor in the horizontal coordinate */
+    fun isNorthNeighborOf(below: Coordinate): Boolean {
+        return below.eastingFromLeft == eastingFromLeft && northingFromBottom == below.northingFromBottom + 1
+    }
+
+    /** Checks if the given coordinate is the direct predecessor in the horizontal coordinate */
+    fun isSouthNeighborOf(above: Coordinate): Boolean {
+        return above.eastingFromLeft == eastingFromLeft && northingFromBottom + 1 == above.northingFromBottom
     }
 
     /**

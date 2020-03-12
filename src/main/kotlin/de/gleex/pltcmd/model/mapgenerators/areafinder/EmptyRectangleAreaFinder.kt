@@ -71,7 +71,7 @@ class EmptyRectangleAreaFinder : AreaFinder {
         var toCheck: Coordinate? = null
         while (followingEmpty.hasNext()) {
             toCheck = followingEmpty.next()
-            if (toCheck.followsHorizontally(previousConnected)) {
+            if (toCheck.isEastNeighborOf(previousConnected)) {
                 connected++
                 previousConnected = toCheck
             } else {
