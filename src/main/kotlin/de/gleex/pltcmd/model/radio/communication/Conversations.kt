@@ -23,4 +23,10 @@ object Conversations {
                     }
                 }
             }
+
+    fun standBy(sender: CallSign, receiver: CallSign) =
+            // tricky: as we use terminatingRESPONSE we need to flip sender and receiver
+            conversation(receiver, sender) {
+                openingTransmission = terminatingResponse("stand by")
+            }
 }

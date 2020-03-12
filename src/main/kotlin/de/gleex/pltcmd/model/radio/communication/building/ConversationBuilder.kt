@@ -13,12 +13,17 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         private val TRANSMISSION_FORMAT = "%s, this is %s, %s, %s."
     }
 
-    private lateinit var openingTransaction: Transmission
+    var openingTransmission: Transmission? = null
 
-    fun build() = Conversation(sender, receiver, openingTransaction)
+    fun build(): Conversation {
+        require(openingTransmission != null) {
+            "No opening transmission has been set for conversation between $sender and $receiver. Either set it directly or use init()"
+        }
+        return Conversation(sender, receiver, openingTransmission!!)
+    }
 
     fun init(nextTransmission: () -> Transmission) {
-        openingTransaction = request("come in") {
+        openingTransmission = request("come in") {
             response("send it", nextTransmission)
         }
     }

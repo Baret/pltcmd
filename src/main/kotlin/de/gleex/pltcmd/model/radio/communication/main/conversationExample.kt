@@ -57,14 +57,14 @@ fun main() {
                     receiver = charlie
             ))
 
-//    println("creating report position from $bravo to $charlie")
-//
-//    bravoSender.startCommunication(
-//            Conversations.
-//            reportPosition(
-//                    sender = bravo,
-//                    receiver = charlie
-//            ))
+    println("creating report position from $bravo to $charlie")
+
+    bravoSender.startCommunication(
+            Conversations.
+            reportPosition(
+                    sender = bravo,
+                    receiver = charlie
+            ))
 }
 
 fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlieSender: RadioCommunicator) {
