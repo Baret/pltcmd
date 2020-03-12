@@ -15,7 +15,7 @@ class SizedEmptyRectangleAreaFinder(val minWidth: Int, val minHeight: Int, val m
     override fun findAll(partialWorld: MutableWorld): Set<CoordinateRectangle> {
         val emptyRectangles = emptyFinder.findAll(partialWorld)
         return emptyRectangles.filter { it.hasMinimumSize() }
-                .flatMap(this::getAllRectangles)
+                .flatMap(this::getAllRectanglesIn)
                 .toSet()
     }
 
@@ -25,7 +25,7 @@ class SizedEmptyRectangleAreaFinder(val minWidth: Int, val minHeight: Int, val m
      * Splits the given rectangle in multiple rectangles if it exceeds the maximum size.
      * @param rectangle a rectangle with at least minimum size
      */
-    private fun getAllRectangles(rectangle: CoordinateRectangle): Set<CoordinateRectangle> {
+    private fun getAllRectanglesIn(rectangle: CoordinateRectangle): Set<CoordinateRectangle> {
         val rectanglesWithWantedSize = mutableSetOf<CoordinateRectangle>()
         val start = rectangle.bottomLeftCoordinate
         val fullRectHeight = rectangle.height
