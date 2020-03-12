@@ -115,10 +115,8 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
     private fun centerInRectangle(emptyRectangle: CoordinateRectangle, plainsWidth: Double, plainsHeight: Double): CoordinateRectangle {
         val halfDeltaWidth = ((emptyRectangle.width - plainsWidth) / 2.0).toInt()
         val halfDeltaHeight = ((emptyRectangle.height - plainsHeight) / 2.0).toInt()
-        val bottomLeft = emptyRectangle.bottomLeftCoordinate.withRelativeEasting(halfDeltaWidth)
-                .withRelativeEasting(halfDeltaHeight)
-        val topRight = emptyRectangle.topRightCoordinate.withRelativeEasting(-halfDeltaWidth)
-                .withRelativeEasting(-halfDeltaHeight)
+        val bottomLeft = emptyRectangle.bottomLeftCoordinate.movedBy(halfDeltaWidth, halfDeltaHeight)
+        val topRight = emptyRectangle.topRightCoordinate.movedBy(-halfDeltaWidth, -halfDeltaHeight)
         return CoordinateRectangle(bottomLeft, topRight)
     }
 
