@@ -3,6 +3,7 @@ package de.gleex.pltcmd.options
 import org.hexworks.zircon.api.CP437TilesetResources
 import org.hexworks.zircon.api.ColorThemes
 import org.hexworks.zircon.api.application.AppConfig
+import org.hexworks.zircon.api.resource.TilesetResource
 
 object UiOptions {
     fun buildAppConfig() =
@@ -11,10 +12,12 @@ object UiOptions {
                     enableBetaFeatures().
                     withSize(WINDOW_WIDTH, WINDOW_HEIGHT).
                     withTitle("PltCmd").
-                    withDefaultTileset(CP437TilesetResources.rexPaint16x16()).
+                    withDefaultTileset(DEFAULT_TILESET).
                     build()
 
     val THEME = ColorThemes.cyberpunk()
+    // Best tileset displaying pipes | either msGothic16x16() or bisasam16x16()
+    val DEFAULT_TILESET: TilesetResource = CP437TilesetResources.bisasam16x16()
 
     const val WINDOW_WIDTH = 90
     const val WINDOW_HEIGHT = 63

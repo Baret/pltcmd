@@ -8,6 +8,7 @@ import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.TickFragment
+import de.gleex.pltcmd.ui.fragments.TilesetSelectorFragment
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
@@ -79,6 +80,17 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
     screen.themeProperty.value = UiOptions.THEME
 
     val LOG_AREA_HEIGHT = 20
+    val logArea = Components.logArea().
+    withSize(UiOptions.WINDOW_WIDTH, LOG_AREA_HEIGHT).
+    withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER).
+    withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
+    build().
+    apply {
+        EventBus.subscribeToRadioComms { event ->
+            addParagraph("${Ticker.currentTime()}: ${event.transmission.message}", false, 10)
+        }
+    }
+
     val mainPanel = Components.hbox().
             withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER).
             withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - LOG_AREA_HEIGHT).
@@ -86,24 +98,21 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
             apply {
                 val sideBarWidth = 18
                 // sidebar
-                addFragment(TickFragment(sideBarWidth))
+                addComponent(Components.vbox().
+                    withSpacing(1).
+                    withSize(sideBarWidth, contentSize.height).
+                    build().
+                    apply {
+                        addFragment(TickFragment(sideBarWidth))
+                        // TESTING
+                        addFragment(TilesetSelectorFragment(sideBarWidth, this@apply))
+                    })
 
                 // RadioCommunicator panels
                 val partSize = Size.create((contentSize.width - sideBarWidth) / 3, contentSize.height)
                 addComponent(ceateRadioCommuicatorPanel(hqSender, partSize))
                 addComponent(ceateRadioCommuicatorPanel(bravoSender, partSize))
                 addComponent(ceateRadioCommuicatorPanel(charlieSender, partSize))
-            }
-
-    val logArea = Components.logArea().
-            withSize(UiOptions.WINDOW_WIDTH, LOG_AREA_HEIGHT).
-            withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER).
-            withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
-            build().
-            apply {
-                EventBus.subscribeToRadioComms { event ->
-                    addParagraph("${Ticker.currentTime()}: ${event.transmission.message}", false, 10)
-                }
             }
 
     screen.addComponents(mainPanel, logArea)

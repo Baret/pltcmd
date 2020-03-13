@@ -8,10 +8,12 @@ import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.RadioSignalFragment
 import de.gleex.pltcmd.ui.fragments.ThemeSelectorFragment
+import de.gleex.pltcmd.ui.fragments.TilesetSelectorFragment
 import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.RadioSignalVisualizer
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import org.hexworks.zircon.api.CP437TilesetResources
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
@@ -48,6 +50,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                 withGameArea(gameWorld).
                 withSize(gameWorld.visibleSize.to2DSize()).
                 withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
+                withTileset(CP437TilesetResources.guybrush16x16()).
                 build()
         mainPart.addComponent(map)
 
@@ -105,9 +108,8 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
             sidebar.addFragment(radioSignalFragment)
         }
 
-        val themeSelector = ThemeSelectorFragment(sidebarWidth, screen)
-
-        sidebar.addFragment(themeSelector)
+        sidebar.addFragment(ThemeSelectorFragment(sidebarWidth, screen))
+        sidebar.addFragment(TilesetSelectorFragment(sidebarWidth, map, sidebar))
     }
 }
 
