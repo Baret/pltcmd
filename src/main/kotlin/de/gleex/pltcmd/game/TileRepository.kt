@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game
 
+import de.gleex.pltcmd.model.radio.SignalStrength
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainType
 import org.hexworks.zircon.api.builder.modifier.BorderBuilder
@@ -44,35 +45,35 @@ object TileRepository {
 
     fun empty() = Tile.empty()
 
-    fun forSignal(signalStrength: Double): Tile {
+    fun forSignal(signalStrength: SignalStrength): Tile {
         val signalColor = ColorRepository.radioColor(signalStrength)
         val tileBuilder = Tile.newBuilder()
                 .withForegroundColor(signalColor)
                 .withBackgroundColor(signalColor)
                 .withCharacter(' ')
 
-        if(signalStrength <= 0.0) {
-            tileBuilder.
-                withCharacter(Symbols.SINGLE_LINE_CROSS).
-                withModifiers(
-                    BorderBuilder.newBuilder().
-                        withBorderType(BorderType.SOLID).
-                        withBorderWidth(2).
-                        withBorderColor(ColorRepository.SIGNAL_EMPTY).
-                        build())
+        when {
+            signalStrength.isNone() -> {
+                tileBuilder.
+                        withCharacter(Symbols.SINGLE_LINE_CROSS).
+                        withModifiers(
+                            BorderBuilder.newBuilder().
+                                    withBorderType(BorderType.SOLID).
+                                    withBorderWidth(2).
+                                    withBorderColor(ColorRepository.SIGNAL_EMPTY).
+                                    build())
+            }
+            signalStrength.isFull() -> {
+                tileBuilder.
+                        withModifiers(
+                            BorderBuilder.newBuilder().
+                                    withBorderType(BorderType.SOLID).
+                                    withBorderWidth(2).
+                                    withBorderColor(ColorRepository.SIGNAL_FULL_HIGHLIGHT).
+                                    build())
+            }
         }
 
-        if(signalStrength >= 1.0) {
-            tileBuilder.
-                withModifiers(
-                    BorderBuilder.newBuilder().
-                        withBorderType(BorderType.SOLID).
-                        withBorderWidth(2).
-                        withBorderColor(ColorRepository.SIGNAL_FULL_HIGHLIGHT).
-                        build())
-        }
-
-        return tileBuilder.
-                buildCharacterTile()
+        return tileBuilder.buildCharacterTile()
     }
 }

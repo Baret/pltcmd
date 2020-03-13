@@ -15,6 +15,12 @@ import org.hexworks.zircon.api.uievent.*
 
 /**
  * A mouse listener that creates an overlay displaying a radio signal.
+ *
+ * @param world The world is used to find the terrain the [RadioSignal] travels along.
+ * @param strengthProperty When this property is updated a redraw is triggered
+ * @param rangeProperty When this property is updated a redraw is triggered
+ * @param mapOffset The position of the map in the UI. Mouse events carry the absolute position in the whole window so
+ *                  we need this offset to calculate the position on the map view.
  */
 class RadioSignalVisualizer(
         private val world: GameWorld,
@@ -47,41 +53,49 @@ class RadioSignalVisualizer(
 
     private fun drawSignal() {
         reset()
-        if(GameOptions.displayRadioSignals.value) {
-            world.fetchBlockAtVisiblePosition(clickedPosition).
-                    ifPresent { clickedBlock ->
-                        clickedBlock.setOverlay(TileRepository.Elements.PLATOON_FRIENDLY)
-                        lastBlocks.add(clickedBlock)
-                        val signal = RadioSignal(strengthProperty.value.toDouble())
-                        // To not miss any tiles we create growing ellipses...
-                        for (circleRadius in 1..rangeProperty.value) {
-                            EllipseFactory.buildEllipse(EllipseParameters(clickedPosition, Size.create(circleRadius, circleRadius))).
-                                positions.
-                                forEach { ringPosition ->
-                                // and draw lines from the center to every position on the circle
-                                // (When drawing lines to very large circles the lines are too thin to cover every position within the circle)
-                                // (And Zircon does not seem to know a filled ellipse...)
-                                val terrainList = mutableListOf(clickedBlock.terrain)
-                                LineFactory.buildLine(clickedPosition, ringPosition)
-                                    .drop(1)
-                                    .forEach { linePosition ->
-                                        world.fetchBlockAtVisiblePosition(linePosition)
-                                            .ifPresent {
-                                                terrainList.add(it.terrain)
-                                                if (it.hasOverlay().not()) {
-                                                    it.setOverlay(TileRepository.forSignal(signal.along(terrainList)))
-                                                    lastBlocks.add(it)
-                                                }
-                                            }
-                                    }
-                            }
-                        }
-                    }
+        if (GameOptions.displayRadioSignals.value.not()) {
+            return
+        }
+        world.fetchBlockAtVisiblePosition(clickedPosition).
+                ifPresent(this::buildCirclesAround)
+    }
+
+    private fun buildCirclesAround(clickedBlock: MapBlock) {
+        clickedBlock.setOverlay(TileRepository.Elements.PLATOON_FRIENDLY)
+        lastBlocks.add(clickedBlock)
+        val signal = RadioSignal(strengthProperty.value.toDouble())
+        // To not miss any tiles we create growing ellipses...
+        for (circleRadius in 1..rangeProperty.value) {
+            EllipseFactory.
+                    buildEllipse(EllipseParameters(clickedPosition, Size.create(circleRadius, circleRadius))).
+                    positions.
+                    forEach { ringPosition ->
+                        // and draw lines from the center to every position on the circle
+                        // (When drawing lines to very large circles the lines are too thin to cover every position within the circle)
+                        // (And Zircon does not seem to know a filled ellipse...)
+                        drawLine(clickedBlock, ringPosition, signal)
+            }
         }
     }
 
+    private fun drawLine(clickedBlock: MapBlock, ringPosition: Position, signal: RadioSignal) {
+        val terrainList = mutableListOf(clickedBlock.terrain)
+        LineFactory.buildLine(clickedPosition, ringPosition)
+                .drop(1)
+                .forEach { linePosition ->
+                    world.fetchBlockAtVisiblePosition(linePosition)
+                            .ifPresent {
+                                terrainList.add(it.terrain)
+                                if (it.hasOverlay().not()) {
+                                    it.setOverlay(TileRepository.forSignal(signal.along(terrainList)))
+                                    lastBlocks.add(it)
+                                }
+                            }
+                }
+    }
+
     private fun reset() {
-        lastBlocks.forEach { it.resetOverlay() }
+        lastBlocks.forEach(MapBlock::resetOverlay)
         lastBlocks.clear()
     }
 }

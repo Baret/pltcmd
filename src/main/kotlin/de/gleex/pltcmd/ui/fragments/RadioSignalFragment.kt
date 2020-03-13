@@ -1,10 +1,7 @@
 package de.gleex.pltcmd.ui.fragments
 
 import de.gleex.pltcmd.game.TileRepository
-import de.gleex.pltcmd.model.radio.AbsoluteSignalLossAttenuation
-import de.gleex.pltcmd.model.radio.AttenuationModel
-import de.gleex.pltcmd.model.radio.PercentageReducingAttenuation
-import de.gleex.pltcmd.model.radio.RadioSignal
+import de.gleex.pltcmd.model.radio.*
 import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindToString
@@ -35,7 +32,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
                 val legend = buildLegend()
 
                 val strengthLabel = buildLabelLine()
-                val strengthInput = buildStrengthInputh(strengthLabel)
+                val strengthInput = buildStrengthInput(strengthLabel)
 
                 val rangeLabel = buildLabelLine()
                 val rangeInput = buildRangeInput(rangeLabel)
@@ -55,7 +52,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
                 val modelInput = buildModelInput()
                 addFragment(modelInput)
 
-                hiddenProperty.updateFrom(GameOptions.displayRadioSignals, true) {it.not()}
+                hiddenProperty.updateFrom(GameOptions.displayRadioSignals, true, Boolean::not)
             }
 
     private fun buildHeader(): Header {
@@ -77,17 +74,18 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
     }
 
     private fun buildLegendText(): Array<Builder<Component>> {
+        val minPower = RadioSignal.MIN_POWER_THRESHOLD
         return arrayOf(
                 Components.label().withText("100%"),
-                Components.icon().withIcon(TileRepository.forSignal(1.0)),
-                Components.label().withText(" ${RadioSignal.MIN_STRENGTH_THRESHOLD}%(min)"),
-                Components.icon().withIcon(TileRepository.forSignal(RadioSignal.MIN_STRENGTH_THRESHOLD / 100.0)),
+                Components.icon().withIcon(TileRepository.forSignal(SignalStrength.FULL)),
+                Components.label().withText(" ${minPower.toInt()}%(min)"),
+                Components.icon().withIcon(TileRepository.forSignal(minPower.toSignalStrength())),
                 Components.label().withText(" 0%"),
-                Components.icon().withIcon(TileRepository.forSignal(0.0))
+                Components.icon().withIcon(TileRepository.forSignal(SignalStrength.NONE))
         )
     }
 
-    private fun buildStrengthInputh(strengthLabel: Label): Slider {
+    private fun buildStrengthInput(strengthLabel: Label): Slider {
         val strengthInput = Components.
                 horizontalSlider().
                 withMinValue(1).
@@ -100,7 +98,8 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
                     selectedStrength.updateFrom(currentValueProperty)
                 }
 
-        strengthLabel.textProperty.updateFrom(createPropertyFrom("Strength: ") bindPlusWith strengthInput.currentValueProperty.bindToString())
+        strengthLabel.textProperty.updateFrom(
+                createPropertyFrom("Strength: ") bindPlusWith strengthInput.currentValueProperty.bindToString())
         return strengthInput
     }
 
@@ -124,19 +123,23 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
                     selectedRange.updateFrom(currentValueProperty)
                 }
 
-        rangeLabel.textProperty.updateFrom(createPropertyFrom("Range: ") bindPlusWith rangeInput.currentValueProperty.bindToString())
+        rangeLabel.textProperty.updateFrom(
+                createPropertyFrom("Range: ") bindPlusWith rangeInput.currentValueProperty.bindToString())
         return rangeInput
     }
 
     private fun buildModelLabel(): Label = buildLabelLine("Attenuation model")
 
     private fun buildModelInput(): MultiSelect<Pair<String, AttenuationModel>> {
-        val models = listOf(Pair("by percentage", PercentageReducingAttenuation()), Pair("absolute", AbsoluteSignalLossAttenuation()))
+        val models = listOf(
+                Pair("by percentage", PercentageReducingAttenuation()),
+                Pair("absolute", AbsoluteSignalLossAttenuation())
+        )
 
         return Fragments.
                 multiSelect(width, models).
                 withCallback { _, newValue -> GameOptions.attenuationModel.value = newValue.second }.
-                withToStringMethod { it.first }.
+                withToStringMethod(Pair<String, AttenuationModel>::first).
                 build()
     }
 
