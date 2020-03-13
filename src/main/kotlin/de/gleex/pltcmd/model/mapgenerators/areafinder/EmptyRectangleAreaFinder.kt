@@ -11,7 +11,7 @@ import java.util.*
  */
 class EmptyRectangleAreaFinder : AreaFinder {
     companion object {
-        private val LOG = LoggerFactory.getLogger(EmptyRectangleAreaFinder::class)
+        private val log = LoggerFactory.getLogger(EmptyRectangleAreaFinder::class)
     }
 
     override fun findAll(partialWorld: MutableWorld): Set<CoordinateRectangle> {
@@ -24,7 +24,7 @@ class EmptyRectangleAreaFinder : AreaFinder {
             rectangles.add(rectangle)
         }
         val duration = System.currentTimeMillis() - start
-        LOG.debug("Found ${rectangles.size} empty rectangles in $duration ms")
+        log.debug("Found ${rectangles.size} empty rectangles in $duration ms")
         return rectangles
     }
 
