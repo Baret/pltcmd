@@ -36,12 +36,14 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         }
     }
 
+    /** Return the number of tiles in the given area that should be plains */
     private fun totalTiles(area: CoordinateArea): Int {
         val plainsRatio = context.plainsRatio
         LOG.debug("Using $plainsRatio of the area for plains")
         return (area.size * plainsRatio).roundToInt()
     }
 
+    /** Searches empty spaces in the given area that can be used for plains (must have the required size) */
     private fun findPlainsLocations(totalPlainsTiles: Int, area: CoordinateArea, mutableWorld: MutableWorld): Set<CoordinateRectangle> {
         // TODO respect area. But currently the area is the full world anyway o_O
         LOG.debug("Finding empty rectangles that span a total of $totalPlainsTiles coordinates")
@@ -58,6 +60,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         return result
     }
 
+    /** Set the [Terrain] in the given rectangle. The edges will randomly fade out to void. */
     private fun generatePlains(emptyRectangle: CoordinateRectangle, mutableWorld: MutableWorld) {
         val plainsHeight = listOf(
                 TerrainHeight.TWO,
@@ -83,6 +86,11 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         }
     }
 
+    /**
+     * Checks if the given coordinate lies in the border of the given rectangle.
+     * If so it determines randomly based on the distance to the edge if it should be empty (faded) or not.
+     * @return true if the given coordinate should not belong to the plains in the rectangle
+     **/
     private fun fadedBorder(coordinate: Coordinate, rectangle: CoordinateRectangle): Boolean {
         val distanceLeft = coordinate.eastingFromLeft - rectangle.bottomLeftCoordinate.eastingFromLeft
         val distanceBottom = coordinate.northingFromBottom - rectangle.bottomLeftCoordinate.northingFromBottom
@@ -99,25 +107,23 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         return rand.nextDouble() <= fadeChance
     }
 
+    /** Returns the chance to fade (not generate something) based on the distance to a border. */
     private fun fade(distance: Int): Double {
         // more distance should have lower chance so invert it
         // +1 to have 100% for the tile beside the border
         return (FADING_BORDER - distance) / (FADING_BORDER + 1.0)
     }
 
+    /**
+     * Defines the part of the given empty rectangle which should be filled as plains.
+     * A normal distributed random number between the minimum and given size will be used for each direction.
+     * A centered rectangle with the determined size will be carved out from the given rectangle.
+     **/
     private fun createPlainsArea(emptyRectangle: CoordinateRectangle): CoordinateRectangle {
         val plainsWidth = randomGauss(emptyRectangle.width)
         val plainsHeight = randomGauss(emptyRectangle.height)
         LOG.debug("Creating plains $plainsWidth x $plainsHeight in area ${emptyRectangle.width} x ${emptyRectangle.height} = $emptyRectangle")
         return centerInRectangle(emptyRectangle, plainsWidth, plainsHeight)
-    }
-
-    private fun centerInRectangle(emptyRectangle: CoordinateRectangle, plainsWidth: Double, plainsHeight: Double): CoordinateRectangle {
-        val halfDeltaWidth = ((emptyRectangle.width - plainsWidth) / 2.0).toInt()
-        val halfDeltaHeight = ((emptyRectangle.height - plainsHeight) / 2.0).toInt()
-        val bottomLeft = emptyRectangle.bottomLeftCoordinate.movedBy(halfDeltaWidth, halfDeltaHeight)
-        val topRight = emptyRectangle.topRightCoordinate.movedBy(-halfDeltaWidth, -halfDeltaHeight)
-        return CoordinateRectangle(bottomLeft, topRight)
     }
 
     /** Returns a normally distributed random value between MIN_WIDTH and given maxValue */
@@ -126,6 +132,14 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         // therefore we use the middle of the range as center for the random values
         val randomValue = utilRandom.nextGaussian() * halfRange + halfRange
         return randomValue.coerceIn(MIN_WIDTH.toDouble(), maxValue.toDouble())
+    }
+
+    /** Creates a rectangle with the given size that is centered in the given rectangle */
+    private fun centerInRectangle(emptyRectangle: CoordinateRectangle, plainsWidth: Double, plainsHeight: Double): CoordinateRectangle {
+        val halfDeltaWidth = ((emptyRectangle.width - plainsWidth) / 2.0).toInt()
+        val halfDeltaHeight = ((emptyRectangle.height - plainsHeight) / 2.0).toInt()
+        val bottomLeft = emptyRectangle.bottomLeftCoordinate.movedBy(halfDeltaWidth, halfDeltaHeight)
+        return CoordinateRectangle(bottomLeft, plainsWidth.toInt(), plainsHeight.toInt())
     }
 
 }
