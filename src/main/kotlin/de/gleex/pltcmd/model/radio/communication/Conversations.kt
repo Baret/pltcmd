@@ -6,14 +6,26 @@ import de.gleex.pltcmd.model.world.Coordinate
 
 object Conversations {
 
+    // Orders
+
     fun moveTo(sender: CallSign, receiver: CallSign, targetLocation: Coordinate) =
+            orderConversation(sender, receiver, "move to $targetLocation", "moving to $targetLocation")
+
+    fun goFirm(sender: CallSign, receiver: CallSign) =
+            orderConversation(sender, receiver, "go fim", "going firm")
+
+    fun engageEnemyAt(sender: CallSign, receiver: CallSign, enemyLocation: Coordinate) =
+            orderConversation(sender, receiver, "engage enemy at $enemyLocation", "engaging enemy at $enemyLocation")
+
+    private fun orderConversation(sender: CallSign, receiver: CallSign, order: String, readback: String) =
             conversation(sender, receiver) {
-                init {
-                    order("move to $targetLocation") {
-                        readback("moving to $targetLocation")
-                    }
-                }
+                genericOrder(
+                        orderMessage = order,
+                        readback = readback
+                )
             }
+
+    // Reports
 
     fun reportPosition(sender: CallSign, receiver: CallSign) =
             conversation(sender, receiver) {
@@ -23,6 +35,8 @@ object Conversations {
                     }
                 }
             }
+
+    // Other conversations
 
     fun standBy(sender: CallSign, receiver: CallSign) =
             // tricky: as we use terminatingRESPONSE we need to flip sender and receiver

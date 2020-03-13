@@ -62,4 +62,15 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
             TRANSMISSION_FORMAT.format(sender, receiver, this, ending(terminating))
         }
     }
+
+    /**
+     * Initializes a conversation and adds the two messages as order and expected readback response.
+     */
+    fun genericOrder(orderMessage: String, readback: String) {
+        init {
+            order(orderMessage) {
+                readback(readback)
+            }
+        }
+    }
 }

@@ -2,14 +2,11 @@ package de.gleex.pltcmd.model.radio.communication
 
 import de.gleex.pltcmd.events.EventBus
 import de.gleex.pltcmd.events.RadioComms
-import de.gleex.pltcmd.events.Ticks
 import de.gleex.pltcmd.events.TransmissionEvent
-import de.gleex.pltcmd.events.ticks.TickEvent
 import de.gleex.pltcmd.events.ticks.Ticker
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.transmissions.*
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.events.api.simpleSubscribeTo
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.*
 import kotlin.random.Random
@@ -24,21 +21,19 @@ class RadioCommunicator(val callSign: CallSign) {
         private val log = LoggerFactory.getLogger(RadioCommunicator::class)
     }
     
-    private  val bus = EventBus.instance
-
     private val transmissionBuffer = TransmissionBuffer()
 
-    private var conversationActiveWith: Maybe<CallSign> = Maybe.empty()
-    private val conversationQueue: LinkedList<Conversation> = LinkedList()
+    var conversationActiveWith: Maybe<CallSign> = Maybe.empty()
+    val conversationQueue: LinkedList<Conversation> = LinkedList()
 
     init {
-        bus.simpleSubscribeTo<TickEvent>(Ticks) { tick ->
+        EventBus.subscribeToTicks { tick ->
             transmissionBuffer.
                 pop(tick.id).
                 ifPresent{ send(it) }
         }
 
-        bus.simpleSubscribeTo<TransmissionEvent>(RadioComms) { event ->
+        EventBus.subscribeToRadioComms { event ->
             if(event.isNotFromMe()) {
                 if (event.isForMe()) {
                     respondTo(event)
@@ -50,7 +45,7 @@ class RadioCommunicator(val callSign: CallSign) {
     }
 
     private fun send(transmission: Transmission) {
-        bus.publish(TransmissionEvent(transmission, callSign), RadioComms)
+        EventBus.publish(TransmissionEvent(transmission, callSign))
     }
 
     private fun respondTo(event: TransmissionEvent) {
