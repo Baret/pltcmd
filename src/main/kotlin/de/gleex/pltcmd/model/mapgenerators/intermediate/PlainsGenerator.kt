@@ -24,7 +24,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
         private const val MIN_WIDTH = 5  // tiles
         private const val MAX_WIDTH = 50 // tiles
         private const val FADING_BORDER = 3 // tiles
-        private const val UNEVENNESS = 0.06 // ratio
+        private const val UNEVENNESS = 0.06 // probability
     }
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
