@@ -9,7 +9,7 @@ import kotlin.random.Random
  */
 data class GenerationContext(
         val vegetation: Double,
-        val hillyness: Double,
+        val hilliness: Double,
         val water: Double,
         val urban: Double
 ) {

@@ -15,16 +15,16 @@ import kotlin.random.Random
  * Creates a number of mountain tops and slowly decreases the terrain around them.
  */
 class MountainTopHeightMapper(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
-    private val MAX_TERRAIN = if(context.hillyness < 0.3) TerrainHeight.MAX - 1 else TerrainHeight.MAX
+    private val MAX_TERRAIN = if(context.hilliness < 0.3) TerrainHeight.MAX - 1 else TerrainHeight.MAX
     private val MIN_TERRAIN = TerrainHeight.FOUR
 
     private val log = LoggerFactory.getLogger(this::class)
 
-    private val mountainTopsPerMainCoordinate: Int = (4.0 * context.hillyness).roundToInt()
+    private val mountainTopsPerMainCoordinate: Int = (4.0 * context.hilliness).roundToInt()
     /**
      * x % of main coordinates are picked to put a mountain in them
      */
-    private val mainCoordinateQuotaForMountains = 0.5 * context.hillyness
+    private val mainCoordinateQuotaForMountains = 0.5 * context.hilliness
     private val steepness = 0.55
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
