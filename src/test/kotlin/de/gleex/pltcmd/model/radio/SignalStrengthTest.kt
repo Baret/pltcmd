@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.radio
 
 import de.gleex.pltcmd.testhelpers.shouldBeExactly
 import io.kotlintest.data.forall
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
 
@@ -35,6 +36,25 @@ class SignalStrengthTest:WordSpec( {
                     row(Double.MIN_VALUE, 0.0)
             ) { signalPower, expectedPercent ->
                 signalPower.toSignalStrength() shouldBeExactly expectedPercent
+            }
+        }
+    }
+
+    "Invalid values" should {
+        "not be allowed" {
+            forall(
+                    row(Double.POSITIVE_INFINITY),
+                    row(Double.MAX_VALUE),
+                    row(1.1),
+                    row(1.00000000000001),
+                    row(-1.0),
+                    row(-0.1),
+                    row(-0.0000000000001),
+                    row(-Double.MIN_VALUE),
+                    row(-1.0 * Double.MAX_VALUE),
+                    row(Double.NEGATIVE_INFINITY)
+            ) { invalidValue ->
+                shouldThrow<IllegalArgumentException> { SignalStrength(invalidValue) }
             }
         }
     }

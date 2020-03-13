@@ -18,7 +18,7 @@ open class RadioSignal(private val power: Double) {
         /**
          * The factor to apply when a signal travels *through* terrain instead of over it
          */
-        const val TERRAIN_LOSS_FACTOR = .70
+        const val GROUND_LOSS_FACTOR = .70
 
         /**
          * The factor to apply when a signal travels through air
@@ -58,7 +58,7 @@ open class RadioSignal(private val power: Double) {
                     // signal travels through the air (above ground)
                     currentHeight > t.height.toDouble() -> signal * AIR_LOSS_FACTOR
                     // signal travels through the ground
-                    currentHeight < t.height.toDouble() -> signal * TERRAIN_LOSS_FACTOR
+                    currentHeight < t.height.toDouble() -> signal * GROUND_LOSS_FACTOR
                     // signal travels along the terrain
                     else                                -> attenuation.reducedAt(signal, t.type)
                 }
