@@ -9,7 +9,9 @@ import io.kotlintest.specs.StringSpec
 
 class SizedEmptyRectangleAreaFinderTest : StringSpec({
     val origin = Coordinate(0, 950)
-    val emptyWorld = MutableWorld(origin)
+    val worldWidth = Sector.TILE_COUNT
+    val worldHeight = Sector.TILE_COUNT
+    val emptyWorld = MutableWorld(origin, worldWidth, worldHeight)
 
     "empty world must contain a maximum size rectangle and three remainders" {
         val minWidth = 2
@@ -23,13 +25,13 @@ class SizedEmptyRectangleAreaFinderTest : StringSpec({
                         origin.movedBy(maxWidth - 1, maxHeight - 1)),
                 CoordinateRectangle(
                         origin.withRelativeEasting(maxWidth),
-                        origin.movedBy(Sector.TILE_COUNT - 1, maxHeight - 1)),
+                        origin.movedBy(worldWidth - 1, maxHeight - 1)),
                 CoordinateRectangle(
                         origin.withRelativeNorthing(maxHeight),
-                        origin.movedBy(maxWidth - 1, Sector.TILE_COUNT - 1)),
+                        origin.movedBy(maxWidth - 1, worldHeight - 1)),
                 CoordinateRectangle(
                         origin.withRelativeEasting(maxWidth).withRelativeNorthing(maxHeight),
-                        origin.movedBy(Sector.TILE_COUNT - 1, Sector.TILE_COUNT - 1))
+                        origin.movedBy(worldWidth - 1, worldHeight - 1))
         )
     }
 
