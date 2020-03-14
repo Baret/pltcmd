@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.model.world.WorldTile
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Position3D
@@ -42,12 +43,16 @@ class GameWorld(private val worldMap: WorldMap):
         log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = $visibleSize")
     }
 
-    private fun putSector(sector: Sector) {
+    fun putSector(sector: Sector) {
         sector.tiles.forEach {
-            val position = it.coordinate.toPosition()
-            val block = MapBlock(it.terrain)
-            setBlockAt(position, block)
+            putTile(it)
         }
+    }
+
+    fun putTile(it: WorldTile) {
+        val position = it.coordinate.toPosition()
+        val block = MapBlock(it.terrain)
+        setBlockAt(position, block)
     }
 
     /** Returns the [Coordinate] of the [Tile] that is visible in the top left corner. */

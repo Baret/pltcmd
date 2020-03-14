@@ -3,12 +3,19 @@ package de.gleex.pltcmd
 import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.game.TileRepository
 import de.gleex.pltcmd.model.mapgenerators.WorldMapGenerator
+import de.gleex.pltcmd.model.world.Coordinate
+import de.gleex.pltcmd.model.world.Sector
+import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.GameView
-import de.gleex.pltcmd.ui.LoadingView
+import de.gleex.pltcmd.ui.GeneratingView
+import de.gleex.pltcmd.ui.TitleView
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
+import org.hexworks.zircon.api.grid.TileGrid
+import org.hexworks.zircon.api.screen.Screen
+import java.lang.Thread.sleep
 
 fun main() {
 
@@ -16,10 +23,9 @@ fun main() {
     val tileGrid = application.tileGrid
     val screen = tileGrid.toScreen()
 
-    screen.dock(LoadingView(tileGrid))
+    showTitle(screen, tileGrid)
 
-    val worldMap = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED).generateWorld()
-    val gameWorld = GameWorld(worldMap)
+    val gameWorld = generateMap(screen, tileGrid)
     screen.dock(GameView(gameWorld, tileGrid))
 
     // testing display of units
@@ -28,4 +34,25 @@ fun main() {
         val randomPosition = visibleBlocks.random()
         randomPosition.second.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
     }
+}
+
+private fun showTitle(screen: Screen, tileGrid: TileGrid) {
+    screen.dock(TitleView(tileGrid))
+    sleep(1500)
+}
+
+private fun generateMap(screen: Screen, tileGrid: TileGrid): GameWorld {
+    val origin = Coordinate(0, 0)
+    val mapGenerator = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED)
+
+    screen.dock(createPreview(origin, mapGenerator, tileGrid))
+
+    val worldMap = mapGenerator.generateWorld(origin)
+    return GameWorld(worldMap)
+}
+
+private fun createPreview(origin: Coordinate, mapGenerator: WorldMapGenerator, tileGrid: TileGrid): GeneratingView {
+    val emptyMap = WorldMap(setOf(Sector.createEmpty(origin)))
+    val previewWorld = GameWorld(emptyMap)
+    return GeneratingView(previewWorld, tileGrid)
 }

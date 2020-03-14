@@ -7,14 +7,14 @@ import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.view.base.BaseView
 
-class LoadingView(val tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
+/** Displays the title of the game. */
+class TitleView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     override fun onDock() {
         val panel = Components.panel()
-                .withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT)
+                .withSize(screen.width, screen.height)
                 .build()
         addTitle(panel)
-        addLoading(panel)
         screen.addComponent(panel)
     }
 
@@ -24,14 +24,6 @@ class LoadingView(val tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, ti
                 .withAlignmentWithin(panel, ComponentAlignment.CENTER)
                 .build()
         panel.addComponent(title)
-    }
-
-    private fun addLoading(panel: Panel) {
-        val loading = Components.label()
-                .withText("Generating world...")
-                .withAlignmentWithin(panel, ComponentAlignment.BOTTOM_CENTER)
-                .build()
-        panel.addComponent(loading)
     }
 
 }

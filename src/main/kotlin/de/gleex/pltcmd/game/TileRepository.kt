@@ -27,12 +27,12 @@ object TileRepository {
 
     }
 
-    fun createTerrainTile(terrain: Terrain): Tile =
+    fun createTerrainTile(terrain: Terrain?): Tile =
             Tile.
                 newBuilder().
-                withForegroundColor(ColorRepository.forType(terrain.type)).
-                withBackgroundColor(ColorRepository.forHeight(terrain.height)).
-                withCharacter(terrain.type.char()).
+                withForegroundColor(ColorRepository.forType(terrain?.type)).
+                withBackgroundColor(ColorRepository.forHeight(terrain?.height)).
+                withCharacter(terrain?.type?.char() ?: Symbols.INVERTED_QUESTION_MARK).
                 buildCharacterTile()
 
     private fun TerrainType.char() = when (this) {

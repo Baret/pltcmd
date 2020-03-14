@@ -7,6 +7,17 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
     companion object {
         /** edge length of a sector (in each directon of the map rectangle) */
         const val TILE_COUNT = 50
+
+        /** Creates a [Sector] at the given origin without terrain. */
+        fun createEmpty(origin: Coordinate): Sector {
+            val tiles = mutableSetOf<WorldTile>()
+            for (y in 0 until TILE_COUNT) {
+                for (x in 0 until TILE_COUNT) {
+                    tiles.add(WorldTile(Coordinate(x, y), null))
+                }
+            }
+            return Sector(origin, tiles)
+        }
     }
 
     init {

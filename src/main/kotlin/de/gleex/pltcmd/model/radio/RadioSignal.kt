@@ -40,12 +40,12 @@ open class RadioSignal(private val power: Double) {
      * A final power >= 100 means full strength of 100%, lower values equal the percentage value
      * (i.e. signalPower of 80 -> 80% -> 0.80).
      */
-    fun along(terrain: List<Terrain>): SignalStrength {
+    fun along(terrain: List<Terrain?>): SignalStrength {
         if(terrain.size <= 1) {
             return power.toSignalStrength()
         }
-        val startHeight = terrain.first().height
-        val targetHeight = terrain.last().height
+        val startHeight = terrain.first()?.height ?: TerrainHeight.TEN
+        val targetHeight = terrain.last()?.height ?: TerrainHeight.ONE
         val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrain.size.toDouble()
         var signal = power
         terrain.
@@ -55,6 +55,8 @@ open class RadioSignal(private val power: Double) {
                 // currentHeight (y) = mx + b
                 val currentHeight = floor(slope * (index + 1) + startHeight.toDouble())
                 signal = when {
+                    // signal travels through the void (not yet generated terrain)
+                    t == null -> signal
                     // signal travels through the air (above ground)
                     currentHeight > t.height.toDouble() -> signal * AIR_LOSS_FACTOR
                     // signal travels through the ground
