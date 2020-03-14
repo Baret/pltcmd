@@ -30,31 +30,35 @@ object ColorRepository {
     /**
      * Creates a [TileColor] for the given [TerrainHeight] to be used as background color for tiles.
      */
-    fun forHeight(height: TerrainHeight?): TileColor = when (height) {
-        TerrainHeight.ONE   -> MAX_HEIGHT.darkenByPercent(0.9)
-        TerrainHeight.TWO   -> MAX_HEIGHT.darkenByPercent(0.8)
-        TerrainHeight.THREE -> MAX_HEIGHT.darkenByPercent(0.7)
-        TerrainHeight.FOUR  -> MAX_HEIGHT.darkenByPercent(0.6)
-        TerrainHeight.FIVE  -> MAX_HEIGHT.darkenByPercent(0.5)
-        TerrainHeight.SIX   -> MAX_HEIGHT.darkenByPercent(0.4)
-        TerrainHeight.SEVEN -> MAX_HEIGHT.darkenByPercent(0.3)
-        TerrainHeight.EIGHT -> MAX_HEIGHT.darkenByPercent(0.2)
-        TerrainHeight.NINE  -> MAX_HEIGHT.darkenByPercent(0.1)
-        TerrainHeight.TEN   -> MAX_HEIGHT
-        else                -> TileColor.defaultForegroundColor() // inverted intentionally for highlighting
+    fun forHeight(height: TerrainHeight?): TileColor {
+        if (height == null) return TileColor.defaultForegroundColor() // inverted intentionally for highlighting
+        return when (height) {
+            TerrainHeight.ONE   -> MAX_HEIGHT.darkenByPercent(0.9)
+            TerrainHeight.TWO   -> MAX_HEIGHT.darkenByPercent(0.8)
+            TerrainHeight.THREE -> MAX_HEIGHT.darkenByPercent(0.7)
+            TerrainHeight.FOUR  -> MAX_HEIGHT.darkenByPercent(0.6)
+            TerrainHeight.FIVE  -> MAX_HEIGHT.darkenByPercent(0.5)
+            TerrainHeight.SIX   -> MAX_HEIGHT.darkenByPercent(0.4)
+            TerrainHeight.SEVEN -> MAX_HEIGHT.darkenByPercent(0.3)
+            TerrainHeight.EIGHT -> MAX_HEIGHT.darkenByPercent(0.2)
+            TerrainHeight.NINE  -> MAX_HEIGHT.darkenByPercent(0.1)
+            TerrainHeight.TEN   -> MAX_HEIGHT
+        }
     }
 
     /**
      * Creates a [TileColor] for the given [TerrainType] to be used as foreground color for terrain tiles.
      */
-    fun forType(type: TerrainType?): TileColor = when (type) {
-        TerrainType.GRASSLAND     -> TileColor.create(95, 169, 51)
-        TerrainType.FOREST        -> TileColor.create(35, 104, 10)
-        TerrainType.HILL          -> TileColor.create(121, 77, 33)
-        TerrainType.MOUNTAIN      -> TileColor.create(112, 107, 102)
-        TerrainType.WATER_DEEP    -> TileColor.create(0, 0, 102)
-        TerrainType.WATER_SHALLOW -> TileColor.create(40, 109, 222)
-        else                      -> TileColor.defaultBackgroundColor() // inverted intentionally for highlighting
+    fun forType(type: TerrainType?): TileColor {
+        if (type == null) return TileColor.defaultBackgroundColor() // inverted intentionally for highlighting
+        return when (type) {
+            TerrainType.GRASSLAND     -> TileColor.create(95, 169, 51)
+            TerrainType.FOREST        -> TileColor.create(35, 104, 10)
+            TerrainType.HILL          -> TileColor.create(121, 77, 33)
+            TerrainType.MOUNTAIN      -> TileColor.create(112, 107, 102)
+            TerrainType.WATER_DEEP    -> TileColor.create(0, 0, 102)
+            TerrainType.WATER_SHALLOW -> TileColor.create(40, 109, 222)
+        }
     }
 
     fun radioColor(signalStrength: SignalStrength) = TileColor.create(
