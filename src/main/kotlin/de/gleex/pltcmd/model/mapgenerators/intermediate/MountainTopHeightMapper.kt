@@ -88,11 +88,9 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         val pickedLocations = mutableSetOf<Coordinate>()
         pickedAreas.forEach { mainCoordinate ->
             for(i in 0 until mountainTopsPerMainCoordinate)
-            pickedLocations.add(
-                    mainCoordinate.
-                            toCoordinate().
-                            withRelativeEasting(rand.nextInt(100)).
-                            withRelativeNorthing(rand.nextInt(100)))
+                pickedLocations.add(
+                        mainCoordinate.toCoordinate()
+                                .movedBy(rand.nextInt(100), rand.nextInt(100)))
         }
         log.debug("Found ${pickedLocations.size} mountain top locations: ${pickedLocations.sorted()}")
         return pickedLocations.toSet()
