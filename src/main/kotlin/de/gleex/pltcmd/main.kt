@@ -11,9 +11,9 @@ import org.hexworks.zircon.api.extensions.toScreen
 
 fun main() {
 
-    val worldMap = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED).generateWorld()
-
     val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
+
+    val worldMap = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED).generateWorld()
     val gameWorld = GameWorld(worldMap)
     val tileGrid = application.tileGrid
     val screen = tileGrid.toScreen()
