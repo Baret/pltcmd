@@ -34,23 +34,30 @@ class WorldMapGenerator(
             RandomTerrainFiller(random, context)
     )
 
-    fun generateWorld(bottomLeftCoordinate: Coordinate = Coordinate(0, 0)): WorldMap {
+    val sizeInTiles = worldWidthInTiles * worldHeightInTiles
+
+    fun generateWorld(bottomLeftCoordinate: Coordinate = Coordinate(0, 0), listener: MapGenerationListener? = null): WorldMap {
         val partiallyGeneratedWorld = MutableWorld(bottomLeftCoordinate, worldWidthInTiles, worldHeightInTiles)
-        log.info("Generating a random world with seed $seed of $worldWidthInTiles * $worldHeightInTiles = ${worldWidthInTiles * worldHeightInTiles} tiles between $bottomLeftCoordinate and ${partiallyGeneratedWorld.topRightCoordinate} with $context")
+        if (listener != null) partiallyGeneratedWorld.addListener(listener)
+        try {
+            log.info("Generating a random world with seed $seed of $worldWidthInTiles * $worldHeightInTiles = ${worldWidthInTiles * worldHeightInTiles} tiles between $bottomLeftCoordinate and ${partiallyGeneratedWorld.topRightCoordinate} with $context")
 
-        val started = System.currentTimeMillis()
+            val started = System.currentTimeMillis()
 
-        val fullMapArea = CoordinateRectangle(bottomLeftCoordinate, partiallyGeneratedWorld.topRightCoordinate)
-        generators.forEach {
-            // There could also be a context for each MainCoordinate to have some kind of "biomes" (which could actually be introduced later).
-            val intermediateStarted = System.currentTimeMillis()
-            it.generateArea(
-                    fullMapArea,
-                    partiallyGeneratedWorld)
-            log.debug("Generator ${it::class.simpleName} took ${System.currentTimeMillis() - intermediateStarted} ms")
+            val fullMapArea = CoordinateRectangle(bottomLeftCoordinate, partiallyGeneratedWorld.topRightCoordinate)
+            generators.forEach {
+                // There could also be a context for each MainCoordinate to have some kind of "biomes" (which could actually be introduced later).
+                val intermediateStarted = System.currentTimeMillis()
+                it.generateArea(
+                        fullMapArea,
+                        partiallyGeneratedWorld)
+                log.debug("Generator ${it::class.simpleName} took ${System.currentTimeMillis() - intermediateStarted} ms")
+            }
+            val generationTime = System.currentTimeMillis() - started
+            log.info("Map generation with seed $seed took $generationTime ms")
+            return partiallyGeneratedWorld.toWorldMap()
+        } finally {
+            if (listener != null) partiallyGeneratedWorld.removeListener(listener)
         }
-        val generationTime = System.currentTimeMillis() - started
-        log.info("Map generation with seed $seed took $generationTime ms")
-        return partiallyGeneratedWorld.toWorldMap()
     }
 }

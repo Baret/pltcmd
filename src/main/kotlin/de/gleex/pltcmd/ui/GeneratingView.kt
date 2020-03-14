@@ -18,10 +18,12 @@ import org.hexworks.zircon.api.view.base.BaseView
 /** Displays the progress of world generation. A miniature of the world is shown together with a progress bar. */
 class GeneratingView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
+    private val progressBar = createProgressBar()
+    val progressProperty = progressBar.progressProperty
+
     override fun onDock() {
         val header = createHeader()
         val mainPart = createMainPart()
-        val progressBar = createProgressBar()
 
         screen.addComponents(header, mainPart, progressBar)
     }

@@ -45,13 +45,15 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid): GameWorld {
     val origin = Coordinate(0, 0)
     val mapGenerator = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED)
 
-    screen.dock(createPreview(origin, mapGenerator, tileGrid))
+    val generatingView = createPreview(origin, tileGrid)
+    screen.dock(generatingView)
 
-    val worldMap = mapGenerator.generateWorld(origin)
+    val progressListener = ProgressListener(mapGenerator.sizeInTiles, 100.0, generatingView.progressProperty) // 100.0 is the default of ProgressBar
+    val worldMap = mapGenerator.generateWorld(origin, progressListener)
     return GameWorld(worldMap)
 }
 
-private fun createPreview(origin: Coordinate, mapGenerator: WorldMapGenerator, tileGrid: TileGrid): GeneratingView {
+private fun createPreview(origin: Coordinate, tileGrid: TileGrid): GeneratingView {
     val emptyMap = WorldMap(setOf(Sector.createEmpty(origin)))
     val previewWorld = GameWorld(emptyMap)
     return GeneratingView(previewWorld, tileGrid)

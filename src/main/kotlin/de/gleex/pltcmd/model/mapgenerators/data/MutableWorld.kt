@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.mapgenerators.data
 
+import de.gleex.pltcmd.model.mapgenerators.MapGenerationListener
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
@@ -20,6 +21,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
     val topRightCoordinate = bottomLeftCoordinate.movedBy(worldSizeWidthInTiles - 1, worldSizeHeightInTiles - 1)
 
     private val completeArea: CoordinateRectangle
+    private val listeners = mutableSetOf<MapGenerationListener>()
 
     /**
      * The set of all [MainCoordinate]s contained in the area of this world.
@@ -98,24 +100,39 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
      * Puts both the [TerrainHeight] and the [TerrainType] of the given [Coordinate] to the values of the given [Terrain].
      */
     operator fun set(coordinate: Coordinate, terrain: Terrain) {
-        requireInBounds(coordinate)
-        terrainMap[coordinate] = Pair(terrain.height, terrain.type)
+        set(coordinate, terrain.height, terrain.type)
     }
 
     /**
      * Puts the [TerrainHeight] at the given [Coordinate] to the given value and keeps the [TerrainType].
      */
     operator fun set(coordinate: Coordinate, terrainHeight: TerrainHeight) {
-        requireInBounds(coordinate)
-        terrainMap[coordinate] = Pair(terrainHeight, terrainMap[coordinate]?.second)
+        set(coordinate, terrainHeight, terrainMap[coordinate]?.second)
     }
 
     /**
      * Puts the [TerrainType] at the given [Coordinate] to the given value and keeps the [TerrainHeight].
      */
     operator fun set(coordinate: Coordinate, terrainType: TerrainType) {
+        set(coordinate, terrainMap[coordinate]?.first, terrainType)
+    }
+
+    private fun set(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         requireInBounds(coordinate)
-        terrainMap[coordinate] = Pair(terrainMap[coordinate]?.first, terrainType)
+        terrainMap[coordinate] = Pair(terrainHeight, terrainType)
+        fireChange(coordinate, terrainHeight, terrainType)
+    }
+
+    private fun fireChange(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
+        listeners.forEach { it.terrainGenerated(coordinate, terrainHeight, terrainType) }
+    }
+
+    fun addListener(listener: MapGenerationListener) {
+        listeners.add(listener)
+    }
+
+    fun removeListener(listener: MapGenerationListener) {
+        listeners.remove(listener)
     }
 
     /**
