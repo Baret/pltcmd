@@ -5,22 +5,21 @@ import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.*
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import java.util.*
 
 /**
  * A world that is currently being generated. When created it has a size but none of its tiles are filled yet.
  * It is a data container for coordinates and their corresponding terrain heights and types but also provides
  * helpful methods for IntermediateGenerators.
  */
-class MutableWorld(val bottomLeftCoordinate: Coordinate,
-                   val worldSizeWidthInTiles: Int,
-                   val worldSizeHeightInTiles: Int) {
+class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
+                   val worldSizeWidthInTiles: Int = Sector.TILE_COUNT,
+                   val worldSizeHeightInTiles: Int = Sector.TILE_COUNT) {
 
     private val terrainMap = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
-    val topRightCoordinate = bottomLeftCoordinate.
-            withRelativeEasting(worldSizeWidthInTiles - 1).
-            withRelativeNorthing(worldSizeHeightInTiles - 1)
+    val topRightCoordinate = bottomLeftCoordinate.movedBy(worldSizeWidthInTiles - 1, worldSizeHeightInTiles - 1)
 
-    private val completeArea: CoordinateArea
+    private val completeArea: CoordinateRectangle
 
     /**
      * The set of all [MainCoordinate]s contained in the area of this world.
@@ -58,7 +57,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
                 && worldSizeHeightInTiles % Sector.TILE_COUNT == 0) {
             "Only full sectors may fit in the world dimensions ($worldSizeWidthInTiles by $worldSizeHeightInTiles tiles is not valid)."
         }
-        completeArea = CoordinateArea(bottomLeftCoordinate..topRightCoordinate)
+        completeArea = CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
     }
 
     /**
@@ -99,6 +98,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
      * Puts both the [TerrainHeight] and the [TerrainType] of the given [Coordinate] to the values of the given [Terrain].
      */
     operator fun set(coordinate: Coordinate, terrain: Terrain) {
+        requireInBounds(coordinate)
         terrainMap[coordinate] = Pair(terrain.height, terrain.type)
     }
 
@@ -106,6 +106,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
      * Puts the [TerrainHeight] at the given [Coordinate] to the given value and keeps the [TerrainType].
      */
     operator fun set(coordinate: Coordinate, terrainHeight: TerrainHeight) {
+        requireInBounds(coordinate)
         terrainMap[coordinate] = Pair(terrainHeight, terrainMap[coordinate]?.second)
     }
 
@@ -113,6 +114,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
      * Puts the [TerrainType] at the given [Coordinate] to the given value and keeps the [TerrainHeight].
      */
     operator fun set(coordinate: Coordinate, terrainType: TerrainType) {
+        requireInBounds(coordinate)
         terrainMap[coordinate] = Pair(terrainMap[coordinate]?.first, terrainType)
     }
 
@@ -140,12 +142,29 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate,
 
     /**
      * Returns all [Coordinate]s in the given area (default is the complete world) that match the given predicate (and are already present).
+     * The result is sorted to easily traverse connected parts.
      */
-    fun find(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): Set<Coordinate> {
+    fun find(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): SortedSet<Coordinate> {
         return terrainMap.keys.
                 filter { it in area }.
                 filter(predicate).
-                toSet()
+                toSortedSet()
+    }
+
+    /**
+     * Returns all [Coordinate]s in the given area (default is the complete world) that match the given predicate that are not set in this world.
+     * The result is sorted to easily traverse connected parts.
+     */
+    fun findEmpty(area: CoordinateArea = completeArea, predicate: (Coordinate) -> Boolean = {true}): SortedSet<Coordinate> {
+        val empty = area - terrainMap.keys
+        return empty.
+                filter { it in area }.
+                filter(predicate).
+                toSortedSet()
+    }
+
+    private fun requireInBounds(coordinate: Coordinate) {
+        require(isInBounds(coordinate)) { "Coordinate $coordinate is not inside this world $completeArea" }
     }
 
     /**

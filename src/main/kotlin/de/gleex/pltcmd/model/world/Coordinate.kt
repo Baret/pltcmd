@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.model.world
 
+import java.util.*
+
 /**
  * A location on the map. The map is a rectangle and each coordinate describes the distance (in hundreds of
  * meters) to its origin. A coordinate has two components: The distance to the north or up from the bottom
@@ -19,6 +21,9 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     /** Creates a new [Coordinate] that is moved by the given amount to the north from this coordinate */
     fun withRelativeNorthing(toNorth: Int) = withNorthing(northingFromBottom + toNorth)
 
+    /** Creates a new [Coordinate] that is moved by the given amount to the east and north from this coordinate */
+    fun movedBy(toEast: Int, toNorth: Int) = Coordinate(eastingFromLeft + toEast, northingFromBottom + toNorth)
+
     /** Creates a new [Coordinate] with the given easting and keeping this northing */
     fun withEasting(newEasting: Int) = Coordinate(newEasting, northingFromBottom)
 
@@ -33,6 +38,26 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
             withRelativeNorthing(1)
     )
 
+    /** Checks if the given coordinate is the direct successor in the horizontal coordinate */
+    fun isEastNeighborOf(previous: Coordinate): Boolean {
+        return previous.eastingFromLeft + 1 == eastingFromLeft && northingFromBottom == previous.northingFromBottom
+    }
+
+    /** Checks if the given coordinate is the direct predecessor in the horizontal coordinate */
+    fun isWestNeighborOf(next: Coordinate): Boolean {
+        return next.eastingFromLeft == eastingFromLeft + 1 && northingFromBottom == next.northingFromBottom
+    }
+
+    /** Checks if the given coordinate is the direct successor in the horizontal coordinate */
+    fun isNorthNeighborOf(below: Coordinate): Boolean {
+        return below.eastingFromLeft == eastingFromLeft && northingFromBottom == below.northingFromBottom + 1
+    }
+
+    /** Checks if the given coordinate is the direct predecessor in the horizontal coordinate */
+    fun isSouthNeighborOf(above: Coordinate): Boolean {
+        return above.eastingFromLeft == eastingFromLeft && northingFromBottom + 1 == above.northingFromBottom
+    }
+
     /**
      * Sort from most south-west to most north-east. Going line wise first east and then north.
      * Example: 2|2, 3|2, 1|3
@@ -46,7 +71,7 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     }
 
     operator fun rangeTo(other: Coordinate): Progression {
-        val values = mutableListOf<Coordinate>()
+        val values: SortedSet<Coordinate> = TreeSet()
         val northingRange = if(northingFromBottom <= other.northingFromBottom) {
                 northingFromBottom..other.northingFromBottom
             } else {
@@ -84,10 +109,11 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         const val FORMAT_NEGATIVE = "%04d"
     }
 
-    class Progression(private val coordinates: List<Coordinate>): Iterable<Coordinate> {
+    class Progression(private val coordinates: SortedSet<Coordinate>): Iterable<Coordinate> {
         override fun iterator(): Iterator<Coordinate> {
             return coordinates.iterator()
         }
 
+        fun toSortedSet(): SortedSet<Coordinate> = Collections.unmodifiableSortedSet(coordinates)
     }
 }

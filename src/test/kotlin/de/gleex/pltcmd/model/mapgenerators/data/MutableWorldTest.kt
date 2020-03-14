@@ -1,9 +1,11 @@
 package de.gleex.pltcmd.model.mapgenerators.data
 
 import de.gleex.pltcmd.model.world.Coordinate
-import de.gleex.pltcmd.model.world.Sector
+import de.gleex.pltcmd.model.world.CoordinateRectangle
 import io.kotlintest.data.suspend.forall
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
 
@@ -20,8 +22,7 @@ class MutableWorldTest: WordSpec()
     private val southBorder = listOf(west(), north(), east())
 
     init {
-        val bottomLeftCoordinate = Coordinate(0, 0)
-        val world = MutableWorld(bottomLeftCoordinate, Sector.TILE_COUNT, Sector.TILE_COUNT)
+        val world = MutableWorld()
         "A world from ${world.bottomLeftCoordinate} to ${world.topRightCoordinate} of size ${world.worldSizeWidthInTiles} by ${world.worldSizeHeightInTiles} tiles" should {
             forall(
                     // SW corner
@@ -57,6 +58,14 @@ class MutableWorldTest: WordSpec()
                 "have ${validNeighbors.size} neighbors at $c" {
                     world.neighborsOf(c) shouldContainExactlyInAnyOrder validNeighbors
                 }
+            }
+            "find no present coordinates" {
+                world.find() shouldHaveSize 0
+            }
+            "find all coordinates as empty" {
+                val emptyCoordinates = world.findEmpty()
+                emptyCoordinates shouldBe CoordinateRectangle(world.bottomLeftCoordinate, world.topRightCoordinate).toSet()
+                emptyCoordinates shouldHaveSize world.worldSizeWidthInTiles * world.worldSizeHeightInTiles
             }
         }
     }

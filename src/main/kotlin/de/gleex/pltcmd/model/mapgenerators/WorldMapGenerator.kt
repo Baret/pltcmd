@@ -28,6 +28,7 @@ class WorldMapGenerator(
 
             MountainTopHeightMapper(random, context),
             RiverTyper(random, context),
+            PlainsGenerator(random, context),
             HeightFiller(random, context),
             TypeFiller(random, context),
             RandomTerrainFiller(random, context)
@@ -35,7 +36,7 @@ class WorldMapGenerator(
 
     fun generateWorld(bottomLeftCoordinate: Coordinate = Coordinate(0, 0)): WorldMap {
         val partiallyGeneratedWorld = MutableWorld(bottomLeftCoordinate, worldWidthInTiles, worldHeightInTiles)
-        log.info("Generating a random world with seed $seed of $worldWidthInTiles * $worldHeightInTiles = ${worldWidthInTiles * worldHeightInTiles} tiles between $bottomLeftCoordinate and ${partiallyGeneratedWorld.topRightCoordinate}")
+        log.info("Generating a random world with seed $seed of $worldWidthInTiles * $worldHeightInTiles = ${worldWidthInTiles * worldHeightInTiles} tiles between $bottomLeftCoordinate and ${partiallyGeneratedWorld.topRightCoordinate} with $context")
 
         val started = System.currentTimeMillis()
 
