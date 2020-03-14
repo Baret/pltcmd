@@ -13,19 +13,23 @@ import org.hexworks.zircon.api.extensions.toScreen
 fun main() {
 
     val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
-    val tileGrid = application.tileGrid
-    val screen = tileGrid.toScreen()
+    try {
+        val tileGrid = application.tileGrid
+        val screen = tileGrid.toScreen()
 
-    screen.dock(LoadingView(tileGrid))
+        screen.dock(LoadingView(tileGrid))
 
-    val worldMap = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED).generateWorld()
-    val gameWorld = GameWorld(worldMap)
-    screen.dock(GameView(gameWorld, tileGrid))
+        val worldMap = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED).generateWorld()
+        val gameWorld = GameWorld(worldMap)
+        screen.dock(GameView(gameWorld, tileGrid))
 
-    // testing display of units
-    val visibleBlocks = gameWorld.visibleBlocks.toList()
-    repeat(20) {
-        val randomPosition = visibleBlocks.random()
-        randomPosition.second.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
+        // testing display of units
+        val visibleBlocks = gameWorld.visibleBlocks.toList()
+        repeat(20) {
+            val randomPosition = visibleBlocks.random()
+            randomPosition.second.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
+        }
+    } finally {
+        application.stop()
     }
 }
