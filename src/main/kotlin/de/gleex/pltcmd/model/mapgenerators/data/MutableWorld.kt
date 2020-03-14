@@ -7,6 +7,7 @@ import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.*
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.*
+import java.util.concurrent.Executors
 
 /**
  * A world that is currently being generated. When created it has a size but none of its tiles are filled yet.
@@ -22,6 +23,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
 
     private val completeArea: CoordinateRectangle
     private val listeners = mutableSetOf<MapGenerationListener>()
+    private val eventExecutor = Executors.newSingleThreadExecutor() // single thread for sequential events
 
     /**
      * The set of all [MainCoordinate]s contained in the area of this world.
@@ -124,7 +126,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
     }
 
     private fun fireChange(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
-        listeners.forEach { it.terrainGenerated(coordinate, terrainHeight, terrainType) }
+        eventExecutor.execute { listeners.forEach { it.terrainGenerated(coordinate, terrainHeight, terrainType) } }
     }
 
     fun addListener(listener: MapGenerationListener) {
