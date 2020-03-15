@@ -12,7 +12,7 @@ import java.util.*
 import java.util.stream.Collectors
 
 /** Shows the current state of the world in a single sector while the map is beeing generated. */
-class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: Int, val previewWorld: GameWorld) : MapGenerationListener {
+class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: Int, private val previewWorld: GameWorld) : MapGenerationListener {
     private val tilesPerPreviewWidth = generatedWorldWidth / (1 * Sector.TILE_COUNT)
     private val tilesPerPreviewHeight = generatedWorldHeight / (1 * Sector.TILE_COUNT)
 
@@ -22,7 +22,7 @@ class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: 
         val previewCoordinate = mapToPreview(coordinate)
 
         val terrainData = averageTerrainMap.getOrPut(previewCoordinate, { AverageTerrain() })
-        terrainData.mappedTiles.put(coordinate, Pair(terrainHeight, terrainType))
+        terrainData.mappedTiles[coordinate] = Pair(terrainHeight, terrainType)
 
         val averageTerrain = terrainData.createTerrain()
         previewWorld.putTile(WorldTile(coordinate, averageTerrain))
@@ -40,6 +40,7 @@ class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: 
 /** Holds all real world data that is mapped onto a single preview tile */
 data class AverageTerrain(val mappedTiles: MutableMap<Coordinate, Pair<TerrainHeight?, TerrainType?>> = mutableMapOf()) {
 
+    @Suppress("MemberVisibilityCanBePrivate")
     fun getAverageHeight(): TerrainHeight? {
         val average = mappedTiles.values.stream()
                 .filter { it.first != null }
@@ -52,6 +53,7 @@ data class AverageTerrain(val mappedTiles: MutableMap<Coordinate, Pair<TerrainHe
         return TerrainHeight.ofValue(averageHeightValue)
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     fun getDominatingType(): TerrainType? {
         return mappedTiles.values.stream()
                 .map { it.second }                  // get TerrainType
@@ -66,7 +68,7 @@ data class AverageTerrain(val mappedTiles: MutableMap<Coordinate, Pair<TerrainHe
         val averageHeight = getAverageHeight()
         val dominatingType = getDominatingType()
         if (averageHeight == null && dominatingType == null) {
-            return null;
+            return null
         }
         val type = dominatingType ?: TerrainType.WATER_DEEP
         val height = averageHeight ?: TerrainHeight.MIN
