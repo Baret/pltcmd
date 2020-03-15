@@ -20,6 +20,8 @@ enum class TerrainHeight(val value: Int): Comparable<TerrainHeight> {
     companion object {
         fun random(r: Random = Random) = values().random(r)
 
+        fun ofValue(heightValue: Int) = values().find { it.value == heightValue }
+
         /**
          * The highest possible terrain
          */

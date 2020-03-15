@@ -15,8 +15,8 @@ import kotlin.random.Random
  */
 class WorldMapGenerator(
         private val seed: Long,
-        private val worldWidthInTiles: Int = GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT,
-        private val worldHeightInTiles: Int = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
+        val worldWidthInTiles: Int = GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT,
+        val worldHeightInTiles: Int = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
 ) {
     private val random = Random(seed)
     private val context = GenerationContext.fromRandom(random)
@@ -36,9 +36,9 @@ class WorldMapGenerator(
 
     val sizeInTiles = worldWidthInTiles * worldHeightInTiles
 
-    fun generateWorld(bottomLeftCoordinate: Coordinate = Coordinate(0, 0), listener: MapGenerationListener? = null): WorldMap {
+    fun generateWorld(bottomLeftCoordinate: Coordinate = Coordinate(0, 0), vararg listeners: MapGenerationListener): WorldMap {
         val partiallyGeneratedWorld = MutableWorld(bottomLeftCoordinate, worldWidthInTiles, worldHeightInTiles)
-        if (listener != null) partiallyGeneratedWorld.addListener(listener)
+        listeners.forEach(partiallyGeneratedWorld::addListener)
         try {
             log.info("Generating a random world with seed $seed of $worldWidthInTiles * $worldHeightInTiles = ${worldWidthInTiles * worldHeightInTiles} tiles between $bottomLeftCoordinate and ${partiallyGeneratedWorld.topRightCoordinate} with $context")
 
@@ -57,7 +57,7 @@ class WorldMapGenerator(
             log.info("Map generation with seed $seed took $generationTime ms")
             return partiallyGeneratedWorld.toWorldMap()
         } finally {
-            if (listener != null) partiallyGeneratedWorld.removeListener(listener)
+            listeners.forEach(partiallyGeneratedWorld::addListener)
         }
     }
 }

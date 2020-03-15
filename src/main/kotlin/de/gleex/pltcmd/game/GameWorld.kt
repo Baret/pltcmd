@@ -35,7 +35,7 @@ class GameWorld(private val worldMap: WorldMap):
         private val log = LoggerFactory.getLogger(GameWorld::class)
     }
 
-    private val topLeftOffset: Position
+    val topLeftOffset: Position
             get() = worldMap.getTopLeftOffset()
 
     init {
