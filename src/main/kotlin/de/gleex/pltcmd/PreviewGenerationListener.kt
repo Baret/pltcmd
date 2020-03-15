@@ -46,7 +46,7 @@ data class AverageTerrain(val mappedTiles: MutableMap<Coordinate, Pair<TerrainHe
                 .filter { it.first != null }
                 .mapToInt { it.first!!.value }
                 .average()
-        if (average.isEmpty) {
+        if (!average.isPresent()) {
             return null
         }
         val averageHeightValue = average.asDouble.toInt()
