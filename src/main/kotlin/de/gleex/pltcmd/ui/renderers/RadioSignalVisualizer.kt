@@ -83,13 +83,15 @@ class RadioSignalVisualizer(
     }
 
     private fun drawLine(clickedBlock: MapBlock, ringPosition: Position, signal: RadioSignal) {
-        val terrainList = mutableListOf(clickedBlock.terrain)
+        val terrainList = listOfNotNull(clickedBlock.terrain)
+                .toMutableList()
         LineFactory.buildLine(clickedPosition, ringPosition)
                 .drop(1)
                 .forEach { linePosition ->
                     world.fetchBlockAtVisiblePosition(linePosition)
+                            .filter { it.terrain != null }
                             .ifPresent {
-                                terrainList.add(it.terrain)
+                                terrainList.add(it.terrain!!)
                                 if (it.hasOverlay().not()) {
                                     it.setOverlay(TileRepository.forSignal(signal.along(terrainList)))
                                     lastBlocks.add(it)
