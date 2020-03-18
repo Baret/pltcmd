@@ -9,15 +9,10 @@ data class AverageTerrain(val mappedTiles: MutableMap<Coordinate, Pair<TerrainHe
 
     @Suppress("MemberVisibilityCanBePrivate")
     fun getAverageHeight(): TerrainHeight? {
-        val average = mappedTiles.values.stream()
+        val heightsToConsider = mappedTiles.values
                 .filter { it.first != null }
-                .mapToInt { it.first!!.value }
-                .average()
-        if (!average.isPresent()) {
-            return null
-        }
-        val averageHeightValue = average.asDouble.toInt()
-        return TerrainHeight.ofValue(averageHeightValue)
+                .map { it.first!! }
+        return TerrainHeight.average(heightsToConsider)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
