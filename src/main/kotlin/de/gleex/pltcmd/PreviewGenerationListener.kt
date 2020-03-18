@@ -2,14 +2,12 @@ package de.gleex.pltcmd
 
 import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.model.mapgenerators.MapGenerationListener
-import de.gleex.pltcmd.model.terrain.Terrain
+import de.gleex.pltcmd.model.terrain.AverageTerrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldTile
-import java.util.*
-import java.util.stream.Collectors
 
 /** Shows the current state of the world in a single sector while the map is beeing generated. */
 class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: Int, private val previewWorld: GameWorld) : MapGenerationListener {
@@ -37,42 +35,3 @@ class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: 
 
 }
 
-/** Holds all real world data that is mapped onto a single preview tile */
-data class AverageTerrain(val mappedTiles: MutableMap<Coordinate, Pair<TerrainHeight?, TerrainType?>> = mutableMapOf()) {
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    fun getAverageHeight(): TerrainHeight? {
-        val average = mappedTiles.values.stream()
-                .filter { it.first != null }
-                .mapToInt { it.first!!.value }
-                .average()
-        if (!average.isPresent()) {
-            return null
-        }
-        val averageHeightValue = average.asDouble.toInt()
-        return TerrainHeight.ofValue(averageHeightValue)
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    fun getDominatingType(): TerrainType? {
-        return mappedTiles.values.stream()
-                .map { it.second }                  // get TerrainType
-                .filter(Objects::nonNull)           // filter not yet generated
-                .collect(Collectors.groupingBy<TerrainType?, TerrainType?> { it })  // collect same types
-                .mapValues { it.value.size }        // count same types
-                .maxBy { it.value }                 // take type that occurred most
-                ?.key                               // which may be null
-    }
-
-    fun createTerrain(): Terrain? {
-        val averageHeight = getAverageHeight()
-        val dominatingType = getDominatingType()
-        if (averageHeight == null && dominatingType == null) {
-            return null
-        }
-        val type = dominatingType ?: TerrainType.WATER_DEEP
-        val height = averageHeight ?: TerrainHeight.MIN
-        return Terrain.of(type, height)
-    }
-
-}
