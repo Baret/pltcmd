@@ -31,16 +31,6 @@ enum class TerrainHeight(val value: Int): Comparable<TerrainHeight> {
          * The lowest possible terrain
          */
         val MIN = values().first()
-
-        fun average(heights: List<TerrainHeight>): TerrainHeight? {
-            if (heights.isEmpty()) {
-                // prevent division by zero
-                return null
-            }
-            val sumOfValues = heights.sumBy { it.value }
-            val averageValue = sumOfValues / heights.size
-            return ofValue(averageValue)
-        }
     }
 
     operator fun plus(heightToAdd: TerrainHeight) = plus(heightToAdd.value)
@@ -59,4 +49,15 @@ enum class TerrainHeight(val value: Int): Comparable<TerrainHeight> {
                 else -> values()[ordinal - valueToSubtract]
             }
 
+}
+
+/** Return the average height of all given terrain heights. If the given list is empty no height is provided. */
+fun List<TerrainHeight>.average(): TerrainHeight? {
+    if (isEmpty()) {
+        // prevent division by zero
+        return null
+    }
+    val sumOfValues = sumBy { it.value }
+    val averageValue = sumOfValues / size
+    return TerrainHeight.ofValue(averageValue)
 }
