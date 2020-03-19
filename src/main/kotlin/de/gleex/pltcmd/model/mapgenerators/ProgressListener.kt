@@ -29,8 +29,8 @@ class ProgressListener(totalTiles: Int, private val maxProgress: Double, private
     }
 
     override fun terrainGenerated(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
-        generatedHeights.add(coordinate)
-        generatedTypes.add(coordinate)
+        terrainHeight?.apply { generatedHeights += coordinate }
+        terrainType?.apply { generatedTypes += coordinate }
     }
 
 }
