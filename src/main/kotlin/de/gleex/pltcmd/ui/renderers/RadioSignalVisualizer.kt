@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.ui.renderers
 
+import de.gleex.pltcmd.game.GameBlock
 import de.gleex.pltcmd.game.GameWorld
-import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.game.TileRepository
 import de.gleex.pltcmd.model.radio.RadioSignal
 import de.gleex.pltcmd.options.GameOptions
@@ -29,7 +29,7 @@ class RadioSignalVisualizer(
         private val mapOffset: Position) : (MouseEvent, UIEventPhase) -> UIEventResponse {
 
     private var clickedPosition = Position.defaultPosition()
-    private val lastBlocks = mutableSetOf<MapBlock>()
+    private val lastBlocks = mutableSetOf<GameBlock>()
 
     init {
         strengthProperty.onChange { drawSignal() }
@@ -64,7 +64,7 @@ class RadioSignalVisualizer(
 
     private fun drawingAllowed() = GameOptions.displayRadioSignals.value
 
-    private fun buildCirclesAround(clickedBlock: MapBlock) {
+    private fun buildCirclesAround(clickedBlock: GameBlock) {
         clickedBlock.setOverlay(TileRepository.Elements.PLATOON_FRIENDLY)
         lastBlocks.add(clickedBlock)
         val signal = RadioSignal(strengthProperty.value.toDouble())
@@ -82,7 +82,7 @@ class RadioSignalVisualizer(
         }
     }
 
-    private fun drawLine(clickedBlock: MapBlock, ringPosition: Position, signal: RadioSignal) {
+    private fun drawLine(clickedBlock: GameBlock, ringPosition: Position, signal: RadioSignal) {
         val terrainList = listOfNotNull(clickedBlock.terrain)
                 .toMutableList()
         LineFactory.buildLine(clickedPosition, ringPosition)
@@ -101,7 +101,7 @@ class RadioSignalVisualizer(
     }
 
     private fun reset() {
-        lastBlocks.forEach(MapBlock::resetOverlay)
+        lastBlocks.forEach(GameBlock::resetOverlay)
         lastBlocks.clear()
     }
 }

@@ -13,16 +13,22 @@ import org.hexworks.zircon.api.game.base.BaseGameArea
 import org.hexworks.zircon.internal.game.impl.TopDownProjectionStrategy
 
 /**
- * The game world contains all [MapBlock]s representing the map. It has a visible part and can scroll from [Sector] to sector.
+ * The game world contains all [GameBlock]s representing the map. It has a visible part and can scroll from [Sector] to sector.
  * It is also capable of translating [Coordinate]s to [Position3D] and vice versa.
+ *
+ * The intent of the GameWorld is to have fixed blocks, showing 3 layers (from bottom to top):
+ *
+ * - The terrain or fog of war, depending on their "revealed state" (coming later)
+ * - The element marker for the unit/element on that position
+ * - An optional overlay, currently used for debug purposes (radio signal strength), but might later be used by the player to "paint on the map".
+ *
  */
-class GameWorld(private val worldMap: WorldMap):
-        BaseGameArea<Tile, MapBlock>(
+class GameWorld(private val worldMap: WorldMap) :
+        BaseGameArea<Tile, GameBlock>(
                 initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
                 initialActualSize = Size3D.from2DSize(worldMap.size, 1),
                 initialContents = mapOf(),
-                projectionStrategy = TopDownProjectionStrategy())
-{
+                projectionStrategy = TopDownProjectionStrategy()) {
     /**
      * Returns all currently visible blocks.
      *
@@ -36,7 +42,7 @@ class GameWorld(private val worldMap: WorldMap):
     }
 
     val topLeftOffset: Position
-            get() = worldMap.getTopLeftOffset()
+        get() = worldMap.getTopLeftOffset()
 
     init {
         worldMap.sectors.forEach(::putSector)
@@ -51,7 +57,7 @@ class GameWorld(private val worldMap: WorldMap):
 
     fun putTile(it: WorldTile) {
         val position = it.coordinate.toPosition()
-        val block = MapBlock(it.terrain)
+        val block = GameBlock(it.terrain)
         setBlockAt(position, block)
     }
 
@@ -99,7 +105,7 @@ class GameWorld(private val worldMap: WorldMap):
 
     /**
      * Adds the current [visibleOffset] to the given position to translate it to the corresponding [Position3D]
-     * and returns the [MapBlock] at the location, if present.
+     * and returns the [GameBlock] at the location, if present.
      */
     fun fetchBlockAtVisiblePosition(position: Position) = fetchBlockAt(position.toVisiblePosition3D())
 
@@ -107,7 +113,8 @@ class GameWorld(private val worldMap: WorldMap):
      * Returns the [Coordinate] at the currently visible position
      * @see fetchBlockAtVisiblePosition
      */
-    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D().toCoordinate()
+    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D()
+            .toCoordinate()
 
     private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.to3DPosition(0))
 }
