@@ -18,8 +18,8 @@ class IncompleteMapGameArea(size: Size) :
 
     init {
         // fill area with voidness
-        for (y in 0 until size.width) {
-            for (x in 0 until size.height) {
+        for (y in 0 until size.height) {
+            for (x in 0 until size.width) {
                 setBlock(x, y, null, null)
             }
         }
