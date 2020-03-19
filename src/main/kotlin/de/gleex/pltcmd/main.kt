@@ -1,19 +1,20 @@
 package de.gleex.pltcmd
 
 import de.gleex.pltcmd.game.GameWorld
-import de.gleex.pltcmd.game.PreviewGenerationListener
 import de.gleex.pltcmd.game.TileRepository
 import de.gleex.pltcmd.model.mapgenerators.ProgressListener
 import de.gleex.pltcmd.model.mapgenerators.WorldMapGenerator
+import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapGameArea
+import de.gleex.pltcmd.model.mapgenerators.ui.PreviewGenerationListener
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.Sector
-import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.GameView
 import de.gleex.pltcmd.ui.GeneratingView
 import de.gleex.pltcmd.ui.TitleView
 import org.hexworks.zircon.api.SwingApplications
+import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
@@ -47,7 +48,7 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid): GameWorld {
     val origin = Coordinate(0, 0)
     val mapGenerator = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED)
 
-    val previewWorld = createPreview(origin)
+    val previewWorld = createPreview()
     val generatingView = GeneratingView(previewWorld, tileGrid)
     screen.dock(generatingView)
 
@@ -57,7 +58,6 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid): GameWorld {
     return GameWorld(worldMap)
 }
 
-private fun createPreview(origin: Coordinate): GameWorld {
-    val emptyMap = WorldMap(setOf(Sector.createEmpty(origin)))
-    return GameWorld(emptyMap)
+private fun createPreview(): IncompleteMapGameArea {
+    return IncompleteMapGameArea(Size.create(Sector.TILE_COUNT, Sector.TILE_COUNT))
 }

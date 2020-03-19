@@ -1,9 +1,8 @@
 package de.gleex.pltcmd.ui
 
-import de.gleex.pltcmd.game.GameBlock
-import de.gleex.pltcmd.game.GameWorld
+import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapBlock
+import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapGameArea
 import de.gleex.pltcmd.options.UiOptions
-import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
@@ -16,7 +15,7 @@ import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.view.base.BaseView
 
 /** Displays the progress of world generation. A miniature of the world is shown together with a progress bar. */
-class GeneratingView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
+class GeneratingView(private val gameWorld: IncompleteMapGameArea, tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     private val progressBar = createProgressBar()
     val progressProperty = progressBar.progressProperty
@@ -39,10 +38,10 @@ class GeneratingView(private val gameWorld: GameWorld, tileGrid: TileGrid) : Bas
         val mainPart = Components.panel()
                 .withSize(UiOptions.MAP_VIEW_WDTH, UiOptions.MAP_VIEW_HEIGHT)
                 .withAlignmentWithin(screen, ComponentAlignment.CENTER)
-                .withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld))
+                .withDecorations(MapGridDecorationRenderer())
                 .build()
 
-        val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>()
+        val map = GameComponents.newGameComponentBuilder<Tile, IncompleteMapBlock>()
                 .withGameArea(gameWorld)
                 .withSize(gameWorld.visibleSize.to2DSize())
                 .withAlignmentWithin(mainPart, ComponentAlignment.CENTER)

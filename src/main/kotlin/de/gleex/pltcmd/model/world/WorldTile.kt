@@ -7,7 +7,7 @@ import de.gleex.pltcmd.model.terrain.TerrainType
 /**
  * The smallest piece of the world/map.
  */
-data class WorldTile(val coordinate: Coordinate, val terrain: Terrain?) {
+data class WorldTile(val coordinate: Coordinate, val terrain: Terrain) {
 
     /** creates a tile at the given location with a default terrain (useful for tests) */
     constructor(east: Int, north: Int) : this(
