@@ -15,7 +15,7 @@ import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
-import java.lang.Thread.sleep
+import java.util.concurrent.TimeUnit
 
 fun main() {
 
@@ -38,7 +38,7 @@ fun main() {
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {
     screen.dock(TitleView(tileGrid))
-    sleep(1500)
+    TimeUnit.MILLISECONDS.sleep(1500)
 }
 
 private fun generateMap(screen: Screen, tileGrid: TileGrid): GameWorld {
