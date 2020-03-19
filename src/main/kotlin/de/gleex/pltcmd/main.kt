@@ -1,7 +1,9 @@
 package de.gleex.pltcmd
 
 import de.gleex.pltcmd.game.GameWorld
+import de.gleex.pltcmd.game.PreviewGenerationListener
 import de.gleex.pltcmd.game.TileRepository
+import de.gleex.pltcmd.model.mapgenerators.ProgressListener
 import de.gleex.pltcmd.model.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.Sector

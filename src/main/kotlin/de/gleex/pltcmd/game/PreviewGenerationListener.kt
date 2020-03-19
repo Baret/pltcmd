@@ -1,6 +1,5 @@
-package de.gleex.pltcmd
+package de.gleex.pltcmd.game
 
-import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.model.mapgenerators.MapGenerationListener
 import de.gleex.pltcmd.model.terrain.AverageTerrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
@@ -9,7 +8,7 @@ import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldTile
 
-/** Shows the current state of the world in a single sector while the map is beeing generated. */
+/** Shows the current state of the world in a single sector sized [GameWorld] while the map is beeing generated. */
 class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: Int, private val previewWorld: GameWorld) : MapGenerationListener {
     private val tilesPerPreviewWidth = generatedWorldWidth / (1 * Sector.TILE_COUNT)
     private val tilesPerPreviewHeight = generatedWorldHeight / (1 * Sector.TILE_COUNT)
