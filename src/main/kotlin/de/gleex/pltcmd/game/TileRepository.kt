@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game
 
 import de.gleex.pltcmd.model.radio.SignalStrength
 import de.gleex.pltcmd.model.terrain.Terrain
+import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import org.hexworks.zircon.api.builder.modifier.BorderBuilder
 import org.hexworks.zircon.api.data.Tile
@@ -27,12 +28,14 @@ object TileRepository {
 
     }
 
-    fun createTerrainTile(terrain: Terrain?): Tile =
+    fun createTerrainTile(terrain: Terrain): Tile = createTerrainTile(terrain.height, terrain.type)
+
+    fun createTerrainTile(terrainHeight: TerrainHeight?, terrainType: TerrainType?): Tile =
             Tile.
                 newBuilder().
-                withForegroundColor(ColorRepository.forType(terrain?.type)).
-                withBackgroundColor(ColorRepository.forHeight(terrain?.height)).
-                withCharacter(terrain?.type?.char() ?: Symbols.INVERTED_QUESTION_MARK).
+                withForegroundColor(ColorRepository.forType(terrainType)).
+                withBackgroundColor(ColorRepository.forHeight(terrainHeight)).
+                withCharacter(terrainType?.char() ?: Symbols.INVERTED_QUESTION_MARK).
                 buildCharacterTile()
 
     private fun TerrainType.char() = when (this) {

@@ -22,8 +22,7 @@ class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: 
         val terrainData = averageTerrainMap.getOrPut(previewCoordinate, { AverageTerrain() })
         terrainData.mappedTiles[coordinate] = Pair(terrainHeight, terrainType)
 
-        val averageTerrain = terrainData.createTerrain()
-        previewWorld.setBlock(previewCoordinate, averageTerrain)
+        previewWorld.setBlock(previewCoordinate, terrainData.getAverageHeight(), terrainData.getDominatingType())
     }
 
     /** Divides the difference between the real and preview coordinate by the amount of aggregated tiles */
