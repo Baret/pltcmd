@@ -10,12 +10,11 @@ import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.GameView
 import de.gleex.pltcmd.ui.GeneratingView
-import de.gleex.pltcmd.ui.TitleView
+import de.gleex.pltcmd.ui.createTitleAnimation
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
-import java.lang.Thread.sleep
 
 fun main() {
 
@@ -37,8 +36,7 @@ fun main() {
 }
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {
-    screen.dock(TitleView(tileGrid))
-    sleep(1500)
+    screen.start(createTitleAnimation(tileGrid))
 }
 
 private fun generateMap(screen: Screen, tileGrid: TileGrid): GameWorld {
