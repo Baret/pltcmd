@@ -57,7 +57,7 @@ class WorldMapGenerator(
             log.info("Map generation with seed $seed took $generationTime ms")
             return partiallyGeneratedWorld.toWorldMap()
         } finally {
-            listeners.forEach(partiallyGeneratedWorld::addListener)
+            listeners.forEach(partiallyGeneratedWorld::removeListener)
         }
     }
 }

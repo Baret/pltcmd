@@ -23,7 +23,7 @@ class ProgressListener(totalTiles: Int, private val maxProgress: Double, private
         get() = (generatedHeights.size + generatedTypes.size) * maxProgress / terrainToGenerate
 
     init {
-        scheduledUpdates.scheduleAtFixedRate(Runnable {
+        scheduledUpdates.scheduleAtFixedRate({
             progressToSet.updateValue(currentProgressValue)
         }, 100L, 100L, TimeUnit.MILLISECONDS)
     }
