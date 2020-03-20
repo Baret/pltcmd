@@ -3,8 +3,7 @@ package de.gleex.pltcmd.ui
 import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapBlock
 import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapGameArea
 import de.gleex.pltcmd.options.UiOptions
-import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
-import org.hexworks.cobalt.databinding.api.property.Property
+import kotlinx.coroutines.CompletableDeferred
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
@@ -20,7 +19,10 @@ import org.hexworks.zircon.api.uievent.MouseEventType
 import org.hexworks.zircon.api.uievent.UIEventPhase
 import org.hexworks.zircon.api.view.base.BaseView
 
-/** Displays the progress of world generation. A miniature of the world is shown together with a progress bar. */
+/**
+ * Displays the progress of world generation. A miniature of the world is shown together with a progress bar.
+ * The progress must be incremented externally!
+ **/
 class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     private val footer = createFooter()
@@ -28,8 +30,13 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     private val header = createHeader()
     private val usedLines = progressBar.height + header.height
 
+    /** Value of the progress bar (0 to 100). Set to indicate generation progress. */
     val progressProperty = progressBar.progressProperty
-    val finished: Property<Boolean> = createPropertyFrom(false)
+
+    /** Will be set if the [progressProperty] filled the progress bar and the user clicks a button. */
+    val finished: CompletableDeferred<Unit> = CompletableDeferred()
+
+    /** World that is shown. Must be changed externally. */
     val incompleteWorld = IncompleteMapGameArea(Size.create(screen.width, screen.height - usedLines))
 
     init {
@@ -86,7 +93,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
                 .build()
         footer.addComponent(doneText)
         doneText.processMouseEvents(MouseEventType.MOUSE_CLICKED) { mouseEvent: MouseEvent, uiEventPhase: UIEventPhase ->
-            finished.value = true
+            finished.complete(Unit)
         }
     }
 
