@@ -20,19 +20,18 @@ class IncompleteMapGameArea(size: Size) :
         // fill area with voidness
         for (y in 0 until size.height) {
             for (x in 0 until size.width) {
-                setBlock(x, y, null, null)
+                initBlock(x, y)
             }
         }
     }
 
-    fun setBlock(x: Int, y: Int, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
+    private fun initBlock(x: Int, y: Int) {
         val position = Position3D.create(x, y, 0)
-        setBlock(position, terrainHeight, terrainType)
+        setBlockAt(position, IncompleteMapBlock())
     }
 
     fun setBlock(position: Position3D, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
-        val block = IncompleteMapBlock(terrainHeight, terrainType)
-        setBlockAt(position, block)
+        blocks[position]?.setTerrain(terrainHeight, terrainType)
     }
 
 }
