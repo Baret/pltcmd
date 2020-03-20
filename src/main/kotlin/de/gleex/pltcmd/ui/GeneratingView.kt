@@ -6,6 +6,7 @@ import de.gleex.pltcmd.options.UiOptions
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
+import org.hexworks.zircon.api.component.HBox
 import org.hexworks.zircon.api.component.Header
 import org.hexworks.zircon.api.component.ProgressBar
 import org.hexworks.zircon.api.data.Size
@@ -17,17 +18,19 @@ import org.hexworks.zircon.api.view.base.BaseView
 /** Displays the progress of world generation. A miniature of the world is shown together with a progress bar. */
 class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
+    private val footer = createFooter()
     private val progressBar = createProgressBar()
     private val header = createHeader()
     private val usedLines = progressBar.height + header.height
+
     val progressProperty = progressBar.progressProperty
     val incompleteWorld = IncompleteMapGameArea(Size.create(screen.width, screen.height - usedLines))
 
     init {
+        footer.addComponent(progressBar)
         progressProperty.onChange {
             if (it.newValue == progressBar.range.toDouble()) {
-                println("progress bar is full! ! ! ! !")
-                finished()
+                onFinished()
             }
         }
     }
@@ -35,7 +38,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     override fun onDock() {
         val mainPart = createMainPart()
 
-        screen.addComponents(header, mainPart, progressBar)
+        screen.addComponents(header, mainPart, footer)
     }
 
     private fun createHeader(): Header {
@@ -53,18 +56,29 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
                 .build()
     }
 
-    private fun createProgressBar(): ProgressBar {
-        return Components.progressBar()
+    private fun createFooter(): HBox {
+        return Components.hbox()
                 .withSize(screen.width, 1)
                 .withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER)
-                .withNumberOfSteps(screen.width) // use 1 tile per step
+                .build()
+    }
+
+    private fun createProgressBar(): ProgressBar {
+        return Components.progressBar()
+                .withAlignmentWithin(footer, ComponentAlignment.BOTTOM_CENTER)
+                .withNumberOfSteps(footer.width) // use 1 tile per step
                 .withDisplayPercentValueOfProgress(true)
                 .build()
     }
 
-    private fun finished() {
-        progressBar.isHidden = true
+    private fun onFinished() {
         header.text = "Generated world"
+        footer.clear()
+        val doneText = Components.label()
+                .withText("Finished")
+                .withAlignmentWithin(footer, ComponentAlignment.BOTTOM_CENTER)
+                .build()
+        footer.addComponent(doneText)
     }
 
 }
