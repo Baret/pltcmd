@@ -18,13 +18,21 @@ import org.hexworks.zircon.api.view.base.BaseView
 class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     private val progressBar = createProgressBar()
-    private val headerHeight = 1
-    private val usedLines = progressBar.height + headerHeight
+    private val header = createHeader()
+    private val usedLines = progressBar.height + header.height
     val progressProperty = progressBar.progressProperty
     val incompleteWorld = IncompleteMapGameArea(Size.create(screen.width, screen.height - usedLines))
 
+    init {
+        progressProperty.onChange {
+            if (it.newValue == progressBar.range.toDouble()) {
+                println("progress bar is full! ! ! ! !")
+                finished()
+            }
+        }
+    }
+
     override fun onDock() {
-        val header = createHeader()
         val mainPart = createMainPart()
 
         screen.addComponents(header, mainPart, progressBar)
@@ -41,7 +49,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
         return GameComponents.newGameComponentBuilder<Tile, IncompleteMapBlock>()
                 .withGameArea(incompleteWorld)
                 .withSize(incompleteWorld.visibleSize.xLength, incompleteWorld.visibleSize.yLength - usedLines)
-                .withPosition(0, headerHeight)
+                .withPosition(0, header.height)
                 .build()
     }
 
@@ -52,6 +60,11 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
                 .withNumberOfSteps(screen.width) // use 1 tile per step
                 .withDisplayPercentValueOfProgress(true)
                 .build()
+    }
+
+    private fun finished() {
+        progressBar.isHidden = true
+        header.text = "Generated world"
     }
 
 }
