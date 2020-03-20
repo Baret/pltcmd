@@ -1,13 +1,14 @@
 package de.gleex.pltcmd.model.terrain
 
+import de.gleex.pltcmd.model.mapgenerators.TerrainData
 import de.gleex.pltcmd.model.world.Coordinate
 import java.util.*
 import java.util.stream.Collectors
 
-/** Holds all real world data that is mapped onto a single preview tile */
-data class AverageTerrain(private val mappedTiles: MutableMap<Coordinate, TerrainData> = mutableMapOf()) {
+/** Collects multiple [TerrainData] for a [Coordinate] and provides the average for all given data. */
+class AverageTerrain {
 
-    data class TerrainData(var height: TerrainHeight?, var type: TerrainType?)
+    private val mappedTiles: MutableMap<Coordinate, TerrainData> = mutableMapOf()
 
     fun getAverageHeight(): TerrainHeight? {
         return mappedTiles.values
