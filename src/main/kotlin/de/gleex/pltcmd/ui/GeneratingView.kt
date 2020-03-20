@@ -7,10 +7,10 @@ import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.component.Header
-import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.component.ProgressBar
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Tile
+import org.hexworks.zircon.api.game.GameComponent
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.view.base.BaseView
 
@@ -37,19 +37,12 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
                 .build()
     }
 
-    private fun createMainPart(): Panel {
-        val mainPart = Components.panel()
+    private fun createMainPart(): GameComponent<Tile, IncompleteMapBlock> {
+        return GameComponents.newGameComponentBuilder<Tile, IncompleteMapBlock>()
+                .withGameArea(incompleteWorld)
                 .withSize(incompleteWorld.visibleSize.xLength, incompleteWorld.visibleSize.yLength - usedLines)
                 .withPosition(0, headerHeight)
                 .build()
-
-        val map = GameComponents.newGameComponentBuilder<Tile, IncompleteMapBlock>()
-                .withGameArea(incompleteWorld)
-                .withSize(mainPart.size)
-                .withAlignmentWithin(mainPart, ComponentAlignment.CENTER)
-                .build()
-        mainPart.addComponent(map)
-        return mainPart
     }
 
     private fun createProgressBar(): ProgressBar {
