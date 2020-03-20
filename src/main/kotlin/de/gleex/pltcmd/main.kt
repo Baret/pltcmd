@@ -53,4 +53,3 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid): GameWorld {
     val worldMap = mapGenerator.generateWorld(origin, progressListener, previewListener)
     return GameWorld(worldMap)
 }
-
