@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.mapgenerators.data
 
 import de.gleex.pltcmd.model.mapgenerators.MapGenerationListener
+import de.gleex.pltcmd.model.mapgenerators.TerrainData
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
@@ -18,7 +19,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
                    val worldSizeWidthInTiles: Int = Sector.TILE_COUNT,
                    val worldSizeHeightInTiles: Int = Sector.TILE_COUNT) {
 
-    private val terrainMap = mutableMapOf<Coordinate, Pair<TerrainHeight?, TerrainType?>>()
+    private val terrainMap = mutableMapOf<Coordinate, TerrainData>()
     val topRightCoordinate = bottomLeftCoordinate.movedBy(worldSizeWidthInTiles - 1, worldSizeHeightInTiles - 1)
 
     private val completeArea: CoordinateRectangle
@@ -73,7 +74,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
         require(terrainMap.size == completeArea.size) {
             "${terrainMap.size} coordinates have been generated, but ${completeArea.size} are needed."
         }
-        require(terrainMap.values.any { it.first == null || it.second == null }.not()) {
+        require(terrainMap.values.any { it.height == null || it.type == null }.not()) {
             "Not all coordinates contain generated terrain."
         }
 
@@ -109,19 +110,19 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
      * Puts the [TerrainHeight] at the given [Coordinate] to the given value and keeps the [TerrainType].
      */
     operator fun set(coordinate: Coordinate, terrainHeight: TerrainHeight) {
-        set(coordinate, terrainHeight, terrainMap[coordinate]?.second)
+        set(coordinate, terrainHeight, terrainMap[coordinate]?.type)
     }
 
     /**
      * Puts the [TerrainType] at the given [Coordinate] to the given value and keeps the [TerrainHeight].
      */
     operator fun set(coordinate: Coordinate, terrainType: TerrainType) {
-        set(coordinate, terrainMap[coordinate]?.first, terrainType)
+        set(coordinate, terrainMap[coordinate]?.height, terrainType)
     }
 
     private fun set(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         requireInBounds(coordinate)
-        terrainMap[coordinate] = Pair(terrainHeight, terrainType)
+        terrainMap[coordinate] = TerrainData(terrainHeight, terrainType)
         fireChange(coordinate, terrainHeight, terrainType)
     }
 
@@ -152,12 +153,12 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
     /**
      * Gets the height at the given coordinate, if present
      */
-    fun heightAt(coordinate: Coordinate) = terrainMap[coordinate]?.first
+    fun heightAt(coordinate: Coordinate) = terrainMap[coordinate]?.height
 
     /**
      * Gets the terrain type at the given coordinate, if present
      */
-    fun typeAt(coordinate: Coordinate) = terrainMap[coordinate]?.second
+    fun typeAt(coordinate: Coordinate) = terrainMap[coordinate]?.type
 
     /**
      * Returns all [Coordinate]s in the given area (default is the complete world) that match the given predicate (and are already present).
