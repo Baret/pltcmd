@@ -6,7 +6,7 @@ import de.gleex.pltcmd.options.UiOptions
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
-import org.hexworks.zircon.api.component.Label
+import org.hexworks.zircon.api.component.Header
 import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.component.ProgressBar
 import org.hexworks.zircon.api.data.Size
@@ -30,8 +30,8 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
         screen.addComponents(header, mainPart, progressBar)
     }
 
-    private fun createHeader(): Label {
-        return Components.label()
+    private fun createHeader(): Header {
+        return Components.header()
                 .withText("Generating world...")
                 .withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER)
                 .build()
