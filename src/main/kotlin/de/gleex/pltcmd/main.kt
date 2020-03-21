@@ -11,11 +11,11 @@ import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.GameView
 import de.gleex.pltcmd.ui.GeneratingView
 import de.gleex.pltcmd.ui.TitleView
-import kotlinx.coroutines.runBlocking
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 fun main() {
@@ -52,8 +52,9 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid): GameWorld {
     val progressListener = ProgressListener(mapGenerator.sizeInTiles, 100.0, generatingView.progressProperty) // 100.0 is the default of ProgressBar
     val previewListener = PreviewGenerationListener(mapGenerator.worldWidthInTiles, mapGenerator.worldHeightInTiles, generatingView.incompleteWorld)
     val worldMap = mapGenerator.generateWorld(origin, progressListener, previewListener)
-    runBlocking {
-        generatingView.finished.await()
-    }
+    // block until view is finished
+    val latch = CountDownLatch(1)
+    generatingView.finished.onChange { latch.countDown() }
+    latch.await()
     return GameWorld(worldMap)
 }
