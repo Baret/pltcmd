@@ -75,7 +75,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
         require(terrainMap.size == completeArea.size) {
             "${terrainMap.size} coordinates have been generated, but ${completeArea.size} are needed."
         }
-        require(terrainMap.values.any { it.height == null || it.type == null }.not()) {
+        require(terrainMap.values.all(TerrainData::isComplete)) {
             "Not all coordinates contain generated terrain."
         }
 
@@ -90,8 +90,8 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
                     for(x in sectorOriginEasting..sectorEndEasting) {
                         val currentCoordinate = Coordinate(x, y)
                         // expecting no null values here
-                        val (height, type) = terrainMap[currentCoordinate]!!
-                        tiles.add(WorldTile(currentCoordinate, Terrain.of(type!!, height!!)))
+                        val terrain = Terrain.of(terrainMap[currentCoordinate]!!)
+                        tiles.add(WorldTile(currentCoordinate, terrain))
                     }
                 }
                 sectors.add(Sector(Coordinate(sectorOriginEasting, sectorOriginNorthing), tiles))
@@ -127,9 +127,8 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
 
     private fun set(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         requireInBounds(coordinate)
-        val data = terrainMap.getOrPut(coordinate) { TerrainData() }
-        data.height = terrainHeight
-        data.type = terrainType
+        terrainMap.getOrPut(coordinate) { TerrainData() }
+                .update(terrainHeight, terrainType)
         fireChange(coordinate, terrainHeight, terrainType)
     }
 
