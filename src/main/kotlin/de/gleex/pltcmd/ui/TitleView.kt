@@ -10,7 +10,7 @@ import org.hexworks.zircon.api.view.base.BaseView
 /** Displays the title of the game. */
 class TitleView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
-    override fun onDock() {
+    init {
         val panel = Components.panel()
                 .withSize(screen.width, screen.height)
                 .build()
