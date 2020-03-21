@@ -3,7 +3,6 @@ package de.gleex.pltcmd.ui
 import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapBlock
 import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapGameArea
 import de.gleex.pltcmd.options.UiOptions
-import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.*
@@ -12,36 +11,30 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.GameComponent
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.view.base.BaseView
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
-/** Displays the progress of world generation. A miniature of the world is shown together with a progress bar. */
+/**
+ * An incomplete map is shown together with a progress bar. Both must be altered externally. After calling
+ * [showFinished] a button will shown that triggers a callback when used.
+ **/
 class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     private val footer = createFooter()
     private val progressBar = createProgressBar()
     private val header = createHeader()
     private val usedLines = progressBar.height + header.height
-    private val scheduledUpdates = Executors.newSingleThreadScheduledExecutor()
     private var confirmCallback: () -> Unit = {}
 
-    /** ratio from 0.0 to 1.0 */
-    val progressProperty = createPropertyFrom(0.0)
     val incompleteWorld = IncompleteMapGameArea(Size.create(screen.width, screen.height - usedLines))
 
     init {
-        footer.addComponent(progressBar)
-        // update progress bar only every now and then because it lasts some time
-        scheduledUpdates.scheduleAtFixedRate({
-            progressBar.progress = progressBar.range * progressProperty.value
-        }, 100L, 100L, TimeUnit.MILLISECONDS)
-        progressProperty.onChange { if (it.newValue == 1.0) onFinished() }
-    }
-
-    override fun onDock() {
         val mainPart = createMainPart()
+        footer.addComponent(progressBar)
 
         screen.addComponents(header, mainPart, footer)
+    }
+
+    fun setProgressBarTo(progress: Double) {
+        progressBar.progress = progressBar.range * progress
     }
 
     private fun createHeader(): Header {
@@ -54,7 +47,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     private fun createMainPart(): GameComponent<Tile, IncompleteMapBlock> {
         return GameComponents.newGameComponentBuilder<Tile, IncompleteMapBlock>()
                 .withGameArea(incompleteWorld)
-                .withSize(incompleteWorld.visibleSize.xLength, incompleteWorld.visibleSize.yLength - usedLines)
+                .withSize(screen.width, screen.height - usedLines)
                 .withPosition(0, header.height)
                 .build()
     }
@@ -74,8 +67,8 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
                 .build()
     }
 
-    private fun onFinished() {
-        scheduledUpdates.shutdown()
+    /** Changes the header and displays a button to the user to click to continue. */
+    fun showFinished() {
         header.text = "Generated world"
         footer.clear()
         val continueButton = createContinueButton()

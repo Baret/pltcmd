@@ -34,9 +34,19 @@ class WorldMapGenerator(
             RandomTerrainFiller(random, context)
     )
 
+    private val listeners = mutableSetOf<MapGenerationListener>()
+
     val sizeInTiles = worldWidthInTiles * worldHeightInTiles
 
-    fun generateWorld(bottomLeftCoordinate: Coordinate = Coordinate(0, 0), vararg listeners: MapGenerationListener): WorldMap {
+    fun addListener(listener: MapGenerationListener) {
+        listeners += listener
+    }
+
+    fun removeListener(listener: MapGenerationListener) {
+        listeners -= listener
+    }
+
+    fun generateWorld(bottomLeftCoordinate: Coordinate = Coordinate(0, 0)): WorldMap {
         val partiallyGeneratedWorld = MutableWorld(bottomLeftCoordinate, worldWidthInTiles, worldHeightInTiles)
         listeners.forEach(partiallyGeneratedWorld::addListener)
         try {
