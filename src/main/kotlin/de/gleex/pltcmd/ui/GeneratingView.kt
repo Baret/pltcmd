@@ -3,14 +3,9 @@ package de.gleex.pltcmd.ui
 import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapBlock
 import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapGameArea
 import de.gleex.pltcmd.options.UiOptions
-import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
-import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
-import org.hexworks.zircon.api.component.ComponentAlignment
-import org.hexworks.zircon.api.component.HBox
-import org.hexworks.zircon.api.component.Header
-import org.hexworks.zircon.api.component.ProgressBar
+import org.hexworks.zircon.api.component.*
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.GameComponent
@@ -24,9 +19,9 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     private val progressBar = createProgressBar()
     private val header = createHeader()
     private val usedLines = progressBar.height + header.height
+    private var confirmCallback: () -> Unit = {}
 
     val progressProperty = progressBar.progressProperty
-    val finished: Property<Boolean> = createPropertyFrom(false)
     val incompleteWorld = IncompleteMapGameArea(Size.create(screen.width, screen.height - usedLines))
 
     init {
@@ -77,14 +72,24 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     private fun onFinished() {
         header.text = "Generated world"
         footer.clear()
-        val doneText = Components.button()
+        val continueButton = createContinueButton()
+        footer.addComponent(continueButton)
+    }
+
+    private fun createContinueButton(): Button {
+        val continueButton = Components.button()
                 .withText("Click to continue")
                 .withAlignmentWithin(footer, ComponentAlignment.BOTTOM_CENTER)
                 .build()
-        footer.addComponent(doneText)
-        doneText.onActivated {
-            finished.value = true
+        continueButton.onActivated {
+            confirmCallback.invoke()
         }
+        return continueButton
+    }
+
+    /** Will be called after the user confirmed the map generation. Replaces any previous callback. */
+    fun onConfirmation(callback: () -> Unit) {
+        confirmCallback = callback
     }
 
 }

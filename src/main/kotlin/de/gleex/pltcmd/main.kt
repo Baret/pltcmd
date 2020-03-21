@@ -6,6 +6,7 @@ import de.gleex.pltcmd.model.mapgenerators.ProgressListener
 import de.gleex.pltcmd.model.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.mapgenerators.ui.PreviewGenerationListener
 import de.gleex.pltcmd.model.world.Coordinate
+import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.GameView
@@ -15,7 +16,6 @@ import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 fun main() {
@@ -26,14 +26,16 @@ fun main() {
 
     showTitle(screen, tileGrid)
 
-    val gameWorld = generateMap(screen, tileGrid)
-    screen.dock(GameView(gameWorld, tileGrid))
+    generateMap(screen, tileGrid) { generatedMap ->
+        val gameWorld = GameWorld(generatedMap)
+        screen.dock(GameView(gameWorld, tileGrid))
 
-    // testing display of units
-    val visibleBlocks = gameWorld.visibleBlocks.toList()
-    repeat(20) {
-        val randomPosition = visibleBlocks.random()
-        randomPosition.second.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
+        // testing display of units
+        val visibleBlocks = gameWorld.visibleBlocks.toList()
+        repeat(20) {
+            val randomPosition = visibleBlocks.random()
+            randomPosition.second.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
+        }
     }
 }
 
@@ -42,7 +44,7 @@ private fun showTitle(screen: Screen, tileGrid: TileGrid) {
     TimeUnit.MILLISECONDS.sleep(1500)
 }
 
-private fun generateMap(screen: Screen, tileGrid: TileGrid): GameWorld {
+private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {
     val origin = Coordinate(0, 0)
     val mapGenerator = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED)
 
@@ -52,9 +54,8 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid): GameWorld {
     val progressListener = ProgressListener(mapGenerator.sizeInTiles, 100.0, generatingView.progressProperty) // 100.0 is the default of ProgressBar
     val previewListener = PreviewGenerationListener(mapGenerator.worldWidthInTiles, mapGenerator.worldHeightInTiles, generatingView.incompleteWorld)
     val worldMap = mapGenerator.generateWorld(origin, progressListener, previewListener)
-    // block until view is finished
-    val latch = CountDownLatch(1)
-    generatingView.finished.onChange { latch.countDown() }
-    latch.await()
-    return GameWorld(worldMap)
+
+    generatingView.onConfirmation {
+        doneCallback(worldMap)
+    }
 }
