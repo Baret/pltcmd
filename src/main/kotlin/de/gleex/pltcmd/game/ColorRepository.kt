@@ -31,7 +31,7 @@ object ColorRepository {
      * Creates a [TileColor] for the given [TerrainHeight] to be used as background color for tiles.
      */
     fun forHeight(height: TerrainHeight?): TileColor {
-        if (height == null) return TileColor.defaultForegroundColor() // inverted intentionally for highlighting
+        if (height == null) return TileColor.defaultForegroundColor() // inverted background to foreground intentionally for highlighting
         return when (height) {
             TerrainHeight.ONE   -> MAX_HEIGHT.darkenByPercent(0.9)
             TerrainHeight.TWO   -> MAX_HEIGHT.darkenByPercent(0.8)
@@ -50,7 +50,7 @@ object ColorRepository {
      * Creates a [TileColor] for the given [TerrainType] to be used as foreground color for terrain tiles.
      */
     fun forType(type: TerrainType?): TileColor {
-        if (type == null) return TileColor.defaultBackgroundColor() // inverted intentionally for highlighting
+        if (type == null) return TileColor.defaultBackgroundColor() // inverted foreground to background intentionally for highlighting
         return when (type) {
             TerrainType.GRASSLAND     -> TileColor.create(95, 169, 51)
             TerrainType.FOREST        -> TileColor.create(35, 104, 10)
