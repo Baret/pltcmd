@@ -35,15 +35,18 @@ object TileRepository {
                 newBuilder().
                 withForegroundColor(ColorRepository.forType(terrainType)).
                 withBackgroundColor(ColorRepository.forHeight(terrainHeight)).
-                withCharacter(terrainType?.char() ?: Symbols.INVERTED_QUESTION_MARK).
+                withCharacter(terrainType.char()).
                 buildCharacterTile()
 
-    private fun TerrainType.char() = when (this) {
-        TerrainType.GRASSLAND -> '\"'
-        TerrainType.FOREST    -> Symbols.SPADES
-        TerrainType.HILL      -> Symbols.INTERSECTION
-        TerrainType.MOUNTAIN  -> Symbols.TRIANGLE_UP_POINTING_BLACK
-        TerrainType.WATER_DEEP, TerrainType.WATER_SHALLOW -> Symbols.APPROXIMATION
+    private fun TerrainType?.char(): Char {
+        if (this == null) return Symbols.INVERTED_QUESTION_MARK
+        return when (this) {
+            TerrainType.GRASSLAND                             -> '\"'
+            TerrainType.FOREST                                -> Symbols.SPADES
+            TerrainType.HILL                                  -> Symbols.INTERSECTION
+            TerrainType.MOUNTAIN                              -> Symbols.TRIANGLE_UP_POINTING_BLACK
+            TerrainType.WATER_DEEP, TerrainType.WATER_SHALLOW -> Symbols.APPROXIMATION
+        }
     }
 
     fun empty() = Tile.empty()
