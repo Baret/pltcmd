@@ -50,10 +50,10 @@ class GameWorld(private val worldMap: WorldMap) :
 
     private fun putSector(sector: Sector) {
         sector.tiles.forEach {
-        val position = it.coordinate.toPosition()
-        val block = GameBlock(it.terrain)
-        setBlockAt(position, block)
-    }
+            val position = it.coordinate.toPosition()
+            val block = GameBlock(it.terrain)
+            setBlockAt(position, block)
+        }
     }
 
     /** Returns the [Coordinate] of the [Tile] that is visible in the top left corner. */
@@ -108,8 +108,7 @@ class GameWorld(private val worldMap: WorldMap) :
      * Returns the [Coordinate] at the currently visible position
      * @see fetchBlockAtVisiblePosition
      */
-    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D()
-            .toCoordinate()
+    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D().toCoordinate()
 
     private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.to3DPosition(0))
 }
