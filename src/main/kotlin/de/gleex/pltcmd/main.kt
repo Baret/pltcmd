@@ -7,7 +7,6 @@ import de.gleex.pltcmd.model.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.mapgenerators.ui.PreviewGenerationListener
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.WorldMap
-import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.GameView
 import de.gleex.pltcmd.ui.GeneratingView
@@ -45,14 +44,13 @@ private fun showTitle(screen: Screen, tileGrid: TileGrid) {
 }
 
 private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {
-    val origin = Coordinate(0, 0)
-    val mapGenerator = WorldMapGenerator(GameOptions.DEBUG_MAP_SEED)
-
     val generatingView = GeneratingView(tileGrid)
     screen.dock(generatingView)
 
+    val mapGenerator = WorldMapGenerator()
     val progressListener = ProgressListener(mapGenerator.sizeInTiles, 100.0, generatingView.progressProperty) // 100.0 is the default of ProgressBar
     val previewListener = PreviewGenerationListener(mapGenerator.worldWidthInTiles, mapGenerator.worldHeightInTiles, generatingView.incompleteWorld)
+    val origin = Coordinate(0, 0)
     val worldMap = mapGenerator.generateWorld(origin, progressListener, previewListener)
 
     generatingView.onConfirmation {

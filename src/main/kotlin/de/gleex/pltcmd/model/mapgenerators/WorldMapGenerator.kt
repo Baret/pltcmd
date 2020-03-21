@@ -14,7 +14,7 @@ import kotlin.random.Random
  * The WorldMapGenerator is the only class you need outside this package. It generates the world for the game given a seed.
  */
 class WorldMapGenerator(
-        private val seed: Long,
+        private val seed: Long = GameOptions.DEBUG_MAP_SEED,
         val worldWidthInTiles: Int = GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT,
         val worldHeightInTiles: Int = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
 ) {
