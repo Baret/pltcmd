@@ -27,7 +27,7 @@ class AverageTerrain {
     }
 
     fun put(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
-        val terrainData = mappedTiles.computeIfAbsent(coordinate) { TerrainData(null, null) }
+        val terrainData = mappedTiles.computeIfAbsent(coordinate) { TerrainData() }
         terrainData.height = terrainHeight
         terrainData.type = terrainType
     }

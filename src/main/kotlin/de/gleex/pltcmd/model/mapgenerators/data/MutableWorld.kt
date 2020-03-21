@@ -127,7 +127,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
 
     private fun set(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         requireInBounds(coordinate)
-        val data = terrainMap.getOrPut(coordinate) { TerrainData(null, null)}
+        val data = terrainMap.getOrPut(coordinate) { TerrainData() }
         data.height = terrainHeight
         data.type = terrainType
         fireChange(coordinate, terrainHeight, terrainType)
