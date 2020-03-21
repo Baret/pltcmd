@@ -8,17 +8,16 @@ import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.GameArea
 import org.hexworks.zircon.api.game.base.BaseGameArea
-import org.hexworks.zircon.internal.game.impl.TopDownProjectionStrategy
 
 /**
- * A [GameArea] that shows a map with holes. It uses [IncompleteMapBlock] for that. The full map is visible and can be altered.
+ * A [GameArea] that shows a map with holes. It uses [IncompleteMapBlock] for that.
+ * The full map is visible and can be altered.
  */
 class IncompleteMapGameArea(size: Size) :
         BaseGameArea<Tile, IncompleteMapBlock>(
                 initialVisibleSize = Size3D.from2DSize(size, 1),
                 initialActualSize = Size3D.from2DSize(size, 1),
-                initialContents = initialContents(size.width, size.height),
-                projectionStrategy = TopDownProjectionStrategy()) {
+                initialContents = initialContents(size.width, size.height)) {
 
     companion object {
         private fun initialContents(width: Int, height: Int): Map<Position3D, IncompleteMapBlock> {
