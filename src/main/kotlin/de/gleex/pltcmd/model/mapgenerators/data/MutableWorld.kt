@@ -70,6 +70,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
      * this mutable world can not be used to generate a valid map.
      */
     fun toWorldMap(): WorldMap {
+        finishGeneration()
         log.debug("Creating world map from ${terrainMap.size} tiles")
         require(terrainMap.size == completeArea.size) {
             "${terrainMap.size} coordinates have been generated, but ${completeArea.size} are needed."
@@ -97,6 +98,10 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
             }
         }
         return WorldMap(sectors)
+    }
+
+    private fun finishGeneration() {
+        eventExecutor.shutdown()
     }
 
     /**
@@ -129,7 +134,9 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
     }
 
     private fun fireChange(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
-        eventExecutor.execute { listeners.forEach { it.terrainGenerated(coordinate, terrainHeight, terrainType) } }
+        // remember current listeners for async call
+        val listenersToNotify = HashSet(listeners)
+        eventExecutor.execute { listenersToNotify.forEach { it.terrainGenerated(coordinate, terrainHeight, terrainType) } }
     }
 
     fun addListener(listener: MapGenerationListener) {

@@ -12,6 +12,8 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.GameComponent
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.view.base.BaseView
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /** Displays the progress of world generation. A miniature of the world is shown together with a progress bar. */
 class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
@@ -20,6 +22,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     private val progressBar = createProgressBar()
     private val header = createHeader()
     private val usedLines = progressBar.height + header.height
+    private val scheduledUpdates = Executors.newSingleThreadScheduledExecutor()
     private var confirmCallback: () -> Unit = {}
 
     /** ratio from 0.0 to 1.0 */
@@ -28,12 +31,11 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
 
     init {
         footer.addComponent(progressBar)
-        progressBar.progressProperty.updateFrom(progressProperty) { ratio -> progressBar.range * ratio }
-        progressProperty.onChange {
-            if (it.newValue == 1.0) {
-                onFinished()
-            }
-        }
+        // update progress bar only every now and then because it lasts some time
+        scheduledUpdates.scheduleAtFixedRate({
+            progressBar.progress = progressBar.range * progressProperty.value
+        }, 100L, 100L, TimeUnit.MILLISECONDS)
+        progressProperty.onChange { if (it.newValue == 1.0) onFinished() }
     }
 
     override fun onDock() {
@@ -73,6 +75,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     }
 
     private fun onFinished() {
+        scheduledUpdates.shutdown()
         header.text = "Generated world"
         footer.clear()
         val continueButton = createContinueButton()
