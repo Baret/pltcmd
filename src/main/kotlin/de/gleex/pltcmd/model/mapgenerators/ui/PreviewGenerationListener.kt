@@ -18,10 +18,10 @@ class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: 
     override fun terrainGenerated(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         val gameAreaPosition = coordinate.toGameAreaPosition()
 
-        val terrainData = averageTerrainMap.getOrPut(gameAreaPosition, { AverageTerrain() })
-        terrainData.put(coordinate, terrainHeight, terrainType)
+        val averageTerrain = averageTerrainMap.getOrPut(gameAreaPosition, { AverageTerrain() })
+        averageTerrain.put(coordinate, terrainHeight, terrainType)
 
-        previewWorld.setBlock(gameAreaPosition, terrainData.getAverageHeight(), terrainData.getDominatingType())
+        previewWorld.updateBlock(gameAreaPosition, averageTerrain.getAverageHeight(), averageTerrain.getDominatingType())
     }
 
     /** Maps the coordinate to the position in the preview. */

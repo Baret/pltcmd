@@ -33,7 +33,7 @@ class IncompleteMapGameArea(size: Size) :
         }
     }
 
-    fun setBlock(position: Position3D, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
+    fun updateBlock(position: Position3D, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         blocks[position]?.setTerrain(terrainHeight, terrainType)
     }
 
