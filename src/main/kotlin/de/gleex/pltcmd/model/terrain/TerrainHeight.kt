@@ -20,7 +20,6 @@ enum class TerrainHeight(val value: Int): Comparable<TerrainHeight> {
     companion object {
         fun random(r: Random = Random) = values().random(r)
 
-        @Suppress("MemberVisibilityCanBePrivate")
         fun ofValue(heightValue: Int): TerrainHeight? = values().find { it.value == heightValue }
 
         /**
