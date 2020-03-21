@@ -48,7 +48,7 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (World
     screen.dock(generatingView)
 
     val mapGenerator = WorldMapGenerator()
-    val progressListener = ProgressListener(mapGenerator.sizeInTiles, 100.0, generatingView.progressProperty) // 100.0 is the default of ProgressBar
+    val progressListener = ProgressListener(mapGenerator.sizeInTiles, generatingView.progressProperty)
     val previewListener = PreviewGenerationListener(mapGenerator.worldWidthInTiles, mapGenerator.worldHeightInTiles, generatingView.incompleteWorld)
     val origin = Coordinate(0, 0)
     val worldMap = mapGenerator.generateWorld(origin, progressListener, previewListener)

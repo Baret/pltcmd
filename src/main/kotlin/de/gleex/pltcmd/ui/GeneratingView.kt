@@ -3,6 +3,7 @@ package de.gleex.pltcmd.ui
 import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapBlock
 import de.gleex.pltcmd.model.mapgenerators.ui.IncompleteMapGameArea
 import de.gleex.pltcmd.options.UiOptions
+import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.*
@@ -21,11 +22,13 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     private val usedLines = progressBar.height + header.height
     private var confirmCallback: () -> Unit = {}
 
-    val progressProperty = progressBar.progressProperty
+    /** ratio from 0.0 to 1.0 */
+    val progressProperty = createPropertyFrom(0.0)
     val incompleteWorld = IncompleteMapGameArea(Size.create(screen.width, screen.height - usedLines))
 
     init {
         footer.addComponent(progressBar)
+        progressBar.progressProperty.updateFrom(progressProperty) { ratio -> progressBar.range * ratio }
         progressProperty.onChange {
             if (it.newValue == progressBar.range.toDouble()) {
                 onFinished()
