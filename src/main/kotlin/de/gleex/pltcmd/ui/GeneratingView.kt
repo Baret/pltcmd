@@ -30,7 +30,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
         footer.addComponent(progressBar)
         progressBar.progressProperty.updateFrom(progressProperty) { ratio -> progressBar.range * ratio }
         progressProperty.onChange {
-            if (it.newValue == progressBar.range.toDouble()) {
+            if (it.newValue == 1.0) {
                 onFinished()
             }
         }
