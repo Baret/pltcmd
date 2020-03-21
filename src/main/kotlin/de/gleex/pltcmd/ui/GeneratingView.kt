@@ -14,9 +14,6 @@ import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.GameComponent
 import org.hexworks.zircon.api.grid.TileGrid
-import org.hexworks.zircon.api.uievent.MouseEvent
-import org.hexworks.zircon.api.uievent.MouseEventType
-import org.hexworks.zircon.api.uievent.UIEventPhase
 import org.hexworks.zircon.api.view.base.BaseView
 
 /**
@@ -92,7 +89,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
                 .withAlignmentWithin(footer, ComponentAlignment.BOTTOM_CENTER)
                 .build()
         footer.addComponent(doneText)
-        doneText.processMouseEvents(MouseEventType.MOUSE_CLICKED) { mouseEvent: MouseEvent, uiEventPhase: UIEventPhase ->
+        doneText.onActivated {
             finished.complete(Unit)
         }
     }
