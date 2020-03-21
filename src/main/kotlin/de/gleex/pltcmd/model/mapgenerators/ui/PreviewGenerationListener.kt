@@ -21,7 +21,7 @@ class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: 
         val averageTerrain = averageTerrainMap.getOrPut(gameAreaPosition, { AverageTerrain() })
         averageTerrain.put(coordinate, terrainHeight, terrainType)
 
-        previewWorld.updateBlock(gameAreaPosition, averageTerrain.getAverageHeight(), averageTerrain.getDominatingType())
+        previewWorld.updateBlock(gameAreaPosition, averageTerrain.averageHeight, averageTerrain.dominatingType)
     }
 
     /** Maps the coordinate to the position in the preview. */
