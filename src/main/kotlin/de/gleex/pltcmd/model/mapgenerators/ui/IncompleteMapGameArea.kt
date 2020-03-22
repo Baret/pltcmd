@@ -17,21 +17,9 @@ class IncompleteMapGameArea(size: Size) :
         BaseGameArea<Tile, IncompleteMapBlock>(
                 initialVisibleSize = Size3D.from2DSize(size, 1),
                 initialActualSize = Size3D.from2DSize(size, 1),
-                initialContents = initialContents(size.width, size.height)) {
-
-    companion object {
-        private fun initialContents(width: Int, height: Int): Map<Position3D, IncompleteMapBlock> {
-            val contents = mutableMapOf<Position3D, IncompleteMapBlock>()
-            // fill area with voidness
-            for (y in 0 until height) {
-                for (x in 0 until width) {
-                    val position = Position3D.create(x, y, 0)
-                    contents[position] = IncompleteMapBlock()
-                }
-            }
-            return contents
-        }
-    }
+                initialContents = size.fetchPositions()
+                        .map { it.to3DPosition(0) }
+                        .associateWith { IncompleteMapBlock() }) {
 
     fun updateBlock(position: Position3D, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         blocks[position]?.setTerrain(terrainHeight, terrainType)
