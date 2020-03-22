@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.model.mapgenerators.data
 
 import de.gleex.pltcmd.model.mapgenerators.MapGenerationListener
-import de.gleex.pltcmd.model.mapgenerators.TerrainData
 import de.gleex.pltcmd.model.terrain.Terrain
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType

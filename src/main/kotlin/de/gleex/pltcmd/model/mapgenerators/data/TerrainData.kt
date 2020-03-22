@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.mapgenerators
+package de.gleex.pltcmd.model.mapgenerators.data
 
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType

@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.model.terrain
 
-import de.gleex.pltcmd.model.mapgenerators.TerrainData
+import de.gleex.pltcmd.model.mapgenerators.data.TerrainData
 import de.gleex.pltcmd.model.world.Coordinate
 
 /** Collects multiple [TerrainData] and provides the average for all given data. */
