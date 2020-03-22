@@ -133,7 +133,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
 
     private fun fireChange(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         // remember current listeners for async call
-        val listenersToNotify = HashSet(listeners)
+        val listenersToNotify = listeners.toSet()
         eventExecutor.execute { listenersToNotify.forEach { it.terrainGenerated(coordinate, terrainHeight, terrainType) } }
     }
 
