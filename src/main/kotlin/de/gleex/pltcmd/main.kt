@@ -4,7 +4,9 @@ import de.gleex.pltcmd.game.GameWorld
 import de.gleex.pltcmd.game.TileRepository
 import de.gleex.pltcmd.model.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Coordinate
+import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.GameView
 import de.gleex.pltcmd.ui.GeneratingView
@@ -46,7 +48,11 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (World
     val generatingView = GeneratingView(tileGrid)
     screen.dock(generatingView)
 
-    val mapGenerator = WorldMapGenerator()
+    val mapGenerator = WorldMapGenerator(
+            GameOptions.DEBUG_MAP_SEED,
+            GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT,
+            GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
+    )
     MapGenerationProgressController(mapGenerator, generatingView)
 
     val origin = Coordinate(0, 0)

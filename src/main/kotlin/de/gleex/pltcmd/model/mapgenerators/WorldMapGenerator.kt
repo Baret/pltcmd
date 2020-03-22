@@ -4,20 +4,15 @@ import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.mapgenerators.intermediate.*
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.model.world.CoordinateRectangle
-import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
-import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 
 /**
  * The WorldMapGenerator is the only class you need outside this package. It generates the world for the game given a seed.
  */
-class WorldMapGenerator(
-        private val seed: Long = GameOptions.DEBUG_MAP_SEED,
-        val worldWidthInTiles: Int = GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT,
-        val worldHeightInTiles: Int = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
-) {
+class WorldMapGenerator(private val seed: Long, val worldWidthInTiles: Int, val worldHeightInTiles: Int) {
+
     private val random = Random(seed)
     private val context = GenerationContext.fromRandom(random)
 
