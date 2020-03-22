@@ -19,8 +19,8 @@ import org.hexworks.zircon.api.view.base.BaseView
  **/
 class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
+    private val footer = createFooter()
     private val progressBar = createProgressBar()
-    private val footer = createFooter().apply { addComponent(progressBar) }
     private val header = createHeader()
     private val usedLines = progressBar.height + header.height
     private var confirmCallback: () -> Unit = {}
@@ -29,6 +29,8 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
 
     init {
         val mainPart = createMainPart()
+
+        footer.addComponent(progressBar)
 
         screen.addComponents(header, mainPart, footer)
     }
