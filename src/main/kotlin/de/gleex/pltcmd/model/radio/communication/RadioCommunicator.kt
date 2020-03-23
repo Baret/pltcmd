@@ -6,6 +6,7 @@ import de.gleex.pltcmd.events.TransmissionEvent
 import de.gleex.pltcmd.events.ticks.Ticker
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.transmissions.*
+import de.gleex.pltcmd.model.world.Coordinate
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.*
@@ -22,6 +23,8 @@ class RadioCommunicator(val callSign: CallSign) {
     }
     
     private val transmissionBuffer = TransmissionBuffer()
+
+    val transmissionContext = TransmissionContext(Coordinate(112, 542))
 
     var conversationActiveWith: Maybe<CallSign> = Maybe.empty()
     val conversationQueue: LinkedList<Conversation> = LinkedList()
@@ -90,7 +93,7 @@ class RadioCommunicator(val callSign: CallSign) {
 
     private fun gatherInformationFrom(event: TransmissionEvent) {
         // TODO: Lean stuff from transmissions and add it to the "knowledge" of this unit
-        log.debug("$callSign: gathering information")
+        log.debug("$callSign: gathering information from ${event.decodeMessage(transmissionContext)}")
     }
 
     /**

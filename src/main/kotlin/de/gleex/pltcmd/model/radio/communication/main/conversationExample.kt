@@ -79,6 +79,11 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
 
     screen.themeProperty.value = UiOptions.THEME
 
+    val contextMap = mapOf(
+            hqSender.callSign to hqSender.transmissionContext,
+            bravoSender.callSign to bravoSender.transmissionContext,
+            charlieSender.callSign to charlieSender.transmissionContext)
+
     val LOG_AREA_HEIGHT = 20
     val logArea = Components.logArea().
     withSize(UiOptions.WINDOW_WIDTH, LOG_AREA_HEIGHT).
@@ -87,7 +92,7 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
     build().
     apply {
         EventBus.subscribeToRadioComms { event ->
-            addParagraph("${Ticker.currentTime()}: ${event.transmission.message}", false, 10)
+            addParagraph("${Ticker.currentTime()}: ${event.decodeMessage(contextMap[event.transmission.receiver]!!)}", false, 10)
         }
     }
 
@@ -105,7 +110,7 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
                     apply {
                         addFragment(TickFragment(sideBarWidth))
                         // TESTING
-                        addFragment(TilesetSelectorFragment(sideBarWidth, this@apply))
+                        addFragment(TilesetSelectorFragment(sideBarWidth, this@apply, logArea))
                     })
 
                 // RadioCommunicator panels

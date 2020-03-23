@@ -2,10 +2,8 @@ package de.gleex.pltcmd.model.radio.communication.building
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
-import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
-import de.gleex.pltcmd.model.radio.communication.transmissions.TerminatingTransmission
-import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
-import de.gleex.pltcmd.model.radio.communication.transmissions.TransmissionWithResponse
+import de.gleex.pltcmd.model.radio.communication.transmissions.*
+import kotlin.reflect.KProperty1
 
 class ConversationBuilder(private val sender: CallSign, private val receiver: CallSign) {
 
@@ -36,7 +34,7 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         return transmissionWithResponse(message, nextTransmission, false)
     }
 
-    fun terminatingResponse(message: String) = TerminatingTransmission(message.asTransmission(toReceiver = false, terminating = true))
+    fun terminatingResponse(message: String, vararg contextProperties: KProperty1<TransmissionContext, Any>) = TerminatingTransmission(message.asTransmission(toReceiver = false, terminating = true), contextProperties)
 
     fun order(message: String, readbackSupplier: () -> TerminatingTransmission): OrderTransmission {
         val readback = readbackSupplier.invoke()
@@ -44,7 +42,7 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         return OrderTransmission(message.asTransmission(), readback, negative())
     }
 
-    fun readback(message: String): TerminatingTransmission = terminatingResponse("roger, $message")
+    fun readback(message: String): TerminatingTransmission = terminatingResponse("roger, $message", TransmissionContext::position)
 
     private fun negative(): TerminatingTransmission = TerminatingTransmission("negative".asTransmission(toReceiver = false, terminating = true))
 
