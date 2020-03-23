@@ -6,10 +6,10 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.base.BaseBlock
 
 /**
- * A MapBlock represents one tile in the map view. It displays its immutable [Terrain]
- * and the unit (or its marker) at this tile.
+ * Represents one tile in the map view. It displays its immutable [Terrain]
+ * and the unit (or its marker) at this tile. An optional overlay can be shown.
  */
-class MapBlock(val terrain: Terrain) : BaseBlock<Tile>(emptyTile = TileRepository.empty(), tiles = persistentMapOf()) {
+class GameBlock(val terrain: Terrain) : BaseBlock<Tile>(emptyTile = TileRepository.empty(), tiles = persistentMapOf()) {
 
     init {
         top = TileRepository.createTerrainTile(terrain)
