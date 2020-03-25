@@ -79,11 +79,6 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
 
     screen.themeProperty.value = UiOptions.THEME
 
-    val contextMap = mapOf(
-            hqSender.callSign to hqSender.transmissionContext,
-            bravoSender.callSign to bravoSender.transmissionContext,
-            charlieSender.callSign to charlieSender.transmissionContext)
-
     val LOG_AREA_HEIGHT = 20
     val logArea = Components.logArea().
     withSize(UiOptions.WINDOW_WIDTH, LOG_AREA_HEIGHT).
@@ -92,7 +87,7 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
     build().
     apply {
         EventBus.subscribeToRadioComms { event ->
-            addParagraph("${Ticker.currentTime()}: ${event.decodeMessage(contextMap[event.transmission.receiver]!!)}", false, 10)
+            addParagraph("${Ticker.currentTime()}: ${event.transmission.message}", false, 10)
         }
     }
 
@@ -131,17 +126,18 @@ fun ceateRadioCommuicatorPanel(communicator: RadioCommunicator, size: Size): Com
             withDecorations(ComponentDecorations.box(BoxType.DOUBLE, communicator.callSign.toString())).
             build().
             apply {
-                val conversationPartner = createPropertyFrom(communicator.conversationActiveWith)
-                EventBus.subscribeToTicks { conversationPartner.value = communicator.conversationActiveWith }
                 addComponent(Components.
                         label().
                         withSize(contentSize.width, 1).
                         build().
                         apply {
                             textProperty.updateFrom(
-                                    createPropertyFrom("Talking to ") bindPlusWith conversationPartner.bindTransform { it.map { it.toString() }.orElse("nobody") })
+                                    createPropertyFrom("Talking to ")
+                                                bindPlusWith communicator.inConversationWith.
+                                                    bindTransform { it.map { callSign -> callSign.toString() }.orElse("nobody") })
                         })
 
-                // TODO: add list of buffered conversations
+                // TODO: add list of buffered conversations7
+                // TODO: Add list of known information
             }
 }

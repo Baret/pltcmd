@@ -7,6 +7,8 @@ import de.gleex.pltcmd.events.ticks.Ticker
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.transmissions.*
 import de.gleex.pltcmd.model.world.Coordinate
+import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.*
@@ -24,9 +26,10 @@ class RadioCommunicator(val callSign: CallSign) {
     
     private val transmissionBuffer = TransmissionBuffer()
 
-    val transmissionContext = TransmissionContext(Coordinate(112, 542))
+    val transmissionContext = TransmissionContext(Coordinate(Random.nextInt(500), Random.nextInt(500)))
 
-    var conversationActiveWith: Maybe<CallSign> = Maybe.empty()
+    /** this property is rather a debug feature for the test UI, might be removed later */
+    val inConversationWith: Property<Maybe<CallSign>> = createPropertyFrom(Maybe.empty())
     val conversationQueue: LinkedList<Conversation> = LinkedList()
 
     init {
@@ -38,6 +41,7 @@ class RadioCommunicator(val callSign: CallSign) {
 
         EventBus.subscribeToRadioComms { event ->
             if(event.isNotFromMe()) {
+                // TODO: decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
                 if (event.isForMe()) {
                     respondTo(event)
                 } else {
@@ -48,17 +52,17 @@ class RadioCommunicator(val callSign: CallSign) {
     }
 
     private fun send(transmission: Transmission) {
-        EventBus.publish(TransmissionEvent(transmission, callSign))
+        EventBus.publish(TransmissionEvent(transmission.encodeMessage(transmissionContext), callSign))
     }
 
     private fun respondTo(event: TransmissionEvent) {
         val incomingTransmission = event.transmission
-        if(conversationActiveWith.isEmpty()) {
-            conversationActiveWith = Maybe.of(event.transmission.sender)
-            println("$callSign is now in conversation with ${conversationActiveWith.get()}")
+        if(inConversationWith.value.isEmpty()) {
+            inConversationWith.updateValue(Maybe.of(event.transmission.sender))
+            println("$callSign is now in conversation with ${inConversationWith.value.get()}")
         }
 
-        if(incomingTransmission.hasSender(conversationActiveWith.get()).not()) {
+        if(incomingTransmission.hasSender(inConversationWith.value.get()).not()) {
             replyWithStandBy(incomingTransmission)
         } else {
             sendResponseTo(incomingTransmission)
@@ -79,7 +83,7 @@ class RadioCommunicator(val callSign: CallSign) {
     }
 
     private fun endConversation() {
-        conversationActiveWith = Maybe.empty()
+        inConversationWith.updateValue(Maybe.empty())
         conversationQueue.poll()?.let { startCommunication(it) }
     }
 
@@ -93,17 +97,17 @@ class RadioCommunicator(val callSign: CallSign) {
 
     private fun gatherInformationFrom(event: TransmissionEvent) {
         // TODO: Lean stuff from transmissions and add it to the "knowledge" of this unit
-        log.debug("$callSign: gathering information from ${event.decodeMessage(transmissionContext)}")
+        log.debug("$callSign: gathering information from '${event.transmission.message}'")
     }
 
     /**
      * Starts the given [Conversation] when there is not conversation going on.
      */
     fun startCommunication(conversation: Conversation) {
-        if (conversationActiveWith.isPresent) {
+        if (inConversationWith.value.isPresent) {
             queueConversation(conversation)
         } else {
-            conversationActiveWith = Maybe.of(conversation.receiver)
+            inConversationWith.updateValue(Maybe.of(conversation.receiver))
             sendNextTick(conversation.firstTransmission)
         }
     }
@@ -124,7 +128,7 @@ class RadioCommunicator(val callSign: CallSign) {
     }
 
     private fun TransmissionEvent.isNotFromMe(): Boolean {
-        return transmission.hasSender(callSign).not()
+        return emitter != callSign
     }
 
     private fun nextTransmissionOf(transmission: Transmission) =
