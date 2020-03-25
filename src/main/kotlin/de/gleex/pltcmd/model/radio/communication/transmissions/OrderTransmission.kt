@@ -2,6 +2,9 @@ package de.gleex.pltcmd.model.radio.communication.transmissions
 
 import kotlin.reflect.KProperty1
 
+/**
+ * An order has two answers, a positive and a negative one.
+ */
 data class OrderTransmission(
         private val messageTemplate: String,
         val positiveAwnser: Transmission,

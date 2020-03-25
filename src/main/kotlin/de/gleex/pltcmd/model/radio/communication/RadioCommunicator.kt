@@ -52,7 +52,7 @@ class RadioCommunicator(val callSign: CallSign) {
     }
 
     private fun send(transmission: Transmission) {
-        EventBus.publish(TransmissionEvent(transmission.encodeMessage(transmissionContext), callSign))
+        EventBus.publish(TransmissionEvent(transmission.transmit(transmissionContext), callSign))
     }
 
     private fun respondTo(event: TransmissionEvent) {
