@@ -34,6 +34,15 @@ fun main() {
 
     buildUI(hqSender, bravoSender, charlieSender)
 
+    println("creating SITREP from $hq to $bravo")
+
+    hqSender.startCommunication(
+            Conversations.
+            sitrep(
+                    sender = hq,
+                    receiver = bravo
+            ))
+
     println("creating move to from $hq to $charlie")
 
     hqSender.startCommunication(
@@ -52,15 +61,6 @@ fun main() {
                     sender = hq,
                     receiver = bravo,
                     enemyLocation = Coordinate(24, 198)
-            ))
-
-    println("creating report position from $hq to $charlie")
-
-    hqSender.startCommunication(
-            Conversations.
-            reportPosition(
-                    sender = hq,
-                    receiver = charlie
             ))
 
     println("creating report position from $bravo to $charlie")

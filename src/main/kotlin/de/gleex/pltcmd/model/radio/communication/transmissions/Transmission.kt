@@ -36,7 +36,8 @@ abstract class Transmission(private val messageTemplate: String, private val con
 
     private var _message: String = messageTemplate
 
-    val message = _message
+    val message: String
+        get() = _message
 
     /**
      * Applies the given context to the message temlpate. After this call receivers can decode [message].

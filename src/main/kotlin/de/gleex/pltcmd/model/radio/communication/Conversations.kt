@@ -40,6 +40,18 @@ object Conversations {
                 }
             }
 
+    fun sitrep(sender: CallSign, receiver: CallSign) =
+            conversation(sender, receiver) {
+                init {
+                    request("SITREP") {
+                        terminatingResponse("we have %d soldiers ready to fight! %d wounded, %d killed",
+                                TransmissionContext::fightingReady,
+                                TransmissionContext::woundedCount,
+                                TransmissionContext::killedCount)
+                    }
+                }
+            }
+
     // Other conversations
 
     fun standBy(sender: CallSign, receiver: CallSign) =

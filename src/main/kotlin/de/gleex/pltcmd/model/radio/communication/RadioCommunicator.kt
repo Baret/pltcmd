@@ -26,7 +26,11 @@ class RadioCommunicator(val callSign: CallSign) {
     
     private val transmissionBuffer = TransmissionBuffer()
 
-    val transmissionContext = TransmissionContext(Coordinate(Random.nextInt(500), Random.nextInt(500)))
+    val transmissionContext = TransmissionContext(
+            Coordinate(Random.nextInt(500), Random.nextInt(500)),
+            Random.nextInt(40, 50),
+            Random.nextInt(3, 10),
+            Random.nextInt(0, 4))
 
     /** this property is rather a debug feature for the test UI, might be removed later */
     val inConversationWith: Property<Maybe<CallSign>> = createPropertyFrom(Maybe.empty())
@@ -52,14 +56,14 @@ class RadioCommunicator(val callSign: CallSign) {
     }
 
     private fun send(transmission: Transmission) {
-        EventBus.publish(TransmissionEvent(transmission.transmit(transmissionContext), callSign))
+        val transmission1 = transmission.transmit(transmissionContext)
+        EventBus.publish(TransmissionEvent(transmission1, callSign))
     }
 
     private fun respondTo(event: TransmissionEvent) {
         val incomingTransmission = event.transmission
         if(inConversationWith.value.isEmpty()) {
             inConversationWith.updateValue(Maybe.of(event.transmission.sender))
-            println("$callSign is now in conversation with ${inConversationWith.value.get()}")
         }
 
         if(incomingTransmission.hasSender(inConversationWith.value.get()).not()) {
@@ -71,7 +75,9 @@ class RadioCommunicator(val callSign: CallSign) {
 
     private fun replyWithStandBy(incomingTransmission: Transmission) {
         sendNextTick(Conversations.standBy(callSign, incomingTransmission.sender).firstTransmission)
-        queueConversation(Conversation(callSign, incomingTransmission.sender, nextTransmissionOf(incomingTransmission)))
+        if (incomingTransmission !is TerminatingTransmission) {
+            queueConversation(Conversation(callSign, incomingTransmission.sender, nextTransmissionOf(incomingTransmission)))
+        }
     }
 
     private fun sendResponseTo(transmission: Transmission) {
