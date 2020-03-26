@@ -9,7 +9,4 @@ import org.hexworks.cobalt.events.api.Event
  */
 class TransmissionEvent(val transmission: Transmission, sender: CallSign): Event {
     override val emitter: Any = sender
-
-    // TODO: use trace to "log" the course of a conversation
-//    override val trace: Iterable<Event>
 }
