@@ -40,7 +40,7 @@ abstract class Transmission(private val messageTemplate: String, private val con
         get() = _message
 
     /**
-     * Applies the given context to the message temlpate. After this call receivers can decode [message].
+     * Applies the given context to the message temlpate. After this call receivers can properly decode [message].
      */
     fun transmit(context: TransmissionContext): Transmission {
         _message = messageTemplate.

@@ -40,7 +40,9 @@ class RadioCommunicator(val callSign: CallSign) {
         EventBus.subscribeToTicks { tick ->
             transmissionBuffer.
                 pop(tick.id).
-                ifPresent{ send(it) }
+                ifPresent{
+                    EventBus.publish(TransmissionEvent(it.transmit(transmissionContext), callSign))
+                }
         }
 
         EventBus.subscribeToRadioComms { event ->
@@ -55,28 +57,25 @@ class RadioCommunicator(val callSign: CallSign) {
         }
     }
 
-    private fun send(transmission: Transmission) {
-        val transmission1 = transmission.transmit(transmissionContext)
-        EventBus.publish(TransmissionEvent(transmission1, callSign))
-    }
-
     private fun respondTo(event: TransmissionEvent) {
         val incomingTransmission = event.transmission
         if(inConversationWith.value.isEmpty()) {
             inConversationWith.updateValue(Maybe.of(event.transmission.sender))
         }
 
-        if(incomingTransmission.hasSender(inConversationWith.value.get()).not()) {
-            replyWithStandBy(incomingTransmission)
-        } else {
+        if (incomingTransmission.hasSender(inConversationWith.value.get())) {
             sendResponseTo(incomingTransmission)
+        } else {
+            replyWithStandBy(incomingTransmission)
         }
     }
 
     private fun replyWithStandBy(incomingTransmission: Transmission) {
-        sendNextTick(Conversations.standBy(callSign, incomingTransmission.sender).firstTransmission)
-        if (incomingTransmission !is TerminatingTransmission) {
+        if (incomingTransmission is TerminatingTransmission) {
+            endConversation()
+        } else {
             queueConversation(Conversation(callSign, incomingTransmission.sender, nextTransmissionOf(incomingTransmission)))
+            sendNextTick(Conversations.standBy(callSign, incomingTransmission.sender).firstTransmission)
         }
     }
 
@@ -94,6 +93,7 @@ class RadioCommunicator(val callSign: CallSign) {
     }
 
     private fun executeOrderAndRespond(transmission: OrderTransmission) {
+        // TODO: This will contain the game entity's logic to execute actual commands
         if(Random.nextBoolean()) {
             sendNextTick(transmission.positiveAwnser)
         } else {
@@ -102,12 +102,12 @@ class RadioCommunicator(val callSign: CallSign) {
     }
 
     private fun gatherInformationFrom(event: TransmissionEvent) {
-        // TODO: Lean stuff from transmissions and add it to the "knowledge" of this unit
+        // TODO: Learn stuff from transmissions and add it to the "knowledge" of this unit
         log.debug("$callSign: gathering information from '${event.transmission.message}'")
     }
 
     /**
-     * Starts the given [Conversation] when there is not conversation going on.
+     * Starts the given [Conversation] when there is not a conversation going on. In that case it will be queued.
      */
     fun startCommunication(conversation: Conversation) {
         if (inConversationWith.value.isPresent) {

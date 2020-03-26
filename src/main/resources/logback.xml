@@ -13,6 +13,6 @@
     <logger name="org.hexworks.zircon" level="INFO"/>
     <logger name="org.hexworks.cobalt" level="INFO"/>
 
-    <logger name="de.gleex.pltcmd" level="INFO"/>
+    <logger name="de.gleex.pltcmd" level="debug"/>
 
 </configuration>

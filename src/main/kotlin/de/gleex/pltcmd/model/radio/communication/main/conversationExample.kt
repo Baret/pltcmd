@@ -21,6 +21,12 @@ import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.graphics.BoxType
 
+/**
+ * This little bit of code is used to play around with radio conversations. It creates a GUI where you can
+ * manually advance the game ticks to see step by step how the conversations evolve. It currently has
+ * 3 [RadioCommunicator]s and the conversations are built before the UI starts. Later it might be possible
+ * to dynamically build conversations in the UI.
+ */
 fun main() {
     EventBus.subscribeToRadioComms { println("RADIO ${Ticker.currentTime()}: ${it.transmission.message}") }
 
@@ -137,7 +143,7 @@ fun ceateRadioCommuicatorPanel(communicator: RadioCommunicator, size: Size): Com
                                                     bindTransform { it.map { callSign -> callSign.toString() }.orElse("nobody") })
                         })
 
-                // TODO: add list of buffered conversations7
+                // TODO: add list of buffered conversations
                 // TODO: Add list of known information
             }
 }

@@ -50,9 +50,11 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                 withGameArea(gameWorld).
                 withSize(gameWorld.visibleSize.to2DSize()).
                 withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
-                withTileset(CP437TilesetResources.guybrush16x16()).
                 build()
+
         mainPart.addComponent(map)
+        // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
+        map.tilesetProperty.updateValue(CP437TilesetResources.guybrush16x16())
 
         val logArea = Components.logArea().
                 withSize(UiOptions.LOG_AREA_WIDTH, UiOptions.LOG_AREA_HEIGHT).

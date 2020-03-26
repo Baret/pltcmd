@@ -20,6 +20,17 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         return Conversation(sender, receiver, openingTransmission!!)
     }
 
+    /**
+     * Initializes a conversation and adds the two messages as order and expected readback response.
+     */
+    fun genericOrder(orderMessage: String, readback: String) {
+        init {
+            order(orderMessage) {
+                readback(readback)
+            }
+        }
+    }
+
     fun init(nextTransmission: () -> Transmission) {
         openingTransmission = request("come in") {
             response("send it", nextTransmission)
@@ -58,17 +69,6 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
             TRANSMISSION_FORMAT.format(receiver, sender, this, ending(terminating))
         } else {
             TRANSMISSION_FORMAT.format(sender, receiver, this, ending(terminating))
-        }
-    }
-
-    /**
-     * Initializes a conversation and adds the two messages as order and expected readback response.
-     */
-    fun genericOrder(orderMessage: String, readback: String) {
-        init {
-            order(orderMessage) {
-                readback(readback)
-            }
         }
     }
 }

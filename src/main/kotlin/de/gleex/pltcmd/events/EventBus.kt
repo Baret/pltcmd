@@ -5,6 +5,9 @@ import org.hexworks.cobalt.events.api.EventBus
 import org.hexworks.cobalt.events.api.Subscription
 import org.hexworks.cobalt.events.api.simpleSubscribeTo
 
+/**
+ * A wrapper around Cobalt's [EventBus] to simplify subscription to existing event scopes.
+ */
 object EventBus {
     val instance = EventBus.create()
 
