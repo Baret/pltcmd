@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game
 
 import de.gleex.pltcmd.model.radio.SignalStrength
 import de.gleex.pltcmd.model.terrain.Terrain
+import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import org.hexworks.zircon.api.builder.modifier.BorderBuilder
 import org.hexworks.zircon.api.data.Tile
@@ -27,20 +28,25 @@ object TileRepository {
 
     }
 
-    fun createTerrainTile(terrain: Terrain): Tile =
+    fun createTerrainTile(terrain: Terrain): Tile = createTerrainTile(terrain.height, terrain.type)
+
+    fun createTerrainTile(terrainHeight: TerrainHeight?, terrainType: TerrainType?): Tile =
             Tile.
                 newBuilder().
-                withForegroundColor(ColorRepository.forType(terrain.type)).
-                withBackgroundColor(ColorRepository.forHeight(terrain.height)).
-                withCharacter(terrain.type.char()).
+                withForegroundColor(ColorRepository.forType(terrainType)).
+                withBackgroundColor(ColorRepository.forHeight(terrainHeight)).
+                withCharacter(terrainType.char()).
                 buildCharacterTile()
 
-    private fun TerrainType.char() = when (this) {
-        TerrainType.GRASSLAND -> '\"'
-        TerrainType.FOREST    -> Symbols.SPADES
-        TerrainType.HILL      -> Symbols.INTERSECTION
-        TerrainType.MOUNTAIN  -> Symbols.TRIANGLE_UP_POINTING_BLACK
-        TerrainType.WATER_DEEP, TerrainType.WATER_SHALLOW -> Symbols.APPROXIMATION
+    private fun TerrainType?.char(): Char {
+        if (this == null) return Symbols.INVERTED_QUESTION_MARK
+        return when (this) {
+            TerrainType.GRASSLAND                             -> '\"'
+            TerrainType.FOREST                                -> Symbols.SPADES
+            TerrainType.HILL                                  -> Symbols.INTERSECTION
+            TerrainType.MOUNTAIN                              -> Symbols.TRIANGLE_UP_POINTING_BLACK
+            TerrainType.WATER_DEEP, TerrainType.WATER_SHALLOW -> Symbols.APPROXIMATION
+        }
     }
 
     fun empty() = Tile.empty()
