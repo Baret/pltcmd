@@ -14,7 +14,7 @@ import kotlin.math.min
 import kotlin.random.Random
 
 /**
- * Finds empty spaces and fills them with more or less smooth height (ignoring the context).
+ * Finds empty spaces and fills them with more or less smooth height.
  */
 class HeightFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
