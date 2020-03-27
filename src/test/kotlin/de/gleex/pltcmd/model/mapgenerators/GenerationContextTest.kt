@@ -23,11 +23,10 @@ class GenerationContextTest : StringSpec({
                 -10.0,
                 -123456789.0
         )) { v: Double ->
-            val underTest = GenerationContext(v, v, v, v, v, v)
-            val expected = (if (v == 0.0) 0.0 else 1 / 6.0)
-            underTest.plainsRatio shouldBe expected
-            underTest.forestRatio shouldBe expected
-            underTest.mountainRatio shouldBe expected
+            val underTest = GenerationContext(v, v, v, v, v)
+            val expected = (if (v == 0.0) 0.0 else 1 / 5.0)
+            underTest.vegetationRatio shouldBe expected
+            underTest.hillinessRatio shouldBe expected
             underTest.waterRatio shouldBe expected
             underTest.urbanRatio shouldBe expected
             underTest.undefinedRatio shouldBe expected

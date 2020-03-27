@@ -18,12 +18,10 @@ data class GenerationContext(
 ) {
     companion object {
         fun fromRandom(random: Random): GenerationContext {
-            val mapUnevenness = random.nextDouble()
-            return GenerationContext(1.0 - mapUnevenness, random.nextDouble(), mapUnevenness, random.nextDouble(), random.nextDouble(), random.nextDouble(0.3, 1.0))
+            return GenerationContext(random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(0.3, 1.0))
         }
     }
 
-    val plainsRatio: Double = asRatio(plains)
     val vegetationRatio: Double = asRatio(vegetation)
     val hillinessRatio: Double = asRatio(hilliness)
     val waterRatio: Double = asRatio(water)
@@ -34,7 +32,7 @@ data class GenerationContext(
 
     private fun asRatio(value: Double): Double {
         // use absolute value to count negative parts
-        val sum = abs(plains) + abs(vegetation) + abs(hilliness) + abs(water) + abs(urban) + abs(undefined)
+        val sum = abs(vegetation) + abs(hilliness) + abs(water) + abs(urban) + abs(undefined)
         if (sum == 0.0) {
             return 0.0
         }
@@ -42,8 +40,7 @@ data class GenerationContext(
     }
 
     override fun toString(): String {
-        return "GenerationContext: %.1f %% plains, %.1f %% vegetation, %.1f %% hilliness, %.1f %% water, %.1f %% urban, %.1f %% undefined, ".format(
-                plainsRatio * 100,
+        return "GenerationContext: %.1f %% vegetation, %.1f %% hilliness, %.1f %% water, %.1f %% urban, %.1f %% undefined, ".format(
                 vegetationRatio * 100,
                 hillinessRatio * 100,
                 waterRatio * 100,
