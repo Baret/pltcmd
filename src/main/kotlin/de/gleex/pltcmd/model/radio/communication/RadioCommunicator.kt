@@ -123,7 +123,7 @@ class RadioCommunicator(val callSign: CallSign) {
     }
 
     private fun sendNextTick(transmission: Transmission) {
-        transmissionBuffer.push(Ticker.nextTick(), transmission)
+        transmissionBuffer.push(Ticker.nextTick, transmission)
         if(transmission is TerminatingTransmission) {
             endConversation()
         }

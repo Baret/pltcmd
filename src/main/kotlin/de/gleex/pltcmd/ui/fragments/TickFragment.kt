@@ -20,9 +20,9 @@ class TickFragment(override val width: Int) : BaseFragment {
                                     build().
                                     apply {
                                         textProperty.updateFrom(
-                                                Ticker.currentTickProperty.bindTransform { it.toString() }
+                                                Ticker.currentTickObservable.bindTransform { it.toString() }
                                                         bindPlusWith createPropertyFrom(": ")
-                                                        bindPlusWith Ticker.currentTimeStringProperty)
+                                                        bindPlusWith Ticker.currentTimeString)
                                     })
                                 addComponent(Components.
                                     button().
