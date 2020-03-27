@@ -103,11 +103,11 @@ class DijkstraMapOfCoordinates(private val map: Map<Coordinate, Int>) {
     }
 
     private fun Collection<Coordinate>.highest(targetValue: Int): Coordinate? {
-        val lowestEntry = map.entries.
+        val highestEntry = map.entries.
                 filter { it.key in this }
                 .maxBy { it.value }
-        return if(lowestEntry?.value != null && lowestEntry.value <= targetValue) {
-            lowestEntry.key
+        return if(highestEntry?.value != null && highestEntry.value <= targetValue) {
+            highestEntry.key
         } else {
             null
         }
