@@ -41,8 +41,8 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
             }
             // from each position find the four neighbours that have no height yet
             generateMountains(frontier, mutableWorld)
-            log.debug("Processed ${processedTiles.size} tiles to create ${mountainTopLocations.size} mountains")
         }
+        log.debug("Processed ${processedTiles.size} tiles to create ${mountainTopLocations.size} mountains")
     }
 
     private fun generateMountains(initialFrontier: Set<Coordinate>, mutableWorld: MutableWorld) {
