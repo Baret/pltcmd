@@ -38,7 +38,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
 
     /** Return the number of tiles in the given area that should be plains */
     private fun totalTiles(area: CoordinateArea): Int {
-        val plainsRatio = 1.0 - context.hillinessRatio
+        val plainsRatio = 1.0 - context.hilliness
         log.debug("Using $plainsRatio of the area for plains")
         return (area.size * plainsRatio).roundToInt()
     }
