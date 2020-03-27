@@ -43,7 +43,7 @@ fun main() {
     println("creating SITREP from $hq to $bravo")
 
     hqSender.startCommunication(
-            Conversations.
+            Conversations.Reports.
             sitrep(
                     sender = hq,
                     receiver = bravo
@@ -52,7 +52,7 @@ fun main() {
     println("creating move to from $hq to $charlie")
 
     hqSender.startCommunication(
-            Conversations.
+            Conversations.Orders.
             moveTo(
                     sender = hq,
                     receiver = charlie,
@@ -62,7 +62,7 @@ fun main() {
     println("creating engage from $hq to $bravo")
 
     hqSender.startCommunication(
-            Conversations.
+            Conversations.Orders.
             engageEnemyAt(
                     sender = hq,
                     receiver = bravo,
@@ -72,7 +72,7 @@ fun main() {
     println("creating report position from $bravo to $charlie")
 
     bravoSender.startCommunication(
-            Conversations.
+            Conversations.Reports.
             reportPosition(
                     sender = bravo,
                     receiver = charlie

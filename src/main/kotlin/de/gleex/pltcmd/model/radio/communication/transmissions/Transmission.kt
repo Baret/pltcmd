@@ -21,6 +21,9 @@ import kotlin.reflect.KProperty1
  *
  * A message template might be "Alpha, this is Bravo, our position is %s". When the time comes for Bravo to transmit
  * this transmission it calls [transmit] with its [TransmissionContext] which holds Bravo's current position.
+ *
+ * @param [messageTemplate] the template of the message. It may contain [format] wildcards to be replaced with the [contextProperties]
+ * @param [contextProperties] will be injected into the message template when [transmit] is called
  */
 abstract class Transmission(private val messageTemplate: String, private val contextProperties: Array<out KProperty1<TransmissionContext, Any>>) {
 

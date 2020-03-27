@@ -75,7 +75,7 @@ class RadioCommunicator(val callSign: CallSign) {
             endConversation()
         } else {
             queueConversation(Conversation(callSign, incomingTransmission.sender, nextTransmissionOf(incomingTransmission)))
-            sendNextTick(Conversations.standBy(callSign, incomingTransmission.sender).firstTransmission)
+            sendNextTick(Conversations.Other.standBy(callSign, incomingTransmission.sender).firstTransmission)
         }
     }
 
