@@ -13,6 +13,14 @@ data class GenerationContext(
         val water: Double,
         val urban: Double
 ) {
+    init {
+        for (i in 1 until 3)
+        require(0.0 <= vegetation && vegetation < 1.0)
+        require(0.0 <= hilliness && hilliness < 1.0)
+        require(0.0 <= water && water < 1.0)
+        require(0.0 <= urban && urban < 1.0)
+    }
+
     companion object {
         fun fromRandom(random: Random): GenerationContext {
             return GenerationContext(random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble())
