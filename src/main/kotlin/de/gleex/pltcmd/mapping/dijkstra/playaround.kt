@@ -20,12 +20,10 @@ fun main() {
 
     println("Testing stuff...")
     val pathFrom = minimalMap.pathFrom(Coordinate(2, 2))
-    val p = pathFrom.asIterable().iterator()
-    p.withIndex().forEachRemaining {
-        println("\ttake ${it.index}: ${it.value}")
+    pathFrom.forEachIndexed { index, value ->
+        println("\ttake $index: $value")
     }
     println("Done with stuff!")
     println("")
     println("full path: ${pathFrom.toList()}")
-    println("full path2: ${pathFrom.toList()}")
 }
