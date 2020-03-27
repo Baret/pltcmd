@@ -28,7 +28,7 @@ import org.hexworks.zircon.api.graphics.BoxType
  * to dynamically build conversations in the UI.
  */
 fun main() {
-    EventBus.subscribeToRadioComms { println("RADIO ${Ticker.currentTime()}: ${it.transmission.message}") }
+    EventBus.subscribeToRadioComms { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
 
     val hq = CallSign("Command")
     val charlie = CallSign("Charlie-1")
@@ -93,7 +93,7 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
     build().
     apply {
         EventBus.subscribeToRadioComms { event ->
-            addParagraph("${Ticker.currentTime()}: ${event.transmission.message}", false, 10)
+            addParagraph("${Ticker.currentTimeString.value}: ${event.transmission.message}", false, 10)
         }
     }
 
