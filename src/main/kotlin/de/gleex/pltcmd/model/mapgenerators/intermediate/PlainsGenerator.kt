@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.mapgenerators.intermediate
 
+import de.gleex.pltcmd.extensions.normalDistributed
 import de.gleex.pltcmd.model.mapgenerators.GenerationContext
 import de.gleex.pltcmd.model.mapgenerators.areafinder.SizedEmptyRectangleAreaFinder
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
@@ -17,7 +18,6 @@ import kotlin.random.Random
  * Generates multiple plains in an area. Plains are rectangles of grass land with a height between two to five. They have a minimum height/width of at least 5 tiles and a maximum of 50.
  */
 class PlainsGenerator(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
-    private val utilRandom = java.util.Random(rand.nextLong())
 
     companion object {
         private val log = LoggerFactory.getLogger(PlainsGenerator::class)
@@ -130,7 +130,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
     private fun randomGauss(maxValue: Int): Double {
         val halfRange = (maxValue - MIN_WIDTH) / 2.0
         // therefore we use the middle of the range as center for the random values
-        val randomValue = utilRandom.nextGaussian() * halfRange + halfRange
+        val randomValue = rand.normalDistributed(MIN_WIDTH + halfRange, halfRange)
         return randomValue.coerceIn(MIN_WIDTH.toDouble(), maxValue.toDouble())
     }
 

@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.mapgenerators.intermediate
 
+import de.gleex.pltcmd.extensions.normalDistributedInRange
 import de.gleex.pltcmd.model.mapgenerators.GenerationContext
 import de.gleex.pltcmd.model.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.mapgenerators.extensions.higherOrEqual
@@ -51,7 +52,7 @@ class HeightFiller(override val rand: Random, override val context: GenerationCo
             else                                                       -> toGenerate..toGenerate.withRelativeNorthing(peekRange)
         }
         val peekedTile = direction.flatMap { it.neighbors() }.filter { it != current }.firstOrNull { heightAt(it) != null }
-        return PeekResult(current, toGenerate, peekedTile, this, rand)
+        return PeekResult(current, toGenerate, peekedTile, this, rand, context.hilliness)
     }
 }
 
@@ -60,8 +61,11 @@ private class PeekResult(
         private val toGenerate: Coordinate,
         private val peekedTile: Coordinate?,
         private val mutableWorld: MutableWorld,
-        private val rand: Random
+        private val rand: Random,
+        hilliness: Double
 ) {
+    val averageHeight = (TerrainHeight.MIN.value + (TerrainHeight.MAX.value - TerrainHeight.MIN.value) * hilliness)
+
     fun generateNext() {
         val currentHeight = mutableWorld.heightAt(current)!!
         val heightDifferences = mutableWorld.neighborsOf(current).
@@ -80,8 +84,9 @@ private class PeekResult(
                 val targetHeight = if (peekedTile != null) {
                     mutableWorld.heightAt(peekedTile)!!
                 } else {
-                    // if nothing peeked, target a random height
-                    TerrainHeight.random(rand)
+                    // if nothing peeked, target a random height near hilliness
+                    val randomHeightValue = rand.normalDistributedInRange(averageHeight, TerrainHeight.MIN.value, TerrainHeight.MAX.value)
+                    TerrainHeight.ofValue(randomHeightValue)!!
                 }
                 val heightDiff = targetHeight.value - currentHeight.value
                 val steepness = calcSteepness(heightDiff)
