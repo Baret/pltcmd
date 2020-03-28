@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty1
  */
 data class OrderTransmission(
         private val messageTemplate: String,
-        val positiveAwnser: Transmission,
-        val negativeAwnser: Transmission,
+        val positiveAnswer: Transmission,
+        val negativeAnswer: Transmission,
         private val contextProperties: Array<out KProperty1<TransmissionContext, Any>> = emptyArray()
 ): Transmission(messageTemplate, contextProperties)

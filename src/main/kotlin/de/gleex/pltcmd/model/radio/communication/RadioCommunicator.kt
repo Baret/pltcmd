@@ -35,7 +35,7 @@ class RadioCommunicator(val callSign: CallSign) {
 
     /** this property is rather a debug feature for the test UI, might be removed later */
     val inConversationWith: Property<Maybe<CallSign>> = createPropertyFrom(Maybe.empty())
-    val conversationQueue: LinkedList<Conversation> = LinkedList()
+    val conversationQueue: Queue<Conversation> = LinkedList()
 
     init {
         EventBus.subscribeToTicks { tick ->
@@ -83,7 +83,7 @@ class RadioCommunicator(val callSign: CallSign) {
     private fun sendResponseTo(transmission: Transmission) {
         when (transmission) {
             is OrderTransmission        -> executeOrderAndRespond(transmission)
-            is TransmissionWithResponse -> sendNextTick(transmission.next)
+            is TransmissionWithResponse -> sendNextTick(transmission.response)
             is TerminatingTransmission  -> endConversation()
         }
     }
@@ -96,9 +96,9 @@ class RadioCommunicator(val callSign: CallSign) {
     private fun executeOrderAndRespond(transmission: OrderTransmission) {
         // TODO: This will contain the game entity's logic to execute actual commands
         if(Random.nextBoolean()) {
-            sendNextTick(transmission.positiveAwnser)
+            sendNextTick(transmission.positiveAnswer)
         } else {
-            sendNextTick(transmission.negativeAwnser)
+            sendNextTick(transmission.negativeAnswer)
         }
     }
 
@@ -140,6 +140,6 @@ class RadioCommunicator(val callSign: CallSign) {
 
     private fun nextTransmissionOf(transmission: Transmission) =
             // TODO: This probably has to be improved, but currently is only used when sending a "stand by" response
-            (transmission as TransmissionWithResponse).next
+            (transmission as TransmissionWithResponse).response
 
 }

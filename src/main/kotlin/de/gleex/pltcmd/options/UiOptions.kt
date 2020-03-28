@@ -18,6 +18,7 @@ object UiOptions {
     val THEME = ColorThemes.cyberpunk()
     // Best tileset displaying pipes | either msGothic16x16() or bisasam16x16()
     val DEFAULT_TILESET: TilesetResource = CP437TilesetResources.bisasam16x16()
+    val MAP_TILESET: TilesetResource = CP437TilesetResources.guybrush16x16()
 
     const val WINDOW_WIDTH = 90
     const val WINDOW_HEIGHT = 63

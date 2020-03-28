@@ -20,13 +20,10 @@ class TransmissionBuffer {
      */
     fun push(atTick: TickId, transmission: Transmission) {
         var tryingTick = atTick
-        do {
-            if(buffer.contains(tryingTick)) {
-                tryingTick = tryingTick.next
-            } else {
-                buffer[tryingTick] = transmission
-            }
-        } while (buffer.contains(tryingTick).not())
+        while (buffer.contains(tryingTick)) {
+            tryingTick = tryingTick.next
+        }
+        buffer[tryingTick] = transmission
     }
 
 }

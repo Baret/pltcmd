@@ -13,7 +13,6 @@ import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.RadioSignalVisualizer
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import org.hexworks.zircon.api.CP437TilesetResources
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
@@ -54,7 +53,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
 
         mainPart.addComponent(map)
         // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
-        map.tilesetProperty.updateValue(CP437TilesetResources.guybrush16x16())
+        map.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
 
         val logArea = Components.logArea().
                 withSize(UiOptions.LOG_AREA_WIDTH, UiOptions.LOG_AREA_HEIGHT).
