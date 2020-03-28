@@ -7,7 +7,6 @@ import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.world.Coordinate
 import de.gleex.pltcmd.options.UiOptions
-import de.gleex.pltcmd.ui.fragments.TickFragment
 import de.gleex.pltcmd.ui.fragments.TilesetSelectorFragment
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform

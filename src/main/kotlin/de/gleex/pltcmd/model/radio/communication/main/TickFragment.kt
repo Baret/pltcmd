@@ -1,6 +1,7 @@
-package de.gleex.pltcmd.ui.fragments
+package de.gleex.pltcmd.model.radio.communication.main
 
 import de.gleex.pltcmd.events.ticks.Ticker
+import de.gleex.pltcmd.ui.fragments.BaseFragment
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
