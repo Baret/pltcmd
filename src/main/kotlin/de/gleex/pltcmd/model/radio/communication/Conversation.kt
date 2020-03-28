@@ -9,4 +9,4 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
  * It is only a "blueprint" (containing the raw message templates, see [Transmission.messageTemplate]).
  * By sending the [firstTransmission] the two participants can work their way along the transmission chain.
  */
-data class Conversation(val initiator: CallSign, val receiver: CallSign, val firstTransmission: Transmission)
+data class Conversation(val sender: CallSign, val receiver: CallSign, val firstTransmission: Transmission)

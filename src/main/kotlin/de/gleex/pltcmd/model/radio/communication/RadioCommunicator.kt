@@ -26,7 +26,8 @@ class RadioCommunicator(val callSign: CallSign) {
     
     private val transmissionBuffer = TransmissionBuffer()
 
-    val transmissionContext = TransmissionContext(
+    // TODO: Get the context from outside. It should be provided by the corresponding game entity (probably via Properties or ObservableValues)
+    private val transmissionContext = TransmissionContext(
             Coordinate(Random.nextInt(500), Random.nextInt(500)),
             Random.nextInt(40, 50),
             Random.nextInt(3, 10),

@@ -38,17 +38,21 @@ object Conversations {
     object Reports {
         fun reportPosition(sender: CallSign, receiver: CallSign) =
                 conversation(sender, receiver) {
-                    init {
+                    establishComms {
                         request("report position") {
                             terminatingResponse("we are at %s", TransmissionContext::position)
                         }
                     }
                 }
 
+        /**
+         * A situation report ("SITREP") is a quick summary of an element's current state.
+         * It contains information like the current order, how many soldiers are ready/wounded/killed and the ammo/fuel level.
+         */
         fun sitrep(sender: CallSign, receiver: CallSign) =
                 conversation(sender, receiver) {
-                    init {
-                        request("SITREP") {
+                    establishComms {
+                        request("send a SITREP") {
                             terminatingResponse("we have %d soldiers ready to fight! %d wounded, %d killed",
                                     TransmissionContext::fightingReady,
                                     TransmissionContext::woundedCount,
@@ -62,6 +66,9 @@ object Conversations {
      * This category contains all conversations that are neither orders nor reports.
      */
     object Other {
+        /**
+         * An element is currently busy and wants the [receiver] to wait until it is ready for comms again.
+         */
         fun standBy(sender: CallSign, receiver: CallSign) =
                 // tricky: as we use terminatingRESPONSE we need to flip sender and receiver
                 conversation(receiver, sender) {
