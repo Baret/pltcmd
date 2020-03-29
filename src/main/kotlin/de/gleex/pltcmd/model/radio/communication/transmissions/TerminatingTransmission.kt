@@ -5,5 +5,5 @@ package de.gleex.pltcmd.model.radio.communication.transmissions
  */
 data class TerminatingTransmission(
         private val messageTemplate: String,
-        private val contextLambda: TransmissionContext.() -> Array<out Any?> = {emptyArray()}
-): Transmission(messageTemplate, contextLambda)
+        private val placeholderValueProviders: List<TransmissionContext.() -> Any?> = emptyList()
+): Transmission(messageTemplate, placeholderValueProviders)

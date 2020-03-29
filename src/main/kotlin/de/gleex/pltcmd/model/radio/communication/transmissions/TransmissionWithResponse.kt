@@ -6,5 +6,5 @@ package de.gleex.pltcmd.model.radio.communication.transmissions
 data class TransmissionWithResponse(
         private val messageTemplate: String,
         val response: Transmission,
-        private val contextLambda: TransmissionContext.() -> Array<out Any?> = {emptyArray()}
-): Transmission(messageTemplate, contextLambda)
+        private val placeholderValueProviders: List<TransmissionContext.() -> Any?> = emptyList()
+): Transmission(messageTemplate, placeholderValueProviders)

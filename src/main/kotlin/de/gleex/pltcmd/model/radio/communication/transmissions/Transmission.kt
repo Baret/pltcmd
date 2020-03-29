@@ -21,10 +21,10 @@ import de.gleex.pltcmd.model.elements.CallSign
  * A message template might be "Alpha, this is Bravo, our position is %s". When the time comes for Bravo to transmit
  * this transmission it calls [transmit] with its [TransmissionContext] which holds Bravo's current position.
  *
- * @param [messageTemplate] the template of the message. It may contain [format] wildcards to be replaced with the [contextProperties]
- * @param [contextProperties] will be injected into the message template when [transmit] is called
+ * @param [messageTemplate] the template of the message. It may contain [format] placeholders to be replaced with the [placeholderValueProviders]
+ * @param [placeholderValueProviders] provides a value for each placeholder in [messageTemplate] from a [TransmissionContext]
  */
-abstract class Transmission(private val messageTemplate: String, private val contextLambda: TransmissionContext.() -> Array<out Any?>) {
+abstract class Transmission(private val messageTemplate: String, private val placeholderValueProviders: List<TransmissionContext.() -> Any?>) {
 
     fun hasReceiver(callSign: CallSign) = message.startsWith(callSign.name)
 
@@ -45,8 +45,8 @@ abstract class Transmission(private val messageTemplate: String, private val con
      * Applies the given context to the message temlpate. After this call receivers can properly decode [message].
      */
     fun transmit(context: TransmissionContext): Transmission {
-        _message = messageTemplate.
-                    format(*contextLambda.invoke(context))
+        val placeholderValues = placeholderValueProviders.map { it(context) }
+        _message = messageTemplate.format(placeholderValues)
         return this
     }
 }

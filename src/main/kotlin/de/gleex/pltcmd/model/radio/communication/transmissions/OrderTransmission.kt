@@ -7,5 +7,5 @@ data class OrderTransmission(
         private val messageTemplate: String,
         val positiveAnswer: Transmission,
         val negativeAnswer: Transmission,
-        private val contextLambda: TransmissionContext.() -> Array<out Any?> = {emptyArray()}
-): Transmission(messageTemplate, contextLambda)
+        private val placeholderValueProviders: List<TransmissionContext.() -> Any?> = emptyList()
+): Transmission(messageTemplate, placeholderValueProviders)

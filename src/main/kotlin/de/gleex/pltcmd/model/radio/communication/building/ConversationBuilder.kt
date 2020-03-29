@@ -59,8 +59,8 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         return transmissionWithResponse(message, nextTransmission, false)
     }
 
-    fun terminatingResponse(message: String, contextVariables: TransmissionContext.() -> Array<out Any?> = {emptyArray()}) =
-            TerminatingTransmission(message.asTransmission(toReceiver = false, terminating = true), contextVariables)
+    fun terminatingResponse(message: String, vararg placeholderValueProviders: TransmissionContext.() -> Any?) =
+            TerminatingTransmission(message.asTransmission(toReceiver = false, terminating = true), placeholderValueProviders.asList())
 
     fun order(message: String, readbackSupplier: () -> TerminatingTransmission): OrderTransmission {
         val readback = readbackSupplier.invoke()

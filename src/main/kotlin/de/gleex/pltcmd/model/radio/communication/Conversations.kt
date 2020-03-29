@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.radio.communication
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.building.conversation
+import de.gleex.pltcmd.model.radio.communication.transmissions.TransmissionContext
 import de.gleex.pltcmd.model.world.Coordinate
 
 /**
@@ -39,9 +40,7 @@ object Conversations {
                 conversation(sender, receiver) {
                     establishComms {
                         request("report position") {
-                            terminatingResponse("we are at %s") {
-                                arrayOf(position)
-                            }
+                            terminatingResponse("we are at %s", TransmissionContext::position)
                         }
                     }
                 }
@@ -54,13 +53,10 @@ object Conversations {
                 conversation(sender, receiver) {
                     establishComms {
                         request("send a SITREP") {
-                            terminatingResponse("we have %d soldiers ready to fight! %d wounded, %d killed") {
-                                arrayOf(
-                                        fightingReady,
-                                        woundedCount,
-                                        killedCount
-                                )
-                            }
+                            terminatingResponse("we have %d soldiers ready to fight! %d wounded, %d killed",
+                                    TransmissionContext::fightingReady,
+                                    TransmissionContext::woundedCount,
+                                    TransmissionContext::killedCount)
                         }
                     }
                 }
