@@ -74,7 +74,8 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
      * expects a readback of "roger, moving to (x|y)" to make sure the order and in this example the position
      * were correctly understood.
      */
-    fun readback(readbackMessage: String): TerminatingTransmission = terminatingResponse("roger, $readbackMessage")
+    fun readback(readbackMessage: String, vararg placeholderValueProviders: TransmissionContext.() -> Any?) =
+            terminatingResponse("roger, $readbackMessage", *placeholderValueProviders)
 
     private fun negative() = terminatingResponse("negative")
 
