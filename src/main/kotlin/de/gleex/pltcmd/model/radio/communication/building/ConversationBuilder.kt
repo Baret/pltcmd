@@ -3,7 +3,6 @@ package de.gleex.pltcmd.model.radio.communication.building
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.transmissions.*
-import kotlin.reflect.KProperty1
 
 class ConversationBuilder(private val sender: CallSign, private val receiver: CallSign) {
 
@@ -60,8 +59,8 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         return transmissionWithResponse(message, nextTransmission, false)
     }
 
-    fun terminatingResponse(message: String, vararg contextProperties: KProperty1<TransmissionContext, Any>) =
-            TerminatingTransmission(message.asTransmission(toReceiver = false, terminating = true), contextProperties)
+    fun terminatingResponse(message: String, contextVariables: TransmissionContext.() -> Array<out Any?> = {emptyArray()}) =
+            TerminatingTransmission(message.asTransmission(toReceiver = false, terminating = true), contextVariables)
 
     fun order(message: String, readbackSupplier: () -> TerminatingTransmission): OrderTransmission {
         val readback = readbackSupplier.invoke()

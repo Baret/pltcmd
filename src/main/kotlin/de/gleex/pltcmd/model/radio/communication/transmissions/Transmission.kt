@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.model.radio.communication.transmissions
 
 import de.gleex.pltcmd.model.elements.CallSign
-import kotlin.reflect.KProperty1
 
 /**
  * A transmission carries a message via a radio signal.
@@ -25,7 +24,7 @@ import kotlin.reflect.KProperty1
  * @param [messageTemplate] the template of the message. It may contain [format] wildcards to be replaced with the [contextProperties]
  * @param [contextProperties] will be injected into the message template when [transmit] is called
  */
-abstract class Transmission(private val messageTemplate: String, private val contextProperties: Array<out KProperty1<TransmissionContext, Any>>) {
+abstract class Transmission(private val messageTemplate: String, private val contextLambda: TransmissionContext.() -> Array<out Any?>) {
 
     fun hasReceiver(callSign: CallSign) = message.startsWith(callSign.name)
 
@@ -47,7 +46,7 @@ abstract class Transmission(private val messageTemplate: String, private val con
      */
     fun transmit(context: TransmissionContext): Transmission {
         _message = messageTemplate.
-                    format(*contextProperties.map { it.get(context) }.toTypedArray())
+                    format(*contextLambda.invoke(context))
         return this
     }
 }
