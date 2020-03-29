@@ -46,7 +46,8 @@ abstract class Transmission(private val messageTemplate: String, private val pla
      */
     fun transmit(context: TransmissionContext): Transmission {
         val placeholderValues = placeholderValueProviders.map { it(context) }
-        _message = messageTemplate.format(placeholderValues)
+                .toTypedArray()
+        _message = messageTemplate.format(*placeholderValues)
         return this
     }
 }
