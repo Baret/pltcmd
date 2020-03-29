@@ -1,6 +1,7 @@
-package de.gleex.pltcmd.model.radio.communication.transmissions
+package de.gleex.pltcmd.model.radio.communication.transmissions.buffer
 
 import de.gleex.pltcmd.events.ticks.TickId
+import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**

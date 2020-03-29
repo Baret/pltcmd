@@ -2,7 +2,7 @@ package de.gleex.pltcmd.model.radio.communication
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.building.conversation
-import de.gleex.pltcmd.model.radio.communication.transmissions.TransmissionContext
+import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
 import de.gleex.pltcmd.model.world.Coordinate
 
 /**

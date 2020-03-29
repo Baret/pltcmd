@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.model.radio.communication.transmissions
 
+import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
+
 /**
  * An order has two answers, a positive and a negative one.
  */

@@ -2,7 +2,9 @@ package de.gleex.pltcmd.model.radio.communication.building
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
-import de.gleex.pltcmd.model.radio.communication.transmissions.TransmissionContext
+import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.receiver
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
 import de.gleex.pltcmd.model.world.Coordinate
 import io.kotlintest.*
 import io.kotlintest.specs.WordSpec

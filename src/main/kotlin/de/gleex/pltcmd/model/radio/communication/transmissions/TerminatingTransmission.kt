@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.model.radio.communication.transmissions
 
+import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
+
 /**
  * A transmission typically ending with "out" (not enforced by this class!) with no following transmissions.
  */

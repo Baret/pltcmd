@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.radio.communication.transmissions
+package de.gleex.pltcmd.model.radio.communication.transmissions.context
 
 import de.gleex.pltcmd.model.world.Coordinate
 

@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.model.radio.communication.transmissions
 
+import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
+
 /**
  * Transmissions of this kind have a follow up transmission.
  */

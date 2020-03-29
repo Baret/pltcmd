@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.model.radio.communication.transmissions
 
-import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
 
 /**
  * A transmission carries a message via a radio signal.
@@ -25,16 +25,6 @@ import de.gleex.pltcmd.model.elements.CallSign
  * @param [placeholderValueProviders] provides a value for each placeholder in [messageTemplate] from a [TransmissionContext]
  */
 abstract class Transmission(private val messageTemplate: String, private val placeholderValueProviders: List<TransmissionContext.() -> Any?>) {
-
-    fun hasReceiver(callSign: CallSign) = message.startsWith(callSign.name)
-
-    fun hasSender(callSign: CallSign) = sender == callSign
-
-    val sender: CallSign
-        get() = CallSign(message.split(',')[1].substringAfter("this is "))
-
-    val receiver: CallSign
-        get() = CallSign(message.split(',')[0])
 
     private var _message: String = messageTemplate
 
