@@ -83,8 +83,6 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         return TransmissionWithResponse(message.asTransmission(toReceiver), response)
     }
 
-    private fun ending(terminating: Boolean) = if (terminating) "out" else "over"
-
     /**
      * Uses [TRANSMISSION_FORMAT] to build a format with this string as message.
      *
@@ -98,4 +96,7 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
             TRANSMISSION_FORMAT.format(sender, receiver, this, ending(terminating))
         }
     }
+
+    private fun ending(terminating: Boolean) = if (terminating) "out" else "over"
+
 }
