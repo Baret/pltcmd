@@ -9,9 +9,9 @@ import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.GameView
-import de.gleex.pltcmd.ui.TitleView
 import de.gleex.pltcmd.ui.GeneratingView
 import de.gleex.pltcmd.ui.MapGenerationProgressController
+import de.gleex.pltcmd.ui.TitleView
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
@@ -42,7 +42,7 @@ fun main() {
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {
     screen.dock(TitleView(tileGrid))
-    TimeUnit.MILLISECONDS.sleep(1500)
+    TimeUnit.MILLISECONDS.sleep(3000)
 }
 
 private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {
