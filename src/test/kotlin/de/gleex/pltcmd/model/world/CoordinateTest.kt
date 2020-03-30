@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import io.kotlintest.assertSoftly
+import io.kotlintest.data.suspend.forall
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan
 import io.kotlintest.matchers.collections.containDuplicates
@@ -8,11 +9,13 @@ import io.kotlintest.matchers.collections.shouldContainInOrder
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.string.shouldHaveMinLength
 import io.kotlintest.matchers.string.shouldMatch
+import io.kotlintest.matchers.types.shouldBeNull
 import io.kotlintest.properties.assertAll
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.specs.WordSpec
+import io.kotlintest.tables.row
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 class CoordinateTest: WordSpec({
@@ -95,7 +98,7 @@ class CoordinateTest: WordSpec({
     }
 
     "The string representation of a coordinate in the form of (xxx|yyy)" should {
-        val regex = "\\(-?\\d{3,}\\|-?\\d{3,}\\)"
+        val regex = Coordinate.REGEX_STRING
         "always have a length of at least 9 and match '$regex'" {
             var checkedCoordinates = 0
             assertAll { x: Int, y: Int ->
@@ -132,6 +135,40 @@ class CoordinateTest: WordSpec({
         }
     }
 
+    "A coordinate created from a string" should {
+        forall(
+                row("(001|001)", Coordinate(1, 1)),
+                row("(000|000)", Coordinate(0, 0)),
+                row("(-100|001)", Coordinate(-100, 1)),
+                row("(001|-100)", Coordinate(1, -100)),
+                row("(-100|-100)", Coordinate(-100, -100)),
+                row("(-123456789|123456789)", Coordinate(-123456789, 123456789)),
+                row("    (-100|-100)\t", Coordinate(-100, -100))
+        ) {string, validCoordinate ->
+            "be valid when created from string '$string'" {
+                Coordinate.fromString(string) shouldBe validCoordinate
+            }
+        }
+
+        forall(
+                row("(123456789|1)"),
+                row("(123456789|11)"),
+                row("(123456789|-11)"),
+                row("(00a1|001)"),
+                row("(|000)"),
+                row("(--100|001)"),
+                row("001|-100)"),
+                row("(-100-100)"),
+                row("(123456789|1"),
+                row(""),
+                row("     "),
+                row("coordinate")
+        ) {someString ->
+            "be null when created from invalid string '$someString'" {
+                Coordinate.fromString(someString).shouldBeNull()
+            }
+        }
+    }
 })
 
 fun toCoordinateString(easting: Int, northing: Int): String {

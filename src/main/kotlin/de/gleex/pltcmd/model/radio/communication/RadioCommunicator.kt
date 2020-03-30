@@ -11,6 +11,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.TransmissionWithResponse
 import de.gleex.pltcmd.model.radio.communication.transmissions.buffer.TransmissionBuffer
 import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.contactLocations
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasReceiver
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasSender
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
@@ -112,7 +113,10 @@ class RadioCommunicator(val callSign: CallSign) {
 
     private fun gatherInformationFrom(event: TransmissionEvent) {
         // TODO: Learn stuff from transmissions and add it to the "knowledge" of this unit
-        log.debug("$callSign: gathering information from '${event.transmission.message}'")
+        val contacts = event.transmission.contactLocations
+        if(contacts.isNotEmpty()) {
+            log.debug("$callSign: learned about enemies at ${contacts.joinToString()}")
+        }
     }
 
     /**
