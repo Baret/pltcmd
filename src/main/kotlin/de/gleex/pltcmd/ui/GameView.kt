@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.ui
 
+import de.gleex.pltcmd.game.GameBlock
 import de.gleex.pltcmd.game.GameWorld
-import de.gleex.pltcmd.game.MapBlock
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.options.GameOptions
 import de.gleex.pltcmd.options.UiOptions
@@ -44,7 +44,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                 withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld)).
                 build()
 
-        val map = GameComponents.newGameComponentBuilder<Tile, MapBlock>().
+        val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>().
                 withGameArea(gameWorld).
                 withSize(gameWorld.visibleSize.to2DSize()).
                 withAlignmentWithin(mainPart, ComponentAlignment.CENTER).

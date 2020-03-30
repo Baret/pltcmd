@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.mapgenerators
 
+import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.testhelpers.haveSameTerrain
 import de.gleex.pltcmd.testhelpers.shouldHaveSameTerrain
 import io.kotlintest.*
@@ -48,7 +49,8 @@ class WorldMapGeneratorTest: WordSpec() {
         "Map generation" should {
             val timeout = 10
             "never take longer than $timeout seconds".config(timeout = timeout.seconds) {
-                WorldMapGenerator(System.currentTimeMillis()).generateWorld()
+                WorldMapGenerator(System.currentTimeMillis(), Sector.TILE_COUNT, Sector.TILE_COUNT)
+                        .generateWorld()
             }
         }
     }
