@@ -42,7 +42,7 @@ fun main() {
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {
     screen.dock(TitleView(tileGrid))
-    TimeUnit.MILLISECONDS.sleep(3000)
+    TimeUnit.MILLISECONDS.sleep(4000)
 }
 
 private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {
