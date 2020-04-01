@@ -4,7 +4,7 @@ import de.gleex.pltcmd.model.radio.SignalStrength
 import de.gleex.pltcmd.model.terrain.TerrainHeight
 import de.gleex.pltcmd.model.terrain.TerrainType
 import org.hexworks.zircon.api.color.TileColor
-import kotlin.math.roundToInt
+import org.hexworks.zircon.internal.color.DefaultColorInterpolator
 
 /**
  * Serves all colors needed in the game.
@@ -61,10 +61,12 @@ object ColorRepository {
         }
     }
 
-    fun radioColor(signalStrength: SignalStrength) = TileColor.create(
-            red = SIGNAL_EMPTY.red + (signalStrength * (SIGNAL_FULL.red - SIGNAL_EMPTY.red)).roundToInt(),
-            green = SIGNAL_EMPTY.green + (signalStrength * (SIGNAL_FULL.green - SIGNAL_EMPTY.green)).roundToInt(),
-            blue = SIGNAL_EMPTY.blue + (signalStrength * (SIGNAL_FULL.blue - SIGNAL_EMPTY.blue)).roundToInt(),
-            alpha = if (signalStrength.isNone()) 0 else SIGNAL_FULL.alpha
-        )
+    fun radioColor(signalStrength: SignalStrength): TileColor {
+        val signalColor = DefaultColorInterpolator(SIGNAL_EMPTY, SIGNAL_FULL).getColorAtRatio(signalStrength.strength)
+        return if (signalStrength.isNone()) {
+                signalColor.withAlpha(0)
+            } else {
+                signalColor
+            }
+    }
 }
