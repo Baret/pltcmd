@@ -108,7 +108,7 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         /**
          * The string representation of a coordinate should match this regex.
          */
-        val REGEX_STRING = "\\(-?\\d{3,}\\|-?\\d{3,}\\)"
+        val REGEX_STRING = "\\((-?\\d{3,})\\|(-?\\d{3,})\\)"
 
         private const val FORMAT_POSITIVE = "%03d"
         private const val FORMAT_NEGATIVE = "%04d"
@@ -117,25 +117,14 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
          *  Parses the given string and tries to extract a Coordinate. The string needs to be in the format (123|-456)
          */
         fun fromString(coordinateString: String): Coordinate? {
-            if(coordinateString == "(123456789|1)") {
-                println("got $coordinateString...")
-            }
-            val trimmed = coordinateString.trim()
-            if(trimmed.matches(Regex(REGEX_STRING)).not()) {
-                return null
-            }
-            if(coordinateString == "(123456789|1)") {
-                println("its trimmed and matched")
-            }
-            val coordinateStringValues = trimmed.
-                split('|')
-            if(coordinateStringValues.size == 2) {
-                val easting = coordinateStringValues[0].substringAfter('(').toIntOrNull()
-                val northing = coordinateStringValues[1].substringBefore(')').toIntOrNull()
-                if(easting != null && northing != null) {
-                    return Coordinate(easting, northing)
+            Regex(REGEX_STRING).
+                find(coordinateString.trim())?.
+                let { result ->
+                    val (easting, northing) = result.groupValues.subList(1, 3).map(String::toIntOrNull)
+                    if(easting != null && northing != null) {
+                        return Coordinate(easting, northing)
+                    }
                 }
-            }
             return null
         }
     }
