@@ -19,8 +19,8 @@ import kotlin.math.min
  */
 class RadioSignalFragment(override val width: Int) : BaseFragment {
 
-    val selectedStrength: Property<Int> = createPropertyFrom(100)
-    val selectedRange: Property<Int> = createPropertyFrom(5)
+    val selectedStrength: Property<Int> = createPropertyFrom(200)
+    val selectedRange: Property<Int> = createPropertyFrom(20)
 
     override val root = Components.
             vbox().

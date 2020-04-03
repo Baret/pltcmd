@@ -8,6 +8,7 @@ import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.ui.fragments.MousePosition
 import de.gleex.pltcmd.ui.fragments.RadioSignalFragment
 import de.gleex.pltcmd.ui.fragments.ThemeSelectorFragment
+import de.gleex.pltcmd.ui.fragments.TilesetSelectorFragment
 import de.gleex.pltcmd.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.ui.renderers.RadioSignalVisualizer
@@ -49,7 +50,10 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
                 withSize(gameWorld.visibleSize.to2DSize()).
                 withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
                 build()
+
         mainPart.addComponent(map)
+        // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
+        map.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
 
         val logArea = Components.logArea().
                 withSize(UiOptions.LOG_AREA_WIDTH, UiOptions.LOG_AREA_HEIGHT).
@@ -105,9 +109,8 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
             sidebar.addFragment(radioSignalFragment)
         }
 
-        val themeSelector = ThemeSelectorFragment(sidebarWidth, screen)
-
-        sidebar.addFragment(themeSelector)
+        sidebar.addFragment(ThemeSelectorFragment(sidebarWidth, screen))
+        sidebar.addFragment(TilesetSelectorFragment(sidebarWidth, map, sidebar))
     }
 }
 

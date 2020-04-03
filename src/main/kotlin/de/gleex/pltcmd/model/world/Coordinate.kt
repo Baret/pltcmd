@@ -105,8 +105,28 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     }
 
     companion object {
-        const val FORMAT_POSITIVE = "%03d"
-        const val FORMAT_NEGATIVE = "%04d"
+        /**
+         * The string representation of a coordinate should match this regex.
+         */
+        val REGEX_STRING = "\\((-?\\d{3,})\\|(-?\\d{3,})\\)"
+
+        private const val FORMAT_POSITIVE = "%03d"
+        private const val FORMAT_NEGATIVE = "%04d"
+
+        /**
+         *  Parses the given string and tries to extract a Coordinate. The string needs to be in the format (123|-456)
+         */
+        fun fromString(coordinateString: String): Coordinate? {
+            Regex(REGEX_STRING).
+                find(coordinateString.trim())?.
+                let { result ->
+                    val (easting, northing) = result.groupValues.subList(1, 3).map(String::toIntOrNull)
+                    if(easting != null && northing != null) {
+                        return Coordinate(easting, northing)
+                    }
+                }
+            return null
+        }
     }
 
     class Progression(private val coordinates: SortedSet<Coordinate>): Iterable<Coordinate> {

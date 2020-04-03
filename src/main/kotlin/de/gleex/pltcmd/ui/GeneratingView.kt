@@ -33,6 +33,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
         footer.addComponent(progressBar)
 
         screen.addComponents(header, mainPart, footer)
+        mainPart.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
     }
 
     fun setProgressBarTo(progress: Double) {
