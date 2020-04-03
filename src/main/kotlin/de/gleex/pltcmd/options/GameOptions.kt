@@ -26,12 +26,12 @@ object GameOptions {
     /**
      * Horizontal number of sectors in the world.
      */
-    const val SECTORS_COUNT_H: Int = 10
+    const val SECTORS_COUNT_H: Int = 4
 
     /**
      * Vertical number of sectors in the world.
      */
-    const val SECTORS_COUNT_V: Int = 10
+    const val SECTORS_COUNT_V: Int = 4
 
     /**
      * The size of the complete world in tiles as [Size3D].

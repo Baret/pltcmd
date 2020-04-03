@@ -95,7 +95,8 @@ class GameWorld(private val worldMap: WorldMap) :
     private fun Position3D.toCoordinate(): Coordinate {
         val translatedPos = to2DPosition() - topLeftOffset
         // invert y axis
-        return Coordinate(translatedPos.x, translatedPos.y + getMaxY())
+        println("MaxY = ${getMaxY()}. translated ${this.to2DPosition()} to $translatedPos")
+        return Coordinate(translatedPos.x, getMaxY() - translatedPos.y)
     }
 
     /**
