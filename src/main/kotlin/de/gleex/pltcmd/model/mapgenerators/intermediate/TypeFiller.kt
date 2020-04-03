@@ -42,6 +42,8 @@ class TypeFiller(override val rand: Random, override val context: GenerationCont
     }
 
     private fun probabilities(terrainHeight: TerrainHeight?, neighborType: TerrainType?): Map<Double, TerrainType> {
+        val richVegetation = context.vegetation
+        val poorVegetation = 1.0 - richVegetation
         return when (terrainHeight) {
             TerrainHeight.NINE  -> mapOf(
                     0.7 to MOUNTAIN,
@@ -49,22 +51,22 @@ class TypeFiller(override val rand: Random, override val context: GenerationCont
                     1.0 to FOREST)
             TerrainHeight.EIGHT -> mapOf(
                     0.4 to MOUNTAIN,
-                    0.8 to HILL,
+                    (0.8 + 0.2 * poorVegetation) to HILL,
                     1.0 to FOREST)
             TerrainHeight.SEVEN -> mapOf(
                     0.5 to MOUNTAIN,
                     0.75 to HILL,
-                    0.95 to FOREST,
+                    (0.75 + 0.25 * richVegetation) to FOREST,
                     1.0 to GRASSLAND)
             TerrainHeight.SIX, TerrainHeight.FIVE, TerrainHeight.FOUR, TerrainHeight.THREE
             -> if (neighborType == GRASSLAND) {
                 mapOf(
-                        0.7 to GRASSLAND,
+                        0.7 * poorVegetation to GRASSLAND,
                         1.0 to FOREST
                 )
             } else {
                 mapOf(
-                        0.7 to FOREST,
+                        0.7 * richVegetation to FOREST,
                         1.0 to GRASSLAND
                 )
             }

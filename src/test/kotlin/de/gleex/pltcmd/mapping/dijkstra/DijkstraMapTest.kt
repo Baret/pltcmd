@@ -5,8 +5,8 @@ import de.gleex.pltcmd.testhelpers.beEmpty
 import de.gleex.pltcmd.testhelpers.shouldContainValue
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.collections.shouldContainInOrder
-import io.kotlintest.matchers.sequences.shouldHaveSingleElement
-import io.kotlintest.matchers.sequences.shouldHaveSize
+import io.kotlintest.matchers.collections.shouldHaveSingleElement
+import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.should
 import io.kotlintest.specs.WordSpec
 
@@ -48,7 +48,7 @@ class DijkstraMapTest: WordSpec({
         }
 
         "have a correct full path" {
-            val path = map.pathFrom(c3).get().toList()
+            val path = map.pathFrom(c3).get()
             path shouldContainInOrder listOf(c3, c2, c1, target)
         }
 
@@ -56,7 +56,7 @@ class DijkstraMapTest: WordSpec({
             assertSoftly {
                 val path = map.pathFrom(c1).get()
                 path shouldHaveSize 2
-                path.toList() shouldContainInOrder listOf(c1, target)
+                path shouldContainInOrder listOf(c1, target)
             }
         }
     }
