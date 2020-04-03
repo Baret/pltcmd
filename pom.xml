@@ -15,7 +15,8 @@
 	<properties>
 		<main.class>de.gleex.pltcmd.MainKt</main.class>
 		<kotlin.version>1.3.71</kotlin.version>
-		<zircon.version>2020.1.0-RELEASE</zircon.version>
+		<zircon.version>2020.1.3-PREVIEW</zircon.version>
+		<amethyst.version>2020.0.1-PREVIEW</amethyst.version>
 		<kotest.version>3.4.2</kotest.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -23,10 +24,6 @@
 	</properties>
 
 	<repositories>
-		<repository>
-			<id>jitpack</id>
-			<url>https://jitpack.io</url>
-		</repository>
 		<repository>
 			<snapshots>
 				<enabled>false</enabled>
@@ -50,9 +47,9 @@
 			<version>${zircon.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.Hexworks.amethyst</groupId>
+			<groupId>org.hexworks.amethyst</groupId>
 			<artifactId>amethyst.core</artifactId>
-			<version>2019.1.0-PREVIEW</version>
+			<version>${amethyst.version}</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>

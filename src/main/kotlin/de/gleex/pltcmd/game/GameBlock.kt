@@ -12,7 +12,7 @@ import org.hexworks.zircon.api.data.base.BaseBlock
 class GameBlock(val terrain: Terrain) : BaseBlock<Tile>(emptyTile = TileRepository.empty(), tiles = persistentMapOf()) {
 
     init {
-        top = TileRepository.createTerrainTile(terrain)
+        bottom = TileRepository.createTerrainTile(terrain)
     }
 
     /**
@@ -26,7 +26,7 @@ class GameBlock(val terrain: Terrain) : BaseBlock<Tile>(emptyTile = TileReposito
      * Sets an overlay tile. It should preferably be transparent. May be used for debug features or markers.
      */
     fun setOverlay(tile: Tile) {
-        bottom = tile
+        top = tile
     }
 
     /**
@@ -49,5 +49,5 @@ class GameBlock(val terrain: Terrain) : BaseBlock<Tile>(emptyTile = TileReposito
      * True if this block contains an overlay tile.
      * @see setOverlay
      */
-    fun hasOverlay() = bottom != TileRepository.empty()
+    fun hasOverlay() = top != TileRepository.empty()
 }
