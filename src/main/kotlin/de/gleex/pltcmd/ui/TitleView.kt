@@ -4,8 +4,6 @@ import de.gleex.pltcmd.options.UiOptions
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.Modifiers
 import org.hexworks.zircon.api.color.ANSITileColor
-import org.hexworks.zircon.api.component.ComponentAlignment
-import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Tile
@@ -46,47 +44,40 @@ class TitleView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid
         val rightDiagonalLine = LineFactory.buildLine(upperPoint, bottomRightCorner)
         val verticalLine = LineFactory.buildLine(upperPoint, lowerPoint)
         (leftDiagonalLine + rightDiagonalLine + verticalLine).positions.forEach {
-            screen.addComponent(tileAt(it, style, Symbols.BLOCK_SOLID))
+            it.addBlock()
         }
 
-        // add shadow underneath
-//        leftDiagonalLine.positions.forEach {
-//            if(it.y > 0 && it.x < lowerPoint.x) {
-//                screen.addComponent(tileAt(it.minus(Position.create(0, 1)), styleFading, Symbols.LOWER_HALF_BLOCK))
-//            }
-//        }
-
+        // add shadow above
         leftDiagonalLine.plus(rightDiagonalLine).positions.forEach {
             if(it.y > 0 && it.x != lowerPoint.x) {
-                screen.addComponent(tileAt(it.minus(Position.create(0, 1)), styleFadingShadow, Symbols.LOWER_HALF_BLOCK))
+                it.addShadowVertical()
             }
         }
-
-//        rightDiagonalLine.positions.forEach {
-//            if(it.y < size.height - 1 && it.x > upperPoint.x) {
-//                screen.addComponent(tileAt(it.plus(Position.create(0, 1)), styleFading, Symbols.UPPER_HALF_BLOCK))
-//            }
-//        }
 
         // add shadow right
         verticalLine.positions.forEach {
             if(it.y > upperPoint.y + 1) {
-                screen.addComponent(tileAt(it.plus(Position.create(1, 0)), styleFadingShadow, Symbols.LEFT_HALF_BLOCK))
+                it.addShadowHorizontal()
             }
         }
+    }
+
+    private fun Position.addShadowVertical() = setShadow(this.withRelativeY(-1), Symbols.LOWER_HALF_BLOCK)
+
+    private fun Position.addShadowHorizontal() = setShadow(this.withRelativeX(1), Symbols.LEFT_HALF_BLOCK)
+
+    private fun setShadow(position: Position, symbol: Char) = addTileAt(position, styleFadingShadow, symbol)
+
+    private fun Position.addBlock() = addTileAt(this, style, Symbols.BLOCK_SOLID)
+
+    private fun addTileAt(position: Position, style: StyleSet, symbol: Char) {
+        val tile = tileAt(position, style, symbol)
+        screen.addComponent(tile)
     }
 
     private fun tileAt(position: Position, style: StyleSet, symbol: Char) =
             Components.icon()
                     .withIcon(Tile.createCharacterTile(symbol, style))
                     .withPosition(position)
-
-    private fun addTitle(panel: Panel) {
-        val title = Components.header()
-                .withText("p l t c m d")
-                .withAlignmentWithin(panel, ComponentAlignment.CENTER)
-                .build()
-        panel.addComponent(title)
-    }
 
 }
