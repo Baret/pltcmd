@@ -22,7 +22,7 @@ class WorldMapGenerator(private val seed: Long, val worldWidthInTiles: Int, val 
             // different generators go here
 
             MountainTopHeightMapper(random, context),
-//            RiverTyper(random, context),
+            RiverTyper(random, context),
             PlainsGenerator(random, context),
             HeightFiller(random, context),
             TypeFiller(random, context),
