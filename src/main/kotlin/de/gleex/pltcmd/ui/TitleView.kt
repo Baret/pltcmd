@@ -43,12 +43,13 @@ class TitleView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid
         val leftDiagonalLine = LineFactory.buildLine(topLeftCorner, lowerPoint)
         val rightDiagonalLine = LineFactory.buildLine(upperPoint, bottomRightCorner)
         val verticalLine = LineFactory.buildLine(upperPoint, lowerPoint)
-        (leftDiagonalLine + rightDiagonalLine + verticalLine).positions.forEach {
+        val diagonals = leftDiagonalLine.plus(rightDiagonalLine)
+        (diagonals + verticalLine).positions.forEach {
             it.addBlock()
         }
 
         // add shadow above
-        leftDiagonalLine.plus(rightDiagonalLine).positions.forEach {
+        diagonals.positions.forEach {
             if(it.y > 0 && it.x != lowerPoint.x) {
                 it.addShadowVertical()
             }
