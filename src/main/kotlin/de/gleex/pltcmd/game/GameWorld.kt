@@ -74,6 +74,8 @@ class GameWorld(private val worldMap: WorldMap) :
     // model size
     private fun getMaxY() = actualSize.yLength - 1 // -1 because y is zero-based
 
+    private fun getMaxYCoordinate() = getMaxY() + worldMap.getTopLeftOffset().y
+
     // ui size
     private fun getMaxVisibleY() = visibleSize.yLength - 1 // -1 because y is zero-based
 
@@ -95,8 +97,8 @@ class GameWorld(private val worldMap: WorldMap) :
     private fun Position3D.toCoordinate(): Coordinate {
         val translatedPos = to2DPosition() - topLeftOffset
         // invert y axis
-        println("MaxY = ${getMaxY()}. translated ${this.to2DPosition()} to $translatedPos")
-        return Coordinate(translatedPos.x, getMaxY() - translatedPos.y)
+        println("MaxY = ${getMaxYCoordinate()}. translated ${this.to2DPosition()} to $translatedPos")
+        return Coordinate(translatedPos.x, getMaxYCoordinate() - translatedPos.y)
     }
 
     /**
