@@ -40,7 +40,7 @@ class DijkstraMap<T>(vararg initialTargets: T) {
         if(downstreamMap.containsKey(from)) {
             val path = ArrayList<T>(maxDistance).apply { add(from) }
             var current = downstreamMap[from]?.first
-            while (current != null) {
+            while (current != null && !path.contains(current)) {
                 path.add(current)
                 val nextNode = downstreamMap[current]?.first
                 if(downstreamMap[current]?.second == 0 && nextNode != null) {
