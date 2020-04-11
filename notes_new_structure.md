@@ -42,6 +42,10 @@ The group with least dependencies will be `util`, it might be used by `game` and
 
 `model` should be used by `game` and not need any hexworks dependencies (the radio stuff might need to be broken down).
 
+## New package names
+
+The packages should match their group and artifact. The base package is `de.gleex.pltcmd`. Following should be `group.artifact[.possibly.more]`.
+
 ## Tests
 
 Tests run before the new structure: **138**
