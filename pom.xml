@@ -4,6 +4,7 @@
 
 	<groupId>de.gleex</groupId>
 	<artifactId>pltcmd</artifactId>
+	<packaging>pom</packaging>
 	<version>0.0.2-SNAPSHOT</version>
 	<scm>
 		<connection>scm:git:https://github.com/Baret/pltcmd.git</connection>
@@ -11,6 +12,10 @@
 		<url>https://github.com/Baret/pltcmd</url>
 		<tag>HEAD</tag>
 	</scm>
+	<modules>
+		<module>model</module>
+		<module>game</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
