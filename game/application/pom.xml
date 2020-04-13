@@ -11,5 +11,27 @@
 
     <artifactId>game.application</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd</groupId>
+            <artifactId>game.events</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd</groupId>
+            <artifactId>model.radio</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd</groupId>
+            <artifactId>model.mapgeneration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd</groupId>
+            <artifactId>model.world</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

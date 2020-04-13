@@ -11,5 +11,23 @@
 
     <artifactId>model.radio</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd</groupId>
+            <artifactId>model.world</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd</groupId>
+            <artifactId>model.elements</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd</groupId>
+            <!-- FIXME 'model' should not depend on 'game'! Move 'options' to 'mode' or 'util' -->
+            <artifactId>game.options</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -11,5 +11,12 @@
 
     <artifactId>model.mapgeneration</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd</groupId>
+            <artifactId>model.world</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
