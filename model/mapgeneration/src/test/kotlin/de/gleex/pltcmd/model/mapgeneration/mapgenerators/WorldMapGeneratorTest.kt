@@ -1,9 +1,10 @@
 package de.gleex.pltcmd.model.mapgeneration.mapgenerators
 
 import de.gleex.pltcmd.model.world.Sector
-import de.gleex.pltcmd.testhelpers.haveSameTerrain
-import de.gleex.pltcmd.testhelpers.shouldHaveSameTerrain
+import de.gleex.pltcmd.model.world.testhelpers.haveSameTerrain
+import de.gleex.pltcmd.model.world.testhelpers.shouldHaveSameTerrain
 import io.kotlintest.*
+import io.kotlintest.matchers.types.shouldNotBeSameInstanceAs
 import io.kotlintest.specs.WordSpec
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicLong

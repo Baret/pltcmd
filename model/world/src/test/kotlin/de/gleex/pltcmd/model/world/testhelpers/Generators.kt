@@ -1,3 +1,0 @@
-package de.gleex.pltcmd.model.world.testhelpers
-
-// generators go here...

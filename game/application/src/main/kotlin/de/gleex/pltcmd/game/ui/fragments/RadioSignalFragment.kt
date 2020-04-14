@@ -138,7 +138,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
 
         return Fragments.
                 multiSelect(width, models).
-                withCallback { _, newValue -> GameOptions.attenuationModel.value = newValue.second }.
+                withCallback { _, newValue -> AttenuationModel.DEFAULT.value = newValue.second }.
                 withToStringMethod(Pair<String, AttenuationModel>::first).
                 build()
     }

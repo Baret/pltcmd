@@ -24,9 +24,9 @@
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd</groupId>
-            <!-- FIXME 'model' should not depend on 'game'! Move 'options' to 'mode' or 'util' -->
-            <artifactId>game.options</artifactId>
+            <artifactId>util.tests</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

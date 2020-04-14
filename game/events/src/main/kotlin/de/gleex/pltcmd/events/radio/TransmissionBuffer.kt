@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.radio.communication.transmissions.buffer
+package de.gleex.pltcmd.events.radio
 
 import de.gleex.pltcmd.events.ticks.TickId
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission

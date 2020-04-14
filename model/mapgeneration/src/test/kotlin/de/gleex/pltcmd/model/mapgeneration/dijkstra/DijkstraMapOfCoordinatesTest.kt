@@ -3,6 +3,8 @@ package de.gleex.pltcmd.model.mapgeneration.dijkstra
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotlintest.assertSoftly
 import io.kotlintest.forAll
+import io.kotlintest.matchers.collections.shouldContainInOrder
+import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.numerics.shouldNotBeGreaterThan
 import io.kotlintest.matchers.sequences.shouldHaveCount
 import io.kotlintest.shouldBe

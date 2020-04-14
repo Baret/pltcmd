@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.ui.renderers
 import de.gleex.pltcmd.game.entities.GameBlock
 import de.gleex.pltcmd.game.entities.GameWorld
 import de.gleex.pltcmd.game.entities.TileRepository
+import de.gleex.pltcmd.model.radio.AttenuationModel
 import de.gleex.pltcmd.model.radio.RadioSignal
 import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.databinding.api.property.Property
@@ -34,7 +35,7 @@ class RadioSignalVisualizer(
     init {
         strengthProperty.onChange { drawSignal() }
         rangeProperty.onChange { drawSignal() }
-        GameOptions.attenuationModel.onChange { drawSignal() }
+        AttenuationModel.DEFAULT.onChange { drawSignal() }
         GameOptions.displayRadioSignals.onChange { reset() }
     }
 

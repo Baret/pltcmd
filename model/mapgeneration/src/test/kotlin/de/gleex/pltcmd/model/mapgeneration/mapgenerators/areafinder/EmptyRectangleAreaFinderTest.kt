@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.model.mapgeneration.mapgenerators.areafinder
 
-import de.gleex.pltcmd.model.mapgeneration.entities.mapgenerators.data.MutableWorld
+import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea

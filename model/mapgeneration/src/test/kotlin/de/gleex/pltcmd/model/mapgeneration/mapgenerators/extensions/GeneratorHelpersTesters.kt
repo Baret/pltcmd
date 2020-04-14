@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.mapgeneration.mapgenerators.extensions
 
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import io.kotlintest.assertSoftly
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import kotlin.random.Random
 

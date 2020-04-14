@@ -4,6 +4,10 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.testhelpers.beEmpty
 import de.gleex.pltcmd.testhelpers.shouldContainValue
 import io.kotlintest.assertSoftly
+import io.kotlintest.matchers.collections.shouldContainInOrder
+import io.kotlintest.matchers.collections.shouldHaveSingleElement
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.should
 import io.kotlintest.specs.WordSpec
 
 class DijkstraMapTest: WordSpec({

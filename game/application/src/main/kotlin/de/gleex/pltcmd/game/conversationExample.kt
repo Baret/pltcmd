@@ -1,15 +1,16 @@
 package de.gleex.pltcmd.game
 
 import de.gleex.pltcmd.events.EventBus
+import de.gleex.pltcmd.events.radio.RadioCommunicator
 import de.gleex.pltcmd.events.ticks.Ticker
 import de.gleex.pltcmd.game.ui.fragments.TickFragment
 import de.gleex.pltcmd.game.ui.fragments.TilesetSelectorFragment
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
-import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.options.UiOptions
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
+import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components

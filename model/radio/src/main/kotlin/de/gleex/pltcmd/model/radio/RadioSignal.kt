@@ -2,7 +2,6 @@ package de.gleex.pltcmd.model.radio
 
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
-import de.gleex.pltcmd.options.GameOptions
 import kotlin.math.floor
 
 /**
@@ -33,7 +32,7 @@ open class RadioSignal(private val power: Double) {
     }
 
     // FIXME should not depended on 'game'!
-    private val attenuation: AttenuationModel by GameOptions.attenuationModel.asDelegate()
+    private val attenuation: AttenuationModel by AttenuationModel.DEFAULT.asDelegate()
 
     /**
      * Calculates the signal loss along the given terrain. The result will be a value from 0.0 to 1.0

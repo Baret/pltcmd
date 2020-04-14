@@ -11,7 +11,6 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.TerminatingTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.TransmissionWithResponse
-import de.gleex.pltcmd.model.radio.communication.transmissions.buffer.TransmissionBuffer
 import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.contactLocations
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasReceiver

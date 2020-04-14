@@ -17,6 +17,12 @@
             <artifactId>model.world</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd</groupId>
+            <artifactId>util.tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

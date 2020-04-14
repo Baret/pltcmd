@@ -1,3 +1,5 @@
+package de.gleex.pltcmd.game
+
 import de.gleex.pltcmd.game.entities.GameWorld
 import de.gleex.pltcmd.game.entities.TileRepository
 import de.gleex.pltcmd.game.ui.GameView

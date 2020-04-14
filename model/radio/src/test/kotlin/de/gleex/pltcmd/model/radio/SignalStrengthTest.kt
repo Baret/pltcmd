@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.model.radio
 
-import de.gleex.pltcmd.testhelpers.shouldBeExactly
+import de.gleex.pltcmd.model.radio.testhelpers.shouldBeExactly
 import io.kotlintest.data.forall
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec

@@ -11,5 +11,13 @@
 
     <artifactId>model.elements</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd</groupId>
+            <artifactId>util.tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>

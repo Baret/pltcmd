@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>application</module>
-        <module>config</module>
+        <module>options</module>
         <module>events</module>
     </modules>
 
