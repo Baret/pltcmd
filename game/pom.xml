@@ -14,7 +14,7 @@
     <modules>
         <module>application</module>
         <module>options</module>
-        <module>events</module>
+        <module>radio-events</module>
     </modules>
 
 </project>

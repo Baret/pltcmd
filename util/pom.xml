@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>tests</module>
+        <module>util.events</module>
     </modules>
 
 </project>

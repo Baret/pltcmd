@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.events.radio
 
-import de.gleex.pltcmd.events.EventBus
 import de.gleex.pltcmd.events.RadioComms
 import de.gleex.pltcmd.events.TransmissionEvent
 import de.gleex.pltcmd.events.ticks.Ticker
@@ -17,6 +16,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasRecei
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasSender
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.datatypes.Maybe
@@ -49,15 +49,15 @@ class RadioCommunicator(val callSign: CallSign) {
     val conversationQueue: Queue<Conversation> = LinkedList()
 
     init {
-        EventBus.subscribeToTicks { tick ->
+        globalEventBus.subscribeToTicks { tick ->
             transmissionBuffer.
                 pop(tick.id).
                 ifPresent{
-                    EventBus.publish(TransmissionEvent(it.transmit(transmissionContext), callSign))
+                    globalEventBus.publish(TransmissionEvent(it.transmit(transmissionContext), callSign))
                 }
         }
 
-        EventBus.subscribeToRadioComms { event ->
+        globalEventBus.subscribeToRadioComms { event ->
             if(event.isNotFromMe()) {
                 // TODO: decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
                 if (event.isForMe()) {

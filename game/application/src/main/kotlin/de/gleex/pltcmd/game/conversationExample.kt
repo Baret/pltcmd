@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game
 
-import de.gleex.pltcmd.events.EventBus
 import de.gleex.pltcmd.events.radio.RadioCommunicator
+import de.gleex.pltcmd.events.radio.subscribeToRadioComms
 import de.gleex.pltcmd.events.ticks.Ticker
 import de.gleex.pltcmd.game.ui.fragments.TickFragment
 import de.gleex.pltcmd.game.ui.fragments.TilesetSelectorFragment
@@ -9,6 +9,7 @@ import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.options.UiOptions
+import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
@@ -28,7 +29,7 @@ import org.hexworks.zircon.api.graphics.BoxType
  * to dynamically build conversations in the UI.
  */
 fun main() {
-    EventBus.subscribeToRadioComms { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
+    globalEventBus.subscribeToRadioComms { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
 
     val hq = CallSign("Command")
     val charlie = CallSign("Charlie-1")
@@ -43,8 +44,7 @@ fun main() {
     println("creating SITREP from $hq to $bravo")
 
     hqSender.startCommunication(
-            Conversations.Reports.
-            sitrep(
+            Conversations.Reports.sitrep(
                     sender = hq,
                     receiver = bravo
             ))
@@ -52,8 +52,7 @@ fun main() {
     println("creating move to from $hq to $charlie")
 
     hqSender.startCommunication(
-            Conversations.Orders.
-            moveTo(
+            Conversations.Orders.moveTo(
                     sender = hq,
                     receiver = charlie,
                     targetLocation = Coordinate(15, 178)
@@ -62,8 +61,7 @@ fun main() {
     println("creating engage from $hq to $bravo")
 
     hqSender.startCommunication(
-            Conversations.Orders.
-            engageEnemyAt(
+            Conversations.Orders.engageEnemyAt(
                     sender = hq,
                     receiver = bravo,
                     enemyLocation = Coordinate(24, 198)
@@ -72,8 +70,7 @@ fun main() {
     println("creating report position from $bravo to $charlie")
 
     bravoSender.startCommunication(
-            Conversations.Reports.
-            reportPosition(
+            Conversations.Reports.reportPosition(
                     sender = bravo,
                     receiver = charlie
             ))
@@ -86,33 +83,33 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
     screen.themeProperty.value = UiOptions.THEME
 
     val LOG_AREA_HEIGHT = 20
-    val logArea = Components.logArea().
-    withSize(UiOptions.WINDOW_WIDTH, LOG_AREA_HEIGHT).
-    withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER).
-    withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
-    build().
-    apply {
-        EventBus.subscribeToRadioComms { event ->
-            addParagraph("${Ticker.currentTimeString.value}: ${event.transmission.message}", false, 10)
-        }
-    }
+    val logArea = Components.logArea()
+            .withSize(UiOptions.WINDOW_WIDTH, LOG_AREA_HEIGHT)
+            .withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER)
+            .withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log"))
+            .build()
+            .apply {
+                globalEventBus.subscribeToRadioComms { event ->
+                    addParagraph("${Ticker.currentTimeString.value}: ${event.transmission.message}", false, 10)
+                }
+            }
 
-    val mainPanel = Components.hbox().
-            withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER).
-            withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - LOG_AREA_HEIGHT).
-            build().
-            apply {
+    val mainPanel = Components.hbox()
+            .withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER)
+            .withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - LOG_AREA_HEIGHT)
+            .build()
+            .apply {
                 val sideBarWidth = 18
                 // sidebar
-                addComponent(Components.vbox().
-                    withSpacing(1).
-                    withSize(sideBarWidth, contentSize.height).
-                    build().
-                    apply {
-                        addFragment(TickFragment(sideBarWidth))
-                        // TESTING
-                        addFragment(TilesetSelectorFragment(sideBarWidth, this@apply, logArea))
-                    })
+                addComponent(Components.vbox()
+                        .withSpacing(1)
+                        .withSize(sideBarWidth, contentSize.height)
+                        .build()
+                        .apply {
+                            addFragment(TickFragment(sideBarWidth))
+                            // TESTING
+                            addFragment(TilesetSelectorFragment(sideBarWidth, this@apply, logArea))
+                        })
 
                 // RadioCommunicator panels
                 val partSize = Size.create((contentSize.width - sideBarWidth) / 3, contentSize.height)
@@ -126,21 +123,22 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
 }
 
 fun ceateRadioCommuicatorPanel(communicator: RadioCommunicator, size: Size): Component {
-    return Components.vbox().
-            withSize(size).
-            withSpacing(3).
-            withDecorations(ComponentDecorations.box(BoxType.DOUBLE, communicator.callSign.toString())).
-            build().
-            apply {
-                addComponent(Components.
-                        label().
-                        withSize(contentSize.width, 1).
-                        build().
-                        apply {
+    return Components.vbox()
+            .withSize(size)
+            .withSpacing(3)
+            .withDecorations(ComponentDecorations.box(BoxType.DOUBLE, communicator.callSign.toString()))
+            .build()
+            .apply {
+                addComponent(Components.label()
+                        .withSize(contentSize.width, 1)
+                        .build()
+                        .apply {
                             textProperty.updateFrom(
                                     createPropertyFrom("Talking to ")
-                                                bindPlusWith communicator.inConversationWith.
-                                                    bindTransform { it.map { callSign -> callSign.toString() }.orElse("nobody") })
+                                            bindPlusWith communicator.inConversationWith.bindTransform {
+                                        it.map { callSign -> callSign.toString() }
+                                                .orElse("nobody")
+                                    })
                         })
 
                 // TODO: add list of buffered conversations
