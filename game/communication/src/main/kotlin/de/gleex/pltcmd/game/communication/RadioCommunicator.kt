@@ -19,6 +19,7 @@ import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.datatypes.Maybe
+import org.hexworks.cobalt.events.api.EventBus
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.*
 import kotlin.random.Random
@@ -155,3 +156,9 @@ class RadioCommunicator(val callSign: CallSign) {
             (transmission as TransmissionWithResponse).response
 
 }
+
+/**
+ * Publishes a [TransmissionEvent]. Or in other words: Send a message via radio.
+ */
+private fun EventBus.publishTransmission(transmission: Transmission, sender: CallSign) =
+        publish(TransmissionEvent(transmission, sender), RadioComms)

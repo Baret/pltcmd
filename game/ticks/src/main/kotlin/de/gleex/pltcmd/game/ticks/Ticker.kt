@@ -4,6 +4,7 @@ import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
+import org.hexworks.cobalt.events.api.EventBus
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.time.LocalTime
 
@@ -62,3 +63,9 @@ object Ticker {
         globalEventBus.publishTick(currentTick)
     }
 }
+
+/**
+ * Publishes a [TickEvent]. Or in other words: Proceed to the next tick.
+ */
+private fun EventBus.publishTick(tick: TickId) =
+        publish(TickEvent(tick), Ticks)
