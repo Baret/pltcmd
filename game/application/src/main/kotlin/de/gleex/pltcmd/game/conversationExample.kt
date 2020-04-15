@@ -83,29 +83,29 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
     screen.themeProperty.value = UiOptions.THEME
 
     val LOG_AREA_HEIGHT = 20
-    val logArea = Components.logArea()
-            .withSize(UiOptions.WINDOW_WIDTH, LOG_AREA_HEIGHT)
-            .withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER)
-            .withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log"))
-            .build()
-            .apply {
-                globalEventBus.subscribeToRadioComms { event ->
+    val logArea = Components.logArea().
+    withSize(UiOptions.WINDOW_WIDTH, LOG_AREA_HEIGHT).
+    withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER).
+    withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
+    build().
+    apply {
+        globalEventBus.subscribeToRadioComms { event ->
                     addParagraph("${Ticker.currentTimeString.value}: ${event.transmission.message}", false, 10)
                 }
             }
 
-    val mainPanel = Components.hbox()
-            .withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER)
-            .withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - LOG_AREA_HEIGHT)
-            .build()
-            .apply {
+    val mainPanel = Components.hbox().
+            withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER).
+            withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - LOG_AREA_HEIGHT).
+            build().
+            apply {
                 val sideBarWidth = 18
                 // sidebar
-                addComponent(Components.vbox()
-                        .withSpacing(1)
-                        .withSize(sideBarWidth, contentSize.height)
-                        .build()
-                        .apply {
+                addComponent(Components.vbox().
+                    withSpacing(1).
+                    withSize(sideBarWidth, contentSize.height).
+                    build().
+                    apply {
                             addFragment(TickFragment(sideBarWidth))
                             // TESTING
                             addFragment(TilesetSelectorFragment(sideBarWidth, this@apply, logArea))
@@ -123,16 +123,17 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
 }
 
 fun ceateRadioCommuicatorPanel(communicator: RadioCommunicator, size: Size): Component {
-    return Components.vbox()
-            .withSize(size)
-            .withSpacing(3)
-            .withDecorations(ComponentDecorations.box(BoxType.DOUBLE, communicator.callSign.toString()))
-            .build()
-            .apply {
-                addComponent(Components.label()
-                        .withSize(contentSize.width, 1)
-                        .build()
-                        .apply {
+    return Components.vbox().
+            withSize(size).
+            withSpacing(3).
+            withDecorations(ComponentDecorations.box(BoxType.DOUBLE, communicator.callSign.toString())).
+            build().
+            apply {
+                addComponent(Components.
+                        label().
+                        withSize(contentSize.width, 1).
+                        build().
+                        apply {
                             textProperty.updateFrom(
                                     createPropertyFrom("Talking to ")
                                             bindPlusWith communicator.inConversationWith.bindTransform {
