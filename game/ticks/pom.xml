@@ -4,17 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>game</artifactId>
-        <groupId>de.gleex.pltcmd</groupId>
+        <groupId>de.gleex.pltcmd.game</groupId>
         <version>0.0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>game.ticks</artifactId>
+    <artifactId>ticks</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>util.events</artifactId>
+            <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>events</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

@@ -4,37 +4,37 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>game</artifactId>
-        <groupId>de.gleex.pltcmd</groupId>
+        <groupId>de.gleex.pltcmd.game</groupId>
         <version>0.0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>game.application</artifactId>
+    <artifactId>application</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>game.communication</artifactId>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>communication</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>game.options</artifactId>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>options</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>model.radio</artifactId>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>radio</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>model.mapgeneration</artifactId>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>mapgeneration</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>model.world</artifactId>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>world</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

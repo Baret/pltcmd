@@ -4,27 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>model</artifactId>
-        <groupId>de.gleex.pltcmd</groupId>
+        <groupId>de.gleex.pltcmd.model</groupId>
         <version>0.0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>model.radio</artifactId>
+    <artifactId>radio</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>model.world</artifactId>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>world</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>model.elements</artifactId>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>elements</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>util.tests</artifactId>
+            <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>model</artifactId>
+    <groupId>de.gleex.pltcmd.model</groupId>
     <packaging>pom</packaging>
     <modules>
         <module>elements</module>
