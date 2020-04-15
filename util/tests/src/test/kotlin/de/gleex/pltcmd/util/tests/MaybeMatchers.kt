@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.testhelpers
+package de.gleex.pltcmd.util.tests
 
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult

@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.model.mapgeneration.dijkstra
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.testhelpers.beEmpty
-import de.gleex.pltcmd.testhelpers.shouldContainValue
+import de.gleex.pltcmd.util.tests.beEmpty
+import de.gleex.pltcmd.util.tests.shouldContainValue
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.collections.shouldContainInOrder
 import io.kotlintest.matchers.collections.shouldHaveSingleElement

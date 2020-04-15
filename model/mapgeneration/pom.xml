@@ -17,6 +17,7 @@
             <artifactId>model.world</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- tests -->
         <dependency>
             <groupId>de.gleex.pltcmd</groupId>
             <artifactId>model.world</artifactId>
@@ -28,6 +29,7 @@
             <groupId>de.gleex.pltcmd</groupId>
             <artifactId>util.tests</artifactId>
             <version>${project.version}</version>
+            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>
