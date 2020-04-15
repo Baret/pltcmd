@@ -1,6 +1,5 @@
-package de.gleex.pltcmd.events.ticks
+package de.gleex.pltcmd.game.ticks
 
-import de.gleex.pltcmd.events.Ticks
 import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
@@ -60,6 +59,6 @@ object Ticker {
         _currentTickProperty.value = nextTick
         _currentTimeProperty.updateValue(_currentTimeProperty.value.plusMinutes(1))
         log.debug(" - TICK - Sending tick $currentTick, current time: ${currentTime.value}")
-        globalEventBus.publish(TickEvent(currentTick), Ticks)
+        globalEventBus.publish(TickEvent(currentTick))
     }
 }

@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.events
+package de.gleex.pltcmd.game.communication
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission

@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.ui.fragments
 
-import de.gleex.pltcmd.events.ticks.Ticker
+import de.gleex.pltcmd.game.ticks.Ticker
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom

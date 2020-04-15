@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.events.ticks
+package de.gleex.pltcmd.game.ticks
 
 import org.hexworks.cobalt.events.api.Event
 

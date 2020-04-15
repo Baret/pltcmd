@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.game
 
-import de.gleex.pltcmd.events.radio.RadioCommunicator
-import de.gleex.pltcmd.events.radio.subscribeToRadioComms
-import de.gleex.pltcmd.events.ticks.Ticker
+import de.gleex.pltcmd.game.communication.RadioCommunicator
+import de.gleex.pltcmd.game.communication.subscribeToRadioComms
+import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.fragments.TickFragment
 import de.gleex.pltcmd.game.ui.fragments.TilesetSelectorFragment
 import de.gleex.pltcmd.model.elements.CallSign

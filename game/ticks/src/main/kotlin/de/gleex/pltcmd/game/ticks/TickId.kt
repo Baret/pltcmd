@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.events.ticks
+package de.gleex.pltcmd.game.ticks
 
 data class TickId(val value: Int) {
     val previous: TickId

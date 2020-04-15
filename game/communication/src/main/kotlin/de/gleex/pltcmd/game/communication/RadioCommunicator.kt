@@ -1,8 +1,7 @@
-package de.gleex.pltcmd.events.radio
+package de.gleex.pltcmd.game.communication
 
-import de.gleex.pltcmd.events.RadioComms
-import de.gleex.pltcmd.events.TransmissionEvent
-import de.gleex.pltcmd.events.ticks.Ticker
+import de.gleex.pltcmd.game.ticks.Ticker
+import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
@@ -24,7 +23,6 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.*
 import kotlin.random.Random
 
-// FIXME does this belong to the event project?
 /**
  * A [RadioCommunicator] participates in radio communications. It sends and receives radio [Transmission]s by
  * subscribing to [RadioComms] via the [EventBus].

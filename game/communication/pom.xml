@@ -9,19 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>game.application</artifactId>
+    <artifactId>game.communication</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>game.communication</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>game.options</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd</groupId>
             <artifactId>model.radio</artifactId>
@@ -29,12 +19,7 @@
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>model.mapgeneration</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.gleex.pltcmd</groupId>
-            <artifactId>model.world</artifactId>
+            <artifactId>game.ticks</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

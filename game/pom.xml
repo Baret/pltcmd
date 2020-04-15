@@ -13,8 +13,9 @@
     <packaging>pom</packaging>
     <modules>
         <module>application</module>
+        <module>communication</module>
         <module>options</module>
-        <module>radio-events</module>
+        <module>ticks</module>
     </modules>
 
 </project>
