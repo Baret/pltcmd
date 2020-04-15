@@ -59,6 +59,6 @@ object Ticker {
         _currentTickProperty.value = nextTick
         _currentTimeProperty.updateValue(_currentTimeProperty.value.plusMinutes(1))
         log.debug(" - TICK - Sending tick $currentTick, current time: ${currentTime.value}")
-        globalEventBus.publish(TickEvent(currentTick))
+        globalEventBus.publishTick(currentTick)
     }
 }

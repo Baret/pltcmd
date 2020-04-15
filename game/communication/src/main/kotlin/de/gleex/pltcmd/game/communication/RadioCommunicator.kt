@@ -51,7 +51,7 @@ class RadioCommunicator(val callSign: CallSign) {
             transmissionBuffer.
                 pop(tick.id).
                 ifPresent{
-                    globalEventBus.publish(TransmissionEvent(it.transmit(transmissionContext), callSign))
+                    globalEventBus.publishTransmission(it.transmit(transmissionContext), callSign)
                 }
         }
 

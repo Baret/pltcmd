@@ -20,5 +20,5 @@ fun EventBus.subscribeToTicks(onEvent: (TickEvent) -> Unit): Subscription {
 /**
  * Publishes a [TickEvent]. Or in other words: Proceed to the next tick.
  */
-internal fun EventBus.publish(tickEvent: TickEvent) =
-        publish(tickEvent, Ticks)
+internal fun EventBus.publishTick(tick: TickId) =
+        publish(TickEvent(tick), Ticks)

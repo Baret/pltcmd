@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.game.communication
 
+import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import org.hexworks.cobalt.events.api.EventBus
 import org.hexworks.cobalt.events.api.EventScope
 import org.hexworks.cobalt.events.api.Subscription
@@ -12,7 +14,7 @@ import org.hexworks.cobalt.events.api.simpleSubscribeTo
  *
  * @see [EventBus.subscribeToRadioComms]
  */
-private object RadioComms: EventScope
+private object RadioComms : EventScope
 
 /**
  * Convenience method to subscribe to [TransmissionEvent]s
@@ -24,5 +26,5 @@ fun EventBus.subscribeToRadioComms(onEvent: (TransmissionEvent) -> Unit): Subscr
 /**
  * Publishes a [TransmissionEvent]. Or in other words: Send a message via radio.
  */
-internal fun EventBus.publish(transmissionEvent: TransmissionEvent) =
-        publish(transmissionEvent, RadioComms)
+internal fun EventBus.publishTransmission(transmission: Transmission, sender: CallSign) =
+        publish(TransmissionEvent(transmission, sender), RadioComms)
