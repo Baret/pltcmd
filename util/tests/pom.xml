@@ -11,6 +11,9 @@
 
     <artifactId>tests</artifactId>
 
+    <name>Test utilities</name>
+    <description>Handy stuff to be used in unit tests like matchers, generators and so on.</description>
+
     <build>
         <plugins>
             <plugin>

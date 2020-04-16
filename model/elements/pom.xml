@@ -11,6 +11,9 @@
 
     <artifactId>elements</artifactId>
 
+    <name>Elements model</name>
+    <description>The modeling of military hierarchies.</description>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>

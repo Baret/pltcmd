@@ -11,6 +11,10 @@
 
     <artifactId>mapgeneration</artifactId>
 
+    <name>Map generation</name>
+    <description>This artifact offers the world map generator(s) to create a world from a map seed.</description>
+    <!-- TODO: move dijkstra to util.pathfinding, as it might also be used by the game engine -->
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>

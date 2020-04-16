@@ -6,6 +6,10 @@
 	<artifactId>pltcmd</artifactId>
 	<packaging>pom</packaging>
 	<version>0.0.2-SNAPSHOT</version>
+
+	<name>PltCmd</name>
+	<description>PltCmd is a strategy game that puts you in control of a whole army with nothing but a radio at your hands.</description>
+
 	<scm>
 		<connection>scm:git:https://github.com/Baret/pltcmd.git</connection>
 		<developerConnection>scm:git:git@github.com:Baret/pltcmd.git</developerConnection>
@@ -20,15 +24,16 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<main.class>de.gleex.pltcmd.MainKt</main.class>
-		<kotlin.version>1.3.71</kotlin.version>
-		<zircon.version>2020.1.3-PREVIEW</zircon.version>
-		<amethyst.version>2020.0.1-PREVIEW</amethyst.version>
-		<kotest.version>3.4.2</kotest.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
+
+		<main.class>de.gleex.pltcmd.MainKt</main.class>
+
+		<kotlin.version>1.3.72</kotlin.version>
+		<zircon.version>2020.1.3-PREVIEW</zircon.version>
+		<amethyst.version>2020.0.1-PREVIEW</amethyst.version>
+		<kotest.version>3.4.2</kotest.version>
 	</properties>
 
 	<repositories>
@@ -42,6 +47,7 @@
 		</repository>
 	</repositories>
 
+	<!-- TODO: move most dependencies to dependnecyManagement. Test-dependencies are ok to have everywhere, but i.e. zircon and amethyst is mostly only needed in "game" -->
 	<dependencies>
 		<dependency>
 			<groupId>org.hexworks.zircon</groupId>

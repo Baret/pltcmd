@@ -12,6 +12,10 @@
     <artifactId>util</artifactId>
     <groupId>de.gleex.pltcmd.util</groupId>
     <packaging>pom</packaging>
+
+    <name>Utilities</name>
+    <description>Utilities that might be used by any artifact. This group resides "next to" the stack of model -> game/engine -> UI/application.</description>
+
     <modules>
         <module>tests</module>
         <module>events</module>

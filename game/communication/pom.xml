@@ -11,6 +11,9 @@
 
     <artifactId>communication</artifactId>
 
+    <name>Comms</name>
+    <description>Continuous communications advanced by game ticks.</description>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>

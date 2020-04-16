@@ -12,6 +12,10 @@
     <artifactId>game</artifactId>
     <groupId>de.gleex.pltcmd.game</groupId>
     <packaging>pom</packaging>
+
+    <name>Game parent</name>
+    <description>The modules of this artifact make up the actual game with its mechanics, the engine and the frontend.</description>
+
     <modules>
         <module>application</module>
         <module>communication</module>

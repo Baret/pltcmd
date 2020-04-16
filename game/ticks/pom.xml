@@ -11,6 +11,9 @@
 
     <artifactId>ticks</artifactId>
 
+    <name>Game ticks</name>
+    <description>The "ticker" advances game time by counting up "ticks".</description>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>

@@ -11,6 +11,10 @@
 
     <artifactId>radio</artifactId>
 
+    <name>Radio model</name>
+    <description>The radio simulation model representing how radio signals travel through the world. It also contains the model for radio communications.</description>
+    <!-- TODO: Should we split this up? Comms might be its own artifact... -->
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>

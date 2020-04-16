@@ -11,6 +11,9 @@
 
     <artifactId>application</artifactId>
 
+    <name>Application</name>
+    <description>This module bundles all the stuff together in a zircon application.</description>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>

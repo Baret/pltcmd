@@ -11,6 +11,9 @@
 
     <artifactId>world</artifactId>
 
+    <name>World model</name>
+    <description>The model of the world and the terrain it is made of.</description>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>

@@ -11,6 +11,9 @@
 
     <artifactId>options</artifactId>
 
+    <name>Game options</name>
+    <description>Game configuration can be found here.</description>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>

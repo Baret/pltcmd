@@ -12,6 +12,10 @@
     <artifactId>model</artifactId>
     <groupId>de.gleex.pltcmd.model</groupId>
     <packaging>pom</packaging>
+
+    <name>Model parent</name>
+    <description>The underlying model of the simulation.</description>
+
     <modules>
         <module>elements</module>
         <module>mapgeneration</module>
