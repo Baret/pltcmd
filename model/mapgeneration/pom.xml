@@ -19,7 +19,6 @@
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>world</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!-- tests -->
         <dependency>
@@ -32,9 +31,7 @@
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>
             <artifactId>tests</artifactId>
-            <version>${project.version}</version>
             <type>test-jar</type>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
