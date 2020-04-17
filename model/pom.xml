@@ -25,6 +25,7 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- modules -->
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
                 <artifactId>elements</artifactId>
@@ -45,6 +46,7 @@
                 <artifactId>world</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- tests -->
             <dependency>
                 <groupId>de.gleex.pltcmd.util</groupId>
                 <artifactId>tests</artifactId>

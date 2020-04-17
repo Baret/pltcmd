@@ -18,27 +18,18 @@
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>communication</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>options</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.gleex.pltcmd.model</groupId>
-            <artifactId>radio</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>mapgeneration</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>world</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

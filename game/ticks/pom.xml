@@ -18,7 +18,6 @@
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>
             <artifactId>events</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

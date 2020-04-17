@@ -18,12 +18,10 @@
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>radio</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>ticks</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
