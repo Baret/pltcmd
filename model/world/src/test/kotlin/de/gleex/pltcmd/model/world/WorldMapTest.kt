@@ -8,7 +8,6 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
-import org.hexworks.zircon.api.data.Size
 
 class WorldMapTest: WordSpec({
     "A WorldMap" should {
@@ -28,12 +27,11 @@ class WorldMapTest: WordSpec({
                     row(100, 10),
                     row(900, 30)
             ) { sectorCount, sideLengthInSectors ->
-                val expectedSize = Size.create(
-                        sideLengthInSectors * Sector.TILE_COUNT,
-                        sideLengthInSectors * Sector.TILE_COUNT)
+                val expectedEdgeLength = sideLengthInSectors * Sector.TILE_COUNT
                 val sectors = sectorCount.sectors()
                 sectors shouldHaveSize sectorCount
-                WorldMap(sectors).size shouldBe expectedSize
+                WorldMap(sectors).width shouldBe expectedEdgeLength
+                WorldMap(sectors).height shouldBe expectedEdgeLength
             }
         }
     }

@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.model.world
 
-import org.hexworks.zircon.api.data.Size
 import kotlin.math.sqrt
 
 /**
@@ -12,14 +11,16 @@ data class WorldMap(val sectors: Set<Sector>) {
         require(sectors.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one Sector." }
     }
 
-    /** Returns the number of [WorldTile]s per dimension on the map */
-    val size: Size
+    /** Returns the width of this map in [WorldTile]s */
+    val width: Int
         get() {
             // TODO currently we assume a square world full with sectors. Better check the existing world for what it contains
             val lengthInSectors = sqrt(sectors.size.toDouble()).toInt()
-            val lengthInTiles = lengthInSectors * Sector.TILE_COUNT
-            return Size.create(lengthInTiles, lengthInTiles)
+            return lengthInSectors * Sector.TILE_COUNT
         }
+    /** Returns the height of this map in [WorldTile]s */
+    // we assume a square world
+    val height = width
 
     /** the most south-west [Coordinate] of this world */
     val origin = sectors.minBy { it.origin }!!.origin

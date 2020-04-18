@@ -20,8 +20,11 @@ fun haveSameTerrain(expected: WorldMap) = object: Matcher<WorldMap> {
             value.origin != expected.origin -> {
                 Maybe.of("origin ${value.origin} does not equal expected ${expected.origin}")
             }
-            value.size != expected.size     -> {
-                Maybe.of("size of ${value.size} does not equal expected size of ${expected.size}")
+            value.width != expected.width   -> {
+                Maybe.of("width of ${value.width} does not equal expected width of ${expected.width}")
+            }
+            value.height != expected.height -> {
+                Maybe.of("height of ${value.height} does not equal expected height of ${expected.height}")
             }
             sectors.size != expectedSectors.size -> {
                 Maybe.of("Number of sectors ${sectors.size} does not equal expected ${expectedSectors.size}")

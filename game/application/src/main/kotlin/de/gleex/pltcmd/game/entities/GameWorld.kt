@@ -25,7 +25,7 @@ import org.hexworks.zircon.internal.game.impl.TopDownProjectionStrategy
 class GameWorld(private val worldMap: WorldMap) :
         BaseGameArea<Tile, GameBlock>(
                 initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
-                initialActualSize = Size3D.from2DSize(worldMap.size, 1),
+                initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
                 initialContents = mapOf(),
                 projectionStrategy = TopDownProjectionStrategy()) {
     /**
