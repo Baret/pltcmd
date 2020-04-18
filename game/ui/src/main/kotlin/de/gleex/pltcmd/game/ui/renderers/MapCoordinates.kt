@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.ui.renderers
 
-import de.gleex.pltcmd.game.entities.GameWorld
+import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.zircon.api.builder.graphics.TileGraphicsBuilder
 import org.hexworks.zircon.api.data.Position

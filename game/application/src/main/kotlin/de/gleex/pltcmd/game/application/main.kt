@@ -1,11 +1,11 @@
-package de.gleex.pltcmd.game
+package de.gleex.pltcmd.game.application
 
-import de.gleex.pltcmd.game.entities.GameWorld
-import de.gleex.pltcmd.game.entities.TileRepository
 import de.gleex.pltcmd.game.ui.GameView
 import de.gleex.pltcmd.game.ui.GeneratingView
 import de.gleex.pltcmd.game.ui.MapGenerationProgressController
 import de.gleex.pltcmd.game.ui.TitleView
+import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap

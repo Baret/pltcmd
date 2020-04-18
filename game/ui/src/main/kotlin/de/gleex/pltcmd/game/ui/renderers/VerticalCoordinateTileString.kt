@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.ui.renderers
 
-import de.gleex.pltcmd.game.entities.ColorRepository
+import de.gleex.pltcmd.game.ui.entities.ColorRepository
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
 

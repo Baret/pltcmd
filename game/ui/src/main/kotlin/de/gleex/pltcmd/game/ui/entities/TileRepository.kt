@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.entities
+package de.gleex.pltcmd.game.ui.entities
 
 import de.gleex.pltcmd.model.radio.SignalStrength
 import de.gleex.pltcmd.model.world.terrain.Terrain

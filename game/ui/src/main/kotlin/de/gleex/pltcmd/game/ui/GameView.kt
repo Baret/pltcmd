@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.ui
 
-import de.gleex.pltcmd.game.entities.GameBlock
-import de.gleex.pltcmd.game.entities.GameWorld
+import de.gleex.pltcmd.game.ui.entities.GameBlock
+import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.MousePosition
 import de.gleex.pltcmd.game.ui.fragments.RadioSignalFragment
 import de.gleex.pltcmd.game.ui.fragments.ThemeSelectorFragment

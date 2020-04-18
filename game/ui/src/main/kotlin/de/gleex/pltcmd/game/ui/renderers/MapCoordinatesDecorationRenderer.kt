@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.ui.renderers
 
-import de.gleex.pltcmd.game.entities.GameWorld
+import de.gleex.pltcmd.game.ui.entities.GameWorld
 import org.hexworks.zircon.api.component.renderer.ComponentDecorationRenderContext
 import org.hexworks.zircon.api.component.renderer.ComponentDecorationRenderer
 import org.hexworks.zircon.api.data.Position

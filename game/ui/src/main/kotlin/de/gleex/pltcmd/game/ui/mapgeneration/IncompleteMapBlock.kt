@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.ui.mapgeneration
 
-import de.gleex.pltcmd.game.entities.TileRepository
+import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import kotlinx.collections.immutable.persistentMapOf

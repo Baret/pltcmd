@@ -22,6 +22,7 @@
         <module>communication</module>
         <module>options</module>
         <module>ticks</module>
+        <module>ui</module>
     </modules>
 
     <properties>
@@ -49,6 +50,11 @@
             <dependency>
                 <groupId>de.gleex.pltcmd.game</groupId>
                 <artifactId>ticks</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.game</groupId>
+                <artifactId>ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- other projects -->

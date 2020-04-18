@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.game.ui.renderers
 
-import de.gleex.pltcmd.game.entities.GameBlock
-import de.gleex.pltcmd.game.entities.GameWorld
-import de.gleex.pltcmd.game.entities.TileRepository
+import de.gleex.pltcmd.game.ui.entities.GameBlock
+import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.model.radio.AttenuationModel
 import de.gleex.pltcmd.model.radio.RadioSignal
 import de.gleex.pltcmd.options.GameOptions
