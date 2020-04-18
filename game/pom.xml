@@ -25,10 +25,6 @@
         <module>ui</module>
     </modules>
 
-    <properties>
-        <zircon.version>2020.1.3-PREVIEW</zircon.version>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <!-- modules -->
@@ -93,20 +89,11 @@
         <dependency>
             <groupId>org.hexworks.zircon</groupId>
             <artifactId>zircon.core</artifactId>
-            <version>${zircon.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.hexworks.zircon</groupId>
             <artifactId>zircon.jvm.swing</artifactId>
-            <version>${zircon.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- we already have a direct dependency to cobalt on higher level -->
-                    <groupId>org.hexworks.cobalt</groupId>
-                    <artifactId>cobalt.core-jvm</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
