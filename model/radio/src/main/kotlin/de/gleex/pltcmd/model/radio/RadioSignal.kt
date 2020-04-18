@@ -31,7 +31,6 @@ open class RadioSignal(private val power: Double) {
         const val MIN_POWER_THRESHOLD = 8.0
     }
 
-    // FIXME should not depended on 'game'!
     private val attenuation: AttenuationModel by AttenuationModel.DEFAULT.asDelegate()
 
     /**
