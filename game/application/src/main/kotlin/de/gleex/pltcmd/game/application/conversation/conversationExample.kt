@@ -2,13 +2,13 @@ package de.gleex.pltcmd.game.application.conversation
 
 import de.gleex.pltcmd.game.communication.RadioCommunicator
 import de.gleex.pltcmd.game.communication.subscribeToRadioComms
+import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.fragments.TickFragment
 import de.gleex.pltcmd.game.ui.fragments.TilesetSelectorFragment
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.options.UiOptions
 import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform

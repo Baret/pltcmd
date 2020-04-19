@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.game.ui
 
+import de.gleex.pltcmd.game.options.GameOptions
+import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.MousePosition
@@ -10,8 +12,6 @@ import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
 import de.gleex.pltcmd.model.world.Sector
-import de.gleex.pltcmd.options.GameOptions
-import de.gleex.pltcmd.options.UiOptions
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components

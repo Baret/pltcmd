@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.game.ui
 
+import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.mapgeneration.IncompleteMapBlock
 import de.gleex.pltcmd.game.ui.mapgeneration.IncompleteMapGameArea
-import de.gleex.pltcmd.options.UiOptions
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.*

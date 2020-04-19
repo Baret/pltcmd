@@ -1,11 +1,11 @@
 package de.gleex.pltcmd.game.ui.renderers
 
+import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.model.radio.AttenuationModel
 import de.gleex.pltcmd.model.radio.RadioSignal
-import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size

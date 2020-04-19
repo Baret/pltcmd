@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.options
+package de.gleex.pltcmd.game.options
 
 import de.gleex.pltcmd.model.world.Sector
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom

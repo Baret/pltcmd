@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.game.ui.fragments
 
+import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.model.radio.*
-import de.gleex.pltcmd.options.GameOptions
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindToString
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom

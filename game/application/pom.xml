@@ -23,6 +23,10 @@
             <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>ui</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.hexworks.zircon</groupId>
+            <artifactId>zircon.jvm.swing</artifactId>
+        </dependency>
         <!-- logging -->
         <dependency>
             <groupId>ch.qos.logback</groupId>

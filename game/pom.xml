@@ -14,8 +14,7 @@
     <packaging>pom</packaging>
 
     <name>Game parent</name>
-    <description>The modules of this artifact make up the actual game with its mechanics, the engine and the frontend.
-    </description>
+    <description>The modules of this artifact make up the actual game with its mechanics, the engine and the frontend.</description>
 
     <modules>
         <module>application</module>
@@ -53,7 +52,7 @@
                 <artifactId>ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <!-- other projects -->
+            <!-- other internal projects -->
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
                 <artifactId>radio</artifactId>
@@ -88,12 +87,7 @@
     <dependencies>
         <dependency>
             <groupId>org.hexworks.zircon</groupId>
-            <artifactId>zircon.core</artifactId>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>org.hexworks.zircon</groupId>
-            <artifactId>zircon.jvm.swing</artifactId>
+            <artifactId>zircon.core-jvm</artifactId>
         </dependency>
     </dependencies>
 

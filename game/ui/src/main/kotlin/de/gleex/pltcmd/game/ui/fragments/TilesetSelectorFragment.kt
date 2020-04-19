@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.ui.fragments
 
-import de.gleex.pltcmd.options.UiOptions
+import de.gleex.pltcmd.game.options.UiOptions
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.Fragments

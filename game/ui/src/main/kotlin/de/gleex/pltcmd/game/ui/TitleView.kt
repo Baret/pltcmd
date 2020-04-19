@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.ui
 
-import de.gleex.pltcmd.options.UiOptions
+import de.gleex.pltcmd.game.options.UiOptions
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.component.Panel
