@@ -24,6 +24,13 @@
         <module>ui</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.hexworks.zircon</groupId>
+            <artifactId>zircon.core-jvm</artifactId>
+        </dependency>
+    </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <!-- modules -->
@@ -83,12 +90,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.hexworks.zircon</groupId>
-            <artifactId>zircon.core-jvm</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>
