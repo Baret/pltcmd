@@ -11,6 +11,9 @@
 
     <artifactId>ui</artifactId>
 
+    <name>UI</name>
+    <description>All the graphical stuff and user interaction.</description>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
