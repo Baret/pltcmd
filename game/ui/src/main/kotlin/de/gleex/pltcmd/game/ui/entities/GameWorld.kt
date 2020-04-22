@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.ui.entities
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import kotlinx.collections.immutable.persistentMapOf
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Position3D
@@ -26,7 +27,7 @@ class GameWorld(private val worldMap: WorldMap) :
         BaseGameArea<Tile, GameBlock>(
                 initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
                 initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
-                initialContents = mapOf(),
+                initialContents = persistentMapOf(),
                 projectionStrategy = TopDownProjectionStrategy()) {
     /**
      * Returns all currently visible blocks.

@@ -20,7 +20,7 @@ import kotlin.math.roundToInt
 /**
  * The first idea was to implement a game logo that draws some lines...
  */
-class GameLogo(private val size: Size, parent: TileGrid) : Fragment {
+class GameLogo(size: Size, parent: TileGrid) : Fragment {
     private val style = StyleSet.create(UiOptions.THEME.primaryForegroundColor, ANSITileColor.BLACK)
     private val styleFadingShadow = style
             .withModifiers(Modifiers.fadeIn(20, 2000, true))
@@ -34,6 +34,7 @@ class GameLogo(private val size: Size, parent: TileGrid) : Fragment {
             .build()
 
     init {
+
         val horizontal = size.width / 2
         val distanceFromBorder = (size.height * 0.3).roundToInt()
 
@@ -47,7 +48,7 @@ class GameLogo(private val size: Size, parent: TileGrid) : Fragment {
         (root as Container).addComponent(Components.header()
                 .withText("p l t")
                 .withPosition(Position.create(horizontal - 6, size.height / 2)))
-        (root as Container).addComponent(Components.header()
+        root.addComponent(Components.header()
                 .withText("c m d")
                 .withPosition(Position.create(horizontal + 3, size.height / 2)))
     }
