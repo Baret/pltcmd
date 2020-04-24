@@ -31,7 +31,6 @@ object GameLogo {
 
         val mainLayer = LayerBuilder.newBuilder()
                 .withFiller(Tile.createCharacterTile(' ', style))
-//                .withTileset(UiOptions.DEFAULT_TILESET)
                 .withSize(parent.size)
                 .build()
 
@@ -52,14 +51,14 @@ object GameLogo {
                         .newBuilder()
                         .withText("p l t")
                         .build(),
-                Position.create(horizontal - 6, logoSize.height / 2))
+                Position.create(horizontal - 6, logoSize.height / 2).withRelative(logoOffset))
 
         mainLayer.draw(
                 CharacterTileStrings
                         .newBuilder()
                         .withText("c m d")
                         .build(),
-                Position.create(horizontal + 3, logoSize.height / 2))
+                Position.create(horizontal + 3, logoSize.height / 2).withRelative(logoOffset))
     }
 
     private fun Layer.drawMainLine(topLeftCorner: Position, lowerPoint: Position, upperPoint: Position, bottomRightCorner: Position) {
