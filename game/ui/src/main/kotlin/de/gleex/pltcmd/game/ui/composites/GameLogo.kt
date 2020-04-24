@@ -26,24 +26,24 @@ object GameLogo {
             .withBackgroundColor(ANSITileColor.BLACK)
 
     fun drawOnto(parent: TileGrid) {
-        val size = Size.create(parent.width, (parent.width / 1.6).roundToInt())
+        val logoSize = Size.create(parent.width, (parent.width / 1.6).roundToInt())
+        val logoOffset = Position.create(0, (parent.height - logoSize.height) / 2)
 
         val mainLayer = LayerBuilder.newBuilder()
                 .withFiller(Tile.createCharacterTile(' ', style))
 //                .withTileset(UiOptions.DEFAULT_TILESET)
-                .withSize(size)
-                .withOffset(0, (parent.height - size.height) / 2)
+                .withSize(parent.size)
                 .build()
 
         parent.addLayer(mainLayer)
 
-        val horizontal = size.width / 2
-        val distanceFromBorder = (size.height * 0.3).roundToInt()
+        val horizontal = logoSize.width / 2
+        val distanceFromBorder = (logoSize.height * 0.3).roundToInt()
 
-        val lowerPoint = Position.create(horizontal, size.height - distanceFromBorder)
-        val upperPoint = Position.create(horizontal, distanceFromBorder)
-        val topLeftCorner = Position.zero()
-        val bottomRightCorner = Position.create(size.width - 1, size.height - 1)
+        val lowerPoint = Position.create(horizontal, logoSize.height - distanceFromBorder).withRelative(logoOffset)
+        val upperPoint = Position.create(horizontal, distanceFromBorder).withRelative(logoOffset)
+        val topLeftCorner = Position.zero().withRelative(logoOffset)
+        val bottomRightCorner = Position.create(logoSize.width - 1, logoSize.height - 1).withRelative(logoOffset)
 
         mainLayer.drawMainLine(topLeftCorner, lowerPoint, upperPoint, bottomRightCorner)
 
@@ -52,14 +52,14 @@ object GameLogo {
                         .newBuilder()
                         .withText("p l t")
                         .build(),
-                Position.create(horizontal - 6, size.height / 2))
+                Position.create(horizontal - 6, logoSize.height / 2))
 
         mainLayer.draw(
                 CharacterTileStrings
                         .newBuilder()
                         .withText("c m d")
                         .build(),
-                Position.create(horizontal + 3, size.height / 2))
+                Position.create(horizontal + 3, logoSize.height / 2))
     }
 
     private fun Layer.drawMainLine(topLeftCorner: Position, lowerPoint: Position, upperPoint: Position, bottomRightCorner: Position) {
