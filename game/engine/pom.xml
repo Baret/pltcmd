@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.hexworks.amethyst</groupId>
-            <artifactId>amethyst.core</artifactId>
+            <artifactId>amethyst.core-jvm</artifactId>
         </dependency>
     </dependencies>
 

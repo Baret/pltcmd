@@ -103,9 +103,14 @@
 			</dependency>
 			<dependency>
 				<groupId>org.hexworks.amethyst</groupId>
-				<artifactId>amethyst.core</artifactId>
+				<artifactId>amethyst.core-jvm</artifactId>
 				<version>${amethyst.version}</version>
-				<type>pom</type>
+				<exclusions>
+					<exclusion>
+						<groupId>org.jetbrains.kotlin</groupId>
+						<artifactId>kotlin-stdlib-common</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
