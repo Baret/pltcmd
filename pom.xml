@@ -34,7 +34,7 @@
 
 		<zircon.version>2020.1.5-PREVIEW</zircon.version>
 		<!-- Should match the version used by Zircon -->
-		<cobalt.version>2020.0.15-PREVIEW</cobalt.version>
+		<cobalt.version>2020.0.17-PREVIEW</cobalt.version>
 
 		<kotest.version>3.4.2</kotest.version>
 	</properties>
