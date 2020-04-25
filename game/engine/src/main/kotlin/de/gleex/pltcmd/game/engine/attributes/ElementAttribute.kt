@@ -5,8 +5,5 @@ import org.hexworks.amethyst.api.Attribute
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 
 class ElementAttribute(initialElement: Element) : Attribute {
-    private val elementProperty = createPropertyFrom(initialElement)
-
-    // getter and setter
-    var element: Element by elementProperty.asDelegate()
+    val element = createPropertyFrom(initialElement)
 }

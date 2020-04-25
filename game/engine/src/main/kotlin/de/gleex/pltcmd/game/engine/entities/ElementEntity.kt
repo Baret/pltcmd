@@ -7,25 +7,26 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Context
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.newEntityOfType
+import org.hexworks.cobalt.databinding.api.property.Property
 
 class ElementEntity(element: Element, coordinate: Coordinate) : Entity<TheType, Context> by newEntityOfType(TheType, {
     attributes(CoordinateAttribute(coordinate))
     behaviors()
     facets()
 }) {
-    var coordinate: Coordinate
-            get() = findAttribute(CoordinateAttribute::class).orElseThrow { IllegalStateException() }.coordinate
-            set(value) { // 3
-                findAttribute(CoordinateAttribute::class).map {
-                    it.coordinate = value
-                }
+    var coordinate: Property<Coordinate>
+        get() = findAttribute(CoordinateAttribute::class).orElseThrow { IllegalStateException() }.coordinate
+        set(value) {
+            findAttribute(CoordinateAttribute::class).map {
+                it.coordinate.updateFrom(value)
             }
+        }
 
-    var element: Element
+    var element: Property<Element>
         get() = findAttribute(ElementAttribute::class).orElseThrow { IllegalStateException() }.element
         set(value) { // 3
             findAttribute(ElementAttribute::class).map {
-                it.element = value
+                it.element.updateFrom(value)
             }
         }
 
