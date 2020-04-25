@@ -82,25 +82,11 @@
 				<groupId>org.hexworks.zircon</groupId>
 				<artifactId>zircon.core-jvm</artifactId>
 				<version>${zircon.version}</version>
-				<exclusions>
-					<exclusion>
-						<!-- we already have a direct dependency to cobalt -->
-						<groupId>org.hexworks.cobalt</groupId>
-						<artifactId>cobalt.core-jvm</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.hexworks.zircon</groupId>
 				<artifactId>zircon.jvm.swing</artifactId>
 				<version>${zircon.version}</version>
-				<exclusions>
-					<exclusion>
-						<!-- we already have a direct dependency to cobalt -->
-						<groupId>org.hexworks.cobalt</groupId>
-						<artifactId>cobalt.core-jvm</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -132,6 +118,27 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M4</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M3</version>
+				<executions>
+					<execution>
+						<id>enforce-consistent-versions</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3</version>
+								</requireMavenVersion>
+								<dependencyConvergence/>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
