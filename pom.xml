@@ -37,6 +37,7 @@
 		<cobalt.version>2020.0.15-PREVIEW</cobalt.version>
 		<amethyst.version>2020.0.1-PREVIEW</amethyst.version>
 
+		<jupiter.version>5.7.0-M1</jupiter.version>
 		<kotest.version>3.4.2</kotest.version>
 	</properties>
 
@@ -53,14 +54,19 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib</artifactId>
+			<version>${kotlin.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.hexworks.cobalt</groupId>
 			<artifactId>cobalt.core-jvm</artifactId>
 			<version>${cobalt.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jetbrains.kotlin</groupId>
-			<artifactId>kotlin-stdlib</artifactId>
-			<version>${kotlin.version}</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${jupiter.version}</version>
 		</dependency>
 		<!-- test dependencies -->
 		<dependency>
@@ -85,9 +91,8 @@
 				<version>${zircon.version}</version>
 				<exclusions>
 					<exclusion>
-						<!-- we already have a direct dependency to cobalt -->
-						<groupId>org.hexworks.cobalt</groupId>
-						<artifactId>cobalt.core-jvm</artifactId>
+						<groupId>org.jetbrains.kotlin</groupId>
+						<artifactId>kotlin-stdlib-common</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -95,13 +100,6 @@
 				<groupId>org.hexworks.zircon</groupId>
 				<artifactId>zircon.jvm.swing</artifactId>
 				<version>${zircon.version}</version>
-				<exclusions>
-					<exclusion>
-						<!-- we already have a direct dependency to cobalt -->
-						<groupId>org.hexworks.cobalt</groupId>
-						<artifactId>cobalt.core-jvm</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.hexworks.amethyst</groupId>
@@ -139,6 +137,24 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M4</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M3</version>
+				<executions>
+					<execution>
+						<id>enforce-upper-bound-deps</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireUpperBoundDeps />
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
