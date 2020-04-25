@@ -137,15 +137,12 @@
 				<version>3.0.0-M3</version>
 				<executions>
 					<execution>
-						<id>enforce-consistent-versions</id>
+						<id>enforce-upper-bound-deps</id>
 						<goals>
 							<goal>enforce</goal>
 						</goals>
 						<configuration>
 							<rules>
-								<requireMavenVersion>
-									<version>3</version>
-								</requireMavenVersion>
 								<requireUpperBoundDeps />
 							</rules>
 						</configuration>
