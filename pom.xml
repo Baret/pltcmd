@@ -52,14 +52,28 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.hexworks.cobalt</groupId>
-			<artifactId>cobalt.core-jvm</artifactId>
-			<version>${cobalt.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-stdlib</artifactId>
 			<version>${kotlin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hexworks.cobalt</groupId>
+			<artifactId>cobalt.core-jvm</artifactId>
+			<version>${cobalt.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<artifactId>kotlin-stdlib</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<artifactId>kotlin-stdlib-jdk8</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<artifactId>kotlin-stdlib-common</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- test dependencies -->
 		<dependency>
@@ -73,6 +87,12 @@
 			<artifactId>kotlintest-runner-junit5</artifactId>
 			<version>${kotest.version}</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<artifactId>kotlin-stdlib</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
