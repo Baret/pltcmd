@@ -3,7 +3,6 @@ package de.gleex.pltcmd.game.engine.behaviour
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.facets.SetDestination
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
@@ -18,7 +17,7 @@ import kotlin.math.sign
  **/
 class Movable : BaseBehavior<GameContext>() {
     companion object {
-        val log = LoggerFactory.getLogger(SetDestination::class)
+        val log = LoggerFactory.getLogger(Movable::class)
     }
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {

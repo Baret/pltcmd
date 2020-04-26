@@ -20,6 +20,7 @@ class ElementEntity(element: Element, coordinate: Coordinate) : Entity<ElementTy
     behaviors(Movable())
     facets(SetDestination())
 }) {
+
     var coordinate: Property<Coordinate>
         get() = findAttribute(PositionAttribute::class).orElseThrow { IllegalStateException() }.coordinate
         set(value) {
@@ -38,5 +39,9 @@ class ElementEntity(element: Element, coordinate: Coordinate) : Entity<ElementTy
 
     override val name: String
         get() = element.value.toString()
+
+    override fun toString(): String {
+        return "ElementEntity $name"
+    }
 
 }

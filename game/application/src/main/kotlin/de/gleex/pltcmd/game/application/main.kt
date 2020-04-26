@@ -48,10 +48,10 @@ fun main() {
             }
         }, 1, 1, TimeUnit.SECONDS)
         // test moving units by the GameEngine
-        repeat(20) {
+        repeat(20) { i ->
             // create element
             val randomPosition = generatedMap.sectors.find { it.origin == Coordinate(0, 450) }!!.tiles.random().coordinate
-            val element = ElementEntity(Element(CallSign("Element $it"), emptySet()), randomPosition)
+            val element = ElementEntity(Element(CallSign("Element $i"), emptySet()), randomPosition)
             engine.addEntity(element)
             gameWorld.trackUnit(element)
             // move element

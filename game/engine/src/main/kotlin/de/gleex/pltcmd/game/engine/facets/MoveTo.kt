@@ -27,7 +27,7 @@ class SetDestination : BaseFacet<GameContext>() {
             command.responseWhenCommandIs(MoveTo::class) { (destination, context, entity) ->
                 getOrAddDestination(entity, destination)
                         .coordinate.value = destination
-                log.debug("Set destination for ${entity.name} to $destination")
+                log.debug("Set destination for $entity to $destination")
                 Consumed
             }
 
