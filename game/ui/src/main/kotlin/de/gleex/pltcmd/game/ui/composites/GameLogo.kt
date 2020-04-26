@@ -36,30 +36,31 @@ object GameLogo {
 
         parent.addLayer(mainLayer)
 
-        val horizontal = logoSize.width / 2
+        val logoCenterX = logoSize.width / 2
+        val logoCenterY = logoSize.height / 2
+
         val distanceFromBorder = (logoSize.height * 0.3).roundToInt()
 
-        val lowerPoint = Position.create(horizontal, logoSize.height - distanceFromBorder).withRelative(logoOffset)
-        val upperPoint = Position.create(horizontal, distanceFromBorder).withRelative(logoOffset)
+        val lowerPoint = Position.create(logoCenterX, logoSize.height - distanceFromBorder).withRelative(logoOffset)
+        val upperPoint = Position.create(logoCenterX, distanceFromBorder).withRelative(logoOffset)
         val topLeftCorner = Position.zero().withRelative(logoOffset)
         val bottomRightCorner = Position.create(logoSize.width - 1, logoSize.height - 1).withRelative(logoOffset)
 
         mainLayer.drawMainLine(topLeftCorner, lowerPoint, upperPoint, bottomRightCorner)
 
-        val verticalMiddle = logoSize.height / 2
         mainLayer.draw(
                 CharacterTileStrings
                         .newBuilder()
                         .withText("p l t")
                         .build(),
-                Position.create(horizontal - 6, verticalMiddle).withRelative(logoOffset))
+                Position.create(logoCenterX - 6, logoCenterY).withRelative(logoOffset))
 
         mainLayer.draw(
                 CharacterTileStrings
                         .newBuilder()
                         .withText("c m d")
                         .build(),
-                Position.create(horizontal + 3, verticalMiddle).withRelative(logoOffset))
+                Position.create(logoCenterX + 3, logoCenterY).withRelative(logoOffset))
     }
 
     private fun Layer.drawMainLine(topLeftCorner: Position, lowerPoint: Position, upperPoint: Position, bottomRightCorner: Position) {
