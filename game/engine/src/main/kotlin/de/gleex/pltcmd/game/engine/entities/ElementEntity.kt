@@ -9,7 +9,7 @@ import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.newEntityOfType
 import org.hexworks.cobalt.databinding.api.property.Property
 
-class ElementEntity(element: Element, coordinate: Coordinate) : Entity<TheType, Context> by newEntityOfType(TheType, {
+class ElementEntity(element: Element, coordinate: Coordinate) : Entity<ElementType, Context> by newEntityOfType(ElementType, {
     attributes(CoordinateAttribute(coordinate))
     behaviors()
     facets()
