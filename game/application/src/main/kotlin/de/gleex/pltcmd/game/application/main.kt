@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.game.application
 
+import de.gleex.pltcmd.game.engine.GameContext
+import de.gleex.pltcmd.game.engine.GameEngine
 import de.gleex.pltcmd.game.engine.entities.ElementEntity
 import de.gleex.pltcmd.game.engine.facets.MoveTo
 import de.gleex.pltcmd.game.options.GameOptions
@@ -20,7 +22,6 @@ import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
-import stress.TestContext
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -37,23 +38,32 @@ fun main() {
         val gameWorld = GameWorld(generatedMap)
         screen.dock(GameView(gameWorld, tileGrid))
 
-        // testing display of units
-        val mover = Executors.newScheduledThreadPool(1)
-        val c = TestContext
+        val context = GameContext
+        val engine = GameEngine()
+        val engineTicker = Executors.newScheduledThreadPool(1)
+        engineTicker.scheduleAtFixedRate({
+            runBlocking {
+                engine.update(context)
+            }
+        }, 1, 1, TimeUnit.SECONDS)
+        // test moving units by the GameEngine
         repeat(20) {
+            // create element
             val randomPosition = generatedMap.sectors.find { it.origin == Coordinate(0, 450) }!!.tiles.random().coordinate
             val element = ElementEntity(Element(CallSign("Element $it"), emptySet()), randomPosition)
+            engine.addEntity(element)
             gameWorld.trackUnit(element)
+            // move element
             val newPos = randomPosition.movedBy(if (Random.nextBoolean()) 1 else -1, if (Random.nextBoolean()) 1 else -1)
-            val moveTo = MoveTo(newPos, c, element)
-            mover.schedule({
+            val moveTo = MoveTo(newPos, context, element)
+            engineTicker.schedule({
                 runBlocking {
                     element.executeCommand(moveTo)
-                    element.update(moveTo.context)
                 }
             }, Random.nextLong(5), TimeUnit.SECONDS)
         }
-        mover.shutdown()
+        // cleanup
+        screen.onShutdown { engineTicker.shutdown() }
     }
 }
 

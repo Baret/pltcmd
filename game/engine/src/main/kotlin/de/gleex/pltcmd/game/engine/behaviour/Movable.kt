@@ -1,10 +1,10 @@
 package de.gleex.pltcmd.game.engine.behaviour
 
+import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.facets.SetDestination
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import org.hexworks.amethyst.api.Context
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
@@ -16,12 +16,12 @@ import kotlin.math.sign
  * Required attributes: [PositionAttribute]
  * Optional attributes: [DestinationAttribute] (required for actual movement)
  **/
-class Movable : BaseBehavior<Context>() {
+class Movable : BaseBehavior<GameContext>() {
     companion object {
         val log = LoggerFactory.getLogger(SetDestination::class)
     }
 
-    override suspend fun update(entity: Entity<EntityType, Context>, context: Context): Boolean {
+    override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
         val position = entity.findAttribute(PositionAttribute::class)
                 .orElseThrow { IllegalArgumentException("Given entity is not movable, because it has no position!") }
                 .coordinate
@@ -42,7 +42,7 @@ class Movable : BaseBehavior<Context>() {
         return true
     }
 
-    private fun reachedDestination(entity: Entity<EntityType, Context>, destinationAttribute: DestinationAttribute) {
+    private fun reachedDestination(entity: Entity<EntityType, GameContext>, destinationAttribute: DestinationAttribute) {
         log.debug("Removing destination attribute from $entity")
         entity.asMutableEntity()
                 .removeAttribute(destinationAttribute)
