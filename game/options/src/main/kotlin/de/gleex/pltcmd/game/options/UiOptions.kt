@@ -13,7 +13,7 @@ object UiOptions {
                     withSize(WINDOW_WIDTH, WINDOW_HEIGHT).
                     withTitle("PltCmd").
                     withDefaultTileset(DEFAULT_TILESET).
-                    withIcon("icon/icon.png").
+                    withIcon("icon/applicationIcon.png").
                     build()
 
     val THEME = ColorThemes.cyberpunk()
