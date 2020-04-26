@@ -46,19 +46,20 @@ object GameLogo {
 
         mainLayer.drawMainLine(topLeftCorner, lowerPoint, upperPoint, bottomRightCorner)
 
+        val verticalMiddle = logoSize.height / 2
         mainLayer.draw(
                 CharacterTileStrings
                         .newBuilder()
                         .withText("p l t")
                         .build(),
-                Position.create(horizontal - 6, logoSize.height / 2).withRelative(logoOffset))
+                Position.create(horizontal - 6, verticalMiddle).withRelative(logoOffset))
 
         mainLayer.draw(
                 CharacterTileStrings
                         .newBuilder()
                         .withText("c m d")
                         .build(),
-                Position.create(horizontal + 3, logoSize.height / 2).withRelative(logoOffset))
+                Position.create(horizontal + 3, verticalMiddle).withRelative(logoOffset))
     }
 
     private fun Layer.drawMainLine(topLeftCorner: Position, lowerPoint: Position, upperPoint: Position, bottomRightCorner: Position) {
