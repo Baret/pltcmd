@@ -15,15 +15,14 @@ import kotlin.math.sign
  * Required attributes: [PositionAttribute]
  * Optional attributes: [DestinationAttribute] (required for actual movement)
  **/
-class Movable : BaseBehavior<GameContext>() {
+class Movable : BaseBehavior<GameContext>(PositionAttribute::class) {
     companion object {
         val log = LoggerFactory.getLogger(Movable::class)
     }
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
         val position = entity.findAttribute(PositionAttribute::class)
-                .orElseThrow { IllegalArgumentException("Given entity is not movable, because it has no position!") }
-                .coordinate
+                .get().coordinate
         val destinationAttribute = entity.findAttribute(DestinationAttribute::class)
         if (destinationAttribute.isEmpty()) {
             // not on the run
