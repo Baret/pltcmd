@@ -41,6 +41,7 @@ fun main() {
 
         val context = GameContext
         val engine = GameEngine()
+        // TODO: Use the actual Ticker, add TickId to GameContext (possibly it should not use the EventBus anymore)
         val engineTicker = Executors.newScheduledThreadPool(1)
         engineTicker.scheduleAtFixedRate({
             runBlocking {
@@ -69,8 +70,10 @@ fun main() {
 }
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {
-    screen.dock(TitleView(tileGrid))
-    TimeUnit.MILLISECONDS.sleep(4000)
+    if (UiOptions.SKIP_INTRO.not()) {
+        screen.dock(TitleView(tileGrid))
+        TimeUnit.MILLISECONDS.sleep(4000)
+    }
 }
 
 private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {
