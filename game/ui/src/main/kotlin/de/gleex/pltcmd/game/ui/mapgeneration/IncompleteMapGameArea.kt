@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.ui.mapgeneration
 
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
+import kotlinx.collections.immutable.toPersistentMap
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Size3D
@@ -19,7 +20,8 @@ class IncompleteMapGameArea(size: Size) :
                 initialActualSize = Size3D.from2DSize(size, 1),
                 initialContents = size.fetchPositions()
                         .map { it.to3DPosition(0) }
-                        .associateWith { IncompleteMapBlock() }) {
+                        .associateWith { IncompleteMapBlock() }
+                        .toPersistentMap()) {
 
     fun updateBlock(position: Position3D, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         blocks[position]?.setTerrain(terrainHeight, terrainType)
