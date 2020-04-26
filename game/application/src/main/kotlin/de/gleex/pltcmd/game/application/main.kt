@@ -59,7 +59,7 @@ fun main() {
             val moveTo = MoveTo(newPos, context, element)
             engineTicker.schedule({
                 runBlocking {
-                    element.executeCommand(moveTo)
+                    element.sendCommand(moveTo)
                 }
             }, Random.nextLong(5), TimeUnit.SECONDS)
         }
