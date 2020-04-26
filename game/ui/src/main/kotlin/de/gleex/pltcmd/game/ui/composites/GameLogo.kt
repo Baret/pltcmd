@@ -27,7 +27,7 @@ object GameLogo {
 
     fun drawOnto(parent: TileGrid) {
         val logoSize = Size.create(parent.width, (parent.width / 1.6).roundToInt())
-        val logoOffset = Position.create(0, (parent.height - logoSize.height) / 2)
+        val logoOffset = Position.zero().withRelativeY(((parent.height - logoSize.height) / 2.0).roundToInt())
 
         val mainLayer = LayerBuilder.newBuilder()
                 .withFiller(Tile.createCharacterTile(' ', style))
@@ -39,7 +39,7 @@ object GameLogo {
         val logoCenterX = logoSize.width / 2
         val logoCenterY = logoSize.height / 2
 
-        val distanceFromBorder = (logoSize.height * 0.3).roundToInt()
+        val distanceFromBorder = (logoSize.height * 0.31).roundToInt()
 
         val lowerPoint = Position.create(logoCenterX, logoSize.height - distanceFromBorder).withRelative(logoOffset)
         val upperPoint = Position.create(logoCenterX, distanceFromBorder).withRelative(logoOffset)
