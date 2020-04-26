@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit
 fun main() {
 
     val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
+
     val tileGrid = application.tileGrid
     val screen = tileGrid.toScreen()
 
@@ -41,7 +42,7 @@ fun main() {
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {
     screen.dock(TitleView(tileGrid))
-    TimeUnit.MILLISECONDS.sleep(1500)
+    TimeUnit.MILLISECONDS.sleep(4000)
 }
 
 private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {

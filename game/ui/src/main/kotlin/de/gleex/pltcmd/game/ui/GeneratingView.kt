@@ -20,6 +20,7 @@ import org.hexworks.zircon.api.view.base.BaseView
 class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     private val footer = createFooter()
+    private val footerHandle: AttachedComponent
     private val progressBar = createProgressBar()
     private val header = createHeader()
     private val usedLines = progressBar.height + header.height
@@ -30,7 +31,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     init {
         val mainPart = createMainPart()
 
-        footer.addComponent(progressBar)
+        footerHandle = footer.addComponent(progressBar)
 
         screen.addComponents(header, mainPart, footer)
         mainPart.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
@@ -73,7 +74,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     /** Changes the header and displays a button to the user to click to continue. */
     fun showFinished() {
         header.text = "Generated world"
-        footer.clear()
+        footerHandle.detach()
         val continueButton = createContinueButton()
         footer.addComponent(continueButton)
     }
