@@ -21,14 +21,6 @@ class ElementEntity(element: Element, coordinate: Coordinate) : Entity<ElementTy
     facets(SetDestination())
 }) {
 
-    var coordinate: Property<Coordinate>
-        get() = findAttribute(PositionAttribute::class).orElseThrow { IllegalStateException() }.coordinate
-        set(value) {
-            findAttribute(PositionAttribute::class).map {
-                it.coordinate.updateFrom(value)
-            }
-        }
-
     var element: Property<Element>
         get() = findAttribute(ElementAttribute::class).orElseThrow { IllegalStateException() }.element
         set(value) {

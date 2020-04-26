@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.ui.entities
 
+import de.gleex.pltcmd.game.engine.attributes.coordinate
 import de.gleex.pltcmd.game.engine.entities.ElementEntity
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap

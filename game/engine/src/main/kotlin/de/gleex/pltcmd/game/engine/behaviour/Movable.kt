@@ -17,7 +17,7 @@ import kotlin.math.sign
  **/
 class Movable : BaseBehavior<GameContext>(PositionAttribute::class) {
     companion object {
-        val log = LoggerFactory.getLogger(Movable::class)
+        private val log = LoggerFactory.getLogger(Movable::class)
     }
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
