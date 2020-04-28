@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import kotlin.random.Random
 
 /**
  * A sector has 50 by 50 [WorldTile]s (it is a square).
@@ -37,5 +38,16 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
             eastingFromLeft - (eastingFromLeft % TILE_COUNT),
             northingFromBottom - (northingFromBottom % TILE_COUNT)
     )
+
+    /**
+     * Returns a random [Coordinate] that lies inside this sector.
+     */
+    fun randomCoordinate(): Coordinate {
+        return Coordinate(
+                Random.nextInt(
+                        origin.eastingFromLeft, origin.eastingFromLeft + Sector.TILE_COUNT),
+                Random.nextInt(
+                        origin.northingFromBottom, origin.northingFromBottom + Sector.TILE_COUNT))
+    }
 
 }
