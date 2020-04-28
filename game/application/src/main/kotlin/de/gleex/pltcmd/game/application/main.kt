@@ -1,11 +1,10 @@
 package de.gleex.pltcmd.game.application
 
-import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.GameEngine
+import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.ElementEntity
-import de.gleex.pltcmd.game.engine.facets.MoveTo
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.GameView
 import de.gleex.pltcmd.game.ui.GeneratingView
 import de.gleex.pltcmd.game.ui.MapGenerationProgressController
@@ -17,12 +16,11 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import kotlinx.coroutines.runBlocking
+import org.hexworks.amethyst.api.Engine
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -39,33 +37,21 @@ fun main() {
         val gameWorld = GameWorld(generatedMap)
         screen.dock(GameView(gameWorld, tileGrid))
 
-        val context = GameContext
-        val engine = GameEngine()
+        val game = Game(Engine.default(), generatedMap)
         // TODO: Use the actual Ticker, add TickId to GameContext (possibly it should not use the EventBus anymore)
-        val engineTicker = Executors.newScheduledThreadPool(1)
-        engineTicker.scheduleAtFixedRate({
-            runBlocking {
-                engine.update(context)
-            }
-        }, 1, 1, TimeUnit.SECONDS)
+        Ticker.start(game)
         // test moving units by the GameEngine
         repeat(20) { i ->
             // create element
             val randomPosition = generatedMap.sectors.find { it.origin == Coordinate(0, 450) }!!.tiles.random().coordinate
             val element = ElementEntity(Element(CallSign("Element $i"), emptySet()), randomPosition)
-            engine.addEntity(element)
+            game.engine.addEntity(element)
             gameWorld.trackUnit(element)
             // move element
             val newPos = randomPosition.movedBy(if (Random.nextBoolean()) 1 else -1, if (Random.nextBoolean()) 1 else -1)
-            val moveTo = MoveTo(newPos, context, element)
-            engineTicker.schedule({
-                runBlocking {
-                    element.sendCommand(moveTo)
-                }
-            }, Random.nextLong(5), TimeUnit.SECONDS)
         }
         // cleanup
-        screen.onShutdown { engineTicker.shutdown() }
+        screen.onShutdown { Ticker.stopGame() }
     }
 }
 

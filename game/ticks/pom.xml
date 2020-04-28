@@ -19,6 +19,10 @@
             <groupId>de.gleex.pltcmd.util</groupId>
             <artifactId>events</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>engine</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
