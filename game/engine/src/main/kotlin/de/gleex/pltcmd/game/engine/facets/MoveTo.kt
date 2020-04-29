@@ -19,15 +19,13 @@ data class MoveTo(
         override val source: Entity<EntityType, GameContext>
 ) : Command<EntityType, GameContext>
 
-class SetDestination : BaseFacet<GameContext>(DestinationAttribute::class) {
-    companion object {
-        val log = LoggerFactory.getLogger(SetDestination::class)
-    }
+object SetDestination : BaseFacet<GameContext>(DestinationAttribute::class) {
+    private val log = LoggerFactory.getLogger(SetDestination::class)
 
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
             command.responseWhenCommandIs(MoveTo::class) { (destination, _, entity) ->
                 entity.getAttribute(DestinationAttribute::class).coordinate = Maybe.of(destination)
-                log.debug("Set destination for $entity to $destination")
+                log.debug("Set destination for ${entity.name} to $destination")
                 Consumed
             }
 

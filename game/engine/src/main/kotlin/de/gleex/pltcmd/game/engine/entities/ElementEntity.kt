@@ -19,8 +19,8 @@ import org.hexworks.cobalt.databinding.api.property.Property
  **/
 class ElementEntity(element: Element, coordinate: Coordinate) : Entity<ElementType, GameContext> by newEntityOfType(ElementType, {
     attributes(ElementAttribute(element), PositionAttribute(coordinate), DestinationAttribute())
-    behaviors(Moving(), Wandering())
-    facets(SetDestination())
+    behaviors(Moving, Wandering)
+    facets(SetDestination)
 }) {
 
     var element: Property<Element>

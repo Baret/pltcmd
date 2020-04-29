@@ -3,7 +3,6 @@ package de.gleex.pltcmd.game.ticks
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.util.events.globalEventBus
-import kotlinx.coroutines.runBlocking
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
@@ -72,11 +71,9 @@ object Ticker {
 
     fun start(game: Game) {
         executor.scheduleAtFixedRate({
-            runBlocking {
-                tick()
-                game.engine.update(GameContext(currentTick.value, game.world))
-            }
-        }, 1, 1, TimeUnit.SECONDS)
+            tick()
+            game.engine.update(GameContext(currentTick.value, game.world))
+        }, 1, 10, TimeUnit.SECONDS)
     }
 
     fun stopGame() {

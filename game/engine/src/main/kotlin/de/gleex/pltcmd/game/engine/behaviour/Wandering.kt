@@ -10,16 +10,20 @@ import de.gleex.pltcmd.game.engine.facets.MoveTo
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
+import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Wandering entities move randomly around the map.
  *
  * Required attributes: [PositionAttribute], [DestinationAttribute]
  */
-class Wandering: BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
+object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
+    private val log = LoggerFactory.getLogger(Wandering::class)
+
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
         if(entity.hasNoDestination) {// && Random.nextDouble() >= 0.6) {
             val destination = context.world.neighborsOf(entity.coordinate.value).random()
+            log.debug("${entity.name} starts to wander to $destination")
             entity.executeCommand(MoveTo(destination, context, entity))
             return true
         }

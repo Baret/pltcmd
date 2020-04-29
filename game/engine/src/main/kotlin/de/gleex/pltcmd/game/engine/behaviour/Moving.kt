@@ -16,10 +16,8 @@ import kotlin.math.sign
  * Changes the position of an entity based on its destination.
  * Required attributes: [PositionAttribute], [DestinationAttribute] (required for actual movement)
  **/
-class Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
-    companion object {
-        private val log = LoggerFactory.getLogger(Moving::class)
-    }
+object Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
+    private val log = LoggerFactory.getLogger(Moving::class)
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
         val position = entity.findAttribute(PositionAttribute::class)
@@ -33,10 +31,11 @@ class Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAt
         val destination = destinationAttribute.get()
         if (startLocation == destination) {
             entity.reachedDestination()
+            return false
         } else {
             val newPosition = moveForward(startLocation, destination)
             position.updateValue(newPosition)
-            log.debug("$entity moved to $newPosition")
+            log.debug("${entity.name} moved to $newPosition")
         }
         return true
     }

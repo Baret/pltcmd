@@ -24,7 +24,8 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap) {
      */
     fun addElementInSector(sector: Sector): ElementEntity? {
         val positionInSector = sector.randomCoordinate()
-        val element = ElementEntity(Element(CallSign("Element ${Random.nextInt(999_999)}"), emptySet()), positionInSector)
+        val callSign = CallSign("Element ${Random.nextInt(999_999)}")
+        val element = ElementEntity(Element(callSign, emptySet()), positionInSector)
         engine.addEntity(element)
         return element
     }
