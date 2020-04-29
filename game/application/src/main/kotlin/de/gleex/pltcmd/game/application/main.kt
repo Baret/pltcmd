@@ -35,11 +35,13 @@ fun main() {
 
         val game = Game(Engine.default(), generatedMap)
         // Adding some elements to every sector
+        val elementsPerSector = 3
         generatedMap.sectors.forEach { sector ->
-            repeat(3) {
+            repeat(elementsPerSector) {
                 game.addElementInSector(sector)?.let { gameWorld.trackUnit(it) }
             }
         }
+        println("Added ${generatedMap.sectors.size * elementsPerSector} elements to the map. Starting the game...")
         Ticker.start(game)
         // cleanup
         screen.onShutdown { Ticker.stopGame() }

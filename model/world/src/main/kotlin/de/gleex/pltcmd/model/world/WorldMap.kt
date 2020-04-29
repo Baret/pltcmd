@@ -8,6 +8,10 @@ import kotlin.math.sqrt
  */
 data class WorldMap(val sectors: Set<Sector>) {
 
+    init {
+        require(sectors.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one Sector." }
+    }
+
     /** Returns the width of this map in [WorldTile]s */
     val width: Int
         get() {
@@ -22,10 +26,6 @@ data class WorldMap(val sectors: Set<Sector>) {
 
     /** the most south-west [Coordinate] of this world */
     val origin = sectors.minBy { it.origin }!!.origin
-
-    init {
-        require(sectors.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one Sector." }
-    }
 
     /**
      * Returns all neighbors of the given coordinate that are inside this world.
