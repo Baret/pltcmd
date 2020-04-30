@@ -21,7 +21,7 @@ object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, Destinatio
     private val log = LoggerFactory.getLogger(Wandering::class)
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
-        if(entity.hasNoDestination) {// && Random.nextDouble() >= 0.6) {
+        if(entity.hasNoDestination && context.random.nextDouble() >= 0.6) {
             val destination = context.world.neighborsOf(entity.coordinate.value).random(context.random)
             log.debug("${entity.name} starts to wander to $destination")
             val moveResponse = entity.executeCommand(MoveTo(destination, context, entity))
