@@ -24,9 +24,11 @@ object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, Destinatio
         if(entity.hasNoDestination) {// && Random.nextDouble() >= 0.6) {
             val destination = context.world.neighborsOf(entity.coordinate.value).random()
             log.debug("${entity.name} starts to wander to $destination")
-            entity.executeCommand(MoveTo(destination, context, entity))
-            log.debug("...executed!")
-            return true
+            val moveResponse = entity.executeCommand(MoveTo(destination, context, entity))
+            log.debug("...executed $moveResponse")
+
+            val moveBehavior = entity.findBehavior(Moving::class).orElseThrow { IllegalArgumentException("can't wander in an unmoving entity") }
+            return moveBehavior.update(entity, context)
         }
         return false
     }
