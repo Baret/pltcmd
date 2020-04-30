@@ -19,6 +19,7 @@ import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 fun main() {
 
@@ -33,7 +34,7 @@ fun main() {
         val gameWorld = GameWorld(generatedMap)
         screen.dock(GameView(gameWorld, tileGrid))
 
-        val game = Game(Engine.default(), generatedMap)
+        val game = Game(Engine.default(), generatedMap, Random(GameOptions.DEBUG_MAP_SEED))
         // Adding some elements to every sector
         val elementsPerSector = 3
         generatedMap.sectors.forEach { sector ->

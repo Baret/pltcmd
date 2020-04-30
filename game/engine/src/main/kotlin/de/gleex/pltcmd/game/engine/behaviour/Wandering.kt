@@ -22,7 +22,7 @@ object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, Destinatio
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
         if(entity.hasNoDestination) {// && Random.nextDouble() >= 0.6) {
-            val destination = context.world.neighborsOf(entity.coordinate.value).random()
+            val destination = context.world.neighborsOf(entity.coordinate.value).random(context.random)
             log.debug("${entity.name} starts to wander to $destination")
             val moveResponse = entity.executeCommand(MoveTo(destination, context, entity))
             log.debug("...executed $moveResponse")

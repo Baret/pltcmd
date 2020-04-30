@@ -72,7 +72,7 @@ object Ticker {
     fun start(game: Game) {
         executor.scheduleAtFixedRate({
             tick()
-            game.engine.update(GameContext(currentTick.value, game.world))
+            game.engine.update(GameContext(currentTick.value, game.world, game.random))
         }, 1, 1, TimeUnit.SECONDS)
     }
 

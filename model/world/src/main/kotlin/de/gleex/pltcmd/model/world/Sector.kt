@@ -42,12 +42,12 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
     /**
      * Returns a random [Coordinate] that lies inside this sector.
      */
-    fun randomCoordinate(): Coordinate {
+    fun randomCoordinate(random: Random): Coordinate {
         return Coordinate(
-                Random.nextInt(
-                        origin.eastingFromLeft, origin.eastingFromLeft + Sector.TILE_COUNT),
-                Random.nextInt(
-                        origin.northingFromBottom, origin.northingFromBottom + Sector.TILE_COUNT))
+                random.nextInt(
+                        origin.eastingFromLeft, origin.eastingFromLeft + TILE_COUNT),
+                random.nextInt(
+                        origin.northingFromBottom, origin.northingFromBottom + TILE_COUNT))
     }
 
 }

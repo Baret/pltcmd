@@ -12,7 +12,7 @@ import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 
-data class Game(val engine: Engine<GameContext>, val world: WorldMap) {
+data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random: Random) {
 
     companion object {
         private val log = LoggerFactory.getLogger(Game::class)
@@ -30,12 +30,12 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap) {
      * Adds a new element in the given sector and returns it. If it was not possible to add the returned value is null.
      */
     fun addElementInSector(sector: Sector): GameEntity<ElementType>? {
-        val positionInSector = sector.randomCoordinate()
-        val callSign = CallSign("Element ${Random.nextInt(999_999)}")
+        val positionInSector = sector.randomCoordinate(random)
+        val callSign = CallSign("Element ${random.nextInt(999_999)}")
 //        val element = ElementEntity(Element(callSign, emptySet()), positionInSector)
         val element = EntityFactory.newElement(Element(callSign, emptySet()), positionInSector)
         log.debug("Adding element with callsign $callSign to engine: $element")
-        engine.addEntity(element)
-        return element
+        return addEntity(element)
     }
+
 }
