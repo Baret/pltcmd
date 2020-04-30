@@ -3,13 +3,15 @@ package de.gleex.pltcmd.game.engine.behaviour
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
+import de.gleex.pltcmd.game.engine.attributes.coordinate
+import de.gleex.pltcmd.game.engine.entities.Positionble
+import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.math.sign
 
 /**
@@ -17,11 +19,11 @@ import kotlin.math.sign
  * Required attributes: [PositionAttribute], [DestinationAttribute] (required for actual movement)
  **/
 object Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
-    private val log = LoggerFactory.getLogger(Moving::class)
 
+    @Suppress("UNCHECKED_CAST")
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
-        val position = entity.findAttribute(PositionAttribute::class)
-                .get().coordinate
+        entity as GameEntity<Positionble>
+        val position = entity.coordinate
         val destinationAttribute = entity.getAttribute(DestinationAttribute::class).coordinate
         if (destinationAttribute.isEmpty()) {
             // not on the run
@@ -35,13 +37,11 @@ object Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationA
         } else {
             val newPosition = moveForward(startLocation, destination)
             position.updateValue(newPosition)
-            log.debug("${entity.name} moved to $newPosition")
         }
         return true
     }
 
-    private fun Entity<EntityType, GameContext>.reachedDestination() {
-        log.debug("$this reached its destination")
+    private fun GameEntity<Positionble>.reachedDestination() {
         getAttribute(DestinationAttribute::class).coordinate = Maybe.empty()
     }
 

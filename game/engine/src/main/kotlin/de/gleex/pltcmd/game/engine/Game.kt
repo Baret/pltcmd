@@ -32,7 +32,6 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     fun addElementInSector(sector: Sector): GameEntity<ElementType>? {
         val positionInSector = sector.randomCoordinate(random)
         val callSign = CallSign("Element ${random.nextInt(999_999)}")
-//        val element = ElementEntity(Element(callSign, emptySet()), positionInSector)
         val element = EntityFactory.newElement(Element(callSign, emptySet()), positionInSector)
         log.debug("Adding element with callsign $callSign to engine: $element")
         return addEntity(element)

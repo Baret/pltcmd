@@ -10,7 +10,6 @@ import org.hexworks.amethyst.api.base.BaseFacet
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /** Command to provide entities a destination **/
 data class MoveTo(
@@ -20,12 +19,9 @@ data class MoveTo(
 ) : Command<EntityType, GameContext>
 
 object SetDestination : BaseFacet<GameContext>(DestinationAttribute::class) {
-    private val log = LoggerFactory.getLogger(SetDestination::class)
-
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
             command.responseWhenCommandIs(MoveTo::class) { (destination, _, entity) ->
                 entity.getAttribute(DestinationAttribute::class).coordinate = Maybe.of(destination)
-                log.debug("Set destination for ${entity.name} to $destination")
                 Consumed
             }
 
