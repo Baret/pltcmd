@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.engine.behaviour
+package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
@@ -7,7 +7,7 @@ import de.gleex.pltcmd.game.engine.attributes.coordinate
 import de.gleex.pltcmd.game.engine.entities.Positionble
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
-import de.gleex.pltcmd.game.engine.facets.MoveTo
+import de.gleex.pltcmd.game.engine.systems.facets.MoveTo
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType

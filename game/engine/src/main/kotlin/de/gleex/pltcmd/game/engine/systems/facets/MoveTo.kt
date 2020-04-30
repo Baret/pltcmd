@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.engine.facets
+package de.gleex.pltcmd.game.engine.systems.facets
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute

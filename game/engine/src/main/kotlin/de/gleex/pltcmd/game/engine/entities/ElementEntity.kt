@@ -4,9 +4,9 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.behaviour.Moving
-import de.gleex.pltcmd.game.engine.behaviour.Wandering
-import de.gleex.pltcmd.game.engine.facets.SetDestination
+import de.gleex.pltcmd.game.engine.systems.behaviours.Moving
+import de.gleex.pltcmd.game.engine.systems.behaviours.Wandering
+import de.gleex.pltcmd.game.engine.systems.facets.SetDestination
 import de.gleex.pltcmd.model.elements.Element
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.entity.Entity
