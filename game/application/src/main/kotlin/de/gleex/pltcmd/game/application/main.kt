@@ -39,7 +39,9 @@ fun main() {
         var entitesAdded = 0
 //        generatedMap.sectors.forEach { sector ->
             repeat(elementsPerSector) {
-                game.addElementInSector(generatedMap.sectors.first { it.origin == Coordinate(0, 450) })?.let { gameWorld.trackUnit(it) }
+                val visibleSector = generatedMap.sectors.first { it.origin == Coordinate(0, 450) }
+                game.addElementInSector(visibleSector)?.
+                    let { gameWorld.trackUnit(it) }
                 entitesAdded++
             }
 //        }

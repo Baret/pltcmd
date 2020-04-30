@@ -4,10 +4,7 @@ import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.game.ui.fragments.MousePosition
-import de.gleex.pltcmd.game.ui.fragments.RadioSignalFragment
-import de.gleex.pltcmd.game.ui.fragments.ThemeSelectorFragment
-import de.gleex.pltcmd.game.ui.fragments.TilesetSelectorFragment
+import de.gleex.pltcmd.game.ui.fragments.*
 import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
@@ -102,6 +99,8 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
         // playing around with stuff...
         val sidebarWidth = sidebar.contentSize.width
         sidebar.addFragment(MousePosition(sidebarWidth, map))
+
+        sidebar.addFragment(TickFragment(sidebarWidth))
 
         if(GameOptions.displayRadioSignals.value) {
             val radioSignalFragment = RadioSignalFragment(sidebarWidth)

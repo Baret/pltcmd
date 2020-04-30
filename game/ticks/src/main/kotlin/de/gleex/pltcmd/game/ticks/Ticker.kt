@@ -2,7 +2,6 @@ package de.gleex.pltcmd.game.ticks
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
@@ -36,6 +35,7 @@ object Ticker {
     private val _currentTimeStringProperty: Property<String>
 
     private val executor = Executors.newScheduledThreadPool(1)
+    private lateinit var game: Game
 
     init {
         val initialTime = LocalTime.of(5, 59)
@@ -60,19 +60,20 @@ object Ticker {
     val currentTickObservable: ObservableValue<TickId> = _currentTickProperty
 
     /**
-     * Increases the current tick and publishes the corresponding [TickEvent].
+     * Increases the current tick, publishes the corresponding [TickEvent] and updates the engine.
      */
     fun tick() {
         _currentTickProperty.value = nextTick
         _currentTimeProperty.updateValue(_currentTimeProperty.value.plusMinutes(1))
         log.debug(" - TICK - Sending tick $currentTick, current time: ${currentTime.value}")
-        globalEventBus.publishTick(currentTick)
+        game.engine.update(GameContext(currentTick.value, game.world))
+//        globalEventBus.publishTick(currentTick)
     }
 
-    fun start(game: Game) {
+    fun start(newGame: Game) {
+        game = newGame
         executor.scheduleAtFixedRate({
             tick()
-            game.engine.update(GameContext(currentTick.value, game.world))
         }, 1, 10, TimeUnit.SECONDS)
     }
 

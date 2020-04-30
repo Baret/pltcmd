@@ -8,6 +8,7 @@
 
     <logger name="org.hexworks.zircon" level="WARN"/>
     <logger name="org.hexworks.cobalt" level="WARN"/>
+    <logger name="org.hexworks.amethyst.internal.entity" level="DEBUG"/>
 
     <logger name="de.gleex.pltcmd" level="DEBUG"/>
 

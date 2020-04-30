@@ -25,6 +25,7 @@ object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, Destinatio
             val destination = context.world.neighborsOf(entity.coordinate.value).random()
             log.debug("${entity.name} starts to wander to $destination")
             entity.executeCommand(MoveTo(destination, context, entity))
+            log.debug("...executed!")
             return true
         }
         return false
