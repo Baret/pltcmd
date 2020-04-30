@@ -35,4 +35,5 @@ data class WorldMap(val sectors: Set<Sector>) {
         return coordinate.neighbors()
     }
 
+    override fun toString() = "WorldMap[${sectors.size} sectors, size = $width * $height tiles]"
 }
