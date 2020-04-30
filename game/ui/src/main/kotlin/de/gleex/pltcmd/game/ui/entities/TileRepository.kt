@@ -5,6 +5,7 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import org.hexworks.zircon.api.builder.modifier.BorderBuilder
+import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.Symbols
 import org.hexworks.zircon.api.modifier.BorderType
@@ -18,14 +19,17 @@ object TileRepository {
      * All tiles used to display elements (aka units) on the map.
      */
     object Elements {
-        val PLATOON_FRIENDLY: Tile =
+        private fun platoonTile(colorForeground: TileColor, colorBackground: TileColor) =
                 Tile.newBuilder().
-                        withForegroundColor(ColorRepository.FRIENDLY).
-                        withBackgroundColor(ColorRepository.FRIENDLY_TRANSPARENT).
-                        withCharacter('X').
-                        withModifiers(BorderBuilder.newBuilder().withBorderColor(ColorRepository.FRIENDLY).build()).
-                        buildCharacterTile()
+                withForegroundColor(colorForeground).
+                withBackgroundColor(colorBackground).
+                withCharacter('X').
+                withModifiers(BorderBuilder.newBuilder().withBorderColor(colorBackground).build()).
+                buildCharacterTile()
 
+        val PLATOON_FRIENDLY: Tile = platoonTile(ColorRepository.FRIENDLY, ColorRepository.FRIENDLY_TRANSPARENT)
+
+        val PLATOON_UNKNOWN: Tile = platoonTile(ColorRepository.UNKNOWN, ColorRepository.UNKNOWN_TRANSPARENT)
     }
 
     fun createTerrainTile(terrain: Terrain): Tile = createTerrainTile(terrain.height, terrain.type)

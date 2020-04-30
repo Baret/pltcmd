@@ -70,7 +70,7 @@ class GameWorld(private val worldMap: WorldMap) :
     }
 
     private fun showUnit(element: GameEntity<ElementType>) {
-        element.coordinate.value.setUnit(TileRepository.Elements.PLATOON_FRIENDLY)
+        element.coordinate.value.setUnit(TileRepository.Elements.PLATOON_UNKNOWN)
     }
 
     private fun Coordinate.setUnit(unitTile: Tile) {

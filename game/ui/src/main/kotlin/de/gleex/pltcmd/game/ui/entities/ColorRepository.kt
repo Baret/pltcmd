@@ -10,8 +10,13 @@ import org.hexworks.zircon.api.color.TileColor
  */
 object ColorRepository {
 
+    private val ALPHA_BG = 99
+
     val FRIENDLY = TileColor.create(42, 42, 254)
-    val FRIENDLY_TRANSPARENT = TileColor.create(42, 42, 254, 99)
+    val FRIENDLY_TRANSPARENT = FRIENDLY.withAlpha(ALPHA_BG)
+
+    val UNKNOWN = TileColor.create(245, 241, 132)
+    val UNKNOWN_TRANSPARENT = UNKNOWN.withAlpha(ALPHA_BG)
 
     val GRID_COLOR = TileColor.defaultForegroundColor()
     val GRID_COLOR_HIGHLIGHT = TileColor.create(77, 77, 77)
