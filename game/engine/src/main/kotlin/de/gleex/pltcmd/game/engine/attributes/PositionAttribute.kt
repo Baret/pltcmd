@@ -5,6 +5,6 @@ import org.hexworks.amethyst.api.Attribute
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 
 /** The location of an entity on the map. */
-class PositionAttribute(initialPosition: Coordinate) : Attribute {
+internal class PositionAttribute(initialPosition: Coordinate) : Attribute {
     val coordinate = createPropertyFrom(initialPosition)
 }

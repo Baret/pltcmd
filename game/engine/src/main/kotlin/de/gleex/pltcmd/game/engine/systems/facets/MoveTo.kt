@@ -18,7 +18,7 @@ data class MoveTo(
         override val source: Entity<EntityType, GameContext>
 ) : Command<EntityType, GameContext>
 
-object SetDestination : BaseFacet<GameContext>(DestinationAttribute::class) {
+internal object SetDestination : BaseFacet<GameContext>(DestinationAttribute::class) {
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
             command.responseWhenCommandIs(MoveTo::class) { (destination, _, entity) ->
                 entity.getAttribute(DestinationAttribute::class).coordinate = Maybe.of(destination)

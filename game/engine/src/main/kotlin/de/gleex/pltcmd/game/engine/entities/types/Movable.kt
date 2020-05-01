@@ -16,7 +16,7 @@ interface Movable : Positionable
 /** Access to the value of the [DestinationAttribute] of a [GameEntity] */
 var GameEntity<Movable>.destination: Maybe<Coordinate>
     get() = getAttribute(DestinationAttribute::class).coordinate
-    set(value) {
+    internal set(value) {
         findAttribute(DestinationAttribute::class).map {
             it.coordinate = value
         }
@@ -27,6 +27,6 @@ val GameEntity<Movable>.hasNoDestination: Boolean
     get() = destination.isEmpty()
 
 /** Clears the destination of this movable entity. */
-fun GameEntity<Movable>.reachedDestination() {
+internal fun GameEntity<Movable>.reachedDestination() {
     destination = Maybe.empty()
 }

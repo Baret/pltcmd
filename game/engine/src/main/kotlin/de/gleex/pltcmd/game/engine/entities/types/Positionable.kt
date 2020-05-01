@@ -5,7 +5,9 @@ import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.entity.EntityType
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
+import org.hexworks.cobalt.databinding.api.value.ObservableValue
 
 /**
  * This file contains code for entities that have the [PositionAttribute].
@@ -15,9 +17,9 @@ import org.hexworks.cobalt.databinding.api.property.Property
 interface Positionable : EntityType
 
 /** Access to the [Property] of the [PositionAttribute] of a [GameEntity] */
-var GameEntity<Positionable>.position: Property<Coordinate>
+var GameEntity<Positionable>.position: ObservableValue<Coordinate>
     get() = getAttribute(PositionAttribute::class).coordinate
-    set(value) {
+    internal set(value) {
         findAttribute(PositionAttribute::class).map {
             it.coordinate.updateFrom(value)
         }
@@ -26,6 +28,6 @@ var GameEntity<Positionable>.position: Property<Coordinate>
 /** Access to the value of the [PositionAttribute] of a [GameEntity] */
 var GameEntity<Positionable>.currentPosition: Coordinate
     get() = position.value
-    set(value) {
-        position.updateValue(value)
+    internal set(value) {
+        position = value.toProperty()
     }

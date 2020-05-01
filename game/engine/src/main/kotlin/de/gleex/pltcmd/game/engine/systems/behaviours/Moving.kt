@@ -14,7 +14,7 @@ import kotlin.math.sign
  * Changes the position of an entity based on its destination.
  * Required attributes: [PositionAttribute], [DestinationAttribute] (required for actual movement)
  **/
-object Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
+internal object Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         if (entity.type !is Movable) {
