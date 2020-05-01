@@ -47,7 +47,7 @@ fun main() {
                         gameWorld.trackUnit(it)
                         // sending a command from out of game must have a context that will be provided on the next update!?
                         runBlocking {
-                            it.sendCommand(MoveTo(sector.randomCoordinate(game.random), GameContext(1, game.world, game.random), it))
+                            it.sendCommand(MoveTo(sector.randomCoordinate(game.random), GameContext(Ticker.currentTick.value, game.world, game.random), it))
                         }
                     }
             }
