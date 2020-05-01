@@ -3,9 +3,9 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.attributes.coordinate
-import de.gleex.pltcmd.game.engine.attributes.hasNoDestination
-import de.gleex.pltcmd.game.engine.entities.Movable
+import de.gleex.pltcmd.game.engine.entities.types.Movable
+import de.gleex.pltcmd.game.engine.entities.types.coordinate
+import de.gleex.pltcmd.game.engine.entities.types.hasNoDestination
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.systems.facets.MoveTo

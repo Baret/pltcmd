@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.ui.entities
 
-import de.gleex.pltcmd.game.engine.attributes.coordinate
-import de.gleex.pltcmd.game.engine.entities.Positionable
+import de.gleex.pltcmd.game.engine.entities.types.Positionable
+import de.gleex.pltcmd.game.engine.entities.types.coordinate
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap

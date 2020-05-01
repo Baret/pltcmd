@@ -3,14 +3,11 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.attributes.coordinate
-import de.gleex.pltcmd.game.engine.attributes.destination
-import de.gleex.pltcmd.game.engine.entities.Movable
+import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.base.BaseBehavior
-import org.hexworks.cobalt.datatypes.Maybe
 import kotlin.math.sign
 
 /**
@@ -27,26 +24,19 @@ object Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationA
     }
 
     private fun moveTowardsDestination(movable: GameEntity<Movable>): Boolean {
-        val position = movable.coordinate
-        val destinationAttribute = movable.destination
-        if (destinationAttribute.isEmpty()) {
-            // not on the run
+        if (movable.hasNoDestination) {
             return false
         }
-        val startLocation = position.value
-        val destination = destinationAttribute.get()
+        val startLocation = movable.coordinate.value
+        val destination = movable.destination.get()
         if (startLocation == destination) {
             movable.reachedDestination()
             return false
         } else {
             val newPosition = moveForward(startLocation, destination)
-            position.updateValue(newPosition)
+            movable.placeAt(newPosition)
         }
         return true
-    }
-
-    private fun GameEntity<Movable>.reachedDestination() {
-        destination = Maybe.empty()
     }
 
     private fun moveForward(start: Coordinate, destination: Coordinate): Coordinate {
