@@ -32,9 +32,8 @@ internal object Moving : BaseBehavior<GameContext>(PositionAttribute::class, Des
         if (startLocation == destination) {
             movable.reachedDestination()
             return false
-        } else {
-            movable.currentPosition = moveForward(startLocation, destination)
         }
+        movable.currentPosition = moveForward(startLocation, destination)
         return true
     }
 
