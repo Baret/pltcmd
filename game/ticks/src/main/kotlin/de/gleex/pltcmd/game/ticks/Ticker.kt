@@ -60,9 +60,9 @@ object Ticker {
     val currentTickObservable: ObservableValue<TickId> = _currentTickProperty
 
     /**
-     * Increases the current tick, publishes the corresponding [TickEvent] and updates the engine.
+     * Increases the current tick, publishes the corresponding [TickEvent].
      */
-    private fun tick() {
+    fun tick() {
         _currentTickProperty.value = nextTick
         _currentTimeProperty.updateValue(_currentTimeProperty.value.plusMinutes(1))
         log.debug(" - TICK - Sending tick $currentTick, current time: ${currentTime.value}")
