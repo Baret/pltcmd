@@ -4,13 +4,10 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.coordinate
-import de.gleex.pltcmd.game.engine.entities.Positionble
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.base.BaseBehavior
-import org.hexworks.amethyst.api.entity.Entity
-import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.datatypes.Maybe
 import kotlin.math.sign
 
@@ -20,9 +17,7 @@ import kotlin.math.sign
  **/
 object Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
 
-    @Suppress("UNCHECKED_CAST")
-    override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
-        entity as GameEntity<Positionble>
+    override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         val position = entity.coordinate
         val destinationAttribute = entity.getAttribute(DestinationAttribute::class).coordinate
         if (destinationAttribute.isEmpty()) {
@@ -41,7 +36,7 @@ object Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationA
         return true
     }
 
-    private fun GameEntity<Positionble>.reachedDestination() {
+    private fun AnyGameEntity.reachedDestination() {
         getAttribute(DestinationAttribute::class).coordinate = Maybe.empty()
     }
 
