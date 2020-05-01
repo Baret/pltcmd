@@ -50,4 +50,11 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
                         origin.northingFromBottom, origin.northingFromBottom + TILE_COUNT))
     }
 
+    fun contains(coordinate: Coordinate): Boolean {
+        if (origin > coordinate) {
+            return false
+        }
+        return tiles.any { it.coordinate == coordinate }
+    }
+
 }

@@ -31,8 +31,11 @@ data class WorldMap(val sectors: Set<Sector>) {
      * Returns all neighbors of the given coordinate that are inside this world.
      */
     fun neighborsOf(coordinate: Coordinate): List<Coordinate> {
-        // TODO: Needs check if all neighbors are inside the world (probably c&p code from MutableWorld...)
-        return coordinate.neighbors()
+        return coordinate.neighbors().filter { contains(it) }
+    }
+
+    fun contains(coordinate: Coordinate): Boolean {
+        return sectors.any { it.contains(coordinate) }
     }
 
     override fun toString() = "WorldMap[${sectors.size} sectors, size = $width * $height tiles]"
