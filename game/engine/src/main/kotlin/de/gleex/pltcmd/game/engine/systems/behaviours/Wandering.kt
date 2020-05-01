@@ -9,6 +9,7 @@ import de.gleex.pltcmd.game.engine.entities.types.hasNoDestination
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.systems.facets.MoveTo
+import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.base.BaseBehavior
 
 /**
@@ -16,24 +17,23 @@ import org.hexworks.amethyst.api.base.BaseBehavior
  *
  * Required attributes: [PositionAttribute], [DestinationAttribute]
  */
-object Wandering : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
+val Wandering = ChooseRandomDestination.and(Moving)
+
+object ChooseRandomDestination : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         if (entity.type !is Movable) {
             return false
         }
-        return wander(entity as GameEntity<Movable>, context)
+        return moveToRandomDestination(entity as GameEntity<Movable>, context)
     }
 
-    private suspend fun wander(movable: GameEntity<Movable>, context: GameContext): Boolean {
+    private suspend fun moveToRandomDestination(movable: GameEntity<Movable>, context: GameContext): Boolean {
         if (movable.hasNoDestination && context.random.nextDouble() >= 0.6) {
             val destination = context.world.neighborsOf(movable.coordinate.value)
                     .random(context.random)
-            // TODO: Maybe Wandering and Moving can be chained by and() or or()...? Then we dont need the findBehaviour stuff
             val moveResponse = movable.executeCommand(MoveTo(destination, context, movable))
-            val moveBehavior = movable.findBehavior(Moving::class)
-                    .orElseThrow { IllegalArgumentException("can't wander in an unmoving entity") }
-            return moveBehavior.update(movable, context)
+            return Consumed == moveResponse
         }
         return false
     }
