@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.engine.attributes
 
-import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
+import de.gleex.pltcmd.game.engine.entities.Positionable
+import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Attribute
@@ -12,7 +13,7 @@ class PositionAttribute(initialPosition: Coordinate) : Attribute {
     val coordinate = createPropertyFrom(initialPosition)
 }
 
-var AnyGameEntity.coordinate: Property<Coordinate>
+var GameEntity<Positionable>.coordinate: Property<Coordinate>
     get() = getAttribute(PositionAttribute::class).coordinate
     set(value) {
         findAttribute(PositionAttribute::class).map {
