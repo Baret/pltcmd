@@ -17,7 +17,7 @@ data class MoveTo(
         val destination: Coordinate,
         override val context: GameContext,
         override val source: GameEntity<Movable>
-) : Command<EntityType, GameContext>
+) : Command<Movable, GameContext>
 
 internal object SetDestination : BaseFacet<GameContext>(DestinationAttribute::class) {
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =

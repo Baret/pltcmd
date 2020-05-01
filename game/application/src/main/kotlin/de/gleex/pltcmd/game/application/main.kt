@@ -1,6 +1,8 @@
 package de.gleex.pltcmd.game.application
 
 import de.gleex.pltcmd.game.engine.Game
+import de.gleex.pltcmd.game.engine.GameContext
+import de.gleex.pltcmd.game.engine.systems.facets.MoveTo
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -13,6 +15,7 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
@@ -40,7 +43,13 @@ fun main() {
         generatedMap.sectors.forEach { sector ->
             repeat(elementsPerSector) {
                 game.addElementInSector(sector)?.
-                    let { gameWorld.trackUnit(it) }
+                    let {
+                        gameWorld.trackUnit(it)
+                        // sending a command from out of game must have a context that will be provided on the next update!?
+                        runBlocking {
+                            it.sendCommand(MoveTo(sector.randomCoordinate(game.random), GameContext(1, game.world, game.random), it))
+                        }
+                    }
             }
         }
         Ticker.start(game)
