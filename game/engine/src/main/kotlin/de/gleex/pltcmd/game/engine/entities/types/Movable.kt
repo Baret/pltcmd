@@ -17,9 +17,7 @@ interface Movable : Positionable
 var GameEntity<Movable>.destination: Maybe<Coordinate>
     get() = getAttribute(DestinationAttribute::class).coordinate
     internal set(value) {
-        findAttribute(DestinationAttribute::class).map {
-            it.coordinate = value
-        }
+        getAttribute(DestinationAttribute::class).coordinate = value
     }
 
 /** Check if a destination is set. */

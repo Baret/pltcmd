@@ -20,9 +20,7 @@ interface Positionable : EntityType
 var GameEntity<Positionable>.position: ObservableValue<Coordinate>
     get() = getAttribute(PositionAttribute::class).coordinate
     internal set(value) {
-        findAttribute(PositionAttribute::class).map {
-            it.coordinate.updateFrom(value)
-        }
+        getAttribute(PositionAttribute::class).coordinate.updateFrom(value)
     }
 
 /** Access to the value of the [PositionAttribute] of a [GameEntity] */
