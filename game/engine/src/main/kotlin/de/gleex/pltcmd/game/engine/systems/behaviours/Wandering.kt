@@ -4,7 +4,7 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.entities.types.Movable
-import de.gleex.pltcmd.game.engine.entities.types.coordinate
+import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.entities.types.hasNoDestination
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
@@ -30,7 +30,7 @@ object ChooseRandomDestination : BaseBehavior<GameContext>(PositionAttribute::cl
 
     private suspend fun moveToRandomDestination(movable: GameEntity<Movable>, context: GameContext): Boolean {
         if (movable.hasNoDestination && context.random.nextDouble() >= 0.6) {
-            val destination = context.world.neighborsOf(movable.coordinate.value)
+            val destination = context.world.neighborsOf(movable.currentPosition)
                     .random(context.random)
             val moveResponse = movable.executeCommand(MoveTo(destination, context, movable))
             return Consumed == moveResponse

@@ -1,7 +1,8 @@
 package de.gleex.pltcmd.game.ui.entities
 
 import de.gleex.pltcmd.game.engine.entities.types.Positionable
-import de.gleex.pltcmd.game.engine.entities.types.coordinate
+import de.gleex.pltcmd.game.engine.entities.types.currentPosition
+import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
@@ -63,14 +64,14 @@ class GameWorld(private val worldMap: WorldMap) :
     /** adds a marker to the map which is synced with the position of the given element */
     fun trackUnit(element: GameEntity<Positionable>) {
         showUnit(element)
-        element.coordinate.onChange {
+        element.position.onChange {
             it.oldValue.hideUnit()
             showUnit(element)
         }
     }
 
     private fun showUnit(element: GameEntity<Positionable>) {
-        element.coordinate.value.setUnit(TileRepository.Elements.PLATOON_UNKNOWN)
+        element.currentPosition.setUnit(TileRepository.Elements.PLATOON_UNKNOWN)
     }
 
     private fun Coordinate.setUnit(unitTile: Tile) {

@@ -27,14 +27,13 @@ object Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationA
         if (movable.hasNoDestination) {
             return false
         }
-        val startLocation = movable.coordinate.value
+        val startLocation = movable.currentPosition
         val destination = movable.destination.get()
         if (startLocation == destination) {
             movable.reachedDestination()
             return false
         } else {
-            val newPosition = moveForward(startLocation, destination)
-            movable.placeAt(newPosition)
+            movable.currentPosition = moveForward(startLocation, destination)
         }
         return true
     }

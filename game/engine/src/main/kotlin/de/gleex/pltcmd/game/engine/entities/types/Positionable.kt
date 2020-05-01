@@ -14,8 +14,8 @@ import org.hexworks.cobalt.databinding.api.property.Property
 /** Type marker for entities that have the PositionAttribute */
 interface Positionable : EntityType
 
-/** Access to the value of the [PositionAttribute] of a [GameEntity] */
-var GameEntity<Positionable>.coordinate: Property<Coordinate>
+/** Access to the [Property] of the [PositionAttribute] of a [GameEntity] */
+var GameEntity<Positionable>.position: Property<Coordinate>
     get() = getAttribute(PositionAttribute::class).coordinate
     set(value) {
         findAttribute(PositionAttribute::class).map {
@@ -23,7 +23,9 @@ var GameEntity<Positionable>.coordinate: Property<Coordinate>
         }
     }
 
-/** Sets the position of this Positionable entity. */
-fun GameEntity<Positionable>.placeAt(newPosition: Coordinate) {
-    coordinate.updateValue(newPosition)
-}
+/** Access to the value of the [PositionAttribute] of a [GameEntity] */
+var GameEntity<Positionable>.currentPosition: Coordinate
+    get() = position.value
+    set(value) {
+        position.updateValue(value)
+    }
