@@ -35,6 +35,7 @@
 		<zircon.version>2020.1.5-PREVIEW</zircon.version>
 		<!-- Should match the version used by Zircon -->
 		<cobalt.version>2020.0.17-PREVIEW</cobalt.version>
+		<amethyst.version>2020.0.1-PREVIEW</amethyst.version>
 
 		<jupiter.version>5.7.0-M1</jupiter.version>
 		<kotest.version>3.4.2</kotest.version>
@@ -99,6 +100,17 @@
 				<groupId>org.hexworks.zircon</groupId>
 				<artifactId>zircon.jvm.swing</artifactId>
 				<version>${zircon.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hexworks.amethyst</groupId>
+				<artifactId>amethyst.core-jvm</artifactId>
+				<version>${amethyst.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.jetbrains.kotlin</groupId>
+						<artifactId>kotlin-stdlib-common</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

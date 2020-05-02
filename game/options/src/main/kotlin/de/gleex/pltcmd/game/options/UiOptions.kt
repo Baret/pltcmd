@@ -30,4 +30,6 @@ object UiOptions {
     const val INTERFACE_PANEL_HEIGHT = WINDOW_HEIGHT
     const val LOG_AREA_HEIGHT = WINDOW_HEIGHT - MAP_VIEW_HEIGHT
     const val LOG_AREA_WIDTH = WINDOW_WIDTH - INTERFACE_PANEL_WIDTH
+
+    const val SKIP_INTRO = true
 }

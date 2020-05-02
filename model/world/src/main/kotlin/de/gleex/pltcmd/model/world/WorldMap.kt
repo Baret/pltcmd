@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.world
 
+import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import kotlin.math.sqrt
 
 /**
@@ -18,6 +19,7 @@ data class WorldMap(val sectors: Set<Sector>) {
             val lengthInSectors = sqrt(sectors.size.toDouble()).toInt()
             return lengthInSectors * Sector.TILE_COUNT
         }
+
     /** Returns the height of this map in [WorldTile]s */
     // we assume a square world
     val height = width
@@ -25,4 +27,16 @@ data class WorldMap(val sectors: Set<Sector>) {
     /** the most south-west [Coordinate] of this world */
     val origin = sectors.minBy { it.origin }!!.origin
 
+    /**
+     * Returns all neighbors of the given coordinate that are inside this world.
+     */
+    fun neighborsOf(coordinate: Coordinate): List<Coordinate> {
+        return coordinate.neighbors().filter { contains(it) }
+    }
+
+    fun contains(coordinate: Coordinate): Boolean {
+        return sectors.any { it.contains(coordinate) }
+    }
+
+    override fun toString() = "WorldMap[${sectors.size} sectors, size = $width * $height tiles]"
 }

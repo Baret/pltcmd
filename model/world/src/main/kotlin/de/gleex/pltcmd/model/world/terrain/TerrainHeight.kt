@@ -18,7 +18,7 @@ enum class TerrainHeight(val value: Int): Comparable<TerrainHeight> {
     TEN(10);
 
     companion object {
-        fun random(r: Random = Random) = values().random(r)
+        fun random(r: Random) = values().random(r)
 
         fun ofValue(heightValue: Int): TerrainHeight? = values().find { it.value == heightValue }
 

@@ -18,7 +18,7 @@ import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
-class CoordinateTest: WordSpec({
+class CoordinateTest : WordSpec({
 
     val log = LoggerFactory.getLogger(CoordinateTest::class)
     val testCoordinate = Coordinate(123, 345)
@@ -38,6 +38,20 @@ class CoordinateTest: WordSpec({
         "return the correct Coordinate when moving it north/south" {
             for (northingDelta in -1000..1000) {
                 testCoordinate.withRelativeNorthing(northingDelta) shouldBe Coordinate(123, 345 + +northingDelta)
+            }
+        }
+
+        "must be subtract able" {
+            forall(
+                    row(Coordinate.zero, Coordinate(testCoordinate.eastingFromLeft - 0, testCoordinate.northingFromBottom - 0)),
+                    row(Coordinate.oneEast, Coordinate(testCoordinate.eastingFromLeft - 1, testCoordinate.northingFromBottom - 0)),
+                    row(Coordinate.oneNorth, Coordinate(testCoordinate.eastingFromLeft - 0, testCoordinate.northingFromBottom - 1)),
+                    row(Coordinate.one, Coordinate(testCoordinate.eastingFromLeft - 1, testCoordinate.northingFromBottom - 1)),
+                    row(Coordinate.minusOneEast, Coordinate(testCoordinate.eastingFromLeft - -1, testCoordinate.northingFromBottom - 0)),
+                    row(Coordinate.minusOneNorth, Coordinate(testCoordinate.eastingFromLeft - 0, testCoordinate.northingFromBottom - -1)),
+                    row(Coordinate.minusOne, Coordinate(testCoordinate.eastingFromLeft - -1, testCoordinate.northingFromBottom - -1))
+            ) { other, expected ->
+                (testCoordinate - other) shouldBe expected
             }
         }
     }
@@ -76,7 +90,7 @@ class CoordinateTest: WordSpec({
         }
     }
 
-    val c11 = Coordinate(1, 1)
+    val c11 = Coordinate.one
     val c12 = Coordinate(1, 2)
     val c13 = Coordinate(1, 3)
     val c21 = Coordinate(2, 1)
@@ -144,7 +158,7 @@ class CoordinateTest: WordSpec({
                 row("(-100|-100)", Coordinate(-100, -100)),
                 row("(-123456789|123456789)", Coordinate(-123456789, 123456789)),
                 row("    (-100|-100)\t", Coordinate(-100, -100))
-        ) {string, validCoordinate ->
+        ) { string, validCoordinate ->
             "be valid when created from string '$string'" {
                 Coordinate.fromString(string) shouldBe validCoordinate
             }
@@ -163,9 +177,10 @@ class CoordinateTest: WordSpec({
                 row(""),
                 row("     "),
                 row("coordinate")
-        ) {someString ->
+        ) { someString ->
             "be null when created from invalid string '$someString'" {
-                Coordinate.fromString(someString).shouldBeNull()
+                Coordinate.fromString(someString)
+                        .shouldBeNull()
             }
         }
     }

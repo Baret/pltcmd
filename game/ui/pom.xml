@@ -21,6 +21,10 @@
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>options</artifactId>
         </dependency>
         <dependency>

@@ -1,5 +1,9 @@
 package de.gleex.pltcmd.game.ui.entities
 
+import de.gleex.pltcmd.game.engine.entities.types.Positionable
+import de.gleex.pltcmd.game.engine.entities.types.currentPosition
+import de.gleex.pltcmd.game.engine.entities.types.position
+import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -57,6 +61,33 @@ class GameWorld(private val worldMap: WorldMap) :
         }
     }
 
+    /** adds a marker to the map which is synced with the position of the given element */
+    fun trackUnit(element: GameEntity<Positionable>) {
+        showUnit(element)
+        element.position.onChange {
+            it.oldValue.hideUnit()
+            showUnit(element)
+        }
+    }
+
+    private fun showUnit(element: GameEntity<Positionable>) {
+        element.currentPosition.setUnit(TileRepository.Elements.PLATOON_UNKNOWN)
+    }
+
+    private fun Coordinate.setUnit(unitTile: Tile) {
+        val position = toPosition()
+        fetchBlockAt(position).ifPresent {
+            it.setUnit(unitTile)
+        }
+    }
+
+    private fun Coordinate.hideUnit() {
+        val position = toPosition()
+        fetchBlockAt(position).ifPresent {
+            it.resetUnit()
+        }
+    }
+
     /** Returns the [Coordinate] of the [Tile] that is visible in the top left corner. */
     fun visibleTopLeftCoordinate(): Coordinate {
         return visibleOffset.toCoordinate()
@@ -109,7 +140,8 @@ class GameWorld(private val worldMap: WorldMap) :
      * Returns the [Coordinate] at the currently visible position
      * @see fetchBlockAtVisiblePosition
      */
-    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D().toCoordinate()
+    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D()
+            .toCoordinate()
 
     private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.to3DPosition(0))
 }

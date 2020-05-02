@@ -1,4 +1,4 @@
-<configuration>
+<configuration scan="true" scanPeriod="30 seconds">
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -8,6 +8,7 @@
 
     <logger name="org.hexworks.zircon" level="WARN"/>
     <logger name="org.hexworks.cobalt" level="WARN"/>
+<!--    <logger name="org.hexworks.amethyst.api.entity.Entity" level="DEBUG"/>-->
 
     <logger name="de.gleex.pltcmd" level="DEBUG"/>
 

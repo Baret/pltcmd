@@ -9,19 +9,23 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ticks</artifactId>
+    <artifactId>engine</artifactId>
 
-    <name>Game ticks</name>
-    <description>The "ticker" advances game time by counting up "ticks".</description>
+    <name>Engine (game core)</name>
+    <description>This artifact contains the game mechanics.</description>
 
     <dependencies>
         <dependency>
-            <groupId>de.gleex.pltcmd.util</groupId>
-            <artifactId>events</artifactId>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>elements</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.gleex.pltcmd.game</groupId>
-            <artifactId>engine</artifactId>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>world</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hexworks.amethyst</groupId>
+            <artifactId>amethyst.core-jvm</artifactId>
         </dependency>
     </dependencies>
 

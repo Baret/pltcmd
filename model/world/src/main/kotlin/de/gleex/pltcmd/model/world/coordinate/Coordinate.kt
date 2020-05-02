@@ -90,6 +90,13 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         return Progression(values)
     }
 
+    /** Returns the difference of the easting and northing as Coordinate */
+    operator fun minus(other: Coordinate): Coordinate {
+        val eastDiff = eastingFromLeft - other.eastingFromLeft
+        val northDiff = northingFromBottom - other.northingFromBottom
+        return Coordinate(eastDiff, northDiff)
+    }
+
     override fun toString() = "(${formattedEasting()}|${formattedNorthing()})"
 
     fun formattedEasting() = toCoordinateText(eastingFromLeft)
@@ -105,6 +112,14 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     }
 
     companion object {
+        val zero = Coordinate(0, 0)
+        val oneEast = Coordinate(1, 0)
+        val oneNorth = Coordinate(0, 1)
+        val one = Coordinate(1, 1)
+        val minusOneEast = Coordinate(-1, 0)
+        val minusOneNorth = Coordinate(0, -1)
+        val minusOne = Coordinate(-1, -1)
+
         /**
          * The string representation of a coordinate should match this regex.
          */
