@@ -3,6 +3,7 @@ package de.gleex.pltcmd.model.radio
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import kotlin.math.floor
+import kotlin.math.log
 
 /**
  * A radio signal carries a message. It has an initial absolute power depending on the sending radio.
@@ -32,6 +33,12 @@ open class RadioSignal(private val power: Double) {
     }
 
     private val attenuation: AttenuationModel by AttenuationModel.DEFAULT.asDelegate()
+
+    /** Number of air tiles to reach [MIN_POWER_THRESHOLD] */
+    // MIN = power * loss^x -> x = log(MIN/power, loss)
+    val maxRange: Int = log(MIN_POWER_THRESHOLD / power, AIR_LOSS_FACTOR).toInt()
+    /** Number of ground tiles to reach [MIN_POWER_THRESHOLD] */
+    val minRange: Int = log(MIN_POWER_THRESHOLD / power, GROUND_LOSS_FACTOR).toInt()
 
     /**
      * Calculates the signal loss along the given terrain. The result will be a value from 0.0 to 1.0
