@@ -14,4 +14,4 @@ private fun tiles(origin: Coordinate) =
         CoordinateRectangle(origin, Sector.TILE_COUNT, Sector.TILE_COUNT).
                 asSequence().
                 map { WorldTile(it, Terrain.random(Random)) }.
-                toSet()
+                toSortedSet()

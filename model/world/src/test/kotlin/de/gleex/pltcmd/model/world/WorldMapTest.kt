@@ -8,11 +8,13 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
+import kotlin.math.ceil
+import kotlin.math.sqrt
 
-class WorldMapTest: WordSpec({
+class WorldMapTest : WordSpec({
     "A WorldMap" should {
         "not be empty" {
-            shouldThrow<IllegalArgumentException> { WorldMap(setOf()) }
+            shouldThrow<IllegalArgumentException> { WorldMap.create(setOf()) }
         }
 
         "be square when calculating its size" {
@@ -30,18 +32,21 @@ class WorldMapTest: WordSpec({
                 val expectedEdgeLength = sideLengthInSectors * Sector.TILE_COUNT
                 val sectors = sectorCount.sectors()
                 sectors shouldHaveSize sectorCount
-                WorldMap(sectors).width shouldBe expectedEdgeLength
-                WorldMap(sectors).height shouldBe expectedEdgeLength
+                WorldMap.create(sectors).width shouldBe expectedEdgeLength
+                WorldMap.create(sectors).height shouldBe expectedEdgeLength
             }
         }
     }
 })
 
-private fun Int.sectors(): Set<Sector> {
-        val sectors = mutableSetOf<Sector>()
-        for (i in 0 until this) {
-            sectors.add(
-                    randomSectorAt(Coordinate(i * Sector.TILE_COUNT, i * Sector.TILE_COUNT)))
-        }
-        return sectors
+/** creates sectors in a square (must not be full depending number) */
+private fun Int.sectors(): List<Sector> {
+    val sectors = mutableListOf<Sector>()
+    val width = ceil(sqrt(toDouble())).toInt()
+    (0 until this).forEach { i ->
+        val row = i / width
+        val column = i - (row * width)
+        sectors.add(randomSectorAt(Coordinate(row * Sector.TILE_COUNT, column * Sector.TILE_COUNT)))
     }
+    return sectors
+}

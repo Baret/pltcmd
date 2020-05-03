@@ -45,7 +45,7 @@ class SectorTest: WordSpec() {
 
             "not be valid with only one tile" {
                 shouldThrow<IllegalArgumentException> {
-                    Sector(validOrigin, setOf(WorldTile(validOrigin.eastingFromLeft, validOrigin.northingFromBottom)))
+                    Sector(validOrigin, sortedSetOf(WorldTile(validOrigin.eastingFromLeft, validOrigin.northingFromBottom)))
                 }
             }
         }
