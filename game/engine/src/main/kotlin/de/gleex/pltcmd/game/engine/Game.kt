@@ -26,9 +26,9 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     /**
      * Adds a new element in the given sector and returns it. If it was not possible to add the returned value is null.
      */
-    fun addElementInSector(sector: Sector): GameEntity<ElementType>? {
+    fun addElementInSector(sector: Sector, callsign: String = "Element ${random.nextInt(999_999)}"): GameEntity<ElementType>? {
         val positionInSector = sector.randomCoordinate(random)
-        val callSign = CallSign("Element ${random.nextInt(999_999)}")
+        val callSign = CallSign(callsign)
         val element = EntityFactory.newElement(Element(callSign, emptySet()), positionInSector)
         log.debug("Adding element with callsign $callSign to engine: $element")
         return addEntity(element)

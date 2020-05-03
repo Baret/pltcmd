@@ -1,6 +1,8 @@
 package de.gleex.pltcmd.game.application
 
 import de.gleex.pltcmd.game.engine.Game
+import de.gleex.pltcmd.game.engine.entities.ElementType
+import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -32,9 +34,12 @@ fun main() {
 
     generateMap(screen, tileGrid) { generatedMap ->
         val gameWorld = GameWorld(generatedMap)
-        screen.dock(GameView(gameWorld, tileGrid))
-
         val game = Game(Engine.default(), generatedMap, Random(GameOptions.DEBUG_MAP_SEED))
+
+        val elementsToCommand = mutableListOf<GameEntity<ElementType>>()
+
+        screen.dock(GameView(gameWorld, tileGrid, elementsToCommand))
+
         // Adding some elements to every sector
         val elementsPerSector = 3
         generatedMap.sectors.forEach { sector ->

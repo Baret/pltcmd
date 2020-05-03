@@ -9,5 +9,5 @@ import kotlin.reflect.KClass
  *
  * Be sure the attribute exists when using.
  */
-internal fun <T : Attribute> AnyGameEntity.getAttribute(attribute: KClass<T>) =
+fun <T : Attribute> AnyGameEntity.getAttribute(attribute: KClass<T>) =
         findAttribute(attribute).orElseThrow { IllegalStateException("Entity $this does not have an attribute of type $attribute") }
