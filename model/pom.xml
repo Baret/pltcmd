@@ -46,6 +46,12 @@
                 <artifactId>world</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- other internal projects -->
+            <dependency>
+                <groupId>de.gleex.pltcmd.util</groupId>
+                <artifactId>geometry</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- tests -->
             <dependency>
                 <groupId>de.gleex.pltcmd.util</groupId>
