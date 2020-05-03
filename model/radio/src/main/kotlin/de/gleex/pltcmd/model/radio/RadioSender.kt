@@ -23,7 +23,8 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
     private val signal = RadioSignal(maxPower)
 
     // pre-computed as we send with constant power over a fixed world
-    private val reachableTiles: Iterable<Coordinate> = calculateReachableFields()
+    // visible for tests
+    internal val reachableTiles: Iterable<Coordinate> = calculateReachableFields()
 
     private fun calculateReachableFields(): Iterable<Coordinate> {
         val maxReachOverAir = signal.maxRange
@@ -53,6 +54,7 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
 
     private fun terrainTo(target: Coordinate): List<Terrain> {
         return CoordinatePath.line(location, target)
+                .filter { map.contains(it) }
                 .map {
                     map.getTerrainAt(it)!!
                 }

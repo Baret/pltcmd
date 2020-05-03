@@ -50,7 +50,7 @@ data class Sector(val origin: Coordinate, val tiles: SortedSet<WorldTile>) : Com
         if (!contains(coordinate)) {
             return null
         }
-        return tiles.find { it.coordinate == coordinate }!!.terrain
+        return tiles.find { it.coordinate == coordinate }?.terrain
     }
 
     /** sorted by origin */
@@ -69,6 +69,6 @@ fun WorldTile.inSameSector(other: WorldTile) = getSectorOrigin() == other.getSec
 fun WorldTile.getSectorOrigin() = coordinate.toSectorOrigin()
 
 fun Coordinate.toSectorOrigin() = Coordinate(
-        eastingFromLeft - (eastingFromLeft % Sector.TILE_COUNT),
-        northingFromBottom - (northingFromBottom % Sector.TILE_COUNT)
+        eastingFromLeft - Math.floorMod(eastingFromLeft, Sector.TILE_COUNT),
+        northingFromBottom - Math.floorMod(northingFromBottom, Sector.TILE_COUNT)
 )

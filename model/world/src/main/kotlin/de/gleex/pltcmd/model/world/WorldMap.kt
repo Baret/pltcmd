@@ -58,8 +58,8 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
 
     /** @return the [Terrain] of the tile at the given location or throws an exceptoin if the given coordinate does not belong to this world */
     fun getTerrainAt(coordinate: Coordinate): Terrain {
-        val sector = originToSector[coordinate]!!
-        return sector.getTerrainAt(coordinate)!!
+        val sector = originToSector[coordinate.toSectorOrigin()]!!
+        return sector.getTerrainAt(coordinate) ?: throw IllegalStateException("no terrain for $coordinate in $sector")
     }
 
     companion object {
