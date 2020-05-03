@@ -1,8 +1,8 @@
-package de.gleex.pltcmd.model.radio
+package de.gleex.pltcmd.model.radio.broadcasting
 
-import de.gleex.pltcmd.model.radio.RadioSignal.Companion.AIR_LOSS_FACTOR
-import de.gleex.pltcmd.model.radio.RadioSignal.Companion.GROUND_LOSS_FACTOR
-import de.gleex.pltcmd.model.radio.RadioSignal.Companion.MIN_POWER_THRESHOLD
+import de.gleex.pltcmd.model.radio.broadcasting.RadioSignal.Companion.AIR_LOSS_FACTOR
+import de.gleex.pltcmd.model.radio.broadcasting.RadioSignal.Companion.GROUND_LOSS_FACTOR
+import de.gleex.pltcmd.model.radio.broadcasting.RadioSignal.Companion.MIN_POWER_THRESHOLD
 import de.gleex.pltcmd.model.radio.testhelpers.shouldBeExactly
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight

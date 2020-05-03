@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.radio
+package de.gleex.pltcmd.model.radio.broadcasting
 
 import de.gleex.pltcmd.model.radio.testhelpers.shouldBeExactly
 import io.kotlintest.data.forall
@@ -6,7 +6,7 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
 
-class SignalStrengthTest:WordSpec( {
+class SignalStrengthTest : WordSpec({
     "Absolute radio signal power converted to a signal strength" should {
         "be 1.0 when > 100 and 0.0 when < ${RadioSignal.MIN_POWER_THRESHOLD}" {
             forall(
