@@ -47,29 +47,38 @@ open class RadioSignal(private val power: Double) {
      * (i.e. signalPower of 80 -> 80% -> 0.80).
      */
     fun along(terrain: List<Terrain>): SignalStrength {
+        return along(terrain, true).first
+    }
+
+    /** @return the SignalStrength at the end of the given terrain and the number of tiles to reach no signal or the end */
+    fun along(terrain: List<Terrain>, stopAtNone: Boolean): Pair<SignalStrength, Int> {
         if(terrain.size <= 1) {
-            return power.toSignalStrength()
+            return Pair(power.toSignalStrength(), terrain.size)
         }
         val startHeight = terrain.first().height
         val targetHeight = terrain.last().height
         val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrain.size.toDouble()
         var signal = power
-        terrain.
-            drop(1).
-            forEachIndexed { index, t ->
-                // Calculate if the signal is above, at or through the current field
-                // currentHeight (y) = mx + b
-                val currentHeight = floor(slope * (index + 1) + startHeight.toDouble())
-                signal = when {
-                    // signal travels through the air (above ground)
-                    currentHeight > t.height.toDouble() -> signal * AIR_LOSS_FACTOR
-                    // signal travels through the ground
-                    currentHeight < t.height.toDouble() -> signal * GROUND_LOSS_FACTOR
-                    // signal travels along the terrain
-                    else                                -> attenuation.reducedAt(signal, t.type)
-                }
+        var used = 1
+        val terrainToTravel = terrain.drop(used)
+        for ((index, t) in terrainToTravel.withIndex()) {
+            // Calculate if the signal is above, at or through the current field
+            // currentHeight (y) = mx + b
+            val currentHeight = floor(slope * (index + 1) + startHeight.toDouble())
+            signal = when {
+                // signal travels through the air (above ground)
+                currentHeight > t.height.toDouble() -> signal * AIR_LOSS_FACTOR
+                // signal travels through the ground
+                currentHeight < t.height.toDouble() -> signal * GROUND_LOSS_FACTOR
+                // signal travels along the terrain
+                else                                -> attenuation.reducedAt(signal, t.type)
             }
-        return signal.toSignalStrength()
+            used++
+            if (stopAtNone && signal <= SignalStrength.NONE.strength) {
+                break
+            }
+        }
+        return Pair(signal.toSignalStrength(), used)
     }
 
     private fun TerrainHeight.toDouble(): Double = value.toDouble()

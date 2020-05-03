@@ -26,9 +26,20 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
     private val reachableTiles: Iterable<Coordinate> = calculateReachableFields()
 
     private fun calculateReachableFields(): Iterable<Coordinate> {
-        // TODO check if signal reaches each spot
         val maxReachOverAir = signal.maxRange
-        return CoordinateRectangle(location.movedBy(-maxReachOverAir, -maxReachOverAir), location.movedBy(maxReachOverAir, maxReachOverAir))
+        // create bounding box
+        val maxNorth: Int = getMaxReach(location.withRelativeNorthing(maxReachOverAir))
+        val maxEast: Int = getMaxReach(location.withRelativeEasting(maxReachOverAir))
+        val maxSouth: Int = getMaxReach(location.withRelativeNorthing(-maxReachOverAir))
+        val maxWest: Int = getMaxReach(location.withRelativeEasting(-maxReachOverAir))
+        // TODO check if signal reaches each spot
+        return CoordinateRectangle(location.movedBy(-maxWest, -maxSouth), location.movedBy(maxEast, maxNorth))
+    }
+
+    private fun getMaxReach(target: Coordinate): Int {
+        val terrain = terrainTo(target)
+        val signalStrength = signal.along(terrain, true)
+        return signalStrength.second
     }
 
     fun transmit(transmission: Transmission) {
@@ -41,9 +52,10 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
     }
 
     private fun terrainTo(target: Coordinate): List<Terrain> {
-        return CoordinatePath.line(location, target).map {
-            map.getTerrainAt(it)!!
-        }
+        return CoordinatePath.line(location, target)
+                .map {
+                    map.getTerrainAt(it)!!
+                }
     }
 
 }
