@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.terrain.Terrain
 import java.util.*
 
 /**
@@ -53,6 +54,12 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
             }
             previous = current
         }
+    }
+
+    /** @return the [Terrain] of the tile at the given location or throws an exceptoin if the given coordinate does not belong to this world */
+    fun getTerrainAt(coordinate: Coordinate): Terrain {
+        val sector = originToSector[coordinate]!!
+        return sector.getTerrainAt(coordinate)!!
     }
 
     companion object {

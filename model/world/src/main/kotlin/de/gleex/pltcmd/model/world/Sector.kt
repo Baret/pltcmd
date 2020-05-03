@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.terrain.Terrain
 import java.util.*
 import kotlin.random.Random
 
@@ -43,6 +44,13 @@ data class Sector(val origin: Coordinate, val tiles: SortedSet<WorldTile>) : Com
     fun contains(coordinate: Coordinate): Boolean {
         // because this sector contains all coordinates
         return origin == coordinate.toSectorOrigin()
+    }
+
+    fun getTerrainAt(coordinate: Coordinate): Terrain? {
+        if (!contains(coordinate)) {
+            return null
+        }
+        return tiles.find { it.coordinate == coordinate }!!.terrain
     }
 
     /** sorted by origin */
