@@ -11,6 +11,7 @@ import de.gleex.pltcmd.game.ui.GeneratingView
 import de.gleex.pltcmd.game.ui.MapGenerationProgressController
 import de.gleex.pltcmd.game.ui.TitleView
 import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
@@ -37,7 +38,10 @@ fun main() {
         val game = Game(Engine.default(), generatedMap, Random(GameOptions.DEBUG_MAP_SEED))
 
         val elementsToCommand = mutableListOf<GameEntity<ElementType>>()
-
+        val visibleSector = generatedMap.sectors.first { it.origin == Coordinate(0, 450) }
+        game.addElementInSector(visibleSector, "Alpha", Affiliation.Friendly)?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
+        game.addElementInSector(visibleSector, "Bravo", Affiliation.Friendly)?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
+        game.addElementInSector(visibleSector, "Charlie", Affiliation.Friendly)?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
         screen.dock(GameView(gameWorld, tileGrid, elementsToCommand))
 
         // Adding some elements to every sector

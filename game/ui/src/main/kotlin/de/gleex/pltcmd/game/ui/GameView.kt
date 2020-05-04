@@ -103,7 +103,9 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val element
         val sidebarWidth = sidebar.contentSize.width
         sidebar.addFragment(MousePosition(sidebarWidth, map))
 
-        sidebar.addFragment(ElementCommandFragment(sidebarWidth, gameWorld, elementsToCommand))
+        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, elementsToCommand, map.absolutePosition)
+        sidebar.addFragment(commandFragment)
+        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
 
         sidebar.addFragment(TickFragment(sidebarWidth))
 

@@ -1,9 +1,11 @@
 package de.gleex.pltcmd.game.ui.entities
 
+import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.entities.types.Positionable
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -71,7 +73,11 @@ class GameWorld(private val worldMap: WorldMap) :
     }
 
     private fun showUnit(element: GameEntity<Positionable>) {
-        element.currentPosition.setUnit(TileRepository.Elements.PLATOON_UNKNOWN)
+        val affiliation = element.
+            findAttribute(ElementAttribute::class).
+            map { it.reportedAffiliation.value }.
+            orElse(Affiliation.Unknown)
+        element.currentPosition.setUnit(TileRepository.Elements.platoon(affiliation))
     }
 
     private fun Coordinate.setUnit(unitTile: Tile) {
@@ -119,15 +125,16 @@ class GameWorld(private val worldMap: WorldMap) :
     }
 
     private fun Coordinate.toPosition(): Position3D {
-        val translatedPos = Position.create(eastingFromLeft, northingFromBottom) + topLeftOffset
+        val translatedPos = Position.create(eastingFromLeft, getMaxY() - northingFromBottom) + topLeftOffset
         // invert y axis
-        return Position3D.from2DPosition(translatedPos.withY(getMaxY() - translatedPos.y))
+        return Position3D.from2DPosition(translatedPos)
     }
 
     private fun Position3D.toCoordinate(): Coordinate {
         val translatedPos = to2DPosition() - topLeftOffset
         // invert y axis
-        return Coordinate(translatedPos.x, translatedPos.y + getMaxY())
+        println("translated $this to $translatedPos")
+        return Coordinate(translatedPos.x, getMaxY() - translatedPos.y)
     }
 
     /**
@@ -140,8 +147,7 @@ class GameWorld(private val worldMap: WorldMap) :
      * Returns the [Coordinate] at the currently visible position
      * @see fetchBlockAtVisiblePosition
      */
-    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D()
-            .toCoordinate()
+    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D().toCoordinate()
 
     private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.to3DPosition(0))
 }
