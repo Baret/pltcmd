@@ -126,14 +126,11 @@ class GameWorld(private val worldMap: WorldMap) :
 
     private fun Coordinate.toPosition(): Position3D {
         val translatedPos = Position.create(eastingFromLeft, getMaxY() - northingFromBottom) + topLeftOffset
-        // invert y axis
         return Position3D.from2DPosition(translatedPos)
     }
 
     private fun Position3D.toCoordinate(): Coordinate {
         val translatedPos = to2DPosition() - topLeftOffset
-        // invert y axis
-        println("translated $this to $translatedPos")
         return Coordinate(translatedPos.x, getMaxY() - translatedPos.y)
     }
 

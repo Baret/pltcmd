@@ -20,6 +20,11 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     }
 
     /**
+     * Creates a [GameContext] for the given tick.
+     */
+    fun context(tick: Int): GameContext = GameContext(tick, world, random)
+
+    /**
      * Adds the given entity to the engine and returns it to make chained calls possible.
      */
     fun <T : EntityType> addEntity(entity: GameEntity<T>) = entity.also { engine.addEntity(it) }
@@ -30,7 +35,12 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     fun addElementInSector(sector: Sector, callsign: String = "Element ${random.nextInt(999_999)}", affiliation: Affiliation = Affiliation.Unknown): GameEntity<ElementType>? {
         val positionInSector = sector.randomCoordinate(random)
         val callSign = CallSign(callsign)
-        val element = EntityFactory.newElement(Element(callSign, emptySet()), positionInSector, affiliation)
+        val elementAttribute = Element(callSign, emptySet())
+        val element = if(affiliation == Affiliation.Friendly) {
+                EntityFactory.newElement(elementAttribute, positionInSector, affiliation)
+            } else {
+                EntityFactory.newWanderingElement(elementAttribute, positionInSector, affiliation)
+            }
         log.debug("Adding element with callsign $callSign to engine at position $positionInSector")
         return addEntity(element)
     }

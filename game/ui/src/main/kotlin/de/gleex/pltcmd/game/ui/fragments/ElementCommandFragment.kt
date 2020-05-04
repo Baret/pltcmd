@@ -2,9 +2,12 @@ package de.gleex.pltcmd.game.ui.fragments
 
 import de.gleex.pltcmd.game.engine.attributes.callsign
 import de.gleex.pltcmd.game.engine.entities.ElementType
+import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.model.world.Sector
+import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.radio.communication.Conversations
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.internal.binding.ComputedBinding
@@ -15,15 +18,14 @@ import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.uievent.MouseEvent
 import org.hexworks.zircon.api.uievent.UIEventPhase
 import org.hexworks.zircon.api.uievent.UIEventResponse
-import kotlin.random.Random
 
 /**
  * Displays a list of entities and makes it possible to send them a
  */
 class ElementCommandFragment(override val width: Int, private val world: GameWorld, elements: List<GameEntity<ElementType>>, private val mapOffset: Position) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
 
-    private val destinationProperty = createPropertyFrom(world.visibleTopLeftCoordinate().movedBy(Random.nextInt(Sector.TILE_COUNT), Random.nextInt(Sector.TILE_COUNT)))
     private var selectedElement: GameEntity<ElementType> = elements.first()
+    private val destinationProperty = createPropertyFrom(selectedElement.position.value)
     private val elementSelect = Fragments.
                                     multiSelect(width, elements).
                                     withDefaultSelected(selectedElement).
@@ -49,9 +51,15 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
                     button().
                     withSize(width, 1).
                     withText("Send command").
-                    also {
-                        log.debug("NOT YET IMPLEMENTED! Sending command to ${selectedElement.callsign}. Target location is ${destinationProperty.value}")
-//                        onActivated { selectedElement.sendCommand(MoveTo(destinationProperty.value, GameContext(Ticker.currentTick.value, selectedElement))) }
+                    build().
+                    apply {
+                        onActivated {
+                            log.debug("Button clicked! Got event $it")
+                            Ticker.sendCommand(
+                                selectedElement,
+                                Conversations.Orders.moveTo(CallSign("HQ"), selectedElement.callsign, destinationProperty.value),
+                                destinationProperty.value
+                        ) }
                     })
             }
 

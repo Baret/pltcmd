@@ -17,8 +17,11 @@ object EntityFactory {
     fun newElement(element: Element, initialPosition: Coordinate, affiliation: Affiliation = Affiliation.Unknown): GameEntity<ElementType> =
             newEntityOfType(ElementType, {
                 attributes(ElementAttribute(element, affiliation), PositionAttribute(initialPosition), DestinationAttribute())
-                behaviors(Moving, Wandering)
+                behaviors(Moving)
                 facets(SetDestination)
             })
+
+    fun newWanderingElement(element: Element, initialPosition: Coordinate, affiliation: Affiliation = Affiliation.Unknown): GameEntity<ElementType> =
+            newElement(element, initialPosition, affiliation).also { it.asMutableEntity().addBehavior(Wandering) }
 
 }
