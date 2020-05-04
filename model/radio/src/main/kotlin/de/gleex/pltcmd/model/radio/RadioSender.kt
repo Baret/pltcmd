@@ -9,6 +9,7 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.events.globalEventBus
+import kotlin.math.min
 
 /**
  * A walkie talkie or radio station that sends [Transmission]s out over the map as [RadioSignal]s.
@@ -28,13 +29,31 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
 
     private fun calculateReachableFields(): Iterable<Coordinate> {
         val maxReachOverAir = signal.maxRange
-        // create bounding box
-        val maxNorth: Int = getMaxReach(location.withRelativeNorthing(maxReachOverAir))
-        val maxEast: Int = getMaxReach(location.withRelativeEasting(maxReachOverAir))
-        val maxSouth: Int = getMaxReach(location.withRelativeNorthing(-maxReachOverAir))
-        val maxWest: Int = getMaxReach(location.withRelativeEasting(-maxReachOverAir))
+        // create bounding box (clamped to map borders)
+        val maxNorth: Int = min(getMaxReach(location.withRelativeNorthing(maxReachOverAir)), distanceToNorthBorder())
+        val maxEast: Int = min(getMaxReach(location.withRelativeEasting(maxReachOverAir)), distanceToEastBorder())
+        val maxSouth: Int = min(getMaxReach(location.withRelativeNorthing(-maxReachOverAir)), distanceToSouthBorder())
+        val maxWest: Int = min(getMaxReach(location.withRelativeEasting(-maxReachOverAir)), distanceToWestBorder())
         // TODO check if signal reaches each spot
-        return CoordinateRectangle(location.movedBy(-maxWest, -maxSouth), location.movedBy(maxEast, maxNorth))
+        val bottomLeftCoordinate = location.movedBy(-maxWest, -maxSouth)
+        val topRightCoordinate = location.movedBy(maxEast, maxNorth)
+        return CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
+    }
+
+    private fun distanceToNorthBorder(): Int {
+        return map.last.northingFromBottom - location.northingFromBottom
+    }
+
+    private fun distanceToEastBorder(): Int {
+        return map.last.eastingFromLeft - location.eastingFromLeft
+    }
+
+    private fun distanceToSouthBorder(): Int {
+        return location.northingFromBottom - map.origin.northingFromBottom
+    }
+
+    private fun distanceToWestBorder(): Int {
+        return location.eastingFromLeft - map.origin.eastingFromLeft
     }
 
     private fun getMaxReach(target: Coordinate): Int {
