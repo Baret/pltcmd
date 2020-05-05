@@ -9,8 +9,8 @@ import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
+import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
-import org.hexworks.cobalt.databinding.internal.binding.ComputedBinding
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.Fragments
 import org.hexworks.zircon.api.data.Position
@@ -42,7 +42,7 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
                     withSize(width, 1).
                     build().
                     apply {
-                        textProperty.updateFrom(createPropertyFrom("Move to ") bindPlusWith ComputedBinding(destinationProperty) {it.toString()}, true)
+                        textProperty.updateFrom(createPropertyFrom("Move to ") bindPlusWith destinationProperty.bindTransform { it.toString() }, true)
                     })
                 addComponent(Components.
                     button().
