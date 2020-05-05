@@ -34,17 +34,18 @@ fun main() {
     showTitle(screen, tileGrid)
 
     generateMap(screen, tileGrid) { generatedMap ->
+        // ui
         val gameWorld = GameWorld(generatedMap)
+        // model
         val game = Game(Engine.default(), generatedMap, Random(GameOptions.DEBUG_MAP_SEED))
 
         val elementsToCommand = mutableListOf<ElementEntity>()
         val visibleSector = generatedMap.sectors.first { it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin() }
-        game.addElementInSector(visibleSector, "Alpha", Affiliation.Friendly)
-                ?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
-        game.addElementInSector(visibleSector, "Bravo", Affiliation.Friendly)
-                ?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
-        game.addElementInSector(visibleSector, "Charlie", Affiliation.Friendly)
-                ?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
+        elementsToCommand.run {
+            add(visibleSector.createFriendly("Alpha", game, gameWorld))
+            add(visibleSector.createFriendly("Bravo", game, gameWorld))
+            add(visibleSector.createFriendly("Charlie", game, gameWorld))
+        }
         screen.dock(GameView(gameWorld, tileGrid, elementsToCommand))
 
         // Adding some elements to every sector
@@ -61,6 +62,11 @@ fun main() {
         // cleanup
         screen.onShutdown { Ticker.stopGame() }
     }
+}
+
+private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld): ElementEntity {
+    return game.addElementInSector(this, callsign, Affiliation.Friendly)
+            .also(gameWorld::trackUnit)
 }
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {

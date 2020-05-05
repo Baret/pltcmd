@@ -32,7 +32,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     /**
      * Adds a new element in the given sector and returns it. If it was not possible to add the returned value is null.
      */
-    fun addElementInSector(sector: Sector, callsign: String = "Element ${random.nextInt(999_999)}", affiliation: Affiliation = Affiliation.Unknown): ElementEntity? {
+    fun addElementInSector(sector: Sector, callsign: String = "Element ${random.nextInt(999_999)}", affiliation: Affiliation = Affiliation.Unknown): ElementEntity {
         val positionInSector = sector.randomCoordinate(random)
         val callSign = CallSign(callsign)
         val elementAttribute = Element(callSign, emptySet())
