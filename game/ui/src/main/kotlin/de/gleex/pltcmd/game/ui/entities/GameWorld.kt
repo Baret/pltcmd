@@ -1,10 +1,9 @@
 package de.gleex.pltcmd.game.ui.entities
 
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
-import de.gleex.pltcmd.game.engine.entities.types.Positionable
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.entities.types.position
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.PositionableEntity
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
@@ -64,7 +63,7 @@ class GameWorld(private val worldMap: WorldMap) :
     }
 
     /** adds a marker to the map which is synced with the position of the given element */
-    fun trackUnit(element: GameEntity<Positionable>) {
+    fun trackUnit(element: PositionableEntity) {
         showUnit(element)
         element.position.onChange {
             it.oldValue.hideUnit()
@@ -72,7 +71,7 @@ class GameWorld(private val worldMap: WorldMap) :
         }
     }
 
-    private fun showUnit(element: GameEntity<Positionable>) {
+    private fun showUnit(element: PositionableEntity) {
         val affiliation = element.
             findAttribute(ElementAttribute::class).
             map { it.reportedAffiliation.value }.
@@ -144,7 +143,8 @@ class GameWorld(private val worldMap: WorldMap) :
      * Returns the [Coordinate] at the currently visible position
      * @see fetchBlockAtVisiblePosition
      */
-    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D().toCoordinate()
+    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D()
+            .toCoordinate()
 
     private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.to3DPosition(0))
 }

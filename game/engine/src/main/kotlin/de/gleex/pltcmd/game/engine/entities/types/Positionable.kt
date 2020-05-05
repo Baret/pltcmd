@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.PositionableEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.entity.EntityType
@@ -16,15 +16,15 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 /** Type marker for entities that have the PositionAttribute */
 interface Positionable : EntityType
 
-/** Access to the [Property] of the [PositionAttribute] of a [GameEntity] */
-var GameEntity<Positionable>.position: ObservableValue<Coordinate>
+/** Access to the [Property] of the [PositionAttribute] of a [PositionableEntity] */
+var PositionableEntity.position: ObservableValue<Coordinate>
     get() = getAttribute(PositionAttribute::class).coordinate
     internal set(value) {
         getAttribute(PositionAttribute::class).coordinate.updateFrom(value)
     }
 
-/** Access to the value of the [PositionAttribute] of a [GameEntity] */
-var GameEntity<Positionable>.currentPosition: Coordinate
+/** Access to the value of the [PositionAttribute] of a [PositionableEntity] */
+var PositionableEntity.currentPosition: Coordinate
     get() = position.value
     internal set(value) {
         position = value.toProperty()

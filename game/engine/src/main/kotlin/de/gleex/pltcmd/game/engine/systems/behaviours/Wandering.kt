@@ -7,7 +7,7 @@ import de.gleex.pltcmd.game.engine.entities.types.Movable
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.entities.types.hasNoDestination
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.MovableEntity
 import de.gleex.pltcmd.game.engine.systems.facets.MoveTo
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.base.BaseBehavior
@@ -25,10 +25,10 @@ internal object ChooseRandomDestination : BaseBehavior<GameContext>(PositionAttr
         if (entity.type !is Movable) {
             return false
         }
-        return moveToRandomDestination(entity as GameEntity<Movable>, context)
+        return moveToRandomDestination(entity as MovableEntity, context)
     }
 
-    private suspend fun moveToRandomDestination(movable: GameEntity<Movable>, context: GameContext): Boolean {
+    private suspend fun moveToRandomDestination(movable: MovableEntity, context: GameContext): Boolean {
         if (movable.hasNoDestination && context.random.nextDouble() >= 0.6) {
             val destination = context.world.neighborsOf(movable.currentPosition)
                     .random(context.random)
