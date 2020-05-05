@@ -34,11 +34,6 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
 
     private fun WorldTile.getSectorOrigin() = coordinate.toSectorOrigin()
 
-    private fun Coordinate.toSectorOrigin() = Coordinate(
-            eastingFromLeft - (eastingFromLeft % TILE_COUNT),
-            northingFromBottom - (northingFromBottom % TILE_COUNT)
-    )
-
     /**
      * Returns a random [Coordinate] that lies inside this sector.
      */
@@ -58,3 +53,8 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
     }
 
 }
+
+fun Coordinate.toSectorOrigin() = Coordinate(
+        eastingFromLeft - (eastingFromLeft % Sector.TILE_COUNT),
+        northingFromBottom - (northingFromBottom % Sector.TILE_COUNT)
+)

@@ -15,6 +15,7 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.toSectorOrigin
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
@@ -37,7 +38,7 @@ fun main() {
         val game = Game(Engine.default(), generatedMap, Random(GameOptions.DEBUG_MAP_SEED))
 
         val elementsToCommand = mutableListOf<ElementEntity>()
-        val visibleSector = generatedMap.sectors.first { it.origin == Coordinate(0, 450) }
+        val visibleSector = generatedMap.sectors.first { it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin() }
         game.addElementInSector(visibleSector, "Alpha", Affiliation.Friendly)
                 ?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
         game.addElementInSector(visibleSector, "Bravo", Affiliation.Friendly)
