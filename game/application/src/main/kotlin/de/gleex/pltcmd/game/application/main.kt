@@ -1,8 +1,7 @@
 package de.gleex.pltcmd.game.application
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.entities.ElementType
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -37,11 +36,14 @@ fun main() {
         val gameWorld = GameWorld(generatedMap)
         val game = Game(Engine.default(), generatedMap, Random(GameOptions.DEBUG_MAP_SEED))
 
-        val elementsToCommand = mutableListOf<GameEntity<ElementType>>()
+        val elementsToCommand = mutableListOf<ElementEntity>()
         val visibleSector = generatedMap.sectors.first { it.origin == Coordinate(0, 450) }
-        game.addElementInSector(visibleSector, "Alpha", Affiliation.Friendly)?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
-        game.addElementInSector(visibleSector, "Bravo", Affiliation.Friendly)?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
-        game.addElementInSector(visibleSector, "Charlie", Affiliation.Friendly)?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
+        game.addElementInSector(visibleSector, "Alpha", Affiliation.Friendly)
+                ?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
+        game.addElementInSector(visibleSector, "Bravo", Affiliation.Friendly)
+                ?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
+        game.addElementInSector(visibleSector, "Charlie", Affiliation.Friendly)
+                ?.let { elementsToCommand.add(it); gameWorld.trackUnit(it) }
         screen.dock(GameView(gameWorld, tileGrid, elementsToCommand))
 
         // Adding some elements to every sector
@@ -50,8 +52,8 @@ fun main() {
             repeat(elementsPerSector) {
                 game.addElementInSector(sector)?.
                     let {
-                        gameWorld.trackUnit(it)
-                    }
+                            gameWorld.trackUnit(it)
+                        }
             }
         }
         Ticker.start(game)

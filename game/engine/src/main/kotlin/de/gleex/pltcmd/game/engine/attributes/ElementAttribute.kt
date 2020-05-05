@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.engine.attributes
 
-import de.gleex.pltcmd.game.engine.entities.ElementType
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.ElementEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
@@ -15,5 +14,5 @@ class ElementAttribute(initialElement: Element, affiliation: Affiliation) : Attr
     val reportedAffiliation = createPropertyFrom(affiliation)
 }
 
-val GameEntity<ElementType>.callsign: CallSign
+val ElementEntity.callsign: CallSign
     get() { return getAttribute(ElementAttribute::class).element.value.callSign }

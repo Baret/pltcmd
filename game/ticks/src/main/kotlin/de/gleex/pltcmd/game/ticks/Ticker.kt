@@ -2,8 +2,7 @@ package de.gleex.pltcmd.game.ticks
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.attributes.callsign
-import de.gleex.pltcmd.game.engine.entities.ElementType
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.ElementEntity
 import de.gleex.pltcmd.game.engine.systems.facets.MoveTo
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -91,7 +90,7 @@ object Ticker {
         executor.shutdown()
     }
 
-    fun sendCommand(targetEntity: GameEntity<ElementType>, conversation: Conversation, destination: Coordinate) {
+    fun sendCommand(targetEntity: ElementEntity, conversation: Conversation, destination: Coordinate) {
         // TODO: The target would be the "radio net", for now we directly send a move to command to an element
         runBlocking {
             // TODO: The source of the event would be "HQ" which the player controls

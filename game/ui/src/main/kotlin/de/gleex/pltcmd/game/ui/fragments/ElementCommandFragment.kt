@@ -1,9 +1,8 @@
 package de.gleex.pltcmd.game.ui.fragments
 
 import de.gleex.pltcmd.game.engine.attributes.callsign
-import de.gleex.pltcmd.game.engine.entities.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.position
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.ElementEntity
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.elements.CallSign
@@ -21,9 +20,9 @@ import org.hexworks.zircon.api.uievent.UIEventResponse
 /**
  * Displays a list of entities and makes it possible to send them a
  */
-class ElementCommandFragment(override val width: Int, private val world: GameWorld, elements: List<GameEntity<ElementType>>, private val mapOffset: Position) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
+class ElementCommandFragment(override val width: Int, private val world: GameWorld, elements: List<ElementEntity>, private val mapOffset: Position) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
 
-    private var selectedElement: GameEntity<ElementType> = elements.first()
+    private var selectedElement: ElementEntity = elements.first()
     private val destinationProperty = createPropertyFrom(selectedElement.position.value)
     private val elementSelect = Fragments.
                                     multiSelect(width, elements).
