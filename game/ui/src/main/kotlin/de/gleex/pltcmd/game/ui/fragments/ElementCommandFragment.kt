@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.game.ui.fragments
 
-import de.gleex.pltcmd.game.engine.attributes.callsign
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.position
-import de.gleex.pltcmd.game.engine.extensions.ElementEntity
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.elements.CallSign

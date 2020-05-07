@@ -3,8 +3,8 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.entities.types.Movable
+import de.gleex.pltcmd.game.engine.entities.types.MovableEntity
 import de.gleex.pltcmd.game.engine.entities.types.destination
-import de.gleex.pltcmd.game.engine.extensions.MovableEntity
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Command
 import org.hexworks.amethyst.api.Consumed

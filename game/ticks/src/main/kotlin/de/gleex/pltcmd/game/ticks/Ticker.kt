@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.game.ticks
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.attributes.callsign
-import de.gleex.pltcmd.game.engine.extensions.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.systems.facets.MoveTo
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.world.coordinate.Coordinate

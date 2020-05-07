@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.engine
 
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
-import de.gleex.pltcmd.game.engine.extensions.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.world.Sector

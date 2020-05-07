@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
-import de.gleex.pltcmd.game.engine.extensions.MovableEntity
+import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.datatypes.Maybe
@@ -12,6 +12,7 @@ import org.hexworks.cobalt.datatypes.Maybe
 
 /** Type marker for entities that are [Positionable] and have the [DestinationAttribute] */
 interface Movable : Positionable
+typealias MovableEntity = GameEntity<Movable>
 
 /** Access to the value of the [DestinationAttribute] of a [MovableEntity] */
 var MovableEntity.destination: Maybe<Coordinate>
