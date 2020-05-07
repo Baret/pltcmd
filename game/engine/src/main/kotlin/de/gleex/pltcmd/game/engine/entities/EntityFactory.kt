@@ -23,6 +23,6 @@ object EntityFactory {
             })
 
     fun newWanderingElement(element: Element, initialPosition: Coordinate, affiliation: Affiliation = Affiliation.Unknown): ElementEntity =
-            newElement(element, initialPosition, affiliation).also { it.asMutableEntity().addBehavior(Wandering) }
+            newElement(element, initialPosition, affiliation).apply { asMutableEntity().addBehavior(Wandering) }
 
 }
