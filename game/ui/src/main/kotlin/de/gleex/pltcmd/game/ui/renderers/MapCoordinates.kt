@@ -2,7 +2,6 @@ package de.gleex.pltcmd.game.ui.renderers
 
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.builder.graphics.TileGraphicsBuilder
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
@@ -27,8 +26,6 @@ class MapCoordinates(
                 .build())
     : TileGraphics by backend {
 
-    private val log = LoggerFactory.getLogger(this::class)
-
     init {
         applyStyle(styleSet)
 
@@ -48,18 +45,9 @@ class MapCoordinates(
         }
 
         val offsetToGridY = topLeftCoordinate.northingFromBottom % MapGrid.GRID_WIDTH
-        log.debug("Topleft position = $topLeftPos, top left coord = $topLeftCoordinate")
         for (i in offsetToGridY until size.width - 1 step MapGrid.GRID_WIDTH) {
             // left
             val leftCoordinateText = createLeftText(topLeftCoordinate, i)
-            log.debug("Text for i = $i: ${leftCoordinateText.
-                tiles.
-                values.
-                map { it.asCharacterTile() }.
-                map { it.map { chartile -> chartile.character } }.
-                filter { it.isPresent }.
-                map { it.get() }.
-                joinToString("","","")}")
             val leftGridPosition = topLeftPos.withRelativeY(i + mapOffset.y)
             drawCentered(leftCoordinateText, leftGridPosition)
         }
