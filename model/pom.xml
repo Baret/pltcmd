@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>pltcmd</artifactId>
+        <groupId>de.gleex.pltcmd</groupId>
+        <version>0.0.2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>model</artifactId>
+    <groupId>de.gleex.pltcmd.model</groupId>
+    <packaging>pom</packaging>
+
+    <name>Model parent</name>
+    <description>The underlying model of the simulation.</description>
+
+    <modules>
+        <module>elements</module>
+        <module>mapgeneration</module>
+        <module>radio</module>
+        <module>world</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- modules -->
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>elements</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>mapgeneration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>radio</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>world</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- tests -->
+            <dependency>
+                <groupId>de.gleex.pltcmd.util</groupId>
+                <artifactId>tests</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
