@@ -1,0 +1,936 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] PltCmd                                                             [pom]
+[INFO] Utilities                                                          [pom]
+[INFO] Test utilities                                                     [jar]
+[INFO] Events                                                             [jar]
+[INFO] Model parent                                                       [pom]
+[INFO] Elements model                                                     [jar]
+[INFO] World model                                                        [jar]
+[INFO] Map generation                                                     [jar]
+[INFO] Radio model                                                        [jar]
+[INFO] Game parent                                                        [pom]
+[INFO] Engine (game core)                                                 [jar]
+[INFO] Game ticks                                                         [jar]
+[INFO] Comms                                                              [jar]
+[INFO] Game options                                                       [jar]
+[INFO] UI                                                                 [jar]
+[INFO] Application                                                        [jar]
+[INFO] 
+[INFO] -----------------------< de.gleex.pltcmd:pltcmd >-----------------------
+[INFO] Building PltCmd 0.0.2-SNAPSHOT                                    [1/16]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ pltcmd ---
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ pltcmd ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ pltcmd ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] ---------------------< de.gleex.pltcmd.util:util >----------------------
+[INFO] Building Utilities 0.0.2-SNAPSHOT                                 [2/16]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ util ---
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ util ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ util ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] ---------------------< de.gleex.pltcmd.util:tests >---------------------
+[INFO] Building Test utilities 0.0.2-SNAPSHOT                            [3/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ tests ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tests ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\util\tests\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tests ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ tests ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tests ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tests ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ tests ---
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ tests ---
+[INFO] 
+[INFO] --------------------< de.gleex.pltcmd.util:events >---------------------
+[INFO] Building Events 0.0.2-SNAPSHOT                                    [4/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ events ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ events ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\util\events\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ events ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ events ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ events ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\util\events\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ events ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ events ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ events ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --------------------< de.gleex.pltcmd.model:model >---------------------
+[INFO] Building Model parent 0.0.2-SNAPSHOT                              [5/16]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ model ---
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ model ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ model ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] -------------------< de.gleex.pltcmd.model:elements >-------------------
+[INFO] Building Elements model 0.0.2-SNAPSHOT                            [6/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ elements ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ elements ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\model\elements\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ elements ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ elements ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ elements ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\model\elements\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ elements ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ elements ---
+[WARNING] D:\coding\git\pltcmd\model\elements\src\test\kotlin\de\gleex\pltcmd\model\elements\ArmyElementHierarchyTest.kt: (129, 5) 'forAll(Collection<T>, (T) -> Unit): Unit' is deprecated. use the extension function version of this
+[WARNING] D:\coding\git\pltcmd\model\elements\src\test\kotlin\de\gleex\pltcmd\model\elements\ArmyElementHierarchyTest.kt: (133, 5) 'forAll(Collection<T>, (T) -> Unit): Unit' is deprecated. use the extension function version of this
+[WARNING] D:\coding\git\pltcmd\model\elements\src\test\kotlin\de\gleex\pltcmd\model\elements\ArmyElementHierarchyTest.kt: (141, 5) 'forAll(Collection<T>, (T) -> Unit): Unit' is deprecated. use the extension function version of this
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ elements ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+~~~ Kotest Configuration ~~~
+-> Parallelism: 1 thread(s)
+-> Default test timeout: 600000ms
+-> Default test order: Sequential
+-> Default isolation mode: SingleInstance
+-> Global soft assertations: False
+-> Write spec failure file: False
+-> Fail on ignored tests: False
+-> Spec execution order: LexicographicSpecExecutionOrder
+-> Extensions
+  - io.kotest.core.extensions.SystemPropertyTagExtension
+  - io.kotest.core.extensions.RuntimeTagExtension
+  - io.kotest.core.extensions.IgnoredSpecDiscoveryExtension
+  - io.kotest.core.extensions.TagFilteredDiscoveryExtension
+-> Listeners
+  - class io.kotlintest.provided.ProjectConfig$listeners$1
+  - class io.kotest.core.config.DetectConfigKt$detectConfig$2$beforeAfterAllListener$1
+
+22:54:53.520 [main] INFO  io.kotlintest.provided.ProjectConfig - Starting tests, measuring time
+22:54:53.536 [main] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 324 / 4062 MB
+[INFO] Running de.gleex.pltcmd.model.elements.ArmyElementHierarchyTest
+22:54:53.620 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.elements.ArmyElementHierarchyTest
+22:54:53.763 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have no superordinate' took 0 ms
+22:54:53.763 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.776 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have one leader' took 0 ms
+22:54:53.776 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.786 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have 7024 units' took 1 ms
+22:54:53.786 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.794 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have 4 battalions in each brigade' took 0 ms
+22:54:53.794 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.794 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have 4 companies in each battalion' took 0 ms
+22:54:53.794 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.806 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have 5 platoons in each company' took 2 ms
+22:54:53.806 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.816 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have 4 squads in each platoon' took 10 ms
+22:54:53.816 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.824 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have 2 fireteams in each squad' took 8 ms
+22:54:53.824 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.836 [kotest-engine-0 @coroutine#13] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have 1 buddyteam in each fireteam and 1920 buddyteams total which have no further subelements' took 0 ms
+22:54:53.836 [kotest-engine-0 @coroutine#13] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.846 [kotest-engine-0 @coroutine#13] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have 1 buddyteam in each fireteam and 1920 buddyteams total with 3840 soldier in them' took 0 ms
+22:54:53.846 [kotest-engine-0 @coroutine#13] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.880 [kotest-engine-0 @coroutine#13] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A division called Division 1856044794 should have 1 buddyteam in each fireteam and 1920 buddyteams total which means there are 3184 leaders' took 25 ms
+22:54:53.880 [kotest-engine-0 @coroutine#13] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:54:53.880 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.elements.ArmyElementHierarchyTest
+22:54:53.880 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 525 / 4062 MB
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.26 s - in de.gleex.pltcmd.model.elements.ArmyElementHierarchyTest
+22:54:53.880 [main] INFO  io.kotlintest.provided.ProjectConfig - Tests complete! Execution took 344 ms
+22:54:53.880 [main] INFO  io.kotlintest.provided.ProjectConfig - Average test execution time: 4.181818181818182 ms
+22:54:53.880 [main] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 525 / 4062 MB
+22:54:53.880 [main] INFO  io.kotlintest.provided.ProjectConfig - Maximum memory usage was 525 MB
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --------------------< de.gleex.pltcmd.model:world >---------------------
+[INFO] Building World model 0.0.2-SNAPSHOT                               [7/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ world ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ world ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\model\world\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ world ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ world ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ world ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\model\world\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ world ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ world ---
+[WARNING] D:\coding\git\pltcmd\model\world\src\test\kotlin\de\gleex\pltcmd\model\world\coordinate\CoordinateTest.kt: (118, 13) 'assertAll(noinline PropertyContext.(a: A, b: B) -> Unit): Unit' is deprecated. Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0
+[WARNING] D:\coding\git\pltcmd\model\world\src\test\kotlin\de\gleex\pltcmd\model\world\coordinate\MainCoordinateTest.kt: (30, 13) 'assertAll(noinline PropertyContext.(a: A, b: B) -> Unit): Unit' is deprecated. Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0
+[WARNING] D:\coding\git\pltcmd\model\world\src\test\kotlin\de\gleex\pltcmd\model\world\terrain\TerrainHeightTest.kt: (19, 9) 'forAll(Array<T>, (T) -> Unit): Unit' is deprecated. use the extension function version of this
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ world ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+~~~ Kotest Configuration ~~~
+-> Parallelism: 1 thread(s)
+-> Default test timeout: 600000ms
+-> Default test order: Sequential
+-> Default isolation mode: SingleInstance
+-> Global soft assertations: False
+-> Write spec failure file: False
+-> Fail on ignored tests: False
+-> Spec execution order: LexicographicSpecExecutionOrder
+-> Extensions
+  - io.kotest.core.extensions.SystemPropertyTagExtension
+  - io.kotest.core.extensions.RuntimeTagExtension
+  - io.kotest.core.extensions.IgnoredSpecDiscoveryExtension
+  - io.kotest.core.extensions.TagFilteredDiscoveryExtension
+-> Listeners
+  - class io.kotlintest.provided.ProjectConfig$listeners$1
+  - class io.kotest.core.config.DetectConfigKt$detectConfig$2$beforeAfterAllListener$1
+
+22:55:00.283 [main] INFO  io.kotlintest.provided.ProjectConfig - Starting tests, measuring time
+22:55:00.283 [main] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 337 / 4062 MB
+[INFO] Running de.gleex.pltcmd.model.world.coordinate.CoordinateRectangleTest
+22:55:00.337 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.world.coordinate.CoordinateRectangleTest
+22:55:00.468 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should have a width of 3' took 0 ms
+22:55:00.468 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.483 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should have a height of 4' took 15 ms
+22:55:00.483 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.483 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should have a size of 12' took 0 ms
+22:55:00.483 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.483 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (000|000)' took 0 ms
+22:55:00.483 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.483 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (001|000)' took 0 ms
+22:55:00.483 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.483 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (002|000)' took 0 ms
+22:55:00.483 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.499 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (000|001)' took 0 ms
+22:55:00.499 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.499 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (001|001)' took 0 ms
+22:55:00.499 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (002|001)' took 6 ms
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (000|002)' took 0 ms
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (001|002)' took 0 ms
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (002|002)' took 0 ms
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (000|003)' took 0 ms
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (001|003)' took 0 ms
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should contain (002|003)' took 0 ms
+22:55:00.505 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.521 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should not contain (-001|-001)' took 0 ms
+22:55:00.521 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.521 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should not contain (003|-001)' took 0 ms
+22:55:00.521 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.537 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should not contain (-001|004)' took 16 ms
+22:55:00.537 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.537 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should not contain (003|004)' took 0 ms
+22:55:00.537 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.537 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate rectangle from (000|000) to (002|003) should create the correct sequence' took 0 ms
+22:55:00.537 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.537 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.world.coordinate.CoordinateRectangleTest
+22:55:00.537 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 534 / 4062 MB
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.217 s - in de.gleex.pltcmd.model.world.coordinate.CoordinateRectangleTest
+[INFO] Running de.gleex.pltcmd.model.world.coordinate.CoordinateTest
+22:55:00.553 [kotest-engine-0 @coroutine#23] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.world.coordinate.CoordinateTest
+22:55:00.569 [kotest-engine-0 @coroutine#24] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate (123|345) should have main coordinate (1|3)' took 1 ms
+22:55:00.569 [kotest-engine-0 @coroutine#24] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.573 [kotest-engine-0 @coroutine#24] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate (123|345) should return the correct Coordinate when moving it east/west' took 2 ms
+22:55:00.573 [kotest-engine-0 @coroutine#24] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.573 [kotest-engine-0 @coroutine#24] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate (123|345) should return the correct Coordinate when moving it north/south' took 0 ms
+22:55:00.573 [kotest-engine-0 @coroutine#24] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.573 [kotest-engine-0 @coroutine#24] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate (123|345) should must be subtract able' took 0 ms
+22:55:00.573 [kotest-engine-0 @coroutine#24] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.589 [kotest-engine-0 @coroutine#30] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate (123|345) when compared to (123|344) should be bigger (because of higher northing)' took 0 ms
+22:55:00.589 [kotest-engine-0 @coroutine#30] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.589 [kotest-engine-0 @coroutine#32] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate (123|345) when being compared with (123|344) should be less (because of lower northing)' took 0 ms
+22:55:00.589 [kotest-engine-0 @coroutine#32] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.605 [kotest-engine-0 @coroutine#34] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate (123|345) when compared to (122|345) should be bigger (because of higher easting)' took 0 ms
+22:55:00.605 [kotest-engine-0 @coroutine#34] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.605 [kotest-engine-0 @coroutine#36] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate (123|345) when being compared with (122|345) should be less (because of lower easting)' took 0 ms
+22:55:00.605 [kotest-engine-0 @coroutine#36] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.621 [kotest-engine-0 @coroutine#38] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate (123|345) when compared to itself should be 0' took 0 ms
+22:55:00.621 [kotest-engine-0 @coroutine#38] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.621 [kotest-engine-0 @coroutine#40] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A list of 9 coordinates should have the correct order when sorted' took 0 ms
+22:55:00.621 [kotest-engine-0 @coroutine#40] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.721 [kotest-engine-0 @coroutine#43] INFO  d.g.p.m.w.coordinate.CoordinateTest - checked 1000 different string representations of Coordinate
+22:55:00.721 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'The string representation of a coordinate in the form of (xxx|yyy) should always have a length of at least 9 and match '\((-?\d{3,})\|(-?\d{3,})\)'' took 100 ms
+22:55:00.721 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.721 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'The string representation of a coordinate in the form of (xxx|yyy) should be (123|345) for (123|345)' took 0 ms
+22:55:00.721 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.721 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'The string representation of a coordinate in the form of (xxx|yyy) should be padded for single digits' took 0 ms
+22:55:00.721 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.721 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'The string representation of a coordinate in the form of (xxx|yyy) should be padded for two digits' took 0 ms
+22:55:00.737 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.737 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be valid when created from string '(001|001)'' took 0 ms
+22:55:00.737 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.737 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be valid when created from string '(000|000)'' took 0 ms
+22:55:00.737 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.737 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be valid when created from string '(-100|001)'' took 0 ms
+22:55:00.737 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.737 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be valid when created from string '(001|-100)'' took 0 ms
+22:55:00.737 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be valid when created from string '(-100|-100)'' took 15 ms
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be valid when created from string '(-123456789|123456789)'' took 0 ms
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be valid when created from string '    (-100|-100)	'' took 0 ms
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string '(123456789|1)'' took 0 ms
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string '(123456789|11)'' took 0 ms
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string '(123456789|-11)'' took 0 ms
+22:55:00.752 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string '(00a1|001)'' took 0 ms
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string '(|000)'' took 0 ms
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string '(--100|001)'' took 0 ms
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string '001|-100)'' took 0 ms
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string '(-100-100)'' took 0 ms
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string '(123456789|1'' took 0 ms
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string ''' took 0 ms
+22:55:00.768 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.784 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string '     '' took 16 ms
+22:55:00.784 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.784 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A coordinate created from a string should be null when created from invalid string 'coordinate'' took 0 ms
+22:55:00.784 [kotest-engine-0 @coroutine#47] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.784 [kotest-engine-0 @coroutine#23] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.world.coordinate.CoordinateTest
+22:55:00.784 [kotest-engine-0 @coroutine#23] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 534 / 4062 MB
+[INFO] Tests run: 43, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.231 s - in de.gleex.pltcmd.model.world.coordinate.CoordinateTest
+[INFO] Running de.gleex.pltcmd.model.world.coordinate.MainCoordinateTest
+22:55:00.784 [kotest-engine-0 @coroutine#67] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.world.coordinate.MainCoordinateTest
+22:55:00.784 [kotest-engine-0 @coroutine#68] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'The origin of main coordinate (5|9) should be (500|900)' took 0 ms
+22:55:00.784 [kotest-engine-0 @coroutine#68] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.799 [kotest-engine-0 @coroutine#70] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A negative main coordinate converted to a coordinate should be (-500|-9800)' took 15 ms
+22:55:00.799 [kotest-engine-0 @coroutine#70] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.806 [kotest-engine-0 @coroutine#72] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'The string representation of a main coordinate in the form of (x|y) should always have a length of at least 5 and match '\(-?\d+\|-?\d+\)'' took 7 ms
+22:55:00.806 [kotest-engine-0 @coroutine#72] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.806 [kotest-engine-0 @coroutine#72] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'The string representation of a main coordinate in the form of (x|y) should be (5|9) for (5|9)' took 0 ms
+22:55:00.806 [kotest-engine-0 @coroutine#72] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.821 [kotest-engine-0 @coroutine#67] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.world.coordinate.MainCoordinateTest
+22:55:00.821 [kotest-engine-0 @coroutine#67] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 534 / 4062 MB
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s - in de.gleex.pltcmd.model.world.coordinate.MainCoordinateTest
+[INFO] Running de.gleex.pltcmd.model.world.SectorTest
+22:55:00.821 [kotest-engine-0 @coroutine#75] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.world.SectorTest
+22:55:00.837 [kotest-engine-0 @coroutine#76] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A sector created at origin (150|700) should have 2500 tiles' took 0 ms
+22:55:00.837 [kotest-engine-0 @coroutine#76] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.853 [kotest-engine-0 @coroutine#76] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A sector created at origin (150|700) should have only tiles with easting in 150..199 and northing in 700..749' took 16 ms
+22:55:00.853 [kotest-engine-0 @coroutine#76] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.868 [kotest-engine-0 @coroutine#79] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A sector should fail to generate if the origin is not a sector origin' took 15 ms
+22:55:00.868 [kotest-engine-0 @coroutine#79] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.868 [kotest-engine-0 @coroutine#79] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A sector should not be valid with only one tile' took 0 ms
+22:55:00.868 [kotest-engine-0 @coroutine#79] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.868 [kotest-engine-0 @coroutine#75] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.world.SectorTest
+22:55:00.868 [kotest-engine-0 @coroutine#75] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 534 / 4062 MB
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 s - in de.gleex.pltcmd.model.world.SectorTest
+[INFO] Running de.gleex.pltcmd.model.world.terrain.TerrainHeightTest
+22:55:00.868 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.world.terrain.TerrainHeightTest
+22:55:00.884 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'Max terrain height should be TEN' took 0 ms
+22:55:00.884 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.884 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'Min terrain height should be ONE' took 0 ms
+22:55:00.884 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.884 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'One plus one is two :)' took 0 ms
+22:55:00.884 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.884 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'Adding to the max should have no effect' took 0 ms
+22:55:00.884 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.899 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'Subtraction should work, too' took 0 ms
+22:55:00.899 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.899 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'Subtracting from min should have no effect' took 0 ms
+22:55:00.899 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:00.899 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.world.terrain.TerrainHeightTest
+22:55:00.899 [kotest-engine-0 @coroutine#82] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 534 / 4062 MB
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s - in de.gleex.pltcmd.model.world.terrain.TerrainHeightTest
+[INFO] Running de.gleex.pltcmd.model.world.WorldMapTest
+22:55:00.899 [kotest-engine-0 @coroutine#89] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.world.WorldMapTest
+22:55:00.906 [kotest-engine-0 @coroutine#90] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A WorldMap should not be empty' took 0 ms
+22:55:00.906 [kotest-engine-0 @coroutine#90] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:01.711 [kotest-engine-0 @coroutine#90] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A WorldMap should be square when calculating its size' took 805 ms
+22:55:01.711 [kotest-engine-0 @coroutine#90] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:01.711 [kotest-engine-0 @coroutine#89] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.world.WorldMapTest
+22:55:01.711 [kotest-engine-0 @coroutine#89] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 1228 / 4062 MB
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.812 s - in de.gleex.pltcmd.model.world.WorldMapTest
+[INFO] Running de.gleex.pltcmd.model.world.WorldTileTest
+22:55:01.727 [kotest-engine-0 @coroutine#93] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.world.WorldTileTest
+22:55:01.727 [kotest-engine-0 @coroutine#93] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'Two WorldTiles with the same coordinate should be equal' took 0 ms
+22:55:01.727 [kotest-engine-0 @coroutine#93] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:01.727 [kotest-engine-0 @coroutine#93] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.world.WorldTileTest
+22:55:01.727 [kotest-engine-0 @coroutine#93] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 1228 / 4062 MB
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in de.gleex.pltcmd.model.world.WorldTileTest
+22:55:01.727 [main] INFO  io.kotlintest.provided.ProjectConfig - Tests complete! Execution took 1444 ms
+22:55:01.727 [main] INFO  io.kotlintest.provided.ProjectConfig - Average test execution time: 14.7 ms
+22:55:01.727 [main] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 1228 / 4062 MB
+22:55:01.727 [main] INFO  io.kotlintest.provided.ProjectConfig - Maximum memory usage was 1228 MB
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 87, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] ----------------< de.gleex.pltcmd.model:mapgeneration >-----------------
+[INFO] Building Map generation 0.0.2-SNAPSHOT                            [8/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ mapgeneration ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ mapgeneration ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\model\mapgeneration\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ mapgeneration ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ mapgeneration ---
+[WARNING] D:\coding\git\pltcmd\model\mapgeneration\src\main\kotlin\de\gleex\pltcmd\model\mapgeneration\mapgenerators\intermediate\PlainsGenerator.kt: (47, 60) Parameter 'area' is never used
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ mapgeneration ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\model\mapgeneration\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ mapgeneration ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ mapgeneration ---
+[WARNING] D:\coding\git\pltcmd\model\mapgeneration\src\test\kotlin\de\gleex\pltcmd\model\mapgeneration\dijkstra\DijkstraMapOfCoordinatesTest.kt: (70, 17) 'forAll(Collection<T>, (T) -> Unit): Unit' is deprecated. use the extension function version of this
+[WARNING] D:\coding\git\pltcmd\model\mapgeneration\src\test\kotlin\de\gleex\pltcmd\model\mapgeneration\mapgenerators\WorldMapGeneratorTest.kt: (17, 2) This class can only be used with the compiler argument '-Xopt-in=kotlin.RequiresOptIn'
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ mapgeneration ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+~~~ Kotest Configuration ~~~
+-> Parallelism: 1 thread(s)
+-> Default test timeout: 600000ms
+-> Default test order: Sequential
+-> Default isolation mode: SingleInstance
+-> Global soft assertations: False
+-> Write spec failure file: False
+-> Fail on ignored tests: False
+-> Spec execution order: LexicographicSpecExecutionOrder
+-> Extensions
+  - io.kotest.core.extensions.SystemPropertyTagExtension
+  - io.kotest.core.extensions.RuntimeTagExtension
+  - io.kotest.core.extensions.IgnoredSpecDiscoveryExtension
+  - io.kotest.core.extensions.TagFilteredDiscoveryExtension
+-> Listeners
+  - class io.kotlintest.provided.ProjectConfig$listeners$1
+  - class io.kotest.core.config.DetectConfigKt$detectConfig$2$beforeAfterAllListener$1
+
+22:55:08.737 [main] INFO  io.kotlintest.provided.ProjectConfig - Starting tests, measuring time
+22:55:08.758 [main] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 566 / 4062 MB
+[INFO] Running de.gleex.pltcmd.model.mapgeneration.dijkstra.DijkstraMapOfCoordinatesTest
+22:55:08.806 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.mapgeneration.dijkstra.DijkstraMapOfCoordinatesTest
+22:55:08.806 [kotest-engine-0 @coroutine#1] DEBUG d.g.p.m.m.d.DijkstraMapOfCoordinates - Created dijkstra map with 9 entries and 1 targets with value 0. Max Distance: 2
+22:55:08.910 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A simple 3 by 3 coordinates map should have a max distance of 2' took 0 ms
+22:55:08.910 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:08.926 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A simple 3 by 3 coordinates map should have 1 target' took 0 ms
+22:55:08.926 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:08.943 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A simple 3 by 3 coordinates map should return correct paths' took 17 ms
+22:55:08.943 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:08.943 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A simple 3 by 3 coordinates map should create a path to a negative target value' took 0 ms
+22:55:08.943 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:08.943 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A simple 3 by 3 coordinates map should never create paths longer than 3 entries' took 0 ms
+22:55:08.943 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:08.959 [kotest-engine-0 @coroutine#8] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'An empty map should not be allowed' took 16 ms
+22:55:08.959 [kotest-engine-0 @coroutine#8] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:08.959 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.mapgeneration.dijkstra.DijkstraMapOfCoordinatesTest
+22:55:08.959 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 566 / 4062 MB
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.153 s - in de.gleex.pltcmd.model.mapgeneration.dijkstra.DijkstraMapOfCoordinatesTest
+[INFO] Running de.gleex.pltcmd.model.mapgeneration.dijkstra.DijkstraMapTest
+22:55:08.959 [kotest-engine-0 @coroutine#10] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.mapgeneration.dijkstra.DijkstraMapTest
+22:55:08.978 [kotest-engine-0 @coroutine#11] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A map with only a target should should have a distance of 0 from (002|003)' took 4 ms
+22:55:08.978 [kotest-engine-0 @coroutine#11] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:08.981 [kotest-engine-0 @coroutine#11] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A map with only a target should should have another distance of 0 when adding another target' took 1 ms
+22:55:08.981 [kotest-engine-0 @coroutine#11] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:08.991 [kotest-engine-0 @coroutine#11] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A map with only a target should should not calculate any paths except from the target' took 8 ms
+22:55:08.992 [kotest-engine-0 @coroutine#11] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:08.999 [kotest-engine-0 @coroutine#15] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A map with 3 nodes should have no path from a coordinate outside' took 2 ms
+22:55:08.999 [kotest-engine-0 @coroutine#15] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.001 [kotest-engine-0 @coroutine#15] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A map with 3 nodes should have a correct full path' took 1 ms
+22:55:09.001 [kotest-engine-0 @coroutine#15] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.004 [kotest-engine-0 @coroutine#15] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A map with 3 nodes should have a path of 2 nodes when starting at the second' took 1 ms
+22:55:09.004 [kotest-engine-0 @coroutine#15] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.005 [kotest-engine-0 @coroutine#10] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.mapgeneration.dijkstra.DijkstraMapTest
+22:55:09.005 [kotest-engine-0 @coroutine#10] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 566 / 4062 MB
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s - in de.gleex.pltcmd.model.mapgeneration.dijkstra.DijkstraMapTest
+[INFO] Running de.gleex.pltcmd.model.mapgeneration.mapgenerators.areafinder.EmptyRectangleAreaFinderTest
+22:55:09.007 [kotest-engine-0 @coroutine#19] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.mapgeneration.mapgenerators.areafinder.EmptyRectangleAreaFinderTest
+[WARNING] Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.003 s - in de.gleex.pltcmd.model.mapgeneration.mapgenerators.areafinder.EmptyRectangleAreaFinderTest
+[INFO] Running de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorldTest
+22:55:09.010 [kotest-engine-0 @coroutine#20] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorldTest
+22:55:09.059 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 2 neighbors at (000|000)' took 16 ms
+22:55:09.059 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.059 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 3 neighbors at (000|001)' took 0 ms
+22:55:09.074 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.074 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 3 neighbors at (001|000)' took 0 ms
+22:55:09.074 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.074 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 4 neighbors at (001|001)' took 0 ms
+22:55:09.074 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.074 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 2 neighbors at (049|049)' took 0 ms
+22:55:09.074 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.074 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 3 neighbors at (049|048)' took 0 ms
+22:55:09.074 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.090 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 3 neighbors at (048|049)' took 0 ms
+22:55:09.090 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.090 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 4 neighbors at (048|048)' took 0 ms
+22:55:09.090 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.090 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 4 neighbors at (002|002)' took 0 ms
+22:55:09.090 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.106 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 4 neighbors at (042|013)' took 0 ms
+22:55:09.106 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.106 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 3 neighbors at (049|023)' took 0 ms
+22:55:09.106 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.106 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 4 neighbors at (009|019)' took 0 ms
+22:55:09.106 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.106 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 0 neighbors at (-001|000)' took 0 ms
+22:55:09.106 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.120 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 0 neighbors at (001|050)' took 14 ms
+22:55:09.120 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.122 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 0 neighbors at (374|983)' took 1 ms
+22:55:09.122 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.125 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 0 neighbors at (2147483647|2147483647)' took 1 ms
+22:55:09.125 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.127 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 0 neighbors at (-2147483648|-2147483648)' took 1 ms
+22:55:09.127 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.129 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should have 0 neighbors at (050|-001)' took 1 ms
+22:55:09.130 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.132 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should find no present coordinates' took 1 ms
+22:55:09.133 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.141 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A world from (000|000) to (049|049) of size 50 by 50 tiles should find all coordinates as empty' took 7 ms
+22:55:09.141 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.142 [kotest-engine-0 @coroutine#20] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorldTest
+22:55:09.142 [kotest-engine-0 @coroutine#20] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 566 / 4062 MB
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.132 s - in de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorldTest
+[INFO] Running de.gleex.pltcmd.model.mapgeneration.mapgenerators.areafinder.SizedEmptyRectangleAreaFinderTest
+22:55:09.145 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.mapgeneration.mapgenerators.areafinder.SizedEmptyRectangleAreaFinderTest
+22:55:09.159 [kotest-engine-0 @coroutine#43] DEBUG d.g.p.m.m.m.a.EmptyRectangleAreaFinder - Found 1 empty rectangles in 5 ms
+22:55:09.162 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'empty world must contain a maximum size rectangle and three remainders' took 10 ms
+22:55:09.162 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.162 [kotest-engine-0 @coroutine#44] DEBUG d.g.p.m.m.m.a.EmptyRectangleAreaFinder - Found 1 empty rectangles in 0 ms
+22:55:09.178 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'empty world must contain all coordinates as 1x1 rectangle' took 16 ms
+22:55:09.178 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:09.178 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.mapgeneration.mapgenerators.areafinder.SizedEmptyRectangleAreaFinderTest
+22:55:09.178 [kotest-engine-0 @coroutine#42] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 566 / 4062 MB
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 s - in de.gleex.pltcmd.model.mapgeneration.mapgenerators.areafinder.SizedEmptyRectangleAreaFinderTest
+[INFO] Running de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGeneratorTest
+22:55:09.178 [kotest-engine-0 @coroutine#45] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGeneratorTest
+22:55:09.194 [kotest-engine-0 @coroutine#45] INFO  d.g.p.m.m.m.WorldMapGenerator - Generating a random world with seed 22
+22:55:09.194 [kotest-engine-0 @coroutine#45] INFO  d.g.p.m.m.m.WorldMapGenerator - 	Context: GenerationContext: 89,0 % vegetation, 58,4 % hilliness, 33,7 % water, 1,8 % urban
+22:55:09.194 [kotest-engine-0 @coroutine#45] INFO  d.g.p.m.m.m.WorldMapGenerator - 	World size: 50 * 50 = 2500 tiles
+22:55:09.194 [kotest-engine-0 @coroutine#45] INFO  d.g.p.m.m.m.WorldMapGenerator - 	Ranging from (000|000) to (049|049)
+22:55:09.194 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.i.MountainTopHeightMapper - Trying to find 0 areas for mountain tops in 1 main coordinates
+22:55:09.194 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.i.MountainTopHeightMapper - Found 0 mountain top locations: []
+22:55:09.194 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.i.MountainTopHeightMapper - Processed 0 tiles to create 0 mountains
+22:55:09.194 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.WorldMapGenerator - Generator MountainTopHeightMapper took 0 ms
+22:55:09.194 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.intermediate.RiverTyper - No mountain tops found to create rivers.
+22:55:09.194 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.WorldMapGenerator - Generator RiverTyper took 0 ms
+22:55:09.194 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.i.PlainsGenerator - Using 0.4159861904480945 of the area for plains
+22:55:09.194 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.i.PlainsGenerator - Finding empty rectangles that span a total of 1040 coordinates
+22:55:09.194 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.a.EmptyRectangleAreaFinder - Found 1 empty rectangles in 0 ms
+22:55:09.209 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.i.PlainsGenerator - Took 15 ms to find 1 empty rectangles
+22:55:09.209 [kotest-engine-0 @coroutine#45] WARN  d.g.p.m.m.m.i.PlainsGenerator - found a total of 2500 tiles: []
+22:55:09.209 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.i.PlainsGenerator - Generating 0 plains with a maximum size of 1040 coordinates
+22:55:09.209 [kotest-engine-0 @coroutine#45] DEBUG d.g.p.m.m.m.WorldMapGenerator - Generator PlainsGenerator took 15 ms
+[WARNING] Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.031 s - in de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGeneratorTest
+22:55:09.209 [main] INFO  io.kotlintest.provided.ProjectConfig - Tests complete! Execution took 451 ms
+22:55:09.209 [main] INFO  io.kotlintest.provided.ProjectConfig - Average test execution time: 3.4705882352941178 ms
+22:55:09.209 [main] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 566 / 4062 MB
+22:55:09.209 [main] INFO  io.kotlintest.provided.ProjectConfig - Maximum memory usage was 566 MB
+[INFO] 
+[INFO] Results:
+[INFO] 
+[WARNING] Tests run: 41, Failures: 0, Errors: 0, Skipped: 2
+[INFO] 
+[INFO] 
+[INFO] --------------------< de.gleex.pltcmd.model:radio >---------------------
+[INFO] Building Radio model 0.0.2-SNAPSHOT                               [9/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ radio ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ radio ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\model\radio\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ radio ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ radio ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ radio ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\model\radio\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ radio ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ radio ---
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ radio ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+~~~ Kotest Configuration ~~~
+-> Parallelism: 1 thread(s)
+-> Default test timeout: 600000ms
+-> Default test order: Sequential
+-> Default isolation mode: SingleInstance
+-> Global soft assertations: False
+-> Write spec failure file: False
+-> Fail on ignored tests: False
+-> Spec execution order: LexicographicSpecExecutionOrder
+-> Extensions
+  - io.kotest.core.extensions.SystemPropertyTagExtension
+  - io.kotest.core.extensions.RuntimeTagExtension
+  - io.kotest.core.extensions.IgnoredSpecDiscoveryExtension
+  - io.kotest.core.extensions.TagFilteredDiscoveryExtension
+-> Listeners
+  - class io.kotlintest.provided.ProjectConfig$listeners$1
+  - class io.kotest.core.config.DetectConfigKt$detectConfig$2$beforeAfterAllListener$1
+
+22:55:13.503 [main] INFO  io.kotlintest.provided.ProjectConfig - Starting tests, measuring time
+22:55:13.513 [main] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 332 / 4062 MB
+[INFO] Running de.gleex.pltcmd.model.radio.communication.building.ConversationBuilderTest
+22:55:13.572 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.radio.communication.building.ConversationBuilderTest
+22:55:13.693 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'read back should be a response (sender and receiver swapped)' took 10 ms
+22:55:13.693 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.693 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'read back should establish communications' took 0 ms
+22:55:13.693 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.709 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'read back should have correct template message' took 16 ms
+22:55:13.709 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.709 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'read back should have correct transmitted message' took 0 ms
+22:55:13.709 [kotest-engine-0 @coroutine#2] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.713 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.radio.communication.building.ConversationBuilderTest
+22:55:13.713 [kotest-engine-0 @coroutine#1] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 332 / 4062 MB
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.143 s - in de.gleex.pltcmd.model.radio.communication.building.ConversationBuilderTest
+[INFO] Running de.gleex.pltcmd.model.radio.RadioSignalTest
+22:55:13.713 [kotest-engine-0 @coroutine#7] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.radio.RadioSignalTest
+22:55:13.918 [kotest-engine-0 @coroutine#9] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when getting an empty list to travel along should be full strength' took 0 ms
+22:55:13.918 [kotest-engine-0 @coroutine#9] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.918 [kotest-engine-0 @coroutine#11] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when getting a single field to travel along should be full strength because it is the field it is originating from' took 0 ms
+22:55:13.918 [kotest-engine-0 @coroutine#11] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.934 [kotest-engine-0 @coroutine#13] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 2 tiles of air should lose power with the base loss factor of 0.98' took 16 ms
+22:55:13.934 [kotest-engine-0 @coroutine#13] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.934 [kotest-engine-0 @coroutine#15] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 2 tiles of ground should lose power with the ground loss factor of 0.7' took 0 ms
+22:55:13.934 [kotest-engine-0 @coroutine#15] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.934 [kotest-engine-0 @coroutine#17] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 3 tiles of air should lose power with the base loss factor of 0.98' took 0 ms
+22:55:13.934 [kotest-engine-0 @coroutine#17] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.950 [kotest-engine-0 @coroutine#19] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 3 tiles of ground should lose power with the ground loss factor of 0.7' took 0 ms
+22:55:13.950 [kotest-engine-0 @coroutine#19] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.958 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 4 tiles of air should lose power with the base loss factor of 0.98' took 1 ms
+22:55:13.959 [kotest-engine-0 @coroutine#21] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.964 [kotest-engine-0 @coroutine#23] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 4 tiles of ground should lose power with the ground loss factor of 0.7' took 2 ms
+22:55:13.964 [kotest-engine-0 @coroutine#23] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.969 [kotest-engine-0 @coroutine#25] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 5 tiles of air should lose power with the base loss factor of 0.98' took 1 ms
+22:55:13.969 [kotest-engine-0 @coroutine#25] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.975 [kotest-engine-0 @coroutine#27] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 5 tiles of ground should lose power with the ground loss factor of 0.7' took 2 ms
+22:55:13.975 [kotest-engine-0 @coroutine#27] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.979 [kotest-engine-0 @coroutine#29] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 6 tiles of air should lose power with the base loss factor of 0.98' took 1 ms
+22:55:13.979 [kotest-engine-0 @coroutine#29] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.984 [kotest-engine-0 @coroutine#31] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 6 tiles of ground should lose power with the ground loss factor of 0.7' took 1 ms
+22:55:13.985 [kotest-engine-0 @coroutine#31] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.995 [kotest-engine-0 @coroutine#33] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 7 tiles of air should lose power with the base loss factor of 0.98' took 1 ms
+22:55:13.995 [kotest-engine-0 @coroutine#33] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.999 [kotest-engine-0 @coroutine#35] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'A radio signal with power 100.0 (100.0%) when travelling through 7 tiles of ground should lose power with the ground loss factor of 0.7' took 1 ms
+22:55:13.999 [kotest-engine-0 @coroutine#35] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:13.999 [kotest-engine-0 @coroutine#7] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.radio.RadioSignalTest
+22:55:13.999 [kotest-engine-0 @coroutine#7] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 522 / 4062 MB
+[INFO] Tests run: 29, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.286 s - in de.gleex.pltcmd.model.radio.RadioSignalTest
+[INFO] Running de.gleex.pltcmd.model.radio.SignalStrengthTest
+22:55:14.001 [kotest-engine-0 @coroutine#37] INFO  io.kotlintest.provided.ProjectConfig - Starting tests de.gleex.pltcmd.model.radio.SignalStrengthTest
+22:55:14.014 [kotest-engine-0 @coroutine#38] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'Absolute radio signal power converted to a signal strength should be 1.0 when > 100 and 0.0 when < 8.0' took 13 ms
+22:55:14.014 [kotest-engine-0 @coroutine#38] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:14.014 [kotest-engine-0 @coroutine#40] INFO  io.kotlintest.provided.ProjectConfig - Execution of 'Invalid values should not be allowed' took 0 ms
+22:55:14.014 [kotest-engine-0 @coroutine#40] INFO  io.kotlintest.provided.ProjectConfig -  - - - - - - - - - - - - - - - - - -
+22:55:14.014 [kotest-engine-0 @coroutine#37] INFO  io.kotlintest.provided.ProjectConfig - Finished tests de.gleex.pltcmd.model.radio.SignalStrengthTest
+22:55:14.014 [kotest-engine-0 @coroutine#37] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 522 / 4062 MB
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s - in de.gleex.pltcmd.model.radio.SignalStrengthTest
+22:55:14.014 [main] INFO  io.kotlintest.provided.ProjectConfig - Tests complete! Execution took 501 ms
+22:55:14.014 [main] INFO  io.kotlintest.provided.ProjectConfig - Average test execution time: 3.25 ms
+22:55:14.014 [main] INFO  io.kotlintest.provided.ProjectConfig - Current memory usage: 522 / 4062 MB
+22:55:14.014 [main] INFO  io.kotlintest.provided.ProjectConfig - Maximum memory usage was 522 MB
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 38, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] ---------------------< de.gleex.pltcmd.game:game >----------------------
+[INFO] Building Game parent 0.0.2-SNAPSHOT                              [10/16]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ game ---
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ game ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ game ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --------------------< de.gleex.pltcmd.game:engine >---------------------
+[INFO] Building Engine (game core) 0.0.2-SNAPSHOT                       [11/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ engine ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ engine ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ engine ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ engine ---
+[WARNING] D:\coding\git\pltcmd\game\engine\src\main\kotlin\de\gleex\pltcmd\game\engine\systems\behaviours\Moving.kt: (23, 46) Unchecked cast: AnyGameEntity /* = Entity<*, GameContext> */ to GameEntity<Movable> /* = Entity<Movable, GameContext> */
+[WARNING] D:\coding\git\pltcmd\game\engine\src\main\kotlin\de\gleex\pltcmd\game\engine\systems\behaviours\Wandering.kt: (28, 47) Unchecked cast: AnyGameEntity /* = Entity<*, GameContext> */ to GameEntity<Movable> /* = Entity<Movable, GameContext> */
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ engine ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\game\engine\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ engine ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ engine ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ engine ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ---------------------< de.gleex.pltcmd.game:ticks >---------------------
+[INFO] Building Game ticks 0.0.2-SNAPSHOT                               [12/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ ticks ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ ticks ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\game\ticks\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ ticks ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ ticks ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ ticks ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\game\ticks\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ ticks ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ ticks ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ ticks ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -----------------< de.gleex.pltcmd.game:communication >-----------------
+[INFO] Building Comms 0.0.2-SNAPSHOT                                    [13/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ communication ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ communication ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\game\communication\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ communication ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ communication ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ communication ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\game\communication\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ communication ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ communication ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ communication ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --------------------< de.gleex.pltcmd.game:options >--------------------
+[INFO] Building Game options 0.0.2-SNAPSHOT                             [14/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ options ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ options ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ options ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ options ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ options ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\game\options\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ options ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ options ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ options ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ----------------------< de.gleex.pltcmd.game:ui >-----------------------
+[INFO] Building UI 0.0.2-SNAPSHOT                                       [15/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ ui ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ ui ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ ui ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ ui ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ ui ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\game\ui\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ ui ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ ui ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ ui ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ------------------< de.gleex.pltcmd.game:application >------------------
+[INFO] Building Application 0.0.2-SNAPSHOT                              [16/16]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-upper-bound-deps) @ application ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ application ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ application ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:compile (compile) @ application ---
+[WARNING] D:\coding\git\pltcmd\game\application\src\main\kotlin\de\gleex\pltcmd\game\application\conversation\conversationExample.kt: (111, 83) There is more than one label with such a name in this scope
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ application ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\coding\git\pltcmd\game\application\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ application ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- kotlin-maven-plugin:1.3.72:test-compile (test-compile) @ application ---
+[WARNING] No sources found skipping Kotlin compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ application ---
+[INFO] No tests to run.
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for PltCmd 0.0.2-SNAPSHOT:
+[INFO] 
+[INFO] PltCmd ............................................. SUCCESS [  1.337 s]
+[INFO] Utilities .......................................... SUCCESS [  0.083 s]
+[INFO] Test utilities ..................................... SUCCESS [  4.117 s]
+[INFO] Events ............................................. SUCCESS [  0.232 s]
+[INFO] Model parent ....................................... SUCCESS [  0.069 s]
+[INFO] Elements model ..................................... SUCCESS [  5.652 s]
+[INFO] World model ........................................ SUCCESS [  8.111 s]
+[INFO] Map generation ..................................... SUCCESS [  7.084 s]
+[INFO] Radio model ........................................ SUCCESS [  4.889 s]
+[INFO] Game parent ........................................ SUCCESS [  0.056 s]
+[INFO] Engine (game core) ................................. SUCCESS [  0.552 s]
+[INFO] Game ticks ......................................... SUCCESS [  0.391 s]
+[INFO] Comms .............................................. SUCCESS [  0.445 s]
+[INFO] Game options ....................................... SUCCESS [  0.265 s]
+[INFO] UI ................................................. SUCCESS [  1.837 s]
+[INFO] Application ........................................ SUCCESS [  0.599 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  35.879 s
+[INFO] Finished at: 2020-05-08T22:55:18+02:00
+[INFO] ------------------------------------------------------------------------
