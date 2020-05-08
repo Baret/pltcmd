@@ -38,7 +38,7 @@
 		<amethyst.version>2020.0.1-PREVIEW</amethyst.version>
 
 		<jupiter.version>5.7.0-M1</jupiter.version>
-		<kotest.version>3.4.2</kotest.version>
+		<kotest.version>4.0.5</kotest.version>
 	</properties>
 
 	<repositories>
@@ -62,6 +62,24 @@
 			<groupId>org.hexworks.cobalt</groupId>
 			<artifactId>cobalt.core-jvm</artifactId>
 			<version>${cobalt.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<artifactId>kotlin-stdlib-jdk8</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jetbrains.kotlinx</groupId>
+					<artifactId>kotlinx-coroutines-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jetbrains.kotlinx</groupId>
+					<artifactId>kotlinx-coroutines-core-common</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<artifactId>kotlin-reflect</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -76,8 +94,32 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.kotlintest</groupId>
-			<artifactId>kotlintest-runner-junit5</artifactId>
+			<groupId>io.kotest</groupId>
+			<artifactId>kotest-runner-junit5-jvm</artifactId>
+			<version>${kotest.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.kotest</groupId>
+			<artifactId>kotest-core-jvm</artifactId>
+			<version>${kotest.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.kotest</groupId>
+			<artifactId>kotest-assertions-core-jvm</artifactId>
+			<version>${kotest.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.kotest</groupId>
+			<artifactId>kotest-property-jvm</artifactId>
+			<version>${kotest.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.kotest</groupId>
+			<artifactId>kotest-assertions-arrow-jvm</artifactId>
 			<version>${kotest.version}</version>
 			<scope>test</scope>
 		</dependency>

@@ -3,12 +3,18 @@ package de.gleex.pltcmd.model.mapgeneration.mapgenerators
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.testhelpers.haveSameTerrain
 import de.gleex.pltcmd.model.world.testhelpers.shouldHaveSameTerrain
-import io.kotlintest.*
-import io.kotlintest.matchers.types.shouldNotBeSameInstanceAs
-import io.kotlintest.specs.WordSpec
+import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
+@OptIn(ExperimentalTime::class)
 class WorldMapGeneratorTest: WordSpec() {
     override fun isolationMode() = IsolationMode.InstancePerLeaf
 

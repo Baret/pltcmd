@@ -1,11 +1,11 @@
 package de.gleex.pltcmd.model.world.coordinate
 
-import io.kotlintest.assertSoftly
-import io.kotlintest.matchers.string.shouldHaveMinLength
-import io.kotlintest.matchers.string.shouldMatch
-import io.kotlintest.properties.assertAll
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.WordSpec
+import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldHaveMinLength
+import io.kotest.matchers.string.shouldMatch
+import io.kotest.properties.assertAll
 
 class MainCoordinateTest: WordSpec({
     val testCoordinate = MainCoordinate(5, 9)

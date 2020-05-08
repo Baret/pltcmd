@@ -1,15 +1,15 @@
 package de.gleex.pltcmd.model.mapgeneration.dijkstra
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import io.kotlintest.assertSoftly
-import io.kotlintest.forAll
-import io.kotlintest.matchers.collections.shouldContainInOrder
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.numerics.shouldNotBeGreaterThan
-import io.kotlintest.matchers.sequences.shouldHaveCount
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrowExactly
-import io.kotlintest.specs.WordSpec
+import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldContainInOrder
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.ints.shouldNotBeGreaterThan
+import io.kotest.matchers.sequences.shouldHaveCount
+import io.kotest.matchers.shouldBe
 
 class DijkstraMapOfCoordinatesTest: WordSpec() {
     init {

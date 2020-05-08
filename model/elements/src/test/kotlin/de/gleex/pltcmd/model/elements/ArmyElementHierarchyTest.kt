@@ -1,12 +1,12 @@
 package de.gleex.pltcmd.model.elements
 
-import io.kotlintest.forAll
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.types.beNull
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.FreeSpec
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.beNull
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 
 class ArmyElementHierarchyTest: FreeSpec({
     val division = ArmyElementHierarchy.Division.createElement()
