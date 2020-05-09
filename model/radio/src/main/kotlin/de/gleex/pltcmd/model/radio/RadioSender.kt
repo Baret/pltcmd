@@ -61,6 +61,8 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
         globalEventBus.publishTransmission(this, reachableTiles, transmission)
     }
 
+    // TODO should the sender know how its signal is received? Or should the terrain be managed outside?
+    // maybe rename this class as it else only wraps RadioSignal
     fun signalSendTo(receivedAt: Coordinate): SignalStrength {
         val terrain = terrainTo(receivedAt)
         return signal.along(terrain)
