@@ -3,17 +3,26 @@ package de.gleex.pltcmd.model.radio
 import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import org.hexworks.cobalt.events.api.*
 
 /**
- * A radio signal as it is received at the indicated location and the carried [Transmission].
+ * A radio signal as it is send over the air to a specific area and the carried [Transmission].
  */
 data class BroadcastEvent(
         override val emitter: RadioSender,
-        val receivedAt: Coordinate,
-        val signalStrength: SignalStrength,
+        val broadcastedTo: CoordinateRectangle,
         val transmission: Transmission
-) : Event
+) : Event {
+
+    fun isReceivedAt(location: Coordinate): Boolean {
+        return broadcastedTo.contains(location)
+    }
+
+    fun receivedAt(location: Coordinate): Pair<SignalStrength, Transmission> {
+        return Pair(emitter.signalSendTo(location), transmission)
+    }
+}
 
 /**
  * This scope is used for radio broadcasts. It basically represents antennas.
@@ -30,5 +39,5 @@ fun EventBus.subscribeToBroadcasts(onEvent: (BroadcastEvent) -> Unit): Subscript
 /**
  * Publishes a [BroadcastEvent]. Or in other words: Send a transmission via radio.
  */
-internal fun EventBus.publishTransmission(sender: RadioSender, receivedAt: Coordinate, signalStrength: SignalStrength, transmission: Transmission) =
-        publish(BroadcastEvent(sender, receivedAt, signalStrength, transmission), Broadcasts)
+internal fun EventBus.publishTransmission(sender: RadioSender, broadcastedTo: CoordinateRectangle, transmission: Transmission) =
+        publish(BroadcastEvent(sender, broadcastedTo, transmission), Broadcasts)

@@ -14,7 +14,7 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
     /**
      * Checks if this area contains the given [Coordinate].
      */
-    operator fun contains(coordinate: Coordinate) = coordinates.contains(coordinate)
+    open operator fun contains(coordinate: Coordinate) = coordinates.contains(coordinate)
 
     /**
      * Returns an ordered sequence of all [Coordinate]s in this area.

@@ -26,6 +26,10 @@ class CoordinateRectangle(
         return width <= maxWidth && height <= maxHeight
     }
 
+    open override fun contains(coordinate: Coordinate): Boolean {
+        return bottomLeftCoordinate <= coordinate && coordinate <= topRightCoordinate
+    }
+
     override fun toString(): String {
         return "CoordinateRectangle from $bottomLeftCoordinate to $topRightCoordinate containing $size coordinates"
     }

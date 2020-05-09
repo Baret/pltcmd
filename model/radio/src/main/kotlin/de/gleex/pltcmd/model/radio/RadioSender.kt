@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.radio
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.broadcasting.RadioSignal
+import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -25,16 +26,15 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
 
     // pre-computed as we send with constant power over a fixed world
     // visible for tests
-    internal val reachableTiles: Iterable<Coordinate> = calculateReachableFields()
+    internal val reachableTiles: CoordinateRectangle = calculateReachableFields()
 
-    private fun calculateReachableFields(): Iterable<Coordinate> {
+    private fun calculateReachableFields(): CoordinateRectangle {
         val maxReachOverAir = signal.maxRange
         // create bounding box (clamped to map borders)
-        val maxNorth: Int = min(getMaxReach(location.withRelativeNorthing(maxReachOverAir)), distanceToNorthBorder())
-        val maxEast: Int = min(getMaxReach(location.withRelativeEasting(maxReachOverAir)), distanceToEastBorder())
-        val maxSouth: Int = min(getMaxReach(location.withRelativeNorthing(-maxReachOverAir)), distanceToSouthBorder())
-        val maxWest: Int = min(getMaxReach(location.withRelativeEasting(-maxReachOverAir)), distanceToWestBorder())
-        // TODO check if signal reaches each spot
+        val maxNorth: Int = min(maxReachOverAir, distanceToNorthBorder())
+        val maxEast: Int = min(maxReachOverAir, distanceToEastBorder())
+        val maxSouth: Int = min(maxReachOverAir, distanceToSouthBorder())
+        val maxWest: Int = min(maxReachOverAir, distanceToWestBorder())
         val bottomLeftCoordinate = location.movedBy(-maxWest, -maxSouth)
         val topRightCoordinate = location.movedBy(maxEast, maxNorth)
         return CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
@@ -56,19 +56,14 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
         return location.eastingFromLeft - map.origin.eastingFromLeft
     }
 
-    private fun getMaxReach(target: Coordinate): Int {
-        val terrain = terrainTo(target)
-        val signalStrength = signal.along(terrain, true)
-        return signalStrength.second
-    }
-
     fun transmit(transmission: Transmission) {
         // TODO should the transmission.sender == callSign?
-        reachableTiles.forEach { receivedAt: Coordinate ->
-            val terrain = terrainTo(receivedAt)
-            val signalStrength = signal.along(terrain)
-            globalEventBus.publishTransmission(this, receivedAt, signalStrength, transmission)
-        }
+        globalEventBus.publishTransmission(this, reachableTiles, transmission)
+    }
+
+    fun signalSendTo(receivedAt: Coordinate): SignalStrength {
+        val terrain = terrainTo(receivedAt)
+        return signal.along(terrain)
     }
 
     private fun terrainTo(target: Coordinate): List<Terrain> {
