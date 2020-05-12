@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.application.conversation
+package de.gleex.pltcmd.game.application.examples.conversation
 
 import de.gleex.pltcmd.game.communication.RadioCommunicator
 import de.gleex.pltcmd.game.communication.subscribeToRadioComms

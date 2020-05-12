@@ -32,6 +32,7 @@
             <groupId>de.gleex.pltcmd.util</groupId>
             <artifactId>tests</artifactId>
             <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
