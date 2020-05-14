@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.model.elements.reworked
 
-import de.gleex.pltcmd.model.elements.reworked.blueprints.UnitBlueprint
+import de.gleex.pltcmd.model.elements.reworked.blueprints.unit.UnitBlueprint
 import org.hexworks.cobalt.core.platform.factory.UUIDFactory
 
 /**
@@ -29,4 +29,6 @@ class Unit(val blueprint: UnitBlueprint) {
         get() = blueprint.personnelMinimum
     val kind
         get() = blueprint.kind
+
+    fun isA(unitBlueprint: UnitBlueprint): Boolean = blueprint == unitBlueprint
 }

@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.reworked.blueprints
+package de.gleex.pltcmd.model.elements.reworked.blueprints.unit
 
 import de.gleex.pltcmd.model.elements.reworked.Unit
 

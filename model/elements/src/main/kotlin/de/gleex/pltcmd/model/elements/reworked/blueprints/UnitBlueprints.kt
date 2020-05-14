@@ -1,5 +1,8 @@
 package de.gleex.pltcmd.model.elements.reworked.blueprints
 
+import de.gleex.pltcmd.model.elements.reworked.blueprints.unit.UnitBlueprint
+import de.gleex.pltcmd.model.elements.reworked.blueprints.unit.UnitKind
+
 object Rifleman: UnitBlueprint {
     override val kind = UnitKind.Infantry
     override val personnel = 1
@@ -7,12 +10,6 @@ object Rifleman: UnitBlueprint {
 }
 
 object Officer: UnitBlueprint {
-    override val kind = UnitKind.Infantry
-    override val personnel = 1
-    override val personnelMinimum = 1
-}
-
-object Radioman: UnitBlueprint {
     override val kind = UnitKind.Infantry
     override val personnel = 1
     override val personnelMinimum = 1
