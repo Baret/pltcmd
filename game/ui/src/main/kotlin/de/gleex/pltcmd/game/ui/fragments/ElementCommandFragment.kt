@@ -52,7 +52,7 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
                     build().
                     apply {
                         onActivated {
-                            Ticker.sendCommand(
+                            Ticker.injectConversation(
                                 selectedElement,
                                 Conversations.Orders.moveTo(CallSign("HQ"), selectedElement.callsign, destinationProperty.value),
                                 destinationProperty.value

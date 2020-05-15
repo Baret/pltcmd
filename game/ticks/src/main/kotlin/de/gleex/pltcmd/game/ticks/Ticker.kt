@@ -91,7 +91,11 @@ object Ticker {
         currentGame = null
     }
 
-    fun sendCommand(targetEntity: ElementEntity, conversation: Conversation, destination: Coordinate) {
+    /**
+     * Sends a conversation "into the game". By this the player interacts with the elements
+     * of one's army. The transmission(s) of the conversation will be broadcast via the radio net.
+     */
+    fun injectConversation(targetEntity: ElementEntity, conversation: Conversation, destination: Coordinate) {
         // TODO: The target would be the "radio net", for now we directly send a move to command to an element
         require(currentGame != null) {
             "Currently there is no game running"
