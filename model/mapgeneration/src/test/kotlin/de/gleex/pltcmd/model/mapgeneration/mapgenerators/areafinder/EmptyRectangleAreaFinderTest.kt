@@ -12,30 +12,35 @@ import io.kotest.core.spec.style.WordSpecDsl
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 
-class EmptyRectangleAreaFinderTest(private val underTest: EmptyRectangleAreaFinder = EmptyRectangleAreaFinder()) : WordSpec({
-    val origin = Coordinate(100, 50)
-    "empty world" should {
-        val testWorld = MutableWorld(origin)
-        "find all coordinates in a single rectangle" {
-            underTest.findAll(testWorld) shouldBe setOf(CoordinateArea(testWorld.findEmpty()))
+class EmptyRectangleAreaFinderTest : WordSpec()
+{
+    private val underTest: EmptyRectangleAreaFinder = EmptyRectangleAreaFinder()
+
+    init {
+        val origin = Coordinate(100, 50)
+        "empty world" should {
+            val testWorld = MutableWorld(origin)
+            "find all coordinates in a single rectangle" {
+                underTest.findAll(testWorld) shouldBe setOf(CoordinateArea(testWorld.findEmpty()))
+            }
+        }
+        "with terrain type at origin" should {
+            val testWorld = MutableWorld(origin)
+            testWorld[origin] = TerrainType.FOREST
+            testFilledOrigin(underTest, testWorld, origin)
+        }
+        "with terrain height at origin" should {
+            val testWorld = MutableWorld(origin)
+            testWorld[origin] = TerrainHeight.FIVE
+            testFilledOrigin(underTest, testWorld, origin)
+        }
+        "with full terrain at origin" should {
+            val testWorld = MutableWorld(origin)
+            testWorld[origin] = Terrain.of(TerrainType.FOREST, TerrainHeight.FIVE)
+            testFilledOrigin(underTest, testWorld, origin)
         }
     }
-    "with terrain type at origin" should {
-        val testWorld = MutableWorld(origin)
-        testWorld[origin] = TerrainType.FOREST
-        testFilledOrigin(underTest, testWorld, origin)
-    }
-    "with terrain height at origin" should {
-        val testWorld = MutableWorld(origin)
-        testWorld[origin] = TerrainHeight.FIVE
-        testFilledOrigin(underTest, testWorld, origin)
-    }
-    "with full terrain at origin" should {
-        val testWorld = MutableWorld(origin)
-        testWorld[origin] = Terrain.of(TerrainType.FOREST, TerrainHeight.FIVE)
-        testFilledOrigin(underTest, testWorld, origin)
-    }
-})
+}
 
 private suspend fun WordSpecDsl.WordScope.testFilledOrigin(underTest: EmptyRectangleAreaFinder, testWorld: MutableWorld, origin: Coordinate) {
     val result = underTest.findAll(testWorld)
