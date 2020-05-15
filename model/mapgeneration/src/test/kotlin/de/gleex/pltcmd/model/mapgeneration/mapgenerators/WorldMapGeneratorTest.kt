@@ -4,6 +4,7 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.testhelpers.haveSameTerrain
 import de.gleex.pltcmd.model.world.testhelpers.shouldHaveSameTerrain
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldNot
@@ -12,7 +13,6 @@ import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
 
 @OptIn(ExperimentalTime::class)
 class WorldMapGeneratorTest: WordSpec() {
@@ -20,8 +20,8 @@ class WorldMapGeneratorTest: WordSpec() {
 
     init {
         val seed = 22L
-        val width = 50
-        val height = 50
+        val width = 100
+        val height = 100
         val generatedWorld1 = WorldMapGenerator(seed, width, height).generateWorld()
         var lastTimestamp = System.currentTimeMillis()
         "The generator" should {
@@ -52,11 +52,15 @@ class WorldMapGeneratorTest: WordSpec() {
             }
         }
 
-        "Map generation" should {
-            val timeout = 10
-            "never take longer than $timeout seconds".config(timeout = timeout.seconds) {
-                WorldMapGenerator(System.currentTimeMillis(), Sector.TILE_COUNT, Sector.TILE_COUNT)
-                        .generateWorld()
+        "A world" should {
+            val minSize = Sector.TILE_COUNT * 2
+            "be at least of size $minSize * $minSize tiles" {
+                assertSoftly {
+                    shouldThrow<IllegalArgumentException> { WorldMapGenerator(seed, minSize - 1, minSize) }
+                    shouldThrow<IllegalArgumentException> { WorldMapGenerator(seed, minSize, minSize - 1) }
+                    shouldThrow<IllegalArgumentException> { WorldMapGenerator(seed, minSize - 1, minSize - 1) }
+                    shouldThrow<IllegalArgumentException> { WorldMapGenerator(seed, Sector.TILE_COUNT, Sector.TILE_COUNT) }
+                }
             }
         }
     }

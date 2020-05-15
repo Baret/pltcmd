@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.mapgeneration.mapgenerators
 
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.intermediate.*
+import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
@@ -12,6 +13,13 @@ import kotlin.random.Random
  * The WorldMapGenerator is the only class you need outside this package. It generates the world for the game given a seed.
  */
 class WorldMapGenerator(private val seed: Long, val worldWidthInTiles: Int, val worldHeightInTiles: Int) {
+
+    init {
+        val minSize = Sector.TILE_COUNT * 2
+        require(worldWidthInTiles >= minSize && worldHeightInTiles >= minSize) {
+            "The world must contain at least one main coordinate. Minimum size required $minSize * $minSize tiles, got $worldWidthInTiles * $worldHeightInTiles"
+        }
+    }
 
     private val random = Random(seed)
     private val context = GenerationContext.Companion.fromRandom(random)
