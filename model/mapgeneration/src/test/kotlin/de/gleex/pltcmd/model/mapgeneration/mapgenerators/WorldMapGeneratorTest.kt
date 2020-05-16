@@ -12,9 +12,7 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class WorldMapGeneratorTest: WordSpec() {
     override fun isolationMode() = IsolationMode.InstancePerLeaf
 
