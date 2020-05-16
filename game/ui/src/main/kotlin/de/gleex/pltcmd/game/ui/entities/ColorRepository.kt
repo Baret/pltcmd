@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.ui.entities
 
+import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
@@ -17,6 +18,14 @@ object ColorRepository {
 
     val UNKNOWN = TileColor.create(245, 241, 132)
     val UNKNOWN_TRANSPARENT = UNKNOWN.withAlpha(ALPHA_BG)
+
+    /**
+     * Returns the foreground and background color for the given [Affiliation] as [Pair] (forgreound, background)
+     */
+    fun forAffiliation(affiliation: Affiliation) = when(affiliation) {
+        Affiliation.Friendly -> FRIENDLY to FRIENDLY_TRANSPARENT
+        else -> UNKNOWN to UNKNOWN_TRANSPARENT
+    }
 
     val GRID_COLOR = TileColor.defaultForegroundColor()
     val GRID_COLOR_HIGHLIGHT = TileColor.create(77, 77, 77)

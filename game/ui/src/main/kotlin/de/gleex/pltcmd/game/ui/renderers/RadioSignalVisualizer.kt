@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.entities.TileRepository
+import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.radio.broadcasting.AttenuationModel
 import de.gleex.pltcmd.model.radio.broadcasting.RadioSignal
 import org.hexworks.cobalt.databinding.api.property.Property
@@ -66,7 +67,7 @@ class RadioSignalVisualizer(
     private fun drawingAllowed() = GameOptions.displayRadioSignals.value
 
     private fun buildCirclesAround(clickedBlock: GameBlock) {
-        clickedBlock.setOverlay(TileRepository.Elements.PLATOON_FRIENDLY)
+        clickedBlock.setOverlay(TileRepository.Elements.platoon(Affiliation.Friendly))
         lastBlocks.add(clickedBlock)
         val signal = RadioSignal(strengthProperty.value.toDouble())
         // To not miss any tiles we create growing ellipses...
