@@ -12,19 +12,20 @@ import org.hexworks.cobalt.datatypes.Maybe
 
 /** Type marker for entities that are [Positionable] and have the [DestinationAttribute] */
 interface Movable : Positionable
+typealias MovableEntity = GameEntity<Movable>
 
-/** Access to the value of the [DestinationAttribute] of a [GameEntity] */
-var GameEntity<Movable>.destination: Maybe<Coordinate>
+/** Access to the value of the [DestinationAttribute] of a [MovableEntity] */
+var MovableEntity.destination: Maybe<Coordinate>
     get() = getAttribute(DestinationAttribute::class).coordinate
     internal set(value) {
         getAttribute(DestinationAttribute::class).coordinate = value
     }
 
 /** Check if a destination is set. */
-val GameEntity<Movable>.hasNoDestination: Boolean
+val MovableEntity.hasNoDestination: Boolean
     get() = destination.isEmpty()
 
 /** Clears the destination of this movable entity. */
-internal fun GameEntity<Movable>.reachedDestination() {
+internal fun MovableEntity.reachedDestination() {
     destination = Maybe.empty()
 }
