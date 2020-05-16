@@ -16,7 +16,7 @@ class TerrainHeightTest: StringSpec({
 
     "Min terrain height should be ${TerrainHeight.ONE}" {
         TerrainHeight.MIN shouldBe TerrainHeight.ONE
-        forAll(TerrainHeight.values()) {
+        TerrainHeight.values().forAll {
             it.value shouldBeGreaterThanOrEqual TerrainHeight.MIN.value
         }
     }

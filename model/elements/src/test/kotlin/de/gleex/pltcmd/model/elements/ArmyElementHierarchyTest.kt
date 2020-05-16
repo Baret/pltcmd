@@ -126,11 +126,11 @@ class ArmyElementHierarchyTest: FreeSpec({
 private fun allDirectSubordinates(elements: Iterable<Element>) = elements.flatMap { it.subordinates }.toSet()
 
 fun checkHierarchy(superElements: Set<Element>, subElementsInEach: Int, subElements: Set<Element>, soldierCountInSubElement: Int = 1) {
-    forAll(superElements) {
+    superElements.forAll {
         it.subordinates shouldHaveSize subElementsInEach
     }
     subElements shouldHaveSize superElements.size * subElementsInEach
-    forAll(subElements) { subElement ->
+    subElements.forAll { subElement ->
         superElements shouldContain subElement.superordinate
         subElement shouldHaveSoldiers soldierCountInSubElement
     }
@@ -138,7 +138,7 @@ fun checkHierarchy(superElements: Set<Element>, subElementsInEach: Int, subEleme
 
 private infix fun Element.shouldHaveSoldiers(soldierCount: Int) {
     this.members shouldHaveSize soldierCount
-    forAll(this.members) {
+    this.members.forAll {
         it.isOfType(UnitType.Soldier) shouldBe true
     }
 }

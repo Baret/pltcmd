@@ -67,7 +67,7 @@ class DijkstraMapOfCoordinatesTest: WordSpec() {
             }
 
             "never create paths longer than 3 entries" {
-                forAll(minimalMapValues.keys) {
+                minimalMapValues.keys.forAll {
                     minimalMap.pathFrom(it).count() shouldNotBeGreaterThan 3
                 }
             }
