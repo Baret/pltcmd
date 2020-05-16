@@ -15,7 +15,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldHaveMinLength
 import io.kotest.matchers.string.shouldMatch
-import io.kotest.properties.assertAll
+import io.kotest.property.checkAll
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 class CoordinateTest : WordSpec({
@@ -115,7 +115,7 @@ class CoordinateTest : WordSpec({
         val regex = Coordinate.REGEX_STRING
         "always have a length of at least 9 and match '$regex'" {
             var checkedCoordinates = 0
-            assertAll { x: Int, y: Int ->
+            checkAll<Int, Int> { x, y ->
                 val coordinateString = Coordinate(x, y).toString()
                 assertSoftly {
                     coordinateString shouldHaveMinLength 9
