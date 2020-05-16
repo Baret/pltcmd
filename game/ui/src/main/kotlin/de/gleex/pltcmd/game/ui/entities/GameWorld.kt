@@ -1,9 +1,9 @@
 package de.gleex.pltcmd.game.ui.entities
 
-import de.gleex.pltcmd.game.engine.entities.types.Positionable
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.affiliation
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.entities.types.position
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -62,7 +62,7 @@ class GameWorld(private val worldMap: WorldMap) :
     }
 
     /** adds a marker to the map which is synced with the position of the given element */
-    fun trackUnit(element: GameEntity<Positionable>) {
+    fun trackUnit(element: ElementEntity) {
         showUnit(element)
         element.position.onChange {
             it.oldValue.hideUnit()
@@ -70,8 +70,10 @@ class GameWorld(private val worldMap: WorldMap) :
         }
     }
 
-    private fun showUnit(element: GameEntity<Positionable>) {
-        element.currentPosition.setUnit(TileRepository.Elements.PLATOON_UNKNOWN)
+    private fun showUnit(element: ElementEntity) {
+        val affiliation = element.affiliation
+        val elementTile = TileRepository.Elements.platoon(affiliation)
+        element.currentPosition.setUnit(elementTile)
     }
 
     private fun Coordinate.setUnit(unitTile: Tile) {
@@ -119,15 +121,13 @@ class GameWorld(private val worldMap: WorldMap) :
     }
 
     private fun Coordinate.toPosition(): Position3D {
-        val translatedPos = Position.create(eastingFromLeft, northingFromBottom) + topLeftOffset
-        // invert y axis
-        return Position3D.from2DPosition(translatedPos.withY(getMaxY() - translatedPos.y))
+        val translatedPos = Position.create(eastingFromLeft, getMaxY() - northingFromBottom) + topLeftOffset
+        return Position3D.from2DPosition(translatedPos)
     }
 
     private fun Position3D.toCoordinate(): Coordinate {
         val translatedPos = to2DPosition() - topLeftOffset
-        // invert y axis
-        return Coordinate(translatedPos.x, translatedPos.y + getMaxY())
+        return Coordinate(translatedPos.x, getMaxY() - translatedPos.y)
     }
 
     /**

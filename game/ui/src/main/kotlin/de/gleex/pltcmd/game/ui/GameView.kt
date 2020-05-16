@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.game.ui
 
+import de.gleex.pltcmd.game.engine.GameContext
+import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.GameBlock
@@ -9,6 +11,7 @@ import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
 import de.gleex.pltcmd.model.world.Sector
+import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -23,7 +26,7 @@ import org.hexworks.zircon.api.view.base.BaseView
 /**
  * The view to display the map, radio log and interaction panel
  */
-class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
+class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val elementsToCommand: List<Entity<ElementType, GameContext>>) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
     companion object {
         private val log = LoggerFactory.getLogger(GameView::class)
     }
@@ -99,6 +102,10 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid) : BaseView(
         // playing around with stuff...
         val sidebarWidth = sidebar.contentSize.width
         sidebar.addFragment(MousePosition(sidebarWidth, map))
+
+        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, elementsToCommand, map.absolutePosition)
+        sidebar.addFragment(commandFragment)
+        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
 
         sidebar.addFragment(TickFragment(sidebarWidth))
 

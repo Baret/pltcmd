@@ -13,7 +13,7 @@ object GameOptions {
     /**
      * Option to turn on the RadioSignalVisualizer and corresponding UI elements.
      */
-    val displayRadioSignals: Property<Boolean> = createPropertyFrom(true)
+    val displayRadioSignals: Property<Boolean> = createPropertyFrom(false)
 
     /**
      * Seed used to always create the same map which is useful for development.
