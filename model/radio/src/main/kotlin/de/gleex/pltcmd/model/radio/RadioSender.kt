@@ -72,7 +72,7 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
         return CoordinatePath.line(location, target)
                 .filter { map.contains(it) }
                 .map {
-                    map.getTerrainAt(it)!!
+                    map.getTerrainAt(it)
                 }
     }
 

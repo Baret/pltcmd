@@ -10,8 +10,8 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
 class RadioSenderTest : StringSpec() {
     private val map = WorldMap.create(setOf(sectorAtWithTerrain(Coordinate(0, 0)) {
