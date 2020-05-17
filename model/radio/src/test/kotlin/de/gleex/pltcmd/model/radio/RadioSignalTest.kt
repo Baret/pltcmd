@@ -4,9 +4,9 @@ import de.gleex.pltcmd.model.radio.testhelpers.shouldBeExactly
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import io.kotlintest.matchers.doubles.plusOrMinus
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.WordSpec
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.doubles.plusOrMinus
+import io.kotest.matchers.shouldBe
 import kotlin.math.pow
 
 class RadioSignalTest: WordSpec() {

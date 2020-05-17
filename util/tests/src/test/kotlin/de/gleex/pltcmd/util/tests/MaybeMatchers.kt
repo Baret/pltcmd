@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.util.tests
 
-import io.kotlintest.Matcher
-import io.kotlintest.MatcherResult
-import io.kotlintest.should
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
 import org.hexworks.cobalt.datatypes.Maybe
 
 infix fun <T> Maybe<T>.shouldContainValue(expectedValue: T) = this should containValue(expectedValue)

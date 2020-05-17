@@ -2,12 +2,12 @@ package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.testhelpers.randomSectorAt
-import io.kotlintest.assertSoftly
-import io.kotlintest.forAll
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.shouldBeInRange
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.WordSpec
+import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.ints.shouldBeInRange
 
 class SectorTest: WordSpec() {
 
@@ -24,7 +24,7 @@ class SectorTest: WordSpec() {
             val validEastings = validOrigin.eastingFromLeft until validOrigin.eastingFromLeft + Sector.TILE_COUNT
             val validNorthings = validOrigin.northingFromBottom until validOrigin.northingFromBottom + Sector.TILE_COUNT
             "have only tiles with easting in $validEastings and northing in $validNorthings" {
-                forAll(sector.tiles) { tile ->
+                sector.tiles.forAll { tile ->
                     assertSoftly {
                         tile.coordinate.eastingFromLeft shouldBeInRange validEastings
                         tile.coordinate.northingFromBottom shouldBeInRange validNorthings

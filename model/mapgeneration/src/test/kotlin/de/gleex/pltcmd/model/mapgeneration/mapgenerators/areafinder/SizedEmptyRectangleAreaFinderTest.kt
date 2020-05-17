@@ -4,8 +4,8 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
 class SizedEmptyRectangleAreaFinderTest : StringSpec({
     val origin = Coordinate(0, 950)
