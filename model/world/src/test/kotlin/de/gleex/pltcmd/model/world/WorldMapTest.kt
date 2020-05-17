@@ -2,12 +2,12 @@ package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.testhelpers.randomSectorAt
-import io.kotlintest.data.forall
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.WordSpec
-import io.kotlintest.tables.row
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 import kotlin.math.ceil
 import kotlin.math.sqrt
 
@@ -18,7 +18,7 @@ class WorldMapTest : WordSpec({
         }
 
         "be square when calculating its size" {
-            forall(
+            forAll(
                     row(1, 1),
                     row(4, 2),
                     row(9, 3),

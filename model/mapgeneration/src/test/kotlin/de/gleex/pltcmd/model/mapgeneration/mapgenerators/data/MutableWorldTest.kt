@@ -2,12 +2,12 @@ package de.gleex.pltcmd.model.mapgeneration.mapgenerators.data
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
-import io.kotlintest.data.suspend.forall
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.WordSpec
-import io.kotlintest.tables.row
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 
 class MutableWorldTest: WordSpec()
 {
@@ -24,7 +24,7 @@ class MutableWorldTest: WordSpec()
     init {
         val world = MutableWorld()
         "A world from ${world.bottomLeftCoordinate} to ${world.topRightCoordinate} of size ${world.worldSizeWidthInTiles} by ${world.worldSizeHeightInTiles} tiles" should {
-            forall(
+            forAll(
                     // SW corner
                     row(0, 0, listOf(east(), north())),
                     row(0, 1, westBorder),

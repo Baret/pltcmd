@@ -3,9 +3,9 @@ package de.gleex.pltcmd.model.world.testhelpers
 import arrow.core.firstOrNone
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
-import io.kotlintest.Matcher
-import io.kotlintest.MatcherResult
-import io.kotlintest.should
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
 import org.hexworks.cobalt.datatypes.Maybe
 
 // - - - Matchers for WorldMap

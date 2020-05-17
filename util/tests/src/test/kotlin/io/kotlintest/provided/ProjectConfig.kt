@@ -1,9 +1,13 @@
 package io.kotlintest.provided
 
-import io.kotlintest.*
-import io.kotlintest.extensions.TestListener
-import io.kotlintest.extensions.TopLevelTest
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.Spec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import kotlin.reflect.KClass
 
 class ProjectConfig: AbstractProjectConfig() {
     val log = LoggerFactory.getLogger(ProjectConfig::class)
@@ -31,20 +35,20 @@ class ProjectConfig: AbstractProjectConfig() {
         listOf(object: TestListener {
             private var testStartedAt = 0L
 
-            override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
-                log.info("Starting tests ${spec.description().fullName()}")
+            override suspend fun prepareSpec(kclass: KClass<out Spec>) {
+                log.info("Starting tests ${kclass.qualifiedName}")
             }
 
-            override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
-                log.info("Finished tests ${spec.description().fullName()}")
+            override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+                log.info("Finished tests ${kclass.qualifiedName}")
                 logMemoryUsage()
             }
 
-            override fun beforeTest(testCase: TestCase) {
+            override suspend fun beforeTest(testCase: TestCase) {
                 testStartedAt = System.currentTimeMillis()
             }
 
-            override fun afterTest(testCase: TestCase, result: TestResult) {
+            override suspend fun afterTest(testCase: TestCase, result: TestResult) {
                 if (testCase.type == TestType.Container) {
                     return;
                 }
