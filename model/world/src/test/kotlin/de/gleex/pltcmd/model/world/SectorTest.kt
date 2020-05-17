@@ -6,11 +6,13 @@ import de.gleex.pltcmd.model.world.testhelpers.randomSectorAt
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.data.row
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeInRange
+import io.kotest.matchers.shouldBe
 
-class SectorTest: WordSpec() {
+class SectorTest : WordSpec() {
 
     init {
         val validOrigin = Coordinate(150, 700)
@@ -55,7 +57,7 @@ class SectorTest: WordSpec() {
 
             "in the same sector should be mapped to the sector origin" {
                 validOrigin.toSectorOrigin() shouldBe validOrigin
-                forall(
+                io.kotest.data.forAll(
                         row(0, 0),
                         row(1, 0),
                         row(0, 1),
@@ -68,7 +70,7 @@ class SectorTest: WordSpec() {
                 }
             }
             "in a neighbor sector should be mapped to that sector origin" {
-                forall(
+                io.kotest.data.forAll(
                         row(TILE_COUNT, 0, 1, 0),
                         row(0, TILE_COUNT, 0, 1),
                         row(TILE_COUNT, TILE_COUNT, 1, 1),
@@ -84,9 +86,9 @@ class SectorTest: WordSpec() {
                 }
             }
             "in a neighbor sector with negative coordinates should be mapped to that sector origin" {
-                    val coordinate = Coordinate(-1, -1)
-                    val expectedOrigin = Coordinate.zero.movedBy(-1 * TILE_COUNT, -1 * TILE_COUNT)
-                    coordinate.toSectorOrigin() shouldBe expectedOrigin
+                val coordinate = Coordinate(-1, -1)
+                val expectedOrigin = Coordinate.zero.movedBy(-1 * TILE_COUNT, -1 * TILE_COUNT)
+                coordinate.toSectorOrigin() shouldBe expectedOrigin
             }
         }
     }
