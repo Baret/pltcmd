@@ -14,7 +14,6 @@ import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.toSectorOrigin
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.zircon.api.SwingApplications
@@ -87,7 +86,7 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (World
     )
     MapGenerationProgressController(mapGenerator, generatingView)
 
-    val origin = Coordinate(0, 0)
+    val origin = GameOptions.MAP_ORIGIN
     val worldMap = mapGenerator.generateWorld(origin)
 
     generatingView.onConfirmation {
