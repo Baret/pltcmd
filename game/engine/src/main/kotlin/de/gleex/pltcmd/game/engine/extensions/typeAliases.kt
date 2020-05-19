@@ -1,9 +1,6 @@
 package de.gleex.pltcmd.game.engine.extensions
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.entities.types.ElementType
-import de.gleex.pltcmd.game.engine.entities.types.Movable
-import de.gleex.pltcmd.game.engine.entities.types.Positionable
 import org.hexworks.amethyst.api.entity.Entity
 
 /**
@@ -16,7 +13,3 @@ internal typealias GameEntity<T> = Entity<T, GameContext>
  */
 typealias AnyGameEntity = GameEntity<*>
 
-// typed entities
-typealias PositionableEntity = GameEntity<Positionable>
-typealias MovableEntity = GameEntity<Movable>
-typealias ElementEntity = GameEntity<ElementType>
