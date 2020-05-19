@@ -5,6 +5,8 @@ import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.entities.types.Movable
 import de.gleex.pltcmd.game.engine.entities.types.MovableEntity
+import de.gleex.pltcmd.game.engine.entities.types.currentPosition
+import de.gleex.pltcmd.game.engine.entities.types.hasNoDestination
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.systems.facets.MoveTo
 import org.hexworks.amethyst.api.Consumed

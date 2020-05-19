@@ -2,6 +2,8 @@ package de.gleex.pltcmd.game.ui.entities
 
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.affiliation
+import de.gleex.pltcmd.game.engine.entities.types.currentPosition
+import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate

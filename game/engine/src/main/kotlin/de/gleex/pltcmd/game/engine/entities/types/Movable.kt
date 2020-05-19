@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
+import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.MovableEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
