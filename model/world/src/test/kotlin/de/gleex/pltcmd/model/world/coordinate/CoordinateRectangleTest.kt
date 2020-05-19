@@ -1,9 +1,9 @@
 package de.gleex.pltcmd.model.world.coordinate
 
-import io.kotlintest.matchers.collections.shouldContainInOrder
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
-import io.kotlintest.specs.WordSpec
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.shouldContainInOrder
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 
 class CoordinateRectangleTest: WordSpec({
     val start = Coordinate(0, 0)

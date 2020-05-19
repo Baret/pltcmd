@@ -12,6 +12,7 @@ import org.hexworks.cobalt.datatypes.Maybe
 
 /** Type marker for entities that are [Positionable] and have the [DestinationAttribute] */
 interface Movable : Positionable
+typealias MovableEntity = GameEntity<Movable>
 
 /** Access to the value of the [DestinationAttribute] of a [MovableEntity] */
 var MovableEntity.destination: Maybe<Coordinate>

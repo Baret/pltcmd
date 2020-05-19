@@ -15,6 +15,7 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 
 /** Type marker for entities that have the PositionAttribute */
 interface Positionable : EntityType
+typealias PositionableEntity = GameEntity<Positionable>
 
 /** Access to the [Property] of the [PositionAttribute] of a [PositionableEntity] */
 var PositionableEntity.position: ObservableValue<Coordinate>

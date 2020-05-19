@@ -1,10 +1,7 @@
 package de.gleex.pltcmd.game.ui.entities
 
-import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
-import de.gleex.pltcmd.game.engine.entities.types.currentPosition
-import de.gleex.pltcmd.game.engine.entities.types.position
-import de.gleex.pltcmd.game.engine.extensions.PositionableEntity
-import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.affiliation
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -63,7 +60,7 @@ class GameWorld(private val worldMap: WorldMap) :
     }
 
     /** adds a marker to the map which is synced with the position of the given element */
-    fun trackUnit(element: PositionableEntity) {
+    fun trackUnit(element: ElementEntity) {
         showUnit(element)
         element.position.onChange {
             it.oldValue.hideUnit()
@@ -71,12 +68,10 @@ class GameWorld(private val worldMap: WorldMap) :
         }
     }
 
-    private fun showUnit(element: PositionableEntity) {
-        val affiliation = element.
-            findAttribute(ElementAttribute::class).
-            map { it.reportedAffiliation.value }.
-            orElse(Affiliation.Unknown)
-        element.currentPosition.setUnit(TileRepository.Elements.platoon(affiliation))
+    private fun showUnit(element: ElementEntity) {
+        val affiliation = element.affiliation
+        val elementTile = TileRepository.Elements.platoon(affiliation)
+        element.currentPosition.setUnit(elementTile)
     }
 
     private fun Coordinate.setUnit(unitTile: Tile) {

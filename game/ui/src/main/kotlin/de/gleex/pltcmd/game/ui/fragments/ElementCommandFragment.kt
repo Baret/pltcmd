@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.game.ui.fragments
 
-import de.gleex.pltcmd.game.engine.attributes.callsign
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.position
-import de.gleex.pltcmd.game.engine.extensions.ElementEntity
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.elements.CallSign
@@ -18,7 +18,9 @@ import org.hexworks.zircon.api.uievent.UIEventPhase
 import org.hexworks.zircon.api.uievent.UIEventResponse
 
 /**
- * Displays a list of entities and makes it possible to send them a
+ * Displays a list of entities and makes it possible to send them a command.
+ * Currently they get a move command "hard coded". For now this fragment is just a debug/playaround
+ * feature. But it may be used as the base fot the UI element used to send radio commands to elements.
  */
 class ElementCommandFragment(override val width: Int, private val world: GameWorld, elements: List<ElementEntity>, private val mapOffset: Position) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
 
@@ -50,7 +52,7 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
                     build().
                     apply {
                         onActivated {
-                            Ticker.sendCommand(
+                            Ticker.injectConversation(
                                 selectedElement,
                                 Conversations.Orders.moveTo(CallSign("HQ"), selectedElement.callsign, destinationProperty.value),
                                 destinationProperty.value

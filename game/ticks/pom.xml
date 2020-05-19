@@ -26,7 +26,6 @@
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>radio</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

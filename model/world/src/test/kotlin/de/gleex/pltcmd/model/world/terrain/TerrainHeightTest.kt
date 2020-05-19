@@ -1,22 +1,22 @@
 package de.gleex.pltcmd.model.world.terrain
 
-import io.kotlintest.forAll
-import io.kotlintest.matchers.numerics.shouldBeGreaterThanOrEqual
-import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.inspectors.forAll
+import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.ints.shouldBeLessThanOrEqual
+import io.kotest.matchers.shouldBe
 
 class TerrainHeightTest: StringSpec({
     "Max terrain height should be ${TerrainHeight.TEN}" {
         TerrainHeight.MAX shouldBe TerrainHeight.TEN
-        forAll(TerrainHeight.values()) {
+        TerrainHeight.values().forAll {
             it.value shouldBeLessThanOrEqual TerrainHeight.MAX.value
         }
     }
 
     "Min terrain height should be ${TerrainHeight.ONE}" {
         TerrainHeight.MIN shouldBe TerrainHeight.ONE
-        forAll(TerrainHeight.values()) {
+        TerrainHeight.values().forAll {
             it.value shouldBeGreaterThanOrEqual TerrainHeight.MIN.value
         }
     }

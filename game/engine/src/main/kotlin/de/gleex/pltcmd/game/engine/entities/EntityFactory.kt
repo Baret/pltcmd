@@ -3,7 +3,8 @@ package de.gleex.pltcmd.game.engine.entities
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.extensions.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.systems.behaviours.Moving
 import de.gleex.pltcmd.game.engine.systems.behaviours.Wandering
 import de.gleex.pltcmd.game.engine.systems.facets.SetDestination
@@ -22,6 +23,6 @@ object EntityFactory {
             })
 
     fun newWanderingElement(element: Element, initialPosition: Coordinate, affiliation: Affiliation = Affiliation.Unknown): ElementEntity =
-            newElement(element, initialPosition, affiliation).also { it.asMutableEntity().addBehavior(Wandering) }
+            newElement(element, initialPosition, affiliation).apply { asMutableEntity().addBehavior(Wandering) }
 
 }

@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.game.ticks
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.attributes.callsign
-import de.gleex.pltcmd.game.engine.extensions.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.systems.facets.MoveTo
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -42,7 +42,7 @@ object Ticker {
 
     private val executor = Executors.newScheduledThreadPool(1)
 
-    private lateinit var currentGame: Game
+    private var currentGame: Game? = null
 
     init {
         val initialTime = LocalTime.of(5, 59)
@@ -78,7 +78,7 @@ object Ticker {
 
     fun start(game: Game) {
         currentGame = game
-        with(currentGame) {
+        with(currentGame!!) {
             executor.scheduleAtFixedRate({
                 tick()
                 engine.update(context(currentTick.value))
@@ -88,14 +88,22 @@ object Ticker {
 
     fun stopGame() {
         executor.shutdown()
+        currentGame = null
     }
 
-    fun sendCommand(targetEntity: ElementEntity, conversation: Conversation, destination: Coordinate) {
+    /**
+     * Sends a conversation "into the game". By this the player interacts with the elements
+     * of one's army. The transmission(s) of the conversation will be broadcast via the radio net.
+     */
+    fun injectConversation(targetEntity: ElementEntity, conversation: Conversation, destination: Coordinate) {
         // TODO: The target would be the "radio net", for now we directly send a move to command to an element
+        require(currentGame != null) {
+            "Currently there is no game running"
+        }
         runBlocking {
             // TODO: The source of the event would be "HQ" which the player controls
             log.debug("Sending conversation to ${targetEntity.callsign}: $conversation")
-            targetEntity.sendCommand(MoveTo(destination, currentGame.context(nextTick.value), targetEntity))
+            targetEntity.sendCommand(MoveTo(destination, currentGame!!.context(nextTick.value), targetEntity))
         }
     }
 }

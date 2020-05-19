@@ -6,8 +6,12 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.context.Transmiss
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.receiver
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import io.kotlintest.*
-import io.kotlintest.specs.WordSpec
+import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 
 class ConversationBuilderTest : WordSpec({
     val context = TransmissionContext(Coordinate(123, 456), 23, 42, 111)
@@ -19,7 +23,7 @@ class ConversationBuilderTest : WordSpec({
         val readbackWithoutPlaceholders = underTest.readback("tested %s back", { "placeholder value" })
         "be a response (sender and receiver swapped)" {
             assertSoftly {
-                readbackWithoutPlaceholders.sender shouldBe receiver
+                readbackWithoutPlaceholders.sender shouldBe  receiver
                 readbackWithoutPlaceholders.receiver shouldBe sender
             }
         }
