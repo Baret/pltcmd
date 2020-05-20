@@ -31,4 +31,6 @@ class Unit(val blueprint: UnitBlueprint) {
         get() = blueprint.kind
 
     fun isA(unitBlueprint: UnitBlueprint): Boolean = blueprint == unitBlueprint
+
+    override fun toString() = "${blueprint.kind} $name [id=$id]"
 }

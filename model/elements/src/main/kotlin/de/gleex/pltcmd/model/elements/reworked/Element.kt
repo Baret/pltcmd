@@ -7,7 +7,7 @@ open class Element(
         val kind: ElementKind,
         val size: ElementSize,
         units: Set<Unit>,
-        superOrdinate: CommandingElement? = null
+        superordinate: CommandingElement? = null
 ) {
     val id = UUIDFactory.randomUUID()
 
@@ -19,5 +19,13 @@ open class Element(
     private val _units: MutableSet<Unit> = units.toMutableSet()
     val units: Set<Unit> = _units
 
-    val superOrdinate: Maybe<CommandingElement> = Maybe.ofNullable(superOrdinate)
+    private var _superordinate = Maybe.ofNullable(superordinate)
+    val superordinate: Maybe<CommandingElement>
+        get() = _superordinate
+
+    fun setSuperordinate(commandingElement: CommandingElement?) {
+        _superordinate = Maybe.ofNullable(commandingElement)
+    }
+
+    override fun toString() = "$kind $size [id=$id, units=$units${superordinate.map { ",superordinate=$it" }.orElse("")}]"
 }
