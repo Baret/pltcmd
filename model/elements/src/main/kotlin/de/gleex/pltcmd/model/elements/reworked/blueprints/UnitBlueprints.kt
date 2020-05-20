@@ -9,6 +9,12 @@ object Rifleman: UnitBlueprint {
     override val personnelMinimum = 1
 }
 
+object Grenadier: UnitBlueprint {
+    override val kind = UnitKind.Infantry
+    override val personnel = 1
+    override val personnelMinimum = 1
+}
+
 object Officer: UnitBlueprint {
     override val kind = UnitKind.Infantry
     override val personnel = 1

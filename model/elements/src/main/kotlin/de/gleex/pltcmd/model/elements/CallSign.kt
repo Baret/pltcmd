@@ -5,4 +5,9 @@ package de.gleex.pltcmd.model.elements
  */
 data class CallSign(val name: String) {
     override fun toString() = name
+
+    /**
+     * Creates a new callsign concatenating this name with the given [otherName]
+     */
+    operator fun plus(otherName: String) = CallSign(name + otherName)
 }
