@@ -29,7 +29,11 @@ class CommandingElement(
         }
     }
 
-    private val allUnits: Set<Unit>
+    /**
+     * The set of all units in this element. It contains the units of this commanding element itself,
+     * of its subordinates and their subordinates.
+     */
+    val allUnits: Set<Unit>
         get() = units + subordinates.flatMap {
             if (it is CommandingElement) {
                 it.allUnits
@@ -52,6 +56,10 @@ class CommandingElement(
             acc + unit.personnel
         })
 
+    /**
+     * The callsign this element is identified by. If commanded by another [CommandingElement] (i.e. [superordinate] is present)
+     * the callsign is inherited. Otherwise the callsign given in the constructor is used.
+     */
     val callSign: CallSign
         get() {
             return if(superordinate.isPresent) {
@@ -61,10 +69,10 @@ class CommandingElement(
             }
         }
 
-    private fun callSignFor(element: Element): CallSign {
-        val index = subordinates.indexOf(element)
+    private fun callSignFor(subordinate: Element): CallSign {
+        val index = subordinates.indexOf(subordinate)
         require(index >= 0) {
-            "Element $element is a subordinate of $this"
+            "Element $subordinate is not a subordinate of $this"
         }
         return ownCallsign + "-${index + 1}"
     }
@@ -84,6 +92,21 @@ class CommandingElement(
             // TODO: Maybe a commanding element could get a max number of subordinates so that you cannot stack elements into it endlessly
             _subordinates.add(element)
             element.setSuperordinate(this)
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Removes the given element from the [subordinates], if present.
+     *
+     * @return true if it was present and has successfully been removed. Otherwise false
+     *
+     * @see MutableSet.remove
+     */
+    fun removeElement(element: Element): Boolean {
+        if(_subordinates.remove(element)) {
+            element.setSuperordinate(null)
             return true
         }
         return false

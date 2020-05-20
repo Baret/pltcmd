@@ -3,10 +3,7 @@ package de.gleex.pltcmd.game.application.examples.elementsReworked
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.reworked.*
 import de.gleex.pltcmd.model.elements.reworked.Unit
-import de.gleex.pltcmd.model.elements.reworked.blueprints.Medic
-import de.gleex.pltcmd.model.elements.reworked.blueprints.Officer
-import de.gleex.pltcmd.model.elements.reworked.blueprints.Rifleman
-import de.gleex.pltcmd.model.elements.reworked.blueprints.TruckTransport
+import de.gleex.pltcmd.model.elements.reworked.blueprints.*
 
 fun main() {
     print("Lets assume the engine applies combat stats like 'firepower' to units.")
@@ -16,7 +13,8 @@ fun main() {
             Rifleman.new(),
             Medic.new(),
             Officer.new(),
-            TruckTransport.new()
+            TruckTransport.new(),
+            Grenadier.new()
     )
 
     println("That might look like follows")
@@ -24,12 +22,13 @@ fun main() {
         val firePower = firePowerFor(unit)
         println("${unit.name} ${unit.id} has a firepower of ${firePower?: "unknown"}")
     }
+    val alpha = Elements.Infantry.riflePlatoon("Alpha")
+    val bravo = Elements.Infantry.riflePlatoon("Bravo")
+    println("A full ${alpha.kind} ${alpha.size} called ${alpha.callSign} would have a combined firepower of ${alpha.allUnits.fold(0.0) { a, unit -> a + (firePowerFor(unit) ?: 0.0) }}")
 
     spacer()
 
     println("let's create 2 default platoons and see how they look...")
-    val alpha = Elements.Infantry.riflePlatoon("Alpha")
-    val bravo = Elements.Infantry.riflePlatoon("Bravo")
     spacer()
     printCommandElement(alpha)
     spacer()
@@ -44,6 +43,10 @@ fun main() {
     spacer()
     println("But after adding it to ${alpha.callSign}...")
     alpha.addElement(wolfs)
+    printCommandElement(wolfs)
+    spacer()
+    println("When they are back on their own, they get back their cool callsign:")
+    alpha.removeElement(wolfs)
     printCommandElement(wolfs)
 
     spacer()
@@ -90,6 +93,7 @@ fun firePowerFor(unit: Unit): Double? =
             unit.isA(Rifleman) -> 10.0
             unit.isA(Officer)  -> 7.0
             unit.isA(Medic)    -> 8.0
+            unit.isA(Grenadier)-> 12.0
             else               -> null
         }
 
