@@ -28,7 +28,12 @@ fun main() {
 
     spacer()
 
-    println("let's create 2 default platoons and see how they look...")
+    println("let's create 2 default platoons and see how they look after adding a unit to a random element")
+    val luckyElement = (alpha.subordinates + bravo.subordinates).random()
+    val newUnit = HMGTeam.new()
+    if(newUnit canBeAddedTo luckyElement) {
+        luckyElement.addUnit(newUnit)
+    }
     spacer()
     printCommandElement(alpha)
     spacer()
@@ -45,25 +50,45 @@ fun main() {
     alpha.addElement(wolfs)
     printCommandElement(wolfs)
     spacer()
-    val division = CommandingElement(ElementKind.Infantry, ElementSize.Company, CallSign("Wild Hogs"), setOf(Officer.new(), Officer.new()), setOf(alpha))
-    println("And when we even put ${alpha.callSign} into a ${division.size}")
+    println("And when we even put ${alpha.callSign} into a ${ElementSize.Company}")
+    val company = CommandingElement(
+            ElementKind.Infantry,
+            ElementSize.Company,
+            CallSign("Wild Hogs"),
+            setOf(Officer.new(), Officer.new(), Medic.new(), Grenadier.new(), Rifleman.new()),
+            setOf(alpha, bravo)
+    )
     printCommandElement(wolfs)
     spacer()
     println("When they are back on their own, they get back their cool callsign:")
     alpha.removeElement(wolfs)
     printCommandElement(wolfs)
+    spacer()
+    println("BTW, just to make it completely rediculous, the company containing alpha and bravo: $company")
+    printCommandElement(company)
 
     spacer()
     // TODO: Make a unittest out of this
-    println("You cannot put a squad into a squad and subordinats need to have the same kind...")
+    println("Lets test some impossible cases...")
+    println("You cannot put a squad into a squad and subordinates need to have the same kind...")
     val sq1 = CommandingElement(ElementKind.Infantry, ElementSize.Squad, CallSign("sub"), setOf(Officer.new()), emptySet())
-    try {
-        val sq2 = CommandingElement(ElementKind.Armored, ElementSize.Platoon, CallSign("superArmored"), setOf(Officer.new()), setOf(sq1))
-    } catch (e: Exception) {
-        println("Constructor threw exception: ${e.message}")
+    tryAndCatch {
+        CommandingElement(ElementKind.Armored, ElementSize.Platoon, CallSign("superArmored"), setOf(Officer.new()), setOf(sq1))
     }
+    tryAndCatch {
+        CommandingElement(ElementKind.Infantry, ElementSize.Squad, CallSign("superSquad"), setOf(Officer.new()), setOf(sq1))
+    }
+    spacer()
+    println("You can also not put a tank into a mechanized infantry fireteam")
+    tryAndCatch {
+        Element(ElementKind.MechanizedInfantry, ElementSize.Fireteam, setOf(Officer.new(), Rifleman.new(), TruckTransport.new(), MainBattleTank.new()))
+    }
+}
+
+fun tryAndCatch(throwingFunction: () -> Any) {
     try {
-        val sq3 = CommandingElement(ElementKind.Infantry, ElementSize.Squad, CallSign("superSquad"), setOf(Officer.new()), setOf(sq1))
+        throwingFunction.invoke()
+        println("Invocation of function did not throw an exception! Something went wrong...")
     } catch (e: Exception) {
         println("Constructor threw exception: ${e.message}")
     }

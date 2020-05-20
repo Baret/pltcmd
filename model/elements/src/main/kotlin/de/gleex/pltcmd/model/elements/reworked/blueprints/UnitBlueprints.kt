@@ -38,3 +38,9 @@ object TruckTransport: UnitBlueprint {
     override val personnel = 3
     override val personnelMinimum = 1
 }
+
+object MainBattleTank: UnitBlueprint {
+    override val kind = UnitKind.ArmoredHeavy
+    override val personnel = 4
+    override val personnelMinimum = 2
+}

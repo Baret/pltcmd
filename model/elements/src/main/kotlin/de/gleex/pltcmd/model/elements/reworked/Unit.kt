@@ -21,15 +21,30 @@ import org.hexworks.cobalt.core.platform.factory.UUIDFactory
  */
 class Unit(val blueprint: UnitBlueprint) {
     val id = UUIDFactory.randomUUID()
+    /**
+     * @see [Unit]
+     */
     val name: String
         get() = blueprint::class.objectInstance?.javaClass?.simpleName?: "Unit"
+    /**
+     * @see [Unit]
+     */
     val personnel
         get() = blueprint.personnel
+    /**
+     * @see [Unit]
+     */
     val personnelMinimum
         get() = blueprint.personnelMinimum
+    /**
+     * @see [Unit]
+     */
     val kind
         get() = blueprint.kind
 
+    /**
+     * Checks if the given blueprint is equal to the one of this unit.
+     */
     fun isA(unitBlueprint: UnitBlueprint): Boolean = blueprint == unitBlueprint
 
     override fun toString() = "${blueprint.kind} $name [id=$id]"
