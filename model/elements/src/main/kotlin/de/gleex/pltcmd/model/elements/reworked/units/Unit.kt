@@ -1,6 +1,6 @@
-package de.gleex.pltcmd.model.elements.reworked
+package de.gleex.pltcmd.model.elements.reworked.units
 
-import de.gleex.pltcmd.model.elements.reworked.blueprints.unit.UnitBlueprint
+import de.gleex.pltcmd.model.elements.reworked.units.blueprint.UnitBlueprint
 import org.hexworks.cobalt.core.platform.factory.UUIDFactory
 
 /**

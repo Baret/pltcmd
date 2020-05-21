@@ -1,9 +1,22 @@
 package de.gleex.pltcmd.model.elements.reworked
 
+import de.gleex.pltcmd.model.elements.reworked.units.Unit
 import org.hexworks.cobalt.core.platform.factory.UUIDFactory
 import org.hexworks.cobalt.datatypes.Maybe
 
+/**
+ * Elements make up a  military hierarchy. Each element groups a set of [Unit]s.
+ *
+ * Simple elements are commanded by a superordinate (see [CommandingElement]).
+ * They are not part of the command net and do not have an own callsign.
+ *
+ * Every element has a [kind] and [size] defining what kind of units they are composed of
+ * and on what level of organisation they reside (the bigger, the further up in the hierarchy).
+ */
 open class Element(
+        /**
+         * @see ElementKind
+         */
         val kind: ElementKind,
         val size: ElementSize,
         units: Set<Unit>,
@@ -34,12 +47,16 @@ open class Element(
      * Adds the given unit to this element, if possible. If [kind] does not allow the unit an exception is thrown.
      *
      * Check with [canUnitBeAdded] (or [canBeAddedTo]) before calling!
+     *
+     * @return true if the unit has been added, false if it was already present
+     *
+     * @see MutableSet.add
      */
-    fun addUnit(newUnit: Unit) {
+    fun addUnit(newUnit: Unit): Boolean {
         require(newUnit canBeAddedTo this) {
             "An element of kind $kind can only have units of kind ${kind.allows}, but got: ${newUnit.kind}"
         }
-        _units.add(newUnit)
+        return _units.add(newUnit)
     }
 
     /**

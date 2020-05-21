@@ -2,8 +2,8 @@ package de.gleex.pltcmd.game.application.examples.elementsReworked
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.reworked.*
-import de.gleex.pltcmd.model.elements.reworked.Unit
-import de.gleex.pltcmd.model.elements.reworked.blueprints.*
+import de.gleex.pltcmd.model.elements.reworked.units.Unit
+import de.gleex.pltcmd.model.elements.reworked.units.blueprint.*
 
 fun main() {
     print("Lets assume the engine applies combat stats like 'firepower' to units.")
@@ -119,11 +119,11 @@ fun printElement(element: Element, depth: Int) {
 
 fun firePowerFor(unit: Unit): Double? =
         when {
-            unit.isA(Rifleman) -> 10.0
-            unit.isA(Officer)  -> 7.0
-            unit.isA(Medic)    -> 8.0
-            unit.isA(Grenadier)-> 12.0
-            else               -> null
+            unit.isA(Rifleman)  -> 10.0
+            unit.isA(Officer)   -> 7.0
+            unit.isA(Medic)     -> 8.0
+            unit.isA(Grenadier) -> 12.0
+            else                -> null
         }
 
 fun spacer() { println(); println() }

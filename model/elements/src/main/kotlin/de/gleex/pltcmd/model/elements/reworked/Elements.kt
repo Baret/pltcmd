@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.elements.reworked
 
 import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.elements.reworked.blueprints.*
+import de.gleex.pltcmd.model.elements.reworked.units.blueprint.*
 
 /**
  * This object contains default compositions of elements. Probably ingame the player will buy smaller

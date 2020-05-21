@@ -1,6 +1,7 @@
-package de.gleex.pltcmd.model.elements.reworked.blueprints.unit
+package de.gleex.pltcmd.model.elements.reworked.units.blueprint
 
-import de.gleex.pltcmd.model.elements.reworked.Unit
+import de.gleex.pltcmd.model.elements.reworked.units.Unit
+import de.gleex.pltcmd.model.elements.reworked.units.UnitKind
 
 /**
  * A blueprint is used to have a singleton that represents the base values for a class of units.

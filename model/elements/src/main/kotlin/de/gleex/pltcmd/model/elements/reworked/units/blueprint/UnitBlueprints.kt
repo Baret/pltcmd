@@ -1,7 +1,6 @@
-package de.gleex.pltcmd.model.elements.reworked.blueprints
+package de.gleex.pltcmd.model.elements.reworked.units.blueprint
 
-import de.gleex.pltcmd.model.elements.reworked.blueprints.unit.UnitBlueprint
-import de.gleex.pltcmd.model.elements.reworked.blueprints.unit.UnitKind
+import de.gleex.pltcmd.model.elements.reworked.units.UnitKind
 
 object Rifleman: UnitBlueprint {
     override val kind = UnitKind.Infantry
