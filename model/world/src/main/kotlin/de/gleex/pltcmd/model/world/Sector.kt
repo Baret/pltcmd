@@ -41,20 +41,25 @@ data class Sector(val origin: Coordinate, val tiles: SortedSet<WorldTile>) : Com
                         origin.northingFromBottom, origin.northingFromBottom + TILE_COUNT))
     }
 
-    fun contains(coordinate: Coordinate): Boolean {
+    operator fun contains(coordinate: Coordinate): Boolean {
         // because this sector contains all coordinates
         return origin == coordinate.toSectorOrigin()
     }
 
     fun getTerrainAt(coordinate: Coordinate): Terrain? {
+        // for performance check first instead of iterating over all each time
         if (!contains(coordinate)) {
             return null
         }
-        return tiles.find { it.coordinate == coordinate }?.terrain
+        return get(coordinate)!!.terrain
+    }
+
+    operator fun get(coordinate: Coordinate): WorldTile? {
+        return tiles.find { it.coordinate == coordinate }
     }
 
     /** sorted by origin */
-    override fun compareTo(other: Sector): Int {
+    override operator fun compareTo(other: Sector): Int {
         return origin.compareTo(other.origin)
     }
 
