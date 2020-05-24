@@ -87,7 +87,7 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (World
     )
     MapGenerationProgressController(mapGenerator, generatingView)
 
-    val origin = Coordinate(0, 0)
+    val origin = GameOptions.MAP_ORIGIN
     val worldMap = mapGenerator.generateWorld(origin)
 
     generatingView.onConfirmation {

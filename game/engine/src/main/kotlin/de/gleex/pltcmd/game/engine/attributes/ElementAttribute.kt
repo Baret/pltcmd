@@ -10,4 +10,3 @@ internal class ElementAttribute(initialElement: Element, affiliation: Affiliatio
     val element = createPropertyFrom(initialElement)
     val reportedAffiliation = createPropertyFrom(affiliation)
 }
-

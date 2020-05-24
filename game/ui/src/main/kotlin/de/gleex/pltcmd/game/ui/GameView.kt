@@ -43,7 +43,10 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val element
                 withSize(UiOptions.MAP_VIEW_WDTH, UiOptions.MAP_VIEW_HEIGHT).
                 withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
                 withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld)).
-                build()
+                build().apply {
+                    // redraw MapCoordinateDecorationRenderer
+                    gameWorld.visibleOffsetValue.onChange { asInternalComponent().render() }
+                }
 
         val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>().
                 withGameArea(gameWorld).
@@ -72,7 +75,6 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val element
                 when (event.code) {
                     KeyCode.KEY_A  -> {
                         gameWorld.scrollLeftBy(Sector.TILE_COUNT)
-                        // TODO: re-rendering of the decorations does not correctly work yet (might be fixed by Zircon in GameComponent)
                         Processed
                     }
                     KeyCode.KEY_D -> {
@@ -101,7 +103,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val element
 
         // playing around with stuff...
         val sidebarWidth = sidebar.contentSize.width
-        sidebar.addFragment(MousePosition(sidebarWidth, map))
+        sidebar.addFragment(CoordinateAtMousePosition(sidebarWidth, map, gameWorld))
 
         val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, elementsToCommand, map.absolutePosition)
         sidebar.addFragment(commandFragment)
