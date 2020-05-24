@@ -7,7 +7,7 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import org.hexworks.cobalt.events.api.*
 
 /**
- * A radio signal as it is send over the air to a specific area and the carried [Transmission].
+ * A radio signal as it is sent over the air in a specific area and its carried [Transmission].
  */
 data class BroadcastEvent(
         override val emitter: RadioSender,
