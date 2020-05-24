@@ -14,7 +14,7 @@ import org.hexworks.zircon.api.uievent.UIEventResponse
  */
 class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComponent<*, *>, gameWorld: GameWorld) : BaseFragment {
 
-    private val currentCoorinate = createPropertyFrom(gameWorld.visibleTopLeftCoordinate())
+    private val currentCoordinate = createPropertyFrom(gameWorld.visibleTopLeftCoordinate())
 
     override val root = Components.hbox().
             withSize(width, 1).
@@ -25,10 +25,10 @@ class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComp
                         withSize(width, 1).
                         build().
                         apply {
-                            textProperty.updateFrom(createPropertyFrom("Mouse pos: ") bindPlusWith currentCoorinate.bindTransform { it.toString() }, true)
+                            textProperty.updateFrom(createPropertyFrom("Mouse pos: ") bindPlusWith currentCoordinate.bindTransform { it.toString() }, true)
                             gameComponent.handleMouseEvents(MouseEventType.MOUSE_MOVED) { mouseEvent, _ ->
                                 val pos = mouseEvent.position - gameComponent.absolutePosition
-                                currentCoorinate.updateValue(gameWorld.coordinateAtVisiblePosition(pos))
+                                currentCoordinate.updateValue(gameWorld.coordinateAtVisiblePosition(pos))
                                 UIEventResponse.pass()
                             }
                         })
