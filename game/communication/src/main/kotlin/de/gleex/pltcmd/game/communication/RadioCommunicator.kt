@@ -27,16 +27,15 @@ import java.util.*
 import kotlin.random.Random
 
 /**
- * A [RadioCommunicator] participates in radio communications. It sends and receives radio [Transmission]s by
+ * A [RadioCommunicator] participates in radio communications. It sends with the given [RadioSender] and receives radio [Transmission]s by
  * subscribing to [BroadcastEvent]s via the [EventBus].
  */
-class RadioCommunicator(val radio: RadioSender) {
+class RadioCommunicator(val callSign: CallSign, val radio: RadioSender) {
 
     companion object {
         private val log = LoggerFactory.getLogger(RadioCommunicator::class)
     }
 
-    val callSign = radio.callSign
     private val transmissionBuffer = TransmissionBuffer()
 
     // TODO: Get the context from outside. It should be provided by the corresponding game entity (probably via Properties or ObservableValues)

@@ -46,16 +46,20 @@ fun main() {
 
     globalEventBus.subscribeToBroadcasts { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
 
-    val hq = RadioSender(CallSign("Command"), origin, 50.0, map)
-    val charlie = RadioSender(CallSign("Charlie-1"), origin.withRelativeEasting(10), 50.0, map)
-    val bravo = RadioSender(CallSign("Bravo-2"), origin.withRelativeNorthing(10), 50.0, map)
-    val zulu = RadioSender(CallSign("Zulu-0"), tiles.last().coordinate, 1.0, map)
+    val hq = RadioSender(origin, 50.0, map)
+    val bravo = RadioSender(origin.withRelativeNorthing(10), 50.0, map)
+    val charlie = RadioSender(origin.withRelativeEasting(10), 50.0, map)
+    val zulu = RadioSender(tiles.last().coordinate, 1.0, map)
 
-    val hqSender = RadioCommunicator(hq)
-    val charlieSender = RadioCommunicator(charlie)
-    val bravoSender = RadioCommunicator(bravo)
+    val hqCallSign = CallSign("Command")
+    val bravoCallSign = CallSign("Bravo-2")
+    val charlieCallSign = CallSign("Charlie-1")
+
+    val hqSender = RadioCommunicator(hqCallSign, hq)
+    val bravoSender = RadioCommunicator(bravoCallSign, bravo)
+    val charlieSender = RadioCommunicator(charlieCallSign, charlie)
     // only listens
-    RadioCommunicator(zulu)
+    RadioCommunicator(CallSign("Zulu-0"), zulu)
 
     buildUI(hqSender, bravoSender, charlieSender)
 
@@ -63,16 +67,16 @@ fun main() {
 
     hqSender.startCommunication(
             Conversations.Reports.sitrep(
-                    sender = hq.callSign,
-                    receiver = bravo.callSign
+                    sender = hqCallSign,
+                    receiver = bravoCallSign
             ))
 
     println("creating move to from $hq to $charlie")
 
     hqSender.startCommunication(
             Conversations.Orders.moveTo(
-                    sender = hq.callSign,
-                    receiver = charlie.callSign,
+                    sender = hqCallSign,
+                    receiver = charlieCallSign,
                     targetLocation = Coordinate(15, 178)
             ))
 
@@ -80,8 +84,8 @@ fun main() {
 
     hqSender.startCommunication(
             Conversations.Orders.engageEnemyAt(
-                    sender = hq.callSign,
-                    receiver = bravo.callSign,
+                    sender = hqCallSign,
+                    receiver = bravoCallSign,
                     enemyLocation = Coordinate(24, 198)
             ))
 
@@ -89,8 +93,8 @@ fun main() {
 
     bravoSender.startCommunication(
             Conversations.Reports.reportPosition(
-                    sender = bravo.callSign,
-                    receiver = charlie.callSign
+                    sender = bravoCallSign,
+                    receiver = charlieCallSign
             ))
 }
 

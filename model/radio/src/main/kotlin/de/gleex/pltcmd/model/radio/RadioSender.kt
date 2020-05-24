@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.model.radio
 
-import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.broadcasting.RadioSignal
 import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
@@ -12,14 +11,14 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.events.globalEventBus
 
 /**
- * A walkie talkie or radio station that sends [Transmission]s out over the map as [RadioSignal]s.
+ * A walkie-talkie or radio station that sends [Transmission]s out over the map as [RadioSignal]s.
  *
  * @param callSign the identity of this sender in the radio network
  * @param location from where on the map the broadcast is emitted
  * @param maxPower with which broadcasts are sent over the map
  * @param map the terrain over which broadcasts are sent
  */
-class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Double, private val map: WorldMap) {
+class RadioSender(val location: Coordinate, maxPower: Double, private val map: WorldMap) {
 
     private val signal = RadioSignal(maxPower)
 
@@ -36,11 +35,12 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
         return CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
     }
 
+    /** Sends out the given transmission. */
     fun transmit(transmission: Transmission) {
-        // TODO should the transmission.sender == callSign?
         globalEventBus.publishTransmission(this, reachableTiles, transmission)
     }
 
+    /** @return the [SignalStrength] at the given location if sent from this sender */
     // TODO should the sender know how its signal is received? Or should the terrain be managed outside?
     // maybe rename this class as it else only wraps RadioSignal
     fun signalSendTo(receivedAt: Coordinate): SignalStrength {
