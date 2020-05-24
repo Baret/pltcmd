@@ -10,7 +10,6 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.events.globalEventBus
-import kotlin.math.min
 
 /**
  * A walkie talkie or radio station that sends [Transmission]s out over the map as [RadioSignal]s.
@@ -31,30 +30,10 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
     private fun calculateReachableFields(): CoordinateRectangle {
         val maxReachOverAir = signal.maxRange
         // create bounding box (clamped to map borders)
-        val maxNorth: Int = min(maxReachOverAir, distanceToNorthBorder())
-        val maxEast: Int = min(maxReachOverAir, distanceToEastBorder())
-        val maxSouth: Int = min(maxReachOverAir, distanceToSouthBorder())
-        val maxWest: Int = min(maxReachOverAir, distanceToWestBorder())
-        val bottomLeftCoordinate = location.movedBy(-maxWest, -maxSouth)
-        val topRightCoordinate = location.movedBy(maxEast, maxNorth)
+        val bottomLeftCoordinate = map.moveInside(location.movedBy(-maxReachOverAir, -maxReachOverAir))
+        val topRightCoordinate = map.moveInside(location.movedBy(maxReachOverAir, maxReachOverAir))
         // TODO a circle is more appropriate
         return CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
-    }
-
-    private fun distanceToNorthBorder(): Int {
-        return map.last.northingFromBottom - location.northingFromBottom
-    }
-
-    private fun distanceToEastBorder(): Int {
-        return map.last.eastingFromLeft - location.eastingFromLeft
-    }
-
-    private fun distanceToSouthBorder(): Int {
-        return location.northingFromBottom - map.origin.northingFromBottom
-    }
-
-    private fun distanceToWestBorder(): Int {
-        return location.eastingFromLeft - map.origin.eastingFromLeft
     }
 
     fun transmit(transmission: Transmission) {
