@@ -15,12 +15,12 @@ import de.gleex.pltcmd.util.events.globalEventBus
  *
  * @param callSign the identity of this sender in the radio network
  * @param location from where on the map the broadcast is emitted
- * @param maxPower with which broadcasts are sent over the map
+ * @param power with which broadcasts are sent over the map
  * @param map the terrain over which broadcasts are sent
  */
-class RadioSender(val location: Coordinate, maxPower: Double, private val map: WorldMap) {
+class RadioSender(val location: Coordinate, power: Double, private val map: WorldMap) {
 
-    private val signal = RadioSignal(maxPower)
+    private val signal = RadioSignal(power)
 
     // pre-computed as we send with constant power over a fixed world
     // visible for tests
