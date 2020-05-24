@@ -70,7 +70,10 @@ class WorldMapTest : WordSpec({
     }
 })
 
-/** creates sectors in a square (must not be full depending number) */
+/**
+ * Creates this amount of sectors. The sectors are placed in a square. The square is filled line by line and only full
+ * if the amount is a square number.
+ **/
 private fun Int.sectors(): List<Sector> {
     val sectors = mutableListOf<Sector>()
     val width = ceil(sqrt(toDouble())).toInt()
