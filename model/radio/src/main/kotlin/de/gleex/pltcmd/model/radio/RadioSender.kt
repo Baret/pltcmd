@@ -37,6 +37,7 @@ class RadioSender(val callSign: CallSign, val location: Coordinate, maxPower: Do
         val maxWest: Int = min(maxReachOverAir, distanceToWestBorder())
         val bottomLeftCoordinate = location.movedBy(-maxWest, -maxSouth)
         val topRightCoordinate = location.movedBy(maxEast, maxNorth)
+        // TODO a circle is more appropriate
         return CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
     }
 
