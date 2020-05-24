@@ -44,6 +44,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val element
                 withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
                 withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld)).
                 build().apply {
+                    // redraw MapCoordinateDecorationRenderer
                     gameWorld.visibleOffsetValue.onChange { asInternalComponent().render() }
                 }
 
