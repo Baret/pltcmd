@@ -20,7 +20,7 @@ data class BroadcastEvent(
     }
 
     fun receivedAt(location: Coordinate): Pair<SignalStrength, Transmission> {
-        return Pair(emitter.signalSendTo(location), transmission)
+        return Pair(emitter.signalAtTarget(location), transmission)
     }
 }
 

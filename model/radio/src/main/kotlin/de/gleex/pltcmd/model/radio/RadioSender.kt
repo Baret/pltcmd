@@ -43,17 +43,14 @@ class RadioSender(val location: Coordinate, maxPower: Double, private val map: W
     /** @return the [SignalStrength] at the given location if sent from this sender */
     // TODO should the sender know how its signal is received? Or should the terrain be managed outside?
     // maybe rename this class as it else only wraps RadioSignal
-    fun signalSendTo(receivedAt: Coordinate): SignalStrength {
-        val terrain = terrainTo(receivedAt)
+    fun signalAtTarget(target: Coordinate): SignalStrength {
+        val terrain = terrainTo(target)
         return signal.along(terrain)
     }
 
     private fun terrainTo(target: Coordinate): List<Terrain> {
-        return CoordinatePath.line(location, target)
-                .filter { map.contains(it) }
-                .map {
-                    map.getTerrainAt(it)
-                }
+        val path = CoordinatePath.line(location, target)
+        return map.getTerrainAt(path)
     }
 
 }

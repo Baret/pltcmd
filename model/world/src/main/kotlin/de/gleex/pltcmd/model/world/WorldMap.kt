@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import java.util.*
 import kotlin.math.max
@@ -58,10 +59,15 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
         }
     }
 
-    /** @return the [Terrain] of the tile at the given location or throws an exceptoin if the given coordinate does not belong to this world */
+    /** @return the [Terrain] of the tile at the given location or throws an exception if the given coordinate does not belong to this world */
     fun getTerrainAt(coordinate: Coordinate): Terrain {
         val sector = originToSector[coordinate.toSectorOrigin()]!!
         return sector.getTerrainAt(coordinate) ?: throw IllegalStateException("no terrain for $coordinate in $sector")
+    }
+    /** @return the [Terrain] of this world at the given path */
+    fun getTerrainAt(path: CoordinatePath): List<Terrain> {
+        return path.filter { contains(it) }
+                .map { getTerrainAt(it) }
     }
 
     /**
