@@ -8,7 +8,7 @@ import de.gleex.pltcmd.model.world.terrain.TerrainType
 /**
  * The smallest piece of the world/map.
  */
-data class WorldTile(val coordinate: Coordinate, val terrain: Terrain) {
+data class WorldTile(val coordinate: Coordinate, val terrain: Terrain) : Comparable<WorldTile> {
 
     /** creates a tile at the given location with a default terrain (useful for tests) */
     constructor(east: Int, north: Int) : this(
@@ -27,6 +27,15 @@ data class WorldTile(val coordinate: Coordinate, val terrain: Terrain) {
     /** Only a single tile per coordinate, as the place on the map is unique */
     override fun hashCode(): Int {
         return coordinate.hashCode()
+    }
+
+    /** sorted by coordinate and then by terrain height */
+    override fun compareTo(other: WorldTile): Int {
+        val result = coordinate.compareTo(other.coordinate)
+        if (result != 0) {
+            return result
+        }
+        return terrain.height.compareTo(other.terrain.height)
     }
 
 }

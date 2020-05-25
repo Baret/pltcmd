@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.ui.entities
 
 import de.gleex.pltcmd.model.elements.Affiliation
-import de.gleex.pltcmd.model.radio.SignalStrength
+import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import org.hexworks.zircon.api.color.TileColor

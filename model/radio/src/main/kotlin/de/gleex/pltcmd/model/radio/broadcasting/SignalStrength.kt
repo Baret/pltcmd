@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.radio
+package de.gleex.pltcmd.model.radio.broadcasting
 
 import java.math.RoundingMode
 

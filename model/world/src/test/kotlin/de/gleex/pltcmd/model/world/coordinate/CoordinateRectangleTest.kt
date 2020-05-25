@@ -34,10 +34,20 @@ class CoordinateRectangleTest: WordSpec({
 
         for(y in -1..4 step 5) {
             for(x in -1..3 step 4) {
-                val notContained = Coordinate(x, y)
-                "not contain $notContained" {
-                    rectangleToTest.contains(notContained) shouldNotBe true
+                val notContainedCorner = Coordinate(x, y)
+                "not contain $notContainedCorner" {
+                    rectangleToTest.contains(notContainedCorner) shouldNotBe true
                 }
+            }
+            val notContainedY = Coordinate(1, y)
+            "not contain $notContainedY" {
+                rectangleToTest.contains(notContainedY) shouldNotBe true
+            }
+        }
+        for(x in -1..3 step 4) {
+            val notContainedX = Coordinate(x, 1)
+            "not contain $notContainedX" {
+                rectangleToTest.contains(notContainedX) shouldNotBe true
             }
         }
 

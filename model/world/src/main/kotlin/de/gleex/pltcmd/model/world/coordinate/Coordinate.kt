@@ -70,6 +70,7 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         return northDiff
     }
 
+    /** Provides all coordinates in the rectangle between the two points */
     operator fun rangeTo(other: Coordinate): Progression {
         val values: SortedSet<Coordinate> = TreeSet()
         val northingRange = if(northingFromBottom <= other.northingFromBottom) {

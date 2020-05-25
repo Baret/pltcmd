@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.model.radio.testhelpers
 
-import de.gleex.pltcmd.model.radio.SignalStrength
+import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.doubles.shouldBeExactly

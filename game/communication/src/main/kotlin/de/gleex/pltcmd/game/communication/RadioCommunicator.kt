@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.communication
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
@@ -14,6 +15,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.contactL
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasReceiver
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasSender
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
+import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
@@ -25,15 +27,15 @@ import java.util.*
 import kotlin.random.Random
 
 /**
- * A [RadioCommunicator] participates in radio communications. It sends and receives radio [Transmission]s by
- * subscribing to [RadioComms] via the [EventBus].
+ * A [RadioCommunicator] participates in radio communications. It sends with the given [RadioSender] and receives radio [Transmission]s by
+ * subscribing to [BroadcastEvent]s via the [EventBus].
  */
-class RadioCommunicator(val callSign: CallSign) {
-    
+class RadioCommunicator(val callSign: CallSign, val radio: RadioSender) {
+
     companion object {
         private val log = LoggerFactory.getLogger(RadioCommunicator::class)
     }
-    
+
     private val transmissionBuffer = TransmissionBuffer()
 
     // TODO: Get the context from outside. It should be provided by the corresponding game entity (probably via Properties or ObservableValues)
@@ -52,26 +54,30 @@ class RadioCommunicator(val callSign: CallSign) {
             transmissionBuffer.
                 pop(tick.id).
                 ifPresent{
-                    globalEventBus.publishTransmission(it.transmit(transmissionContext), callSign)
+                    radio.transmit(it.transmit(transmissionContext))
                 }
         }
 
-        globalEventBus.subscribeToRadioComms { event ->
-            if(event.isNotFromMe()) {
-                // TODO: decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
-                if (event.isForMe()) {
-                    respondTo(event)
-                } else {
-                    gatherInformationFrom(event)
+        globalEventBus.subscribeToBroadcasts { event ->
+            if (event.isReceivedAt(radio.location)) {
+                // decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
+                val (strength, receivedTransmission) = event.receivedAt(radio.location)
+                log.debug("${callSign} received with strength $strength the transmission ${receivedTransmission.message}")
+                if (!strength.isNone() && receivedTransmission.isNotFromMe()) {
+                    if (receivedTransmission.isForMe()) {
+                        respondTo(receivedTransmission)
+                    } else {
+                        gatherInformationFrom(receivedTransmission)
+                    }
                 }
             }
         }
     }
 
-    private fun respondTo(event: TransmissionEvent) {
-        val incomingTransmission = event.transmission
+    private fun respondTo(transmission: Transmission) {
+        val incomingTransmission = transmission
         if(inConversationWith.value.isEmpty()) {
-            inConversationWith.updateValue(Maybe.of(event.transmission.sender))
+            inConversationWith.updateValue(Maybe.of(transmission.sender))
         }
 
         if (incomingTransmission.hasSender(inConversationWith.value.get())) {
@@ -112,11 +118,11 @@ class RadioCommunicator(val callSign: CallSign) {
         }
     }
 
-    private fun gatherInformationFrom(event: TransmissionEvent) {
+    private fun gatherInformationFrom(transmission: Transmission) {
         // TODO: Learn stuff from transmissions and add it to the "knowledge" of this unit
-        val contacts = event.transmission.contactLocations
+        val contacts = transmission.contactLocations
         if(contacts.isNotEmpty()) {
-            log.debug("$callSign: learned about enemies at ${contacts.joinToString()}")
+            log.debug("${callSign}: learned about enemies at ${contacts.joinToString()}")
         }
     }
 
@@ -143,12 +149,12 @@ class RadioCommunicator(val callSign: CallSign) {
         }
     }
 
-    private fun TransmissionEvent.isForMe(): Boolean {
-        return transmission.hasReceiver(callSign)
+    private fun Transmission.isForMe(): Boolean {
+        return hasReceiver(callSign)
     }
 
-    private fun TransmissionEvent.isNotFromMe(): Boolean {
-        return emitter != callSign
+    private fun Transmission.isNotFromMe(): Boolean {
+        return sender != callSign
     }
 
     private fun nextTransmissionOf(transmission: Transmission) =
@@ -156,9 +162,3 @@ class RadioCommunicator(val callSign: CallSign) {
             (transmission as TransmissionWithResponse).response
 
 }
-
-/**
- * Publishes a [TransmissionEvent]. Or in other words: Send a message via radio.
- */
-private fun EventBus.publishTransmission(transmission: Transmission, sender: CallSign) =
-        publish(TransmissionEvent(transmission, sender), RadioComms)
