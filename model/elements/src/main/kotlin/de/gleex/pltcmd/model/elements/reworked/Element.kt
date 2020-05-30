@@ -69,7 +69,10 @@ open class Element(
     fun removeUnit(unit: Unit): Boolean = _units.remove(unit)
 
     fun setSuperordinate(commandingElement: CommandingElement?) {
+        _superordinate.ifPresent { it.removeElement(this) }
+
         _superordinate = Maybe.ofNullable(commandingElement)
+        commandingElement?.addElement(this)
     }
 
     override fun toString() = "$kind $size [id=$id, units=$units${superordinate.map { ",superordinate=$it" }.orElse("")}]"
