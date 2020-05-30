@@ -1,5 +1,8 @@
 package de.gleex.pltcmd.game.communication
 
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.callsign
+import de.gleex.pltcmd.game.engine.entities.types.radio
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.CallSign
@@ -31,6 +34,8 @@ import kotlin.random.Random
  * subscribing to [BroadcastEvent]s via the [EventBus].
  */
 class RadioCommunicator(val callSign: CallSign, val radio: RadioSender) {
+
+    constructor(element: ElementEntity) : this(element.callsign, element.radio)
 
     companion object {
         private val log = LoggerFactory.getLogger(RadioCommunicator::class)

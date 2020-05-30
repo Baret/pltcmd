@@ -23,7 +23,7 @@ object EntityFactory {
                         ElementAttribute(element, affiliation),
                         PositionAttribute(initialPosition),
                         DestinationAttribute(),
-                        RadioAttribute(element, radioSender)
+                        RadioAttribute(radioSender)
                 )
                 behaviors(Moving)
                 facets(SetDestination)

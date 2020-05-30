@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.application
 
+import de.gleex.pltcmd.game.communication.RadioCommunicator
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
@@ -39,13 +40,16 @@ fun main() {
         val game = Game(Engine.default(), generatedMap, Random(GameOptions.DEBUG_MAP_SEED))
 
         val elementsToCommand = mutableListOf<ElementEntity>()
-        val visibleSector = generatedMap.sectors.first { it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin() }
-        elementsToCommand.run {
-            add(visibleSector.createFriendly("Alpha", game, gameWorld))
-            add(visibleSector.createFriendly("Bravo", game, gameWorld))
-            add(visibleSector.createFriendly("Charlie", game, gameWorld))
+        val visibleSector = generatedMap.sectors.first {
+            it.origin == gameWorld.visibleTopLeftCoordinate()
+                    .toSectorOrigin()
         }
-        val hq = visibleSector.createFriendly("HQ", game, gameWorld, Affiliation.Self)
+        elementsToCommand.run {
+            add(visibleSector.createFriendly("Alpha", game, gameWorld).first)
+            add(visibleSector.createFriendly("Bravo", game, gameWorld).first)
+            add(visibleSector.createFriendly("Charlie", game, gameWorld).first)
+        }
+        val hq = visibleSector.createFriendly("HQ", game, gameWorld, Affiliation.Self).second
         screen.dock(GameView(gameWorld, tileGrid, hq, elementsToCommand))
 
         // Adding some elements to every sector
@@ -64,9 +68,10 @@ fun main() {
     }
 }
 
-private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld, affiliation: Affiliation = Affiliation.Friendly): ElementEntity {
-    return game.addElementInSector(this, callsign, affiliation)
+private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld, affiliation: Affiliation = Affiliation.Friendly): Pair<ElementEntity, RadioCommunicator> {
+    val elementEntity = game.addElementInSector(this, callsign, affiliation)
             .also(gameWorld::trackUnit)
+    return Pair(elementEntity, RadioCommunicator(elementEntity))
 }
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {
