@@ -14,10 +14,10 @@ object GameOptions {
     /**
      * Option to turn on the RadioSignalVisualizer and corresponding UI elements.
      */
-    val displayRadioSignals: Property<Boolean> = createPropertyFrom(false)
+    val displayRadioSignals: Property<Boolean> = createPropertyFrom(true)
 
     /** The strength of a radio if not specified. */
-    val defaultRadioPower = 500.0
+    val defaultRadioPower = 5000.0
 
     /**
      * Seed used to always create the same map which is useful for development.

@@ -40,12 +40,12 @@ fun main() {
 
         val elementsToCommand = mutableListOf<ElementEntity>()
         val visibleSector = generatedMap.sectors.first { it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin() }
-        val hq = visibleSector.createFriendly("HQ", game, gameWorld, Affiliation.Self)
         elementsToCommand.run {
             add(visibleSector.createFriendly("Alpha", game, gameWorld))
             add(visibleSector.createFriendly("Bravo", game, gameWorld))
             add(visibleSector.createFriendly("Charlie", game, gameWorld))
         }
+        val hq = visibleSector.createFriendly("HQ", game, gameWorld, Affiliation.Self)
         screen.dock(GameView(gameWorld, tileGrid, hq, elementsToCommand))
 
         // Adding some elements to every sector
