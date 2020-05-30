@@ -16,6 +16,9 @@ object GameOptions {
      */
     val displayRadioSignals: Property<Boolean> = createPropertyFrom(false)
 
+    /** The strength of a radio if not specified. */
+    val defaultRadioPower = 500.0
+
     /**
      * Seed used to always create the same map which is useful for development.
      */

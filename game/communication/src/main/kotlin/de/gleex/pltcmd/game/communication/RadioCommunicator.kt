@@ -59,9 +59,9 @@ class RadioCommunicator(val callSign: CallSign, val radio: RadioSender) {
         }
 
         globalEventBus.subscribeToBroadcasts { event ->
-            if (event.isReceivedAt(radio.location)) {
+            if (event.isReceivedAt(radio.currentLocation)) {
                 // decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
-                val (strength, receivedTransmission) = event.receivedAt(radio.location)
+                val (strength, receivedTransmission) = event.receivedAt(radio.currentLocation)
                 log.debug("${callSign} received with strength $strength the transmission ${receivedTransmission.message}")
                 if (!strength.isNone() && receivedTransmission.isNotFromMe()) {
                     if (receivedTransmission.isForMe()) {

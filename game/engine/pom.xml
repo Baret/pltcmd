@@ -20,6 +20,10 @@
             <artifactId>communication</artifactId>
         </dependency>
         <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>options</artifactId>
+        </dependency>
+        <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>elements</artifactId>
         </dependency>
