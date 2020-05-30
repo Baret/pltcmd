@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.communication
 
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.callsign
+import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.entities.types.radio
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
@@ -19,7 +20,6 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasRecei
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasSender
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
@@ -33,26 +33,28 @@ import kotlin.random.Random
  * A [RadioCommunicator] participates in radio communications. It sends with the radio of the given [ElementEntity] each
  * tick and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [EventBus].
  */
-class RadioCommunicator(element: ElementEntity) {
+class RadioCommunicator(private val element: ElementEntity) {
 
     companion object {
         private val log = LoggerFactory.getLogger(RadioCommunicator::class)
     }
 
     val callSign: CallSign = element.callsign
+    /**
+     * This property is used if multiple transmissions are received to separate the active and delayed conversations.
+     * TODO is visible as a debug feature for the test UI, might be reduced later
+     **/
+    val inConversationWith: Property<Maybe<CallSign>> = createPropertyFrom(Maybe.empty())
 
+    private val conversationQueue: Queue<Conversation> = LinkedList()
     private val transmissionBuffer = TransmissionBuffer()
 
     // TODO: Get the context from outside. It should be provided by the corresponding game entity (probably via Properties or ObservableValues)
-    private val transmissionContext = TransmissionContext(
-            Coordinate(Random.nextInt(500), Random.nextInt(500)),
+    private fun newTransmissionContext() = TransmissionContext(
+            element.currentPosition,
             Random.nextInt(40, 50),
             Random.nextInt(3, 10),
             Random.nextInt(0, 4))
-
-    /** this property is rather a debug feature for the test UI, might be removed later */
-    val inConversationWith: Property<Maybe<CallSign>> = createPropertyFrom(Maybe.empty())
-    val conversationQueue: Queue<Conversation> = LinkedList()
 
     init {
         val radio: RadioSender = element.radio
@@ -60,7 +62,7 @@ class RadioCommunicator(element: ElementEntity) {
             transmissionBuffer.
                 pop(tick.id).
                 ifPresent{
-                    radio.transmit(it.transmit(transmissionContext))
+                    radio.transmit(it.transmit(newTransmissionContext()))
                 }
         }
 
