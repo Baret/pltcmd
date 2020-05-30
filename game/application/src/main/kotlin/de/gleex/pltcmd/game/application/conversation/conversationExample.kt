@@ -1,11 +1,14 @@
 package de.gleex.pltcmd.game.application.conversation
 
 import de.gleex.pltcmd.game.communication.RadioCommunicator
+import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.fragments.TickFragment
 import de.gleex.pltcmd.game.ui.fragments.TilesetSelectorFragment
+import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.elements.Element
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
@@ -46,24 +49,29 @@ fun main() {
 
     globalEventBus.subscribeToBroadcasts { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
 
-    val hq = RadioSender(origin, 50.0, map)
-    val bravo = RadioSender(origin.withRelativeNorthing(10), 50.0, map)
-    val charlie = RadioSender(origin.withRelativeEasting(10), 50.0, map)
-    val zulu = RadioSender(tiles.last().coordinate, 1.0, map)
+    val hqRadio = RadioSender(origin, 50.0, map)
+    val bravoRadio = RadioSender(origin.withRelativeNorthing(10), 50.0, map)
+    val charlieRadio = RadioSender(origin.withRelativeEasting(10), 50.0, map)
+    val zuluRadio = RadioSender(tiles.last().coordinate, 1.0, map)
 
     val hqCallSign = CallSign("Command")
     val bravoCallSign = CallSign("Bravo-2")
     val charlieCallSign = CallSign("Charlie-1")
 
-    val hqSender = RadioCommunicator(hqCallSign, hq)
-    val bravoSender = RadioCommunicator(bravoCallSign, bravo)
-    val charlieSender = RadioCommunicator(charlieCallSign, charlie)
+    val hqEntity = EntityFactory.newElement(Element(hqCallSign, emptySet()), hqRadio.currentLocation, Affiliation.Self, hqRadio)
+    val bravoEntity = EntityFactory.newElement(Element(bravoCallSign, emptySet()), hqRadio.currentLocation, Affiliation.Friendly, bravoRadio)
+    val charlieEntity = EntityFactory.newElement(Element(charlieCallSign, emptySet()), hqRadio.currentLocation, Affiliation.Friendly, charlieRadio)
+    val zuluEntity = EntityFactory.newElement(Element(CallSign("Zulu-0"), emptySet()), hqRadio.currentLocation, Affiliation.Neutral, zuluRadio)
+
+    val hqSender = RadioCommunicator(hqEntity)
+    val bravoSender = RadioCommunicator(bravoEntity)
+    val charlieSender = RadioCommunicator(charlieEntity)
     // only listens
-    RadioCommunicator(CallSign("Zulu-0"), zulu)
+    RadioCommunicator(zuluEntity)
 
     buildUI(hqSender, bravoSender, charlieSender)
 
-    println("creating SITREP from $hq to $bravo")
+    println("creating SITREP from $hqRadio to $bravoRadio")
 
     hqSender.startCommunication(
             Conversations.Reports.sitrep(
@@ -71,7 +79,7 @@ fun main() {
                     receiver = bravoCallSign
             ))
 
-    println("creating move to from $hq to $charlie")
+    println("creating move to from $hqRadio to $charlieRadio")
 
     hqSender.startCommunication(
             Conversations.Orders.moveTo(
@@ -80,7 +88,7 @@ fun main() {
                     targetLocation = Coordinate(15, 178)
             ))
 
-    println("creating engage from $hq to $bravo")
+    println("creating engage from $hqRadio to $bravoRadio")
 
     hqSender.startCommunication(
             Conversations.Orders.engageEnemyAt(
@@ -89,7 +97,7 @@ fun main() {
                     enemyLocation = Coordinate(24, 198)
             ))
 
-    println("creating report position from $bravo to $charlie")
+    println("creating report position from $bravoRadio to $charlieRadio")
 
     bravoSender.startCommunication(
             Conversations.Reports.reportPosition(

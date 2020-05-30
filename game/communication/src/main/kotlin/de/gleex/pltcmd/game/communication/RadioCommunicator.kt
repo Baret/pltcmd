@@ -30,16 +30,16 @@ import java.util.*
 import kotlin.random.Random
 
 /**
- * A [RadioCommunicator] participates in radio communications. It sends with the given [RadioSender] and receives radio [Transmission]s by
- * subscribing to [BroadcastEvent]s via the [EventBus].
+ * A [RadioCommunicator] participates in radio communications. It sends with the radio of the given [ElementEntity] each
+ * tick and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [EventBus].
  */
-class RadioCommunicator(val callSign: CallSign, val radio: RadioSender) {
-
-    constructor(element: ElementEntity) : this(element.callsign, element.radio)
+class RadioCommunicator(element: ElementEntity) {
 
     companion object {
         private val log = LoggerFactory.getLogger(RadioCommunicator::class)
     }
+
+    val callSign: CallSign = element.callsign
 
     private val transmissionBuffer = TransmissionBuffer()
 
@@ -55,6 +55,7 @@ class RadioCommunicator(val callSign: CallSign, val radio: RadioSender) {
     val conversationQueue: Queue<Conversation> = LinkedList()
 
     init {
+        val radio: RadioSender = element.radio
         globalEventBus.subscribeToTicks { tick ->
             transmissionBuffer.
                 pop(tick.id).
