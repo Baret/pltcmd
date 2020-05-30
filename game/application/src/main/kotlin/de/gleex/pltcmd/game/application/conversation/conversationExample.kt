@@ -1,7 +1,9 @@
 package de.gleex.pltcmd.game.application.conversation
 
 import de.gleex.pltcmd.game.communication.RadioCommunicator
+import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
+import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.fragments.TickFragment
@@ -21,6 +23,7 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.util.events.globalEventBus
+import org.hexworks.amethyst.api.Engine
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
@@ -32,6 +35,7 @@ import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.graphics.BoxType
+import kotlin.random.Random
 
 /**
  * This little bit of code is used to play around with radio conversations. It creates a GUI where you can
@@ -46,6 +50,7 @@ fun main() {
             toSortedSet()
     val sector = Sector(origin, tiles)
     val map = WorldMap.create(setOf(sector))
+    val game = Game(Engine.default(), map, Random(GameOptions.DEBUG_MAP_SEED))
 
     globalEventBus.subscribeToBroadcasts { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
 
@@ -63,11 +68,11 @@ fun main() {
     val charlieEntity = EntityFactory.newElement(Element(charlieCallSign, emptySet()), hqRadio.currentLocation, Affiliation.Friendly, charlieRadio)
     val zuluEntity = EntityFactory.newElement(Element(CallSign("Zulu-0"), emptySet()), hqRadio.currentLocation, Affiliation.Neutral, zuluRadio)
 
-    val hqSender = RadioCommunicator(hqEntity)
-    val bravoSender = RadioCommunicator(bravoEntity)
-    val charlieSender = RadioCommunicator(charlieEntity)
+    val hqSender = RadioCommunicator(hqEntity, game)
+    val bravoSender = RadioCommunicator(bravoEntity, game)
+    val charlieSender = RadioCommunicator(charlieEntity, game)
     // only listens
-    RadioCommunicator(zuluEntity)
+    RadioCommunicator(zuluEntity, game)
 
     buildUI(hqSender, bravoSender, charlieSender)
 

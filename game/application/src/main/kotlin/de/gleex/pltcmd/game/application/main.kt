@@ -71,7 +71,7 @@ fun main() {
 private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld, affiliation: Affiliation = Affiliation.Friendly): Pair<ElementEntity, RadioCommunicator> {
     val elementEntity = game.addElementInSector(this, callsign, affiliation)
             .also(gameWorld::trackUnit)
-    return Pair(elementEntity, RadioCommunicator(elementEntity))
+    return Pair(elementEntity, RadioCommunicator(elementEntity, game))
 }
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {

@@ -4,6 +4,7 @@ import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.building.conversation
 import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.orderTemplate
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 
 /**
@@ -14,20 +15,20 @@ object Conversations {
     /**
      * All orders. An order typically initializes comms, sends an order and expects a positive _readback_ or a negative answer
      */
-    enum class Orders(private val order: String, private val readback: String) {
+    enum class Orders(private val messageTemplate: String, private val readback: String) {
 
         MoveTo("move to %s", "moving to %s"),
         GoFirm("go firm", "going firm"),
         EngageEnemyAt("engage enemy at %s", "engaging enemy at %s");
 
         fun created(transmission: OrderTransmission): Boolean {
-            return order == transmission.messageTemplate
+            return messageTemplate == transmission.orderTemplate
         }
 
         fun create(sender: CallSign, receiver: CallSign, orderLocation: Coordinate): Conversation =
                 conversation(sender, receiver) {
                     genericOrder(
-                            order,
+                            messageTemplate,
                             readback,
                             { orderLocation }
                     )

@@ -4,7 +4,7 @@ import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.options.GameOptions
-import de.gleex.pltcmd.game.ticks.TickId
+import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.radio.RadioSender
@@ -18,21 +18,20 @@ import kotlin.random.Random
 
 data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random: Random) {
 
-    init {
-        globalEventBus.subscribeToTicks {
-            val currentTick = it.id
-            engine.update(context(currentTick))
-        }
-    }
-
     companion object {
         private val log = LoggerFactory.getLogger(Game::class)
     }
 
+    init {
+        globalEventBus.subscribeToTicks {
+            engine.update(context())
+        }
+    }
+
     /**
-     * Creates a [GameContext] for the given tick.
+     * Creates a [GameContext] for the current tick.
      */
-    fun context(tick: TickId): GameContext = GameContext(tick, world, random)
+    fun context(): GameContext = GameContext(Ticker.currentTick, world, random)
 
     /**
      * Adds the given entity to the engine and returns it to make chained calls possible.

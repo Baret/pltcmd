@@ -1,9 +1,11 @@
 package de.gleex.pltcmd.game.communication
 
+import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.entities.types.radio
+import de.gleex.pltcmd.game.engine.systems.facets.ExecuteOrder
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.CallSign
@@ -15,12 +17,10 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.TerminatingTransm
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.TransmissionWithResponse
 import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
-import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.contactLocations
-import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasReceiver
-import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasSender
-import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.*
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.util.events.globalEventBus
+import kotlinx.coroutines.runBlocking
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.datatypes.Maybe
@@ -33,7 +33,7 @@ import kotlin.random.Random
  * A [RadioCommunicator] participates in radio communications. It sends with the radio of the given [ElementEntity] each
  * tick and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [EventBus].
  */
-class RadioCommunicator(private val element: ElementEntity) {
+class RadioCommunicator(private val element: ElementEntity, private val game: Game) {
 
     companion object {
         private val log = LoggerFactory.getLogger(RadioCommunicator::class)
@@ -118,8 +118,14 @@ class RadioCommunicator(private val element: ElementEntity) {
     }
 
     private fun executeOrderAndRespond(transmission: OrderTransmission) {
-        // TODO: This will contain the game entity's logic to execute actual commands
-        if(Random.nextBoolean()) {
+        val order = Conversations.Orders.getOrder(transmission)
+        if(order != null) {
+            // delegate to the game entity's logic to execute actual commands
+            val orderedTo = transmission.location
+            runBlocking {
+                // executed on next tick!
+                element.sendCommand(ExecuteOrder(order, orderedTo, game.context(), element))
+            }
             sendNextTick(transmission.positiveAnswer)
         } else {
             sendNextTick(transmission.negativeAnswer)
