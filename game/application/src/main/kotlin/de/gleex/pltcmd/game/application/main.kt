@@ -14,7 +14,6 @@ import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.toSectorOrigin
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.zircon.api.SwingApplications
@@ -41,12 +40,13 @@ fun main() {
 
         val elementsToCommand = mutableListOf<ElementEntity>()
         val visibleSector = generatedMap.sectors.first { it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin() }
+        val hq = visibleSector.createFriendly("HQ", game, gameWorld, Affiliation.Self)
         elementsToCommand.run {
             add(visibleSector.createFriendly("Alpha", game, gameWorld))
             add(visibleSector.createFriendly("Bravo", game, gameWorld))
             add(visibleSector.createFriendly("Charlie", game, gameWorld))
         }
-        screen.dock(GameView(gameWorld, tileGrid, elementsToCommand))
+        screen.dock(GameView(gameWorld, tileGrid, hq, elementsToCommand))
 
         // Adding some elements to every sector
         val elementsPerSector = 3
@@ -64,8 +64,8 @@ fun main() {
     }
 }
 
-private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld): ElementEntity {
-    return game.addElementInSector(this, callsign, Affiliation.Friendly)
+private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld, affiliation: Affiliation = Affiliation.Friendly): ElementEntity {
+    return game.addElementInSector(this, callsign, affiliation)
             .also(gameWorld::trackUnit)
 }
 

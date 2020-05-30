@@ -38,7 +38,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
         val element = Element(callSign, setOf(GenericUnit(UnitType.Soldier)))
         // FIXME radio location is fix but should observe the position of the entity
         val radioSender = RadioSender(positionInSector, GameOptions.defaultRadioPower, world)
-        val elementEntity = if (affiliation == Affiliation.Friendly) {
+        val elementEntity = if (affiliation == Affiliation.Friendly || affiliation == Affiliation.Self) {
             EntityFactory.newElement(element, positionInSector, affiliation, radioSender)
         } else {
             EntityFactory.newWanderingElement(element, positionInSector, affiliation, radioSender)

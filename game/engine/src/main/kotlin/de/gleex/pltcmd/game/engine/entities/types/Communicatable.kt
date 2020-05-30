@@ -24,5 +24,6 @@ val CommunicatableEntity.callSign: CallSign
 
 /** @see RadioCommunicator.startCommunication */
 fun CommunicatableEntity.startConversation(conversation: Conversation) {
+    require(callSign == conversation.sender)
     communicator.startCommunication(conversation)
 }
