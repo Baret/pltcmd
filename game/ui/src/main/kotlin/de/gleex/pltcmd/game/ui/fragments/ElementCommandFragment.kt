@@ -5,7 +5,7 @@ import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.model.radio.communication.Conversations
+import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.MoveTo
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
@@ -68,7 +68,7 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
     }
 
     private fun sendMoveTo() {
-        val conversation = Conversations.Orders.moveTo(hq.callSign, selectedElement.callsign, destinationProperty.value)
+        val conversation = MoveTo.create(hq.callSign, selectedElement.callsign, destinationProperty.value)
         log.info("Sending conversation to ${conversation.receiver}: $conversation")
         hq.startCommunication(conversation)
     }

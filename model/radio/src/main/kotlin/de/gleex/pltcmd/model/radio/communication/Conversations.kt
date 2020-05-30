@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.radio.communication
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.building.conversation
+import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 
@@ -13,23 +14,28 @@ object Conversations {
     /**
      * All orders. An order typically initializes comms, sends an order and expects a positive _readback_ or a negative answer
      */
-    object Orders {
-        fun moveTo(sender: CallSign, receiver: CallSign, targetLocation: Coordinate) =
-                orderConversation(sender, receiver, "move to $targetLocation", "moving to $targetLocation")
+    enum class Orders(private val order: String, private val readback: String) {
 
-        fun goFirm(sender: CallSign, receiver: CallSign) =
-                orderConversation(sender, receiver, "go fim", "going firm")
+        MoveTo("move to %s", "moving to %s"),
+        GoFirm("go firm", "going firm"),
+        EngageEnemyAt("engage enemy at %s", "engaging enemy at %s");
 
-        fun engageEnemyAt(sender: CallSign, receiver: CallSign, enemyLocation: Coordinate) =
-                orderConversation(sender, receiver, "engage enemy at $enemyLocation", "engaging enemy at $enemyLocation")
+        fun created(transmission: OrderTransmission): Boolean {
+            return order == transmission.messageTemplate
+        }
 
-        private fun orderConversation(sender: CallSign, receiver: CallSign, order: String, readback: String) =
+        fun create(sender: CallSign, receiver: CallSign, orderLocation: Coordinate): Conversation =
                 conversation(sender, receiver) {
                     genericOrder(
-                            orderMessage = order,
-                            readback = readback
+                            order,
+                            readback,
+                            { orderLocation }
                     )
                 }
+
+        companion object {
+            fun getOrder(transmission: OrderTransmission): Orders? = values().find { it.created(transmission) }
+        }
     }
 
     /**

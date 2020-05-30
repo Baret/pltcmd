@@ -82,19 +82,19 @@ fun main() {
     println("creating move to from $hqRadio to $charlieRadio")
 
     hqSender.startCommunication(
-            Conversations.Orders.moveTo(
+            Conversations.Orders.MoveTo.create(
                     sender = hqCallSign,
                     receiver = charlieCallSign,
-                    targetLocation = Coordinate(15, 178)
+                    orderLocation = Coordinate(15, 178)
             ))
 
     println("creating engage from $hqRadio to $bravoRadio")
 
     hqSender.startCommunication(
-            Conversations.Orders.engageEnemyAt(
+            Conversations.Orders.EngageEnemyAt.create(
                     sender = hqCallSign,
                     receiver = bravoCallSign,
-                    enemyLocation = Coordinate(24, 198)
+                    orderLocation = Coordinate(24, 198)
             ))
 
     println("creating report position from $bravoRadio to $charlieRadio")
