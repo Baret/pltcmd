@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.game.ticks
 
-import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
@@ -36,8 +35,6 @@ object Ticker {
 
     private val executor = Executors.newScheduledThreadPool(1)
 
-    private var currentGame: Game? = null
-
     init {
         val initialTime = LocalTime.of(5, 59)
         _currentTimeProperty = createPropertyFrom(initialTime)
@@ -70,19 +67,14 @@ object Ticker {
         globalEventBus.publishTick(currentTick)
     }
 
-    fun start(game: Game) {
-        currentGame = game
-        with(currentGame!!) {
-            executor.scheduleAtFixedRate({
-                tick()
-                engine.update(context(currentTick.value))
-            }, 1, 1, TimeUnit.SECONDS)
-        }
+    fun start() {
+        executor.scheduleAtFixedRate({
+            tick()
+        }, 1, 1, TimeUnit.SECONDS)
     }
 
-    fun stopGame() {
+    fun stop() {
         executor.shutdown()
-        currentGame = null
     }
 
 }

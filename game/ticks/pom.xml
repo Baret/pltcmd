@@ -19,14 +19,6 @@
             <groupId>de.gleex.pltcmd.util</groupId>
             <artifactId>events</artifactId>
         </dependency>
-        <dependency>
-            <groupId>de.gleex.pltcmd.game</groupId>
-            <artifactId>engine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.gleex.pltcmd.model</groupId>
-            <artifactId>radio</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

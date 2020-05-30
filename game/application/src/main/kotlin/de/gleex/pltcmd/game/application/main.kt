@@ -58,9 +58,9 @@ fun main() {
                         }
             }
         }
-        Ticker.start(game)
+        Ticker.start()
         // cleanup
-        screen.onShutdown { Ticker.stopGame() }
+        screen.onShutdown { Ticker.stop() }
     }
 }
 

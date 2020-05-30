@@ -4,16 +4,26 @@ import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.options.GameOptions
+import de.gleex.pltcmd.game.ticks.TickId
+import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 
 data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random: Random) {
+
+    init {
+        globalEventBus.subscribeToTicks {
+            val currentTick = it.id
+            engine.update(context(currentTick))
+        }
+    }
 
     companion object {
         private val log = LoggerFactory.getLogger(Game::class)
@@ -22,7 +32,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     /**
      * Creates a [GameContext] for the given tick.
      */
-    fun context(tick: Int): GameContext = GameContext(tick, world, random)
+    fun context(tick: TickId): GameContext = GameContext(tick, world, random)
 
     /**
      * Adds the given entity to the engine and returns it to make chained calls possible.
