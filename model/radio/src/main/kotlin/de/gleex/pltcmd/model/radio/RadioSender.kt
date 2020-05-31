@@ -9,8 +9,8 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.events.globalEventBus
-import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
+import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * A walkie-talkie or radio station that sends [Transmission]s out over the map as [RadioSignal]s.
@@ -21,12 +21,14 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
  */
 class RadioSender(private val location: ObservableValue<Coordinate>, power: Double, private val map: WorldMap) {
 
-    /** Create a RadioSender with a fixed location. **/
-    @Deprecated("use observable location")
-    constructor(location: Coordinate, power: Double, map: WorldMap) : this(location.toProperty(), power, map)
+    companion object {
+        private val log = LoggerFactory.getLogger(RadioSender::class)
+    }
 
     init {
-        location.onChange { reachableTiles = calculateReachableFields() }
+        location.onChange {
+            invalidateReachableTiles()
+        }
     }
 
     val currentLocation: Coordinate
@@ -34,9 +36,33 @@ class RadioSender(private val location: ObservableValue<Coordinate>, power: Doub
 
     private val signal = RadioSignal(power)
 
-    // pre-computed as we send with constant power over a fixed world
+    // cached as we send with constant power over a fixed world
+    private var _cachedReachableTiles: CoordinateRectangle? = null
+
     // visible for tests
-    internal var reachableTiles: CoordinateRectangle = calculateReachableFields()
+    internal val reachableTiles: CoordinateRectangle
+        get() = _cachedReachableTiles ?: fillReachableTiles()
+
+    private fun fillReachableTiles(): CoordinateRectangle {
+        val start = System.currentTimeMillis()
+        try {
+            synchronized(this) {
+                if (_cachedReachableTiles == null) {
+                    _cachedReachableTiles = calculateReachableFields()
+                }
+                return _cachedReachableTiles!!
+            }
+        } finally {
+            val duration = System.currentTimeMillis() - start
+            log.debug("Calculating reachable tiles at $currentLocation with $signal took $duration ms")
+        }
+    }
+
+    private fun invalidateReachableTiles() {
+        synchronized(this) {
+            _cachedReachableTiles = null
+        }
+    }
 
     private fun calculateReachableFields(): CoordinateRectangle {
         val maxReachOverAir = signal.maxRange

@@ -27,6 +27,7 @@ import org.hexworks.amethyst.api.Engine
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.SwingApplications
@@ -54,19 +55,24 @@ fun main() {
 
     globalEventBus.subscribeToBroadcasts { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
 
-    val hqRadio = RadioSender(origin, 50.0, map)
-    val bravoRadio = RadioSender(origin.withRelativeNorthing(10), 50.0, map)
-    val charlieRadio = RadioSender(origin.withRelativeEasting(10), 50.0, map)
-    val zuluRadio = RadioSender(tiles.last().coordinate, 1.0, map)
+    val hqLocation = origin.toProperty()
+    val bravoLocation = origin.withRelativeNorthing(10).toProperty()
+    val charlieLocation = origin.withRelativeEasting(10).toProperty()
+    val zuluLocation = tiles.last().coordinate.toProperty()
+
+    val hqRadio = RadioSender(hqLocation, 50.0, map)
+    val bravoRadio = RadioSender(bravoLocation, 50.0, map)
+    val charlieRadio = RadioSender(charlieLocation, 50.0, map)
+    val zuluRadio = RadioSender(zuluLocation, 1.0, map)
 
     val hqCallSign = CallSign("Command")
     val bravoCallSign = CallSign("Bravo-2")
     val charlieCallSign = CallSign("Charlie-1")
 
-    val hqEntity = EntityFactory.newElement(Element(hqCallSign, emptySet()), hqRadio.currentLocation, Affiliation.Self, hqRadio)
-    val bravoEntity = EntityFactory.newElement(Element(bravoCallSign, emptySet()), hqRadio.currentLocation, Affiliation.Friendly, bravoRadio)
-    val charlieEntity = EntityFactory.newElement(Element(charlieCallSign, emptySet()), hqRadio.currentLocation, Affiliation.Friendly, charlieRadio)
-    val zuluEntity = EntityFactory.newElement(Element(CallSign("Zulu-0"), emptySet()), hqRadio.currentLocation, Affiliation.Neutral, zuluRadio)
+    val hqEntity = EntityFactory.newElement(Element(hqCallSign, emptySet()), hqLocation, Affiliation.Self, hqRadio)
+    val bravoEntity = EntityFactory.newElement(Element(bravoCallSign, emptySet()), bravoLocation, Affiliation.Friendly, bravoRadio)
+    val charlieEntity = EntityFactory.newElement(Element(charlieCallSign, emptySet()), charlieLocation, Affiliation.Friendly, charlieRadio)
+    val zuluEntity = EntityFactory.newElement(Element(CallSign("Zulu-0"), emptySet()), zuluLocation, Affiliation.Neutral, zuluRadio)
 
     val hqSender = RadioCommunicator(hqEntity, game)
     val bravoSender = RadioCommunicator(bravoEntity, game)
