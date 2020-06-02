@@ -23,10 +23,8 @@ class CommandingElement(
         get() = _subordinates
 
     init {
-        require(subordinates
-                .map { addElement(it) }
-                .all { it }) {
-            "Following subordinates could be added to $this: ${subordinates - _subordinates}"
+        require(subordinates.all { addElement(it) }) {
+            "Following subordinates could not be added to $this: ${subordinates - _subordinates}"
         }
     }
 
@@ -53,9 +51,7 @@ class CommandingElement(
      * The total number of soldiers making up this element (all [Unit.personnel] summed up).
      */
     val totalSoldiers: Int
-        get() = allUnits.fold(0, { acc: Int, unit: Unit ->
-            acc + unit.personnel
-        })
+        get() = allUnits.sumBy { it.personnel }
 
     /**
      * The callsign this element is identified by. If commanded by another [CommandingElement] (i.e. [superordinate] is present)
@@ -75,7 +71,7 @@ class CommandingElement(
         require(index >= 0) {
             "Element $subordinate is not a subordinate of $this"
         }
-        return ownCallsign + "-${index + 1}"
+        return callSign + "-${index + 1}"
     }
 
     /**

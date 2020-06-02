@@ -126,4 +126,4 @@ fun firePowerFor(unit: Unit): Double? =
             else                -> null
         }
 
-fun spacer() { println(); println() }
+fun spacer() { println("\\"); println("/") }

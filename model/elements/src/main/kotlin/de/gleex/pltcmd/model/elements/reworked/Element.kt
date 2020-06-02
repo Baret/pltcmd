@@ -54,7 +54,7 @@ open class Element(
      */
     fun addUnit(newUnit: Unit): Boolean {
         require(newUnit canBeAddedTo this) {
-            "An element of kind $kind can only have units of kind ${kind.allows}, but got: ${newUnit.kind}"
+            "An element of kind $kind can only have units of kind ${kind.allowedUnitKinds}, but got: ${newUnit.kind}"
         }
         return _units.add(newUnit)
     }
@@ -68,6 +68,10 @@ open class Element(
      */
     fun removeUnit(unit: Unit): Boolean = _units.remove(unit)
 
+    /**
+     * Sets the [superordinate] of this element. If null is passed it means that this element is
+     * not longer being commanded by another element.
+     */
     fun setSuperordinate(commandingElement: CommandingElement?) {
         _superordinate.ifPresent { it.removeElement(this) }
 
