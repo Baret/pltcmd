@@ -24,8 +24,9 @@ enum class Corps {
      *
      * - Indirect fire like mortars and artillery
      * - CAS: Close air support, executed by attack choppers or planes
+     * - Destruction/Sabotage: Remove enemy constructions
      */
-    Firesupport,
+    CombatSupport,
     /**
      * Intelligence is everything in war. Before sending troops to an area it should be scouted
      * first. This corps helps revealing unknown parts of the map and spot and track enemy elements.
