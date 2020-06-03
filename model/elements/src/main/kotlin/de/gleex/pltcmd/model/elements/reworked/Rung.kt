@@ -1,12 +1,12 @@
 package de.gleex.pltcmd.model.elements.reworked
 
 /**
- * An [Element]'s size determines its position in the military hierarchy. An element can
- * only be commanded by a bigger element and vice versa.
+ * An [Element]'s rung determines its position in the military hierarchy. An element can
+ * only be commanded by an element further up in the hierarchy.
  *
  * The order of this enum is ascending, meaning [Fireteam] < [Squad] etc. Or see the ordinal value.
  */
-enum class ElementSize {
+enum class Rung {
     /**
      * The smallest element worth mentioning. It is the smallest element usually making up a [Squad].
      */

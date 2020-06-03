@@ -9,7 +9,7 @@ import de.gleex.pltcmd.model.elements.reworked.units.Unit
  */
 class CommandingElement(
         kind: ElementKind,
-        size: ElementSize,
+        size: Rung,
         private val ownCallsign: CallSign,
         units: Set<Unit>,
         subordinates: Set<Element>

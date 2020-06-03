@@ -14,7 +14,7 @@ object Elements {
 
         fun rifleTeam() = Element(
                 kind,
-                ElementSize.Fireteam,
+                Rung.Fireteam,
                 setOf(
                         Rifleman.new(),
                         Grenadier.new(),
@@ -25,7 +25,7 @@ object Elements {
 
         fun weaponsTeam() = Element(
                 kind,
-                ElementSize.Fireteam,
+                Rung.Fireteam,
                 setOf(
                         Rifleman.new(),
                         Grenadier.new(),
@@ -35,7 +35,7 @@ object Elements {
 
         fun rifleSquad(callSign: String) = CommandingElement(
                 kind,
-                ElementSize.Squad,
+                Rung.Squad,
                 CallSign(callSign),
                 setOf(Officer.new(), Medic.new()),
                 setOf(rifleTeam(), rifleTeam())
@@ -43,7 +43,7 @@ object Elements {
 
         fun weaponsSquad(callSign: String) = CommandingElement(
                 kind,
-                ElementSize.Squad,
+                Rung.Squad,
                 CallSign(callSign),
                 setOf(Officer.new(), Medic.new()),
                 setOf(rifleTeam(), weaponsTeam())
@@ -51,7 +51,7 @@ object Elements {
 
         fun riflePlatoon(callSign: String) = CommandingElement(
                 kind,
-                ElementSize.Platoon,
+                Rung.Platoon,
                 CallSign(callSign),
                 setOf(Officer.new(), Officer.new(), Medic.new(), Rifleman.new()),
                 setOf(rifleSquad("$callSign-1"), rifleSquad("$callSign-2"), weaponsSquad("$callSign-3"))

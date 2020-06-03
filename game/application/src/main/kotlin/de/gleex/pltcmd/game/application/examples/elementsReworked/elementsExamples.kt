@@ -50,10 +50,10 @@ fun main() {
     alpha.addElement(wolfs)
     printCommandElement(wolfs)
     spacer()
-    println("And when we even put ${alpha.callSign} into a ${ElementSize.Company}")
+    println("And when we even put ${alpha.callSign} into a ${Rung.Company}")
     val company = CommandingElement(
             ElementKind.Infantry,
-            ElementSize.Company,
+            Rung.Company,
             CallSign("Wild Hogs"),
             setOf(Officer.new(), Officer.new(), Medic.new(), Grenadier.new(), Rifleman.new()),
             setOf(alpha, bravo)
@@ -71,17 +71,16 @@ fun main() {
     // TODO: Make a unittest out of this
     println("Lets test some impossible cases...")
     println("You cannot put a squad into a squad and subordinates need to have the same kind...")
-    val sq1 = CommandingElement(ElementKind.Infantry, ElementSize.Squad, CallSign("sub"), setOf(Officer.new()), emptySet())
+    val sq1 = CommandingElement(ElementKind.Infantry, Rung.Squad, CallSign("sub"), setOf(Officer.new()), emptySet())
     tryAndCatch {
-        CommandingElement(ElementKind.Armored, ElementSize.Platoon, CallSign("superArmored"), setOf(Officer.new()), setOf(sq1))
+        CommandingElement(ElementKind.Armored, Rung.Platoon, CallSign("superArmored"), setOf(Officer.new()), setOf(sq1))
     }
     tryAndCatch {
-        CommandingElement(ElementKind.Infantry, ElementSize.Squad, CallSign("superSquad"), setOf(Officer.new()), setOf(sq1))
+        CommandingElement(ElementKind.Infantry, Rung.Squad, CallSign("superSquad"), setOf(Officer.new()), setOf(sq1))
     }
-    spacer()
     println("You can also not put a tank into a mechanized infantry fireteam")
     tryAndCatch {
-        Element(ElementKind.MechanizedInfantry, ElementSize.Fireteam, setOf(Officer.new(), Rifleman.new(), TruckTransport.new(), MainBattleTank.new()))
+        Element(ElementKind.MechanizedInfantry, Rung.Fireteam, setOf(Officer.new(), Rifleman.new(), TruckTransport.new(), MainBattleTank.new()))
     }
 }
 

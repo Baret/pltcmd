@@ -18,7 +18,7 @@ open class Element(
          * @see ElementKind
          */
         val kind: ElementKind,
-        val size: ElementSize,
+        val size: Rung,
         units: Set<Unit>,
         superordinate: CommandingElement? = null
 ) {
