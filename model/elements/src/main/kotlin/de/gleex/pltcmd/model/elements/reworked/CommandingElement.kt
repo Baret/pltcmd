@@ -2,6 +2,8 @@ package de.gleex.pltcmd.model.elements.reworked
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.reworked.units.Unit
+import org.hexworks.cobalt.databinding.api.collection.SetProperty
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 
 /**
  * A commanding element is in charge of other elements and represented in the command net by its callsign if it is not
@@ -15,13 +17,27 @@ class CommandingElement(
         subordinates: Set<Element>
 ) : Element(kind, rung, units) {
 
-    private val _subordinates: MutableSet<Element> = mutableSetOf()
+    /**
+     * The callsign this element is identified by. If commanded by another [CommandingElement] (i.e. [superordinate] is present)
+     * the callsign is inherited. Otherwise the callsign given in the constructor is used.
+     */
+    val callSign: CallSign
+        get() {
+            return if(superordinate.isPresent) {
+                superordinate.get().callSignFor(this)
+            } else {
+                ownCallsign
+            }
+        }
+
+    private val _subordinates: SetProperty<Element> = mutableSetOf<Element>().toProperty()
+    private val callsignProvider = SubCallsignProvider({callSign}, _subordinates)
 
     /**
      * The current subordinates this element is commanding.
      */
     val subordinates: Set<Element>
-        get() = _subordinates
+        get() = _subordinates.toSet()
 
     init {
         require(subordinates.all { addElement(it) }) {
@@ -54,26 +70,16 @@ class CommandingElement(
     val totalSoldiers: Int
         get() = allUnits.sumBy { it.personnel }
 
-    /**
-     * The callsign this element is identified by. If commanded by another [CommandingElement] (i.e. [superordinate] is present)
-     * the callsign is inherited. Otherwise the callsign given in the constructor is used.
-     */
-    val callSign: CallSign
-        get() {
-            return if(superordinate.isPresent) {
-                superordinate.get().callSignFor(this)
-            } else {
-                ownCallsign
-            }
-        }
+    private fun callSignFor(subordinate: Element): CallSign =
+            callsignProvider.callSignFor(subordinate)
 
-    private fun callSignFor(subordinate: Element): CallSign {
+    /*{
         val index = subordinates.indexOf(subordinate)
         require(index >= 0) {
             "Element $subordinate is not a subordinate of $this"
         }
         return callSign + "-${index + 1}"
-    }
+    }*/
 
     /**
      * Adds the given element to the [subordinates] and sets this element as the given element's [superordinate].
@@ -99,14 +105,16 @@ class CommandingElement(
      * Removes the given element from the [subordinates], if present.
      *
      * @return true if it was present and has successfully been removed. Otherwise false
-     *
-     * @see MutableSet.remove
      */
     fun removeElement(element: Element): Boolean {
-        if(_subordinates.remove(element)) {
-            element.setSuperordinate(null)
+        if(_subordinates.contains(element)) {
+            _subordinates.remove(element)
+            element.clearSuperordinate()
             return true
         }
         return false
     }
+
+    override fun toString() =
+            "$kind $rung $ownCallsign [id=$id, ${subordinates.size} subordinates, $totalUnits total units${superordinate.map { ", superordinate present" }.orElse("")}]"
 }

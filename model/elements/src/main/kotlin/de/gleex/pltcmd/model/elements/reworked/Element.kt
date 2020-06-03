@@ -66,17 +66,28 @@ open class Element(
     fun removeUnit(unit: Unit): Boolean = _units.remove(unit)
 
     /**
-     * Sets the [superordinate] of this element. If null is passed it means that this element is
-     * not longer being commanded by another element.
+     * Sets the [superordinate] of this element. If this element is currently being commanded
+     * you have to clear its current superordinate first.
+     *
+     * @see
      */
-    fun setSuperordinate(commandingElement: CommandingElement?) {
-        _superordinate.ifPresent { it.removeElement(this) }
+    fun setSuperordinate(commandingElement: CommandingElement) {
+        require(superordinate.isEmpty() || superordinate.get().subordinates.contains(this).not()) {
+            "Can not set new superordinate in $this. It has to be removed from current commanding element first: ${superordinate.get()}"
+        }
 
-        _superordinate = Maybe.ofNullable(commandingElement)
-        commandingElement?.addElement(this)
+        _superordinate = Maybe.of(commandingElement)
+        commandingElement.addElement(this)
     }
 
-    override fun toString() = "$kind $rung [id=$id, units=$units${superordinate.map { ",superordinate=$it" }.orElse("")}]"
+    /**
+     * Removes the current superordinate.
+     */
+    internal fun clearSuperordinate() {
+        _superordinate = Maybe.empty()
+    }
+
+    override fun toString() = "$kind $rung [id=$id, ${units.size} units${superordinate.map { ",superordinate=$it" }.orElse("")}]"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

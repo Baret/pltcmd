@@ -47,7 +47,15 @@ fun main() {
     printCommandElement(wolfs)
     spacer()
     println("But after adding it to ${alpha.callSign}...")
+    val elementToRemoveFromAlpha = alpha.subordinates.random() as CommandingElement
     alpha.addElement(wolfs)
+    printCommandElement(wolfs)
+    println("Directly adding it to bravo should not be possible")
+    tryAndCatch {
+        bravo.addElement(wolfs)
+    }
+    println("Its callsign should stay ${wolfs.callSign} when removing ${elementToRemoveFromAlpha.callSign} from ${alpha.callSign}")
+    alpha.removeElement(elementToRemoveFromAlpha)
     printCommandElement(wolfs)
     spacer()
     println("And when we even put ${alpha.callSign} into a ${Rung.Company}")
@@ -64,7 +72,7 @@ fun main() {
     alpha.removeElement(wolfs)
     printCommandElement(wolfs)
     spacer()
-    println("BTW, just to make it completely rediculous, the company containing alpha and bravo: $company")
+    println("BTW, just to make it completely ridiculous, the company containing alpha and bravo: $company")
     printCommandElement(company)
 
     spacer()
@@ -89,7 +97,7 @@ fun tryAndCatch(throwingFunction: () -> Any) {
         throwingFunction.invoke()
         println("Invocation of function did not throw an exception! Something went wrong...")
     } catch (e: Exception) {
-        println("Constructor threw exception: ${e.message}")
+        println("Got exception as expected: ${e.message}")
     }
 }
 

@@ -17,7 +17,7 @@ import org.hexworks.cobalt.core.platform.factory.UUIDFactory
  * be present once. This class represents the immutable part of a unit. Mutable attributes should be added by the game
  * engine to track its state.
  */
-class Unit(val blueprint: UnitBlueprint) {
+class Unit(private val blueprint: UnitBlueprint) {
     val id = UUIDFactory.randomUUID()
     /**
      * @see [Unit]
