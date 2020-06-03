@@ -5,20 +5,17 @@ import org.hexworks.cobalt.core.platform.factory.UUIDFactory
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**
- * Elements make up a  military hierarchy. Each element groups a set of [Unit]s.
+ * An element consists of a set of [Unit]s. All elements of a faction make up its armed forces.
  *
  * Simple elements are commanded by a superordinate (see [CommandingElement]).
  * They are not part of the command net and do not have an own callsign.
  *
- * Every element has a [kind] and [size] defining what kind of units they are composed of
- * and on what level of organisation they reside (the bigger, the further up in the hierarchy).
+ * Every element has a [kind] and [rung] defining what kind of units they are composed of
+ * and on what level of organisation they reside.
  */
 open class Element(
-        /**
-         * @see ElementKind
-         */
         val kind: ElementKind,
-        val size: Rung,
+        val rung: Rung,
         units: Set<Unit>,
         superordinate: CommandingElement? = null
 ) {
@@ -79,7 +76,20 @@ open class Element(
         commandingElement?.addElement(this)
     }
 
-    override fun toString() = "$kind $size [id=$id, units=$units${superordinate.map { ",superordinate=$it" }.orElse("")}]"
+    override fun toString() = "$kind $rung [id=$id, units=$units${superordinate.map { ",superordinate=$it" }.orElse("")}]"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Element) return false
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }
 
 /**

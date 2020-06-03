@@ -24,7 +24,7 @@ fun main() {
     }
     val alpha = Elements.Infantry.riflePlatoon("Alpha")
     val bravo = Elements.Infantry.riflePlatoon("Bravo")
-    println("A full ${alpha.kind} ${alpha.size} called ${alpha.callSign} would have a combined firepower of ${alpha.allUnits.fold(0.0) { a, unit -> a + (firePowerFor(unit) ?: 0.0) }}")
+    println("A full ${alpha.kind} ${alpha.rung} called ${alpha.callSign} would have a combined firepower of ${alpha.allUnits.fold(0.0) { a, unit -> a + (firePowerFor(unit) ?: 0.0) }}")
 
     spacer()
 
@@ -95,7 +95,7 @@ fun tryAndCatch(throwingFunction: () -> Any) {
 
 fun printCommandElement(element: CommandingElement, depth: Int = 0) {
     val tabs = "\t".repeat(depth)
-    println("${tabs}Structure of ${element.kind} ${element.size} ${element.callSign}:")
+    println("${tabs}Structure of ${element.kind} ${element.rung} ${element.callSign}:")
     print("${tabs}\t${element.totalSoldiers} soldiers in ${element.totalUnits} units")
     element.superordinate.fold({println()}) {
         println(", commanded by ${it.callSign}")
@@ -113,7 +113,7 @@ fun printCommandElement(element: CommandingElement, depth: Int = 0) {
 
 fun printElement(element: Element, depth: Int) {
     val tabs = "\t".repeat(depth)
-    println("${tabs}${element.size}: ${element.units.joinToString(", ") { it.name }}")
+    println("${tabs}${element.rung}: ${element.units.joinToString(", ") { it.name }}")
 }
 
 fun firePowerFor(unit: Unit): Double? =

@@ -13,8 +13,6 @@ import org.hexworks.cobalt.core.platform.factory.UUIDFactory
  *
  * [personnelMinimum] is the number of soldiers needed to keep this unit operational.
  *
- * [kind] see [UnitBlueprint.kind]
- *
  * Units are backed by a [UnitBlueprint] for memory optimization. All immutable base values of a unit only need to
  * be present once. This class represents the immutable part of a unit. Mutable attributes should be added by the game
  * engine to track its state.
@@ -25,7 +23,7 @@ class Unit(val blueprint: UnitBlueprint) {
      * @see [Unit]
      */
     val name: String
-        get() = blueprint::class.objectInstance?.javaClass?.simpleName?: "Unit"
+        get() = blueprint::class.simpleName?: "Unit"
     /**
      * @see [Unit]
      */
@@ -48,4 +46,19 @@ class Unit(val blueprint: UnitBlueprint) {
     fun isA(unitBlueprint: UnitBlueprint): Boolean = blueprint == unitBlueprint
 
     override fun toString() = "${blueprint.kind} $name [id=$id]"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Unit
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }

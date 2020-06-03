@@ -9,13 +9,14 @@ import de.gleex.pltcmd.model.elements.reworked.units.Unit
  */
 class CommandingElement(
         kind: ElementKind,
-        size: Rung,
+        rung: Rung,
         private val ownCallsign: CallSign,
         units: Set<Unit>,
         subordinates: Set<Element>
-) : Element(kind, size, units) {
+) : Element(kind, rung, units) {
 
     private val _subordinates: MutableSet<Element> = mutableSetOf()
+
     /**
      * The current subordinates this element is commanding.
      */
@@ -85,7 +86,7 @@ class CommandingElement(
         if(_subordinates.contains(element)) {
             return true
         }
-        if(kind == element.kind && element.size < size) {
+        if(kind == element.kind && element.rung < rung) {
             // TODO: Maybe a commanding element could get a max number of subordinates so that you cannot stack elements into it endlessly
             _subordinates.add(element)
             element.setSuperordinate(this)
