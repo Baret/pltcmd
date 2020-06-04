@@ -1,21 +1,21 @@
 package de.gleex.pltcmd.model.world.coordinate
 
-import io.kotlintest.assertSoftly
-import io.kotlintest.data.suspend.forall
-import io.kotlintest.matchers.beGreaterThan
-import io.kotlintest.matchers.beLessThan
-import io.kotlintest.matchers.collections.containDuplicates
-import io.kotlintest.matchers.collections.shouldContainInOrder
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.string.shouldHaveMinLength
-import io.kotlintest.matchers.string.shouldMatch
-import io.kotlintest.matchers.types.shouldBeNull
-import io.kotlintest.properties.assertAll
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNot
-import io.kotlintest.specs.WordSpec
-import io.kotlintest.tables.row
+import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
+import io.kotest.matchers.collections.containDuplicates
+import io.kotest.matchers.collections.shouldContainInOrder
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.comparables.beGreaterThan
+import io.kotest.matchers.comparables.beLessThan
+import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.shouldHaveMinLength
+import io.kotest.matchers.string.shouldMatch
+import io.kotest.property.checkAll
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 class CoordinateTest : WordSpec({
@@ -42,7 +42,7 @@ class CoordinateTest : WordSpec({
         }
 
         "must be subtract able" {
-            forall(
+            forAll(
                     row(Coordinate.zero, Coordinate(testCoordinate.eastingFromLeft - 0, testCoordinate.northingFromBottom - 0)),
                     row(Coordinate.oneEast, Coordinate(testCoordinate.eastingFromLeft - 1, testCoordinate.northingFromBottom - 0)),
                     row(Coordinate.oneNorth, Coordinate(testCoordinate.eastingFromLeft - 0, testCoordinate.northingFromBottom - 1)),
@@ -115,7 +115,7 @@ class CoordinateTest : WordSpec({
         val regex = Coordinate.REGEX_STRING
         "always have a length of at least 9 and match '$regex'" {
             var checkedCoordinates = 0
-            assertAll { x: Int, y: Int ->
+            checkAll<Int, Int> { x, y ->
                 val coordinateString = Coordinate(x, y).toString()
                 assertSoftly {
                     coordinateString shouldHaveMinLength 9
@@ -150,7 +150,7 @@ class CoordinateTest : WordSpec({
     }
 
     "A coordinate created from a string" should {
-        forall(
+        forAll(
                 row("(001|001)", Coordinate(1, 1)),
                 row("(000|000)", Coordinate(0, 0)),
                 row("(-100|001)", Coordinate(-100, 1)),
@@ -164,7 +164,7 @@ class CoordinateTest : WordSpec({
             }
         }
 
-        forall(
+        forAll(
                 row("(123456789|1)"),
                 row("(123456789|11)"),
                 row("(123456789|-11)"),

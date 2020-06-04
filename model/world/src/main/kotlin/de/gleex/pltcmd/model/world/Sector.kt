@@ -1,12 +1,14 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.terrain.Terrain
+import java.util.*
 import kotlin.random.Random
 
 /**
  * A sector has 50 by 50 [WorldTile]s (it is a square).
  */
-data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
+data class Sector(val origin: Coordinate, val tiles: SortedSet<WorldTile>) : Comparable<Sector> {
     companion object {
         /** edge length of a sector (in each directon of the map rectangle) */
         const val TILE_COUNT = 50
@@ -28,17 +30,6 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
         }
     }
 
-
-    // extensions for WorldTile
-    private fun WorldTile.inSameSector(other: WorldTile) = getSectorOrigin() == other.getSectorOrigin()
-
-    private fun WorldTile.getSectorOrigin() = coordinate.toSectorOrigin()
-
-    private fun Coordinate.toSectorOrigin() = Coordinate(
-            eastingFromLeft - (eastingFromLeft % TILE_COUNT),
-            northingFromBottom - (northingFromBottom % TILE_COUNT)
-    )
-
     /**
      * Returns a random [Coordinate] that lies inside this sector.
      */
@@ -50,11 +41,39 @@ data class Sector(val origin: Coordinate, val tiles: Set<WorldTile>) {
                         origin.northingFromBottom, origin.northingFromBottom + TILE_COUNT))
     }
 
-    fun contains(coordinate: Coordinate): Boolean {
-        if (origin > coordinate) {
-            return false
-        }
-        return tiles.any { it.coordinate == coordinate }
+    operator fun contains(coordinate: Coordinate): Boolean {
+        // because this sector contains all coordinates
+        return origin == coordinate.toSectorOrigin()
     }
 
+    fun getTerrainAt(coordinate: Coordinate): Terrain? {
+        // for performance check first instead of iterating over all each time
+        if (!contains(coordinate)) {
+            return null
+        }
+        return get(coordinate)!!.terrain
+    }
+
+    operator fun get(coordinate: Coordinate): WorldTile? {
+        return tiles.find { it.coordinate == coordinate }
+    }
+
+    /** sorted by origin */
+    override operator fun compareTo(other: Sector): Int {
+        return origin.compareTo(other.origin)
+    }
+
+    override fun toString(): String {
+        return "Sector at $origin"
+    }
 }
+
+// extensions for WorldTile
+fun WorldTile.inSameSector(other: WorldTile) = getSectorOrigin() == other.getSectorOrigin()
+
+fun WorldTile.getSectorOrigin() = coordinate.toSectorOrigin()
+
+fun Coordinate.toSectorOrigin() = Coordinate(
+        eastingFromLeft - Math.floorMod(eastingFromLeft, Sector.TILE_COUNT),
+        northingFromBottom - Math.floorMod(northingFromBottom, Sector.TILE_COUNT)
+)

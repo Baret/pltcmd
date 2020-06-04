@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.ui.composites
+package de.gleex.pltcmd.game.ui.composites
 
 import de.gleex.pltcmd.game.options.UiOptions
 import org.hexworks.zircon.api.CharacterTileStrings

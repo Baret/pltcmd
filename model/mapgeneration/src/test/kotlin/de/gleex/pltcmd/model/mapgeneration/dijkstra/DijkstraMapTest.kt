@@ -3,12 +3,12 @@ package de.gleex.pltcmd.model.mapgeneration.dijkstra
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.tests.beEmpty
 import de.gleex.pltcmd.util.tests.shouldContainValue
-import io.kotlintest.assertSoftly
-import io.kotlintest.matchers.collections.shouldContainInOrder
-import io.kotlintest.matchers.collections.shouldHaveSingleElement
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.should
-import io.kotlintest.specs.WordSpec
+import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.shouldContainInOrder
+import io.kotest.matchers.collections.shouldHaveSingleElement
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.should
 
 class DijkstraMapTest: WordSpec({
     "A map with only a target" should {

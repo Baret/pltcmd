@@ -1,10 +1,10 @@
 package de.gleex.pltcmd.model.radio.testhelpers
 
-import de.gleex.pltcmd.model.radio.SignalStrength
-import io.kotlintest.Matcher
-import io.kotlintest.MatcherResult
-import io.kotlintest.matchers.doubles.shouldBeExactly
-import io.kotlintest.should
+import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.doubles.shouldBeExactly
+import io.kotest.matchers.should
 import org.hexworks.cobalt.datatypes.Maybe
 
 // - - - Matchers for Maybe

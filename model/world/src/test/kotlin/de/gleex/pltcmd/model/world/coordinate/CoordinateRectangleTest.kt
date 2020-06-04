@@ -1,9 +1,9 @@
 package de.gleex.pltcmd.model.world.coordinate
 
-import io.kotlintest.matchers.collections.shouldContainInOrder
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
-import io.kotlintest.specs.WordSpec
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.shouldContainInOrder
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 
 class CoordinateRectangleTest: WordSpec({
     val start = Coordinate(0, 0)
@@ -34,10 +34,20 @@ class CoordinateRectangleTest: WordSpec({
 
         for(y in -1..4 step 5) {
             for(x in -1..3 step 4) {
-                val notContained = Coordinate(x, y)
-                "not contain $notContained" {
-                    rectangleToTest.contains(notContained) shouldNotBe true
+                val notContainedCorner = Coordinate(x, y)
+                "not contain $notContainedCorner" {
+                    rectangleToTest.contains(notContainedCorner) shouldNotBe true
                 }
+            }
+            val notContainedY = Coordinate(1, y)
+            "not contain $notContainedY" {
+                rectangleToTest.contains(notContainedY) shouldNotBe true
+            }
+        }
+        for(x in -1..3 step 4) {
+            val notContainedX = Coordinate(x, 1)
+            "not contain $notContainedX" {
+                rectangleToTest.contains(notContainedX) shouldNotBe true
             }
         }
 

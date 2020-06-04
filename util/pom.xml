@@ -19,6 +19,7 @@
     <modules>
         <module>tests</module>
         <module>events</module>
+        <module>geometry</module>
     </modules>
 
 </project>

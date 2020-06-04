@@ -1,14 +1,22 @@
 package de.gleex.pltcmd.game.application.examples.conversation
 
 import de.gleex.pltcmd.game.communication.RadioCommunicator
-import de.gleex.pltcmd.game.communication.subscribeToRadioComms
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.fragments.TickFragment
 import de.gleex.pltcmd.game.ui.fragments.TilesetSelectorFragment
 import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.Conversations
+import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
+import de.gleex.pltcmd.model.world.Sector
+import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
+import de.gleex.pltcmd.model.world.terrain.Terrain
+import de.gleex.pltcmd.model.world.terrain.TerrainHeight
+import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
@@ -29,15 +37,29 @@ import org.hexworks.zircon.api.graphics.BoxType
  * to dynamically build conversations in the UI.
  */
 fun main() {
-    globalEventBus.subscribeToRadioComms { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
+    val origin = Coordinate(100, 250)
+    val tiles = CoordinateRectangle(origin, Sector.TILE_COUNT, Sector.TILE_COUNT).
+            map { coordinate -> WorldTile(coordinate, Terrain.of(TerrainType.FOREST, TerrainHeight.FIVE)) }.
+            toSortedSet()
+    val sector = Sector(origin, tiles)
+    val map = WorldMap.create(setOf(sector))
 
-    val hq = CallSign("Command")
-    val charlie = CallSign("Charlie-1")
-    val bravo = CallSign("Bravo-2")
+    globalEventBus.subscribeToBroadcasts { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
 
-    val hqSender = RadioCommunicator(hq)
-    val charlieSender = RadioCommunicator(charlie)
-    val bravoSender = RadioCommunicator(bravo)
+    val hq = RadioSender(origin, 50.0, map)
+    val bravo = RadioSender(origin.withRelativeNorthing(10), 50.0, map)
+    val charlie = RadioSender(origin.withRelativeEasting(10), 50.0, map)
+    val zulu = RadioSender(tiles.last().coordinate, 1.0, map)
+
+    val hqCallSign = CallSign("Command")
+    val bravoCallSign = CallSign("Bravo-2")
+    val charlieCallSign = CallSign("Charlie-1")
+
+    val hqSender = RadioCommunicator(hqCallSign, hq)
+    val bravoSender = RadioCommunicator(bravoCallSign, bravo)
+    val charlieSender = RadioCommunicator(charlieCallSign, charlie)
+    // only listens
+    RadioCommunicator(CallSign("Zulu-0"), zulu)
 
     buildUI(hqSender, bravoSender, charlieSender)
 
@@ -45,16 +67,16 @@ fun main() {
 
     hqSender.startCommunication(
             Conversations.Reports.sitrep(
-                    sender = hq,
-                    receiver = bravo
+                    sender = hqCallSign,
+                    receiver = bravoCallSign
             ))
 
     println("creating move to from $hq to $charlie")
 
     hqSender.startCommunication(
             Conversations.Orders.moveTo(
-                    sender = hq,
-                    receiver = charlie,
+                    sender = hqCallSign,
+                    receiver = charlieCallSign,
                     targetLocation = Coordinate(15, 178)
             ))
 
@@ -62,8 +84,8 @@ fun main() {
 
     hqSender.startCommunication(
             Conversations.Orders.engageEnemyAt(
-                    sender = hq,
-                    receiver = bravo,
+                    sender = hqCallSign,
+                    receiver = bravoCallSign,
                     enemyLocation = Coordinate(24, 198)
             ))
 
@@ -71,8 +93,8 @@ fun main() {
 
     bravoSender.startCommunication(
             Conversations.Reports.reportPosition(
-                    sender = bravo,
-                    receiver = charlie
+                    sender = bravoCallSign,
+                    receiver = charlieCallSign
             ))
 }
 
@@ -89,7 +111,7 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
     withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
     build().
     apply {
-        globalEventBus.subscribeToRadioComms { event ->
+        globalEventBus.subscribeToBroadcasts { event ->
                     addParagraph("${Ticker.currentTimeString.value}: ${event.transmission.message}", false, 10)
                 }
             }

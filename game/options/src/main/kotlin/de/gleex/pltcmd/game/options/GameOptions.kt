@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.options
 
 import de.gleex.pltcmd.model.world.Sector
+import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.zircon.api.data.Size3D
@@ -13,12 +14,17 @@ object GameOptions {
     /**
      * Option to turn on the RadioSignalVisualizer and corresponding UI elements.
      */
-    val displayRadioSignals: Property<Boolean> = createPropertyFrom(true)
+    val displayRadioSignals: Property<Boolean> = createPropertyFrom(false)
 
     /**
      * Seed used to always create the same map which is useful for development.
      */
     const val DEBUG_MAP_SEED: Long = 5488540751658L
+
+    /**
+     * The origin of the map. In other words the world map's bottom left corner is this coordinate.
+     */
+    val MAP_ORIGIN: Coordinate = Coordinate(0, 0)
 
     /**
      * Horizontal number of sectors in the world.

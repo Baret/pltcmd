@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.radio
+package de.gleex.pltcmd.model.radio.broadcasting
 
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom

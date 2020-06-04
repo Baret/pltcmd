@@ -5,7 +5,6 @@ import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.base.BaseBehavior
 import kotlin.math.sign
@@ -20,10 +19,10 @@ internal object Moving : BaseBehavior<GameContext>(PositionAttribute::class, Des
         if (entity.type !is Movable) {
             return false
         }
-        return moveTowardsDestination(entity as GameEntity<Movable>)
+        return moveTowardsDestination(entity as MovableEntity)
     }
 
-    private fun moveTowardsDestination(movable: GameEntity<Movable>): Boolean {
+    private fun moveTowardsDestination(movable: MovableEntity): Boolean {
         if (movable.hasNoDestination) {
             return false
         }

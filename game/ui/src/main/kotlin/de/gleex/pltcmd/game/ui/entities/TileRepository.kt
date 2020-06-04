@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.ui.entities
 
-import de.gleex.pltcmd.model.radio.SignalStrength
+import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
@@ -27,9 +28,11 @@ object TileRepository {
                 withModifiers(BorderBuilder.newBuilder().withBorderColor(colorBackground).build()).
                 buildCharacterTile()
 
-        val PLATOON_FRIENDLY: Tile = platoonTile(ColorRepository.FRIENDLY, ColorRepository.FRIENDLY_TRANSPARENT)
-
-        val PLATOON_UNKNOWN: Tile = platoonTile(ColorRepository.UNKNOWN, ColorRepository.UNKNOWN_TRANSPARENT)
+        fun platoon(affiliation: Affiliation): Tile {
+            // TODO: cache the tiles, because they are immutable
+            val (foreground, background) = ColorRepository.forAffiliation(affiliation)
+            return platoonTile(foreground, background)
+        }
     }
 
     fun createTerrainTile(terrain: Terrain): Tile = createTerrainTile(terrain.height, terrain.type)

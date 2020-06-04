@@ -1,11 +1,11 @@
 package de.gleex.pltcmd.model.world.coordinate
 
-import io.kotlintest.assertSoftly
-import io.kotlintest.matchers.string.shouldHaveMinLength
-import io.kotlintest.matchers.string.shouldMatch
-import io.kotlintest.properties.assertAll
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.WordSpec
+import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldHaveMinLength
+import io.kotest.matchers.string.shouldMatch
+import io.kotest.property.checkAll
 
 class MainCoordinateTest: WordSpec({
     val testCoordinate = MainCoordinate(5, 9)
@@ -27,7 +27,7 @@ class MainCoordinateTest: WordSpec({
     "The string representation of a main coordinate in the form of (x|y)" should {
         val regex = "\\(-?\\d+\\|-?\\d+\\)"
         "always have a length of at least 5 and match '$regex'" {
-            assertAll { x: Int, y: Int ->
+            checkAll<Int, Int> { x, y ->
                 val coordinateString = MainCoordinate(x, y).toString()
                 assertSoftly {
                     coordinateString shouldHaveMinLength 5

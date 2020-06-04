@@ -89,7 +89,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
         val sectors = mutableSetOf<Sector>()
         for(sectorOriginNorthing in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom step Sector.TILE_COUNT) {
             for(sectorOriginEasting in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft step Sector.TILE_COUNT) {
-                val tiles = mutableSetOf<WorldTile>()
+                val tiles: SortedSet<WorldTile> = TreeSet()
                 val sectorEndEasting = sectorOriginEasting + Sector.TILE_COUNT - 1
                 val sectorEndNorthing = sectorOriginNorthing + Sector.TILE_COUNT - 1
                 for(y in sectorOriginNorthing..sectorEndNorthing) {
@@ -103,7 +103,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
                 sectors.add(Sector(Coordinate(sectorOriginEasting, sectorOriginNorthing), tiles))
             }
         }
-        return WorldMap(sectors)
+        return WorldMap.create(sectors)
     }
 
     private fun finishGeneration() {

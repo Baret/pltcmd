@@ -1,15 +1,15 @@
-package de.gleex.pltcmd.model.radio
+package de.gleex.pltcmd.model.radio.broadcasting
 
 import de.gleex.pltcmd.model.radio.testhelpers.shouldBeExactly
-import io.kotlintest.data.forall
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.WordSpec
-import io.kotlintest.tables.row
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
 
-class SignalStrengthTest:WordSpec( {
+class SignalStrengthTest : WordSpec({
     "Absolute radio signal power converted to a signal strength" should {
         "be 1.0 when > 100 and 0.0 when < ${RadioSignal.MIN_POWER_THRESHOLD}" {
-            forall(
+            forAll(
                     // Rounding precision is 5 digits
                     row(Double.MAX_VALUE, 1.0),
                     row(110.0, 1.0),
@@ -42,7 +42,7 @@ class SignalStrengthTest:WordSpec( {
 
     "Invalid values" should {
         "not be allowed" {
-            forall(
+            forAll(
                     row(Double.POSITIVE_INFINITY),
                     row(Double.MAX_VALUE),
                     row(1.1),

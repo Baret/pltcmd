@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.application
 
 import de.gleex.pltcmd.game.engine.Game
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -9,10 +10,12 @@ import de.gleex.pltcmd.game.ui.GeneratingView
 import de.gleex.pltcmd.game.ui.MapGenerationProgressController
 import de.gleex.pltcmd.game.ui.TitleView
 import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.toSectorOrigin
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.toScreen
@@ -31,24 +34,39 @@ fun main() {
     showTitle(screen, tileGrid)
 
     generateMap(screen, tileGrid) { generatedMap ->
+        // ui
         val gameWorld = GameWorld(generatedMap)
-        screen.dock(GameView(gameWorld, tileGrid))
-
+        // model
         val game = Game(Engine.default(), generatedMap, Random(GameOptions.DEBUG_MAP_SEED))
+
+        val elementsToCommand = mutableListOf<ElementEntity>()
+        val visibleSector = generatedMap.sectors.first { it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin() }
+        elementsToCommand.run {
+            add(visibleSector.createFriendly("Alpha", game, gameWorld))
+            add(visibleSector.createFriendly("Bravo", game, gameWorld))
+            add(visibleSector.createFriendly("Charlie", game, gameWorld))
+        }
+        screen.dock(GameView(gameWorld, tileGrid, elementsToCommand))
+
         // Adding some elements to every sector
         val elementsPerSector = 3
         generatedMap.sectors.forEach { sector ->
             repeat(elementsPerSector) {
                 game.addElementInSector(sector)?.
                     let {
-                        gameWorld.trackUnit(it)
-                    }
+                            gameWorld.trackUnit(it)
+                        }
             }
         }
         Ticker.start(game)
         // cleanup
         screen.onShutdown { Ticker.stopGame() }
     }
+}
+
+private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld): ElementEntity {
+    return game.addElementInSector(this, callsign, Affiliation.Friendly)
+            .also(gameWorld::trackUnit)
 }
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {
@@ -69,7 +87,7 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (World
     )
     MapGenerationProgressController(mapGenerator, generatingView)
 
-    val origin = Coordinate(0, 0)
+    val origin = GameOptions.MAP_ORIGIN
     val worldMap = mapGenerator.generateWorld(origin)
 
     generatingView.onConfirmation {
