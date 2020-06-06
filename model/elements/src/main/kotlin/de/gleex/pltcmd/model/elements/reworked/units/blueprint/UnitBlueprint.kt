@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.elements.reworked.units.blueprint
 
 import de.gleex.pltcmd.model.elements.reworked.units.Unit
 import de.gleex.pltcmd.model.elements.reworked.units.UnitKind
+import de.gleex.pltcmd.model.elements.reworked.units.Units
 
 /**
  * A blueprint is used to have a singleton that represents the base values for a class of units.
@@ -9,7 +10,7 @@ import de.gleex.pltcmd.model.elements.reworked.units.UnitKind
  * When instantiating thousands of soldiers there is no need to have the information of their type and personnel count copied
  * into each object.
  *
- * Use [new] to create instances of type [Unit]
+ * Use [new] to create instances of type [Unit]. All possible units can be found in [Units].
  */
 interface UnitBlueprint {
     val kind: UnitKind
