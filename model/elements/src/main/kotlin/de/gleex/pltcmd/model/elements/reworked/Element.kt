@@ -93,9 +93,7 @@ open class Element(
         if (this === other) return true
         if (other !is Element) return false
 
-        if (id != other.id) return false
-
-        return true
+        return id == other.id
     }
 
     override fun hashCode(): Int {
