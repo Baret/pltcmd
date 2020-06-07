@@ -21,6 +21,10 @@ class ProgressListener(totalTiles: Int) : MapGenerationListener {
     /** percentage of generated world (0.0 to 1.0) */
     val progress: ObservableValue<Double> = _progress
 
+    override fun startGeneration(origin: Coordinate) {
+        _progress.updateValue(0.0)
+    }
+
     override fun terrainGenerated(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         terrainHeight?.apply { generatedHeights += coordinate }
         terrainType?.apply { generatedTypes += coordinate }
