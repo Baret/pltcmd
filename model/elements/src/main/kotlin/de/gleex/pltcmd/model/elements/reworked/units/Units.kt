@@ -144,7 +144,7 @@ enum class Units(
      */
     LightTank(ArmoredHeavy, personnel = 3, personnelMinimum = 2),
     /**
-     * The main battle tank (MBT) has the highest firepower on the ground. Is can attack any ground
+     * The main battle tank (MBT) has the highest firepower on the ground. It can attack any ground
      * target and has great protection. MBTs usually fight alongside other elements to dominate large
      * areas of the battlefield.
      */
@@ -170,7 +170,7 @@ enum class Units(
      */
     HelicopterTransport(AerialLight, personnel = 2, personnelMinimum = 1),
     /**
-     * A small and versatile chopper armed with to heavy machine guns on the side. It can provide
+     * A small and versatile chopper armed with two heavy machine guns on the side. It can provide
      * close air support (CAS) against infantry and unarmored vehicles. Its counterpart, the
      * [HelicopterAT] can deal with harder targets.
      */
@@ -189,7 +189,7 @@ enum class Units(
     HelicopterHeavyLift(AerialHeavy, personnel = 4, personnelMinimum = 2),
     /**
      * The "death from above" dominates the sky. A gunship is mobile and heavily armed so it can provide CAS
-     * (close air support) for ground elements not matter what enemy they face.
+     * (close air support) for ground elements no matter what enemy they face.
      */
     HelicopterGunship(AerialHeavy, personnel = 2, personnelMinimum = 2)
 }
