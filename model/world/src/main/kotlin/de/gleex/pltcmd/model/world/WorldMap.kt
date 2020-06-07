@@ -75,15 +75,26 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
      * @return the given Coordinate or the nearest at the border of this map
      **/
     fun moveInside(location: Coordinate): Coordinate {
-        val easting = min(max(origin.eastingFromLeft, location.eastingFromLeft), last.eastingFromLeft)
-        val northing = min(max(origin.northingFromBottom, location.northingFromBottom), last.northingFromBottom)
-        if (location.eastingFromLeft == easting && location.northingFromBottom == northing) {
-            return location
-        }
-        return Coordinate(easting, northing)
+        return Utils.moveInside(location, origin, last)
     }
 
     companion object {
         fun create(sectors: Iterable<Sector>): WorldMap = WorldMap(sectors.associateByTo(TreeMap(), Sector::origin))
+    }
+
+    object Utils {
+        /**
+         * Ensures that the resulting position is inside the rectangle described by the given corners.
+         * @return the given Coordinate or the nearest at the border of the rectangle
+         **/
+        fun moveInside(location: Coordinate, bottomLeft: Coordinate, topRight: Coordinate): Coordinate {
+            require(bottomLeft <= topRight)
+            val easting = min(max(bottomLeft.eastingFromLeft, location.eastingFromLeft), topRight.eastingFromLeft)
+            val northing = min(max(bottomLeft.northingFromBottom, location.northingFromBottom), topRight.northingFromBottom)
+            if (location.eastingFromLeft == easting && location.northingFromBottom == northing) {
+                return location
+            }
+            return Coordinate(easting, northing)
+        }
     }
 }
