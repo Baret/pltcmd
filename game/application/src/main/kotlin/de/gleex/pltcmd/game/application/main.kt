@@ -17,6 +17,7 @@ import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.toSectorOrigin
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.zircon.api.SwingApplications
+import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
@@ -79,7 +80,7 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (World
     val worldWidthInTiles = GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT
     val worldHeightInTiles = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
 
-    val generatingView = GeneratingView(tileGrid, worldWidthInTiles, worldHeightInTiles)
+    val generatingView = GeneratingView(tileGrid, Size.create(worldWidthInTiles, worldHeightInTiles))
     screen.dock(generatingView)
 
     val mapGenerator = WorldMapGenerator(
