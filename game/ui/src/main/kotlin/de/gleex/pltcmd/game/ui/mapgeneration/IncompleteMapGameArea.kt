@@ -11,7 +11,6 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.GameArea
 import org.hexworks.zircon.api.game.base.BaseGameArea
 import org.hexworks.zircon.api.modifier.BorderPosition
-import kotlin.math.roundToInt
 
 /**
  * A [GameArea] that shows a map with holes. It uses [IncompleteMapBlock] for that.
@@ -31,8 +30,8 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
 
 /** Creates [IncompleteMapBlock]s to fill the given [size]. Blocks will show a grid for the main coordinates in [worldSizeInTiles]. */
 private data class BlocksWithGrid(private val size: Size, private val worldSizeInTiles: Size) {
-    private val tilesPerMainCoordinateX = (size.width.toDouble() / (worldSizeInTiles.width / MainCoordinate.TILE_COUNT)).roundToInt()
-    private val tilesPerMainCoordinateY = (size.height.toDouble() / (worldSizeInTiles.height / MainCoordinate.TILE_COUNT)).roundToInt()
+    private val tilesPerMainCoordinateX = size.width / (worldSizeInTiles.width.toDouble() / MainCoordinate.TILE_COUNT)
+    private val tilesPerMainCoordinateY = size.height / (worldSizeInTiles.height.toDouble() / MainCoordinate.TILE_COUNT)
 
     fun create() = size.fetchPositions()
             .map { it.to3DPosition(0) }
@@ -49,9 +48,9 @@ private data class BlocksWithGrid(private val size: Size, private val worldSizeI
     }
 
     private val Position3D.isAtHorizontalGrid: Boolean
-        get() = (x % tilesPerMainCoordinateX) == 0
+        get() = (x % tilesPerMainCoordinateX) < 1.0
 
     private val Position3D.isAtVerticalGrid: Boolean
-        get() = (y % tilesPerMainCoordinateY) == 0
+        get() = (y % tilesPerMainCoordinateY) < 1.0
 
 }
