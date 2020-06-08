@@ -10,6 +10,7 @@ import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.GameArea
 import org.hexworks.zircon.api.game.base.BaseGameArea
+import org.hexworks.zircon.api.modifier.BorderPosition
 import kotlin.math.roundToInt
 
 /**
@@ -36,9 +37,16 @@ private data class BlocksWithGrid(private val size: Size, private val worldSizeI
     fun create() = size.fetchPositions()
             .map { it.to3DPosition(0) }
             .associateWith {
-                IncompleteMapBlock(it.isAtHorizontalGrid, it.isAtVerticalGrid)
+                IncompleteMapBlock(it.getBorders())
             }
             .toPersistentMap()
+
+    private fun Position3D.getBorders(): Set<BorderPosition> {
+        return mutableSetOf<BorderPosition>().apply {
+            if (isAtHorizontalGrid) add(BorderPosition.LEFT)
+            if (isAtVerticalGrid)   add(BorderPosition.TOP)
+        }
+    }
 
     private val Position3D.isAtHorizontalGrid: Boolean
         get() = (x % tilesPerMainCoordinateX) == 0

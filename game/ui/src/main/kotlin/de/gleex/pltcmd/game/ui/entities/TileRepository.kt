@@ -38,27 +38,24 @@ object TileRepository {
 
     fun createTerrainTile(terrain: Terrain): Tile = createTerrainTile(terrain.height, terrain.type)
 
-    fun createTerrainTile(terrainHeight: TerrainHeight?, terrainType: TerrainType?, leftBorder: Boolean = false, topBorder: Boolean = false): Tile {
-        val tile = Tile.newBuilder()
-                .withForegroundColor(ColorRepository.forType(terrainType))
-                .withBackgroundColor(ColorRepository.forHeight(terrainHeight))
-                .withCharacter(terrainType.char())
-        if(leftBorder || topBorder) {
-            val borderPositions = mutableSetOf<BorderPosition>()
-            if(leftBorder) {
-                borderPositions.add(BorderPosition.LEFT)
-            }
-            if(topBorder) {
-                borderPositions.add(BorderPosition.TOP)
-            }
-            tile.withModifiers(BorderBuilder.newBuilder()
-                    .withBorderPositions(borderPositions)
-                    .withBorderType(BorderType.DASHED)
-                    .withBorderColor(ColorRepository.GRID_COLOR)
-                    .build())
+    fun createTerrainTile(terrainHeight: TerrainHeight?, terrainType: TerrainType?): Tile =
+            Tile.
+                newBuilder().
+                withForegroundColor(ColorRepository.forType(terrainType)).
+                withBackgroundColor(ColorRepository.forHeight(terrainHeight)).
+                withCharacter(terrainType.char()).
+                buildCharacterTile()
+
+    fun Tile.withGridBorder(borders: Set<BorderPosition>): Tile {
+        return if (borders.isEmpty()) {
+            this
+        } else {
+            withModifiers(BorderBuilder.newBuilder().
+                    withBorderPositions(borders).
+                    withBorderType(BorderType.DASHED).
+                    withBorderColor(ColorRepository.GRID_COLOR).
+                    build())
         }
-        return tile
-                .buildCharacterTile()
     }
 
     private fun TerrainType?.char(): Char {
