@@ -20,17 +20,30 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
         BaseGameArea<Tile, IncompleteMapBlock>(
                 initialVisibleSize = Size3D.from2DSize(size, 1),
                 initialActualSize = Size3D.from2DSize(size, 1),
-                initialContents = size.fetchPositions()
-                        .map { it.to3DPosition(0) }
-                        .associateWith {
-                            val xNeeded = (size.width.toDouble() / (worldSizeInTiles.width / MainCoordinate.TILE_COUNT)).roundToInt()
-                            val yNeeded = (size.height.toDouble() / (worldSizeInTiles.height / MainCoordinate.TILE_COUNT)).roundToInt()
-                            IncompleteMapBlock((it.x % xNeeded) == 0, (it.y % yNeeded) == 0)
-                        }
-                        .toPersistentMap()) {
+                initialContents = BlocksWithGrid(size, worldSizeInTiles).create()) {
 
     fun updateBlock(position: Position3D, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         blocks[position]?.setTerrain(terrainHeight, terrainType)
     }
+
+}
+
+/** Creates [IncompleteMapBlock]s to fill the given [size]. Blocks will show a grid for the main coordinates in [worldSizeInTiles]. */
+private data class BlocksWithGrid(private val size: Size, private val worldSizeInTiles: Size) {
+    private val tilesPerMainCoordinateX = (size.width.toDouble() / (worldSizeInTiles.width / MainCoordinate.TILE_COUNT)).roundToInt()
+    private val tilesPerMainCoordinateY = (size.height.toDouble() / (worldSizeInTiles.height / MainCoordinate.TILE_COUNT)).roundToInt()
+
+    fun create() = size.fetchPositions()
+            .map { it.to3DPosition(0) }
+            .associateWith {
+                IncompleteMapBlock(it.isAtHorizontalGrid, it.isAtVerticalGrid)
+            }
+            .toPersistentMap()
+
+    private val Position3D.isAtHorizontalGrid: Boolean
+        get() = (x % tilesPerMainCoordinateX) == 0
+
+    private val Position3D.isAtVerticalGrid: Boolean
+        get() = (y % tilesPerMainCoordinateY) == 0
 
 }
