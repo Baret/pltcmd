@@ -9,6 +9,7 @@ import org.hexworks.zircon.api.builder.modifier.BorderBuilder
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.Symbols
+import org.hexworks.zircon.api.modifier.BorderPosition
 import org.hexworks.zircon.api.modifier.BorderType
 
 /**
@@ -37,13 +38,28 @@ object TileRepository {
 
     fun createTerrainTile(terrain: Terrain): Tile = createTerrainTile(terrain.height, terrain.type)
 
-    fun createTerrainTile(terrainHeight: TerrainHeight?, terrainType: TerrainType?): Tile =
-            Tile.
-                newBuilder().
-                withForegroundColor(ColorRepository.forType(terrainType)).
-                withBackgroundColor(ColorRepository.forHeight(terrainHeight)).
-                withCharacter(terrainType.char()).
-                buildCharacterTile()
+    fun createTerrainTile(terrainHeight: TerrainHeight?, terrainType: TerrainType?, leftBorder: Boolean = false, topBorder: Boolean = false): Tile {
+        val tile = Tile.newBuilder()
+                .withForegroundColor(ColorRepository.forType(terrainType))
+                .withBackgroundColor(ColorRepository.forHeight(terrainHeight))
+                .withCharacter(terrainType.char())
+        if(leftBorder || topBorder) {
+            val borderPositions = mutableSetOf<BorderPosition>()
+            if(leftBorder) {
+                borderPositions.add(BorderPosition.LEFT)
+            }
+            if(topBorder) {
+                borderPositions.add(BorderPosition.TOP)
+            }
+            tile.withModifiers(BorderBuilder.newBuilder()
+                    .withBorderPositions(borderPositions)
+                    .withBorderType(BorderType.DASHED)
+                    .withBorderColor(ColorRepository.GRID_COLOR)
+                    .build())
+        }
+        return tile
+                .buildCharacterTile()
+    }
 
     private fun TerrainType?.char(): Char {
         if (this == null) return Symbols.INVERTED_QUESTION_MARK

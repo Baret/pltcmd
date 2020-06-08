@@ -17,7 +17,7 @@ import org.hexworks.zircon.api.view.base.BaseView
  * [showFinished] a button will become visible that triggers a callback when used.
  * @see onConfirmation to set the callback for the button.
  **/
-class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
+class GeneratingView(tileGrid: TileGrid, worldWidthInTiles: Int, worldHeightInTiles: Int) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     private val footer = createFooter()
     private val footerHandle: AttachedComponent
@@ -26,7 +26,7 @@ class GeneratingView(tileGrid: TileGrid) : BaseView(theme = UiOptions.THEME, til
     private val usedLines = progressBar.height + header.height
     private var confirmCallback: () -> Unit = {}
 
-    val incompleteWorld = IncompleteMapGameArea(Size.create(screen.width, screen.height - usedLines))
+    val incompleteWorld = IncompleteMapGameArea(Size.create(screen.width, screen.height - usedLines), worldWidthInTiles, worldHeightInTiles)
 
     init {
         val mainPart = createMainPart()

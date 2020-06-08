@@ -8,13 +8,16 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.base.BaseBlock
 
 /** Shows an optional terrain. Either [TerrainHeight] or [TerrainType] can be set or else will show a placeholder. */
-class IncompleteMapBlock : BaseBlock<Tile>(emptyTile = TileRepository.empty(), tiles = persistentMapOf()) {
+class IncompleteMapBlock(
+        private val leftBorder: Boolean,
+        private val topBorder: Boolean
+) : BaseBlock<Tile>(emptyTile = TileRepository.empty(), tiles = persistentMapOf()) {
 
     init {
         setTerrain(null, null)
     }
 
     fun setTerrain(terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
-        top = TileRepository.createTerrainTile(terrainHeight, terrainType)
+        top = TileRepository.createTerrainTile(terrainHeight, terrainType, leftBorder, topBorder)
     }
 }

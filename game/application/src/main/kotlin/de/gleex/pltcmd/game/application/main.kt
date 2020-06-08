@@ -14,7 +14,6 @@ import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.toSectorOrigin
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.zircon.api.SwingApplications
@@ -77,13 +76,16 @@ private fun showTitle(screen: Screen, tileGrid: TileGrid) {
 }
 
 private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {
-    val generatingView = GeneratingView(tileGrid)
+    val worldWidthInTiles = GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT
+    val worldHeightInTiles = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
+
+    val generatingView = GeneratingView(tileGrid, worldWidthInTiles, worldHeightInTiles)
     screen.dock(generatingView)
 
     val mapGenerator = WorldMapGenerator(
             GameOptions.DEBUG_MAP_SEED,
-            GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT,
-            GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
+            worldWidthInTiles,
+            worldHeightInTiles
     )
     MapGenerationProgressController(mapGenerator, generatingView)
 
