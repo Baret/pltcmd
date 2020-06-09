@@ -69,15 +69,13 @@ open class Element(
      * Sets the [superordinate] of this element. If this element is currently being commanded
      * you have to clear its current superordinate first.
      *
-     * @see
+     * @see clearSuperordinate
      */
     fun setSuperordinate(commandingElement: CommandingElement) {
         require(superordinate.isEmpty() || superordinate.get().subordinates.contains(this).not()) {
             "Can not set new superordinate in $this. It has to be removed from current commanding element first: ${superordinate.get()}"
         }
-
         _superordinate = Maybe.of(commandingElement)
-        commandingElement.addElement(this)
     }
 
     /**

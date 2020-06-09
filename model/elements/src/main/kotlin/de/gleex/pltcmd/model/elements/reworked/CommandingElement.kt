@@ -73,16 +73,10 @@ class CommandingElement(
     private fun callSignFor(subordinate: Element): CallSign =
             callsignProvider.callSignFor(subordinate)
 
-    /*{
-        val index = subordinates.indexOf(subordinate)
-        require(index >= 0) {
-            "Element $subordinate is not a subordinate of $this"
-        }
-        return callSign + "-${index + 1}"
-    }*/
-
     /**
      * Adds the given element to the [subordinates] and sets this element as the given element's [superordinate].
+     *
+     * If the element currently has a different superordinate it is being removed from there and added here.
      *
      * If this fails, for example because the [kind] is different, false is returned.
      *
@@ -92,14 +86,20 @@ class CommandingElement(
         if(_subordinates.contains(element)) {
             return true
         }
-        if(kind == element.kind && element.rung < rung) {
+        if(canElementBeAdded(element)) {
             // TODO: Maybe a commanding element could get a max number of subordinates so that you cannot stack elements into it endlessly
-            _subordinates.add(element)
+            if(element.superordinate.isPresent) {
+                element.superordinate.get().removeElement(element)
+                element.clearSuperordinate()
+            }
             element.setSuperordinate(this)
+            _subordinates.add(element)
             return true
         }
         return false
     }
+
+    private fun canElementBeAdded(element: Element): Boolean = (kind == element.kind && element.rung < rung)
 
     /**
      * Removes the given element from the [subordinates], if present.

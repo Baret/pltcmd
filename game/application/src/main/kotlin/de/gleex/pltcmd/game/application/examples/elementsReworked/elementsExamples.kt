@@ -50,15 +50,15 @@ fun main() {
     val elementToRemoveFromAlpha = alpha.subordinates.random() as CommandingElement
     alpha.addElement(wolfs)
     printCommandElement(wolfs)
-    println("Directly adding it to bravo should not be possible")
-    tryAndCatch {
-        bravo.addElement(wolfs)
-    }
     println("Its callsign should stay ${wolfs.callSign} when removing ${elementToRemoveFromAlpha.callSign} from ${alpha.callSign}")
     alpha.removeElement(elementToRemoveFromAlpha)
     printCommandElement(wolfs)
     spacer()
-    println("And when we even put ${alpha.callSign} into a ${Rung.Company}")
+    println("When we shift them from ${alpha.callSign} to ${bravo.callSign}...")
+    bravo.addElement(wolfs)
+    printCommandElement(alpha)
+    printCommandElement(bravo)
+    println("...and even put ${alpha.callSign} and ${bravo.callSign} into a ${Rung.Company}")
     val company = CommandingElement(
             ElementKind.Infantry,
             Rung.Company,
@@ -69,7 +69,7 @@ fun main() {
     printCommandElement(wolfs)
     spacer()
     println("When they are back on their own, they get back their cool callsign:")
-    alpha.removeElement(wolfs)
+    bravo.removeElement(wolfs)
     printCommandElement(wolfs)
     spacer()
     println("BTW, just to make it completely ridiculous, the company containing alpha and bravo: $company")
