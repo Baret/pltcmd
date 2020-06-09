@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.elements.reworked.units.blueprint
 
+import de.gleex.pltcmd.model.elements.reworked.Blueprint
 import de.gleex.pltcmd.model.elements.reworked.units.Unit
 import de.gleex.pltcmd.model.elements.reworked.units.UnitKind
 import de.gleex.pltcmd.model.elements.reworked.units.Units
@@ -11,11 +12,23 @@ import de.gleex.pltcmd.model.elements.reworked.units.Units
  * into each object.
  *
  * Use [new] to create instances of type [Unit]. All possible units can be found in [Units].
+ *
+ * When calculating with blueprints you get lists of [Unit]. See [times] or [plus]
  */
-interface UnitBlueprint {
+interface UnitBlueprint: Blueprint<Unit> {
     val kind: UnitKind
     val personnel: Int
     val personnelMinimum: Int
 
-    fun new() = Unit(this)
+    override fun new() = Unit(this)
+
+    operator fun times(multiplier: Int) = List(multiplier) { new() }.toSet()
+
+    operator fun plus(unitList: Set<Unit>) = unitList + this.new()
+
+    operator fun plus(otherBlueprint: UnitBlueprint) = setOf(this.new(), otherBlueprint.new())
 }
+
+operator fun Int.times(blueprint: UnitBlueprint) = blueprint * this
+
+operator fun Set<Unit>.plus(additionalUnit: UnitBlueprint) = additionalUnit + this
