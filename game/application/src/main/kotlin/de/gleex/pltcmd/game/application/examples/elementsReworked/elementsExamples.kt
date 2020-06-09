@@ -60,6 +60,7 @@ fun main() {
     printCommandElement(bravo)
     println("...and even put ${alpha.callSign} and ${bravo.callSign} into a ${Rung.Company}")
     val company = CommandingElement(
+            Corps.Fighting,
             ElementKind.Infantry,
             Rung.Company,
             CallSign("Wild Hogs"),
@@ -79,16 +80,20 @@ fun main() {
     // TODO: Make a unittest out of this
     println("Lets test some impossible cases...")
     println("You cannot put a squad into a squad and subordinates need to have the same kind...")
-    val sq1 = CommandingElement(ElementKind.Infantry, Rung.Squad, CallSign("sub"), setOf(Officer.new()), emptySet())
+    val sq1 = CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Squad, CallSign("sub"), setOf(Officer.new()), emptySet())
     tryAndCatch {
-        CommandingElement(ElementKind.Armored, Rung.Platoon, CallSign("superArmored"), setOf(Officer.new()), setOf(sq1))
+        CommandingElement(Corps.Fighting, ElementKind.Armored, Rung.Platoon, CallSign("superArmored"), setOf(Officer.new()), setOf(sq1))
     }
     tryAndCatch {
-        CommandingElement(ElementKind.Infantry, Rung.Squad, CallSign("superSquad"), setOf(Officer.new()), setOf(sq1))
+        CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Squad, CallSign("superSquad"), setOf(Officer.new()), setOf(sq1))
+    }
+    println("And the corps also has to match!")
+    tryAndCatch {
+        CommandingElement(Corps.Reconnaissance, ElementKind.Infantry, Rung.Platoon, CallSign("recon platoon"), setOf(Officer.new()), setOf(sq1))
     }
     println("You can also not put a tank into a mechanized infantry fireteam")
     tryAndCatch {
-        Element(ElementKind.MechanizedInfantry, Rung.Fireteam, setOf(Officer.new(), Rifleman.new(), TruckTransport.new(), MainBattleTank.new()))
+        Element(Corps.Fighting, ElementKind.MechanizedInfantry, Rung.Fireteam, setOf(Officer.new(), Rifleman.new(), TruckTransport.new(), MainBattleTank.new()))
     }
 }
 
@@ -103,7 +108,7 @@ fun tryAndCatch(throwingFunction: () -> Any) {
 
 fun printCommandElement(element: CommandingElement, depth: Int = 0) {
     val tabs = "\t".repeat(depth)
-    println("${tabs}Structure of ${element.kind} ${element.rung} ${element.callSign}:")
+    println("${tabs}Structure of ${element.description}:")
     print("${tabs}\t${element.totalSoldiers} soldiers in ${element.totalUnits} units")
     element.superordinate.fold({println()}) {
         println(", commanded by ${it.callSign}")
@@ -121,7 +126,7 @@ fun printCommandElement(element: CommandingElement, depth: Int = 0) {
 
 fun printElement(element: Element, depth: Int) {
     val tabs = "\t".repeat(depth)
-    println("${tabs}${element.rung}: ${element.units.joinToString(", ") { it.name }}")
+    println("${tabs}${element.description}: ${element.units.joinToString(", ") { it.name }}")
 }
 
 fun firePowerFor(unit: Unit): Double? =

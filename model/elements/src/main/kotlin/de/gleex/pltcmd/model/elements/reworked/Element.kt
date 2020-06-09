@@ -14,17 +14,33 @@ import org.hexworks.cobalt.datatypes.Maybe
  * and on what level of organisation they reside.
  */
 open class Element(
+        val corps: Corps,
         val kind: ElementKind,
         val rung: Rung,
         units: Set<Unit>,
         superordinate: CommandingElement? = null
 ) {
+    /**
+     * Unique ID of this element used to identify it, for example in [equals].
+     */
     val id = UUIDFactory.randomUUID()
 
+    /**
+     * A string containing this element's [corps], [kind] and [rung]. Can be used as relatively short
+     * descriptive summary of what this element is.
+     */
+    val description get() = "$corps $kind $rung"
+
     private val _units: MutableSet<Unit> = mutableSetOf()
+    /**
+     * All [Unit]s forming this element.
+     */
     val units: Set<Unit> = _units
 
     private var _superordinate = Maybe.ofNullable(superordinate)
+    /**
+     * If this element is currently being commanded this [Maybe] contains the superordinate.
+     */
     val superordinate: Maybe<CommandingElement>
         get() = _superordinate
 
@@ -71,7 +87,7 @@ open class Element(
      *
      * @see clearSuperordinate
      */
-    fun setSuperordinate(commandingElement: CommandingElement) {
+    internal fun setSuperordinate(commandingElement: CommandingElement) {
         require(superordinate.isEmpty() || superordinate.get().subordinates.contains(this).not()) {
             "Can not set new superordinate in $this. It has to be removed from current commanding element first: ${superordinate.get()}"
         }
@@ -85,7 +101,7 @@ open class Element(
         _superordinate = Maybe.empty()
     }
 
-    override fun toString() = "$kind $rung [id=$id, ${units.size} units${superordinate.map { ",superordinate=$it" }.orElse("")}]"
+    override fun toString() = "${description} [id=$id, ${units.size} units${superordinate.map { ",superordinate=$it" }.orElse("")}]"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

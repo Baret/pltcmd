@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.elements.reworked
 
 import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.elements.reworked.Corps.Fighting
 import de.gleex.pltcmd.model.elements.reworked.units.blueprint.*
 
 /**
@@ -13,6 +14,7 @@ object Elements {
         private val kind = ElementKind.Infantry
 
         fun rifleTeam() = Element(
+                Fighting,
                 kind,
                 Rung.Fireteam,
                 setOf(
@@ -24,6 +26,7 @@ object Elements {
         )
 
         fun weaponsTeam() = Element(
+                Fighting,
                 kind,
                 Rung.Fireteam,
                 setOf(
@@ -34,6 +37,7 @@ object Elements {
         )
 
         fun rifleSquad(callSign: String) = CommandingElement(
+                Fighting,
                 kind,
                 Rung.Squad,
                 CallSign(callSign),
@@ -42,6 +46,7 @@ object Elements {
         )
 
         fun weaponsSquad(callSign: String) = CommandingElement(
+                Fighting,
                 kind,
                 Rung.Squad,
                 CallSign(callSign),
@@ -50,6 +55,7 @@ object Elements {
         )
 
         fun riflePlatoon(callSign: String) = CommandingElement(
+                Fighting,
                 kind,
                 Rung.Platoon,
                 CallSign(callSign),

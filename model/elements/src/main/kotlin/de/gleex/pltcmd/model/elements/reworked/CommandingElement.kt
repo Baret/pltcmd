@@ -10,12 +10,13 @@ import org.hexworks.cobalt.databinding.api.extension.toProperty
  * currently a subordinate itself.
  */
 class CommandingElement(
+        corps: Corps,
         kind: ElementKind,
         rung: Rung,
         private val ownCallsign: CallSign,
         units: Set<Unit>,
         subordinates: Set<Element>
-) : Element(kind, rung, units) {
+) : Element(corps, kind, rung, units) {
 
     /**
      * The callsign this element is identified by. If commanded by another [CommandingElement] (i.e. [superordinate] is present)
@@ -99,7 +100,8 @@ class CommandingElement(
         return false
     }
 
-    private fun canElementBeAdded(element: Element): Boolean = (kind == element.kind && element.rung < rung)
+    private fun canElementBeAdded(element: Element): Boolean =
+            (corps == element.corps && kind == element.kind && rung > element.rung)
 
     /**
      * Removes the given element from the [subordinates], if present.
@@ -116,5 +118,5 @@ class CommandingElement(
     }
 
     override fun toString() =
-            "$kind $rung $ownCallsign [id=$id, ${subordinates.size} subordinates, $totalUnits total units${superordinate.map { ", superordinate present" }.orElse("")}]"
+            "$description $ownCallsign [id=$id, ${subordinates.size} subordinates, $totalUnits total units${superordinate.map { ", superordinate present" }.orElse("")}]"
 }
