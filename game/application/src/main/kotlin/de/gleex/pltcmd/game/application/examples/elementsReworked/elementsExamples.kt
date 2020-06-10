@@ -2,35 +2,30 @@ package de.gleex.pltcmd.game.application.examples.elementsReworked
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.reworked.*
+import de.gleex.pltcmd.model.elements.reworked.dsl.a
 import de.gleex.pltcmd.model.elements.reworked.units.Unit
-import de.gleex.pltcmd.model.elements.reworked.units.blueprint.*
+import de.gleex.pltcmd.model.elements.reworked.units.Units
+import de.gleex.pltcmd.model.elements.reworked.units.Units.*
+import de.gleex.pltcmd.model.elements.reworked.units.plus
+import de.gleex.pltcmd.model.elements.reworked.units.times
 
 fun main() {
     print("Lets assume the engine applies combat stats like 'firepower' to units.")
 
-    val units = setOf(
-            Rifleman.new(),
-            Rifleman.new(),
-            Medic.new(),
-            Officer.new(),
-            TruckTransport.new(),
-            Grenadier.new()
-    )
-
     println("That might look like follows")
-    units.forEach { unit ->
+    values().forEach { unit ->
         val firePower = firePowerFor(unit)
-        println("${unit.name} ${unit.id} has a firepower of ${firePower?: "unknown"}")
+        println("${unit.name} has a firepower of \t${firePower?: "unknown"}")
     }
-    val alpha = Elements.Infantry.riflePlatoon("Alpha")
-    val bravo = Elements.Infantry.riflePlatoon("Bravo")
-    println("A full ${alpha.kind} ${alpha.rung} called ${alpha.callSign} would have a combined firepower of ${alpha.allUnits.fold(0.0) { a, unit -> a + (firePowerFor(unit) ?: 0.0) }}")
+    val alpha = Elements.riflePlatoon.new().apply { callSign = CallSign("Alpha") }
+    val bravo = Elements.riflePlatoon.new().apply { callSign = CallSign("Bravo") }
+    println("A full ${alpha.kind} ${alpha.rung} called ${alpha.callSign} would have a combined firepower of ${alpha.allUnits.sumByDouble { firePowerFor(it) ?: 0.0 }}")
 
     spacer()
 
     println("let's create 2 default platoons and see how they look after adding a unit to a random element")
     val luckyElement = (alpha.subordinates + bravo.subordinates).random()
-    val newUnit = HMGTeam.new()
+    val newUnit = SniperTeam.new()
     if(newUnit canBeAddedTo luckyElement) {
         luckyElement.addUnit(newUnit)
     }
@@ -41,7 +36,7 @@ fun main() {
 
     spacer()
     val fancyName = "Red Wolfs"
-    val wolfs = Elements.Infantry.rifleSquad(fancyName)
+    val wolfs = Elements.rifleSquad.new().apply { callSign = CallSign(fancyName) }
     println("Now we create a fancy single squad called $fancyName")
     println("First it looks like this:")
     printCommandElement(wolfs)
@@ -59,14 +54,11 @@ fun main() {
     printCommandElement(alpha)
     printCommandElement(bravo)
     println("...and even put ${alpha.callSign} and ${bravo.callSign} into a ${Rung.Company}")
-    val company = CommandingElement(
+    val company = (a(
             Corps.Fighting,
             ElementKind.Infantry,
-            Rung.Company,
-            CallSign("Wild Hogs"),
-            setOf(Officer.new(), Officer.new(), Medic.new(), Grenadier.new(), Rifleman.new()),
-            setOf(alpha, bravo)
-    )
+            Rung.Company) consistingOf 2 * Officer + Medic + Grenadier + Rifleman commanding setOf(alpha, bravo)).new()
+    company.callSign = CallSign("Wild Hogs")
     printCommandElement(wolfs)
     spacer()
     println("When they are back on their own, they get back their cool callsign:")
@@ -93,7 +85,7 @@ fun main() {
     }
     println("You can also not put a tank into a mechanized infantry fireteam")
     tryAndCatch {
-        Element(Corps.Fighting, ElementKind.MechanizedInfantry, Rung.Fireteam, setOf(Officer.new(), Rifleman.new(), TruckTransport.new(), MainBattleTank.new()))
+        Element(Corps.Fighting, ElementKind.MechanizedInfantry, Rung.Fireteam, setOf(Officer.new(), Rifleman.new(), TransportTruck.new(), MainBattleTank.new()))
     }
 }
 
@@ -129,13 +121,29 @@ fun printElement(element: Element, depth: Int) {
     println("${tabs}${element.description}: ${element.units.joinToString(", ") { it.name }}")
 }
 
-fun firePowerFor(unit: Unit): Double? =
-        when {
-            unit.isA(Rifleman)  -> 10.0
-            unit.isA(Officer)   -> 7.0
-            unit.isA(Medic)     -> 8.0
-            unit.isA(Grenadier) -> 12.0
-            else                -> null
+fun firePowerFor(unit: Unit): Double? = firePowerFor(unit.blueprint)
+
+fun firePowerFor(unitBlueprint: Units): Double? =
+        when(unitBlueprint) {
+            Rifleman            -> 10.0
+            Grenadier           -> 12.5
+            Officer             -> 7.5
+            Medic               -> 8.0
+            CombatEngineer      -> 8.0
+            HMGTeam             -> 20.0
+            TransportTruck      -> 0.0
+            RadioTruck          -> 0.0
+            RadioJeep           -> 0.0
+            RocketTruck         -> 75.0
+            APC                 -> 20.0
+            IFV                 -> 32.5
+            LightTank           -> 70.0
+            MainBattleTank      -> 100.0
+            HelicopterTransport -> 10.0
+            HelicopterHMG       -> 30.0
+            HelicopterHeavyLift -> 0.0
+            HelicopterGunship   -> 120.0
+            else                      -> null
         }
 
 fun spacer() { println("\\"); println("/") }

@@ -16,6 +16,8 @@ class ElementBlueprint(
     infix fun commanding(subordinates: Set<Element>) = CommandingElementBlueprint(corps, kind, rung, units, subordinates)
 
     operator fun times(i: Int) = List(i) { new() }.toSet()
+
+    operator fun plus(blueprint: ElementBlueprint) = setOf(this.new(), blueprint.new())
 }
 
 operator fun Int.times(blueprint: ElementBlueprint) = blueprint * this

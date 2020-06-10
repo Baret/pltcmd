@@ -13,7 +13,7 @@ class CommandingElement(
         corps: Corps,
         kind: ElementKind,
         rung: Rung,
-        private val ownCallsign: CallSign,
+        private var ownCallSign: CallSign,
         units: Set<Unit>,
         subordinates: Set<Element>
 ) : Element(corps, kind, rung, units) {
@@ -22,14 +22,20 @@ class CommandingElement(
      * The callsign this element is identified by. If commanded by another [CommandingElement] (i.e. [superordinate] is present)
      * the callsign is inherited. Otherwise the callsign given in the constructor is used.
      */
-    val callSign: CallSign
+    var callSign: CallSign
         get() {
             return if(superordinate.isPresent) {
                 superordinate.get().callSignFor(this)
             } else {
-                ownCallsign
+                ownCallSign
             }
         }
+        set(value) {
+            ownCallSign = value
+        }
+
+    override val description: String
+        get() = "${super.description} $ownCallSign"
 
     private val _subordinates: SetProperty<Element> = mutableSetOf<Element>().toProperty()
     private val callsignProvider = SubCallsignProvider({callSign}, _subordinates)
@@ -118,5 +124,5 @@ class CommandingElement(
     }
 
     override fun toString() =
-            "$description $ownCallsign [id=$id, ${subordinates.size} subordinates, $totalUnits total units${superordinate.map { ", superordinate present" }.orElse("")}]"
+            "$description [id=$id, ${subordinates.size} subordinates, $totalUnits total units${superordinate.map { ", superordinate present" }.orElse("")}]"
 }

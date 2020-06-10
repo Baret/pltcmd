@@ -29,7 +29,7 @@ open class Element(
      * A string containing this element's [corps], [kind] and [rung]. Can be used as relatively short
      * descriptive summary of what this element is.
      */
-    val description get() = "$corps $kind $rung"
+    open val description get() = "$corps $kind $rung"
 
     private val _units: MutableSet<Unit> = mutableSetOf()
     /**

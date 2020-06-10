@@ -1,21 +1,26 @@
 package de.gleex.pltcmd.model.elements.reworked.units
 
+import de.gleex.pltcmd.model.elements.reworked.Blueprint
 import de.gleex.pltcmd.model.elements.reworked.units.UnitKind.*
-import de.gleex.pltcmd.model.elements.reworked.units.blueprint.UnitBlueprint
 
 /**
  * This enum contains all units in the game.
  *
- * Each unit is an implementation of [UnitBlueprint]. Use [new] to create new instances of a unit.
+ * Each unit is an implementation of [Blueprint]. When instantiating thousands of soldiers there is no
+ * need to have the information of their type and personnel count copied
+ * into each object, so it is held once here.
+ *
+ * Use [new] to create new instances of a unit. Or use arithmetic operators to create sets of [Unit]s.
+ * For example "2 * Rifleman + Grenadier".
  *
  * Each unit should come with a documentation explaining the intention of how the unit works and
  * explaining abbreviations.
  */
 enum class Units(
-        override val kind: UnitKind = Infantry,
-        override val personnel: Int = 1,
-        override val personnelMinimum: Int = 1
-) : UnitBlueprint {
+        val kind: UnitKind = Infantry,
+        val personnel: Int = 1,
+        val personnelMinimum: Int = 1
+) : Blueprint<Unit> {
     // Infantry
     /**
      * A rifleman is the "default soldier" without special equipment, capable
@@ -191,5 +196,17 @@ enum class Units(
      * The "death from above" dominates the sky. A gunship is mobile and heavily armed so it can provide CAS
      * (close air support) for ground elements no matter what enemy they face.
      */
-    HelicopterGunship(AerialHeavy, personnel = 2, personnelMinimum = 2)
+    HelicopterGunship(AerialHeavy, personnel = 2, personnelMinimum = 2);
+
+    override fun new() = Unit(this)
+
+    operator fun times(multiplier: Int) = List(multiplier) { new() }.toSet()
+
+    operator fun plus(unitList: Set<Unit>) = unitList + this.new()
+
+    operator fun plus(otherBlueprint: Units) = setOf(this.new(), otherBlueprint.new())
 }
+
+operator fun Int.times(blueprint: Units) = blueprint * this
+
+operator fun Set<Unit>.plus(additionalUnit: Units) = additionalUnit + this
