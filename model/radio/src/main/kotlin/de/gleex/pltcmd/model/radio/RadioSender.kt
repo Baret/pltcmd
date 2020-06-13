@@ -75,20 +75,34 @@ class RadioSender(private val location: ObservableValue<Coordinate>, power: Doub
 
     /** Sends out the given transmission. */
     fun transmit(transmission: Transmission) {
-        globalEventBus.publishTransmission(this, reachableTiles, transmission)
+        globalEventBus.publishTransmission(createBroadcast(), transmission)
     }
 
-    /** @return the [SignalStrength] at the given location if sent from this sender */
-    // TODO should the sender know how its signal is received? Or should the terrain be managed outside?
-    // maybe rename this class as it else only wraps RadioSignal
-    // TODO Calculates the signal from the current location. If the signal is received after the sender moved that position is not from where the transmission originated!
+    /** copy of the current state that persists mutable values like [currentLocation] and the resulting [reachableTiles] */
+    private fun createBroadcast() = Broadcast(currentLocation, signal, reachableTiles, map)
+
+}
+
+/** A [RadioSignal] emitted from a [senderLocation] that travels over a [map] */
+data class Broadcast(
+        val senderLocation: Coordinate,
+        val signal: RadioSignal,
+        private val receivableAt: CoordinateRectangle,
+        private val map: WorldMap
+) {
+
+    fun isReceivedAt(location: Coordinate): Boolean {
+        return receivableAt.contains(location)
+    }
+
+    /** @return the [SignalStrength] at the given location when receiving this broadcast at the [target] */
     fun signalAtTarget(target: Coordinate): SignalStrength {
         val terrain = terrainTo(target)
         return signal.along(terrain)
     }
 
     private fun terrainTo(target: Coordinate): List<Terrain> {
-        val path = CoordinatePath.line(currentLocation, target)
+        val path = CoordinatePath.line(senderLocation, target)
         return map.getTerrainAt(path)
     }
 
