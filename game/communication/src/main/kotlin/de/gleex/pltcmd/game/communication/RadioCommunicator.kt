@@ -1,15 +1,11 @@
 package de.gleex.pltcmd.game.communication
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.callsign
-import de.gleex.pltcmd.game.engine.entities.types.currentPosition
-import de.gleex.pltcmd.game.engine.entities.types.radio
+import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.systems.facets.ExecuteOrder
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
@@ -57,20 +53,20 @@ class RadioCommunicator(private val element: ElementEntity, private val game: Ga
             Random.nextInt(0, 4))
 
     init {
-        val radio: RadioSender = element.radio
         globalEventBus.subscribeToTicks { tick ->
             transmissionBuffer.
                 pop(tick.id).
                 ifPresent{
-                    radio.transmit(it.transmit(newTransmissionContext()))
+                    element.transmit(it.transmit(newTransmissionContext()))
                 }
         }
 
         globalEventBus.subscribeToBroadcasts { event ->
-            if (event.isReceivedAt(radio.currentLocation)) {
+            val radioLocation = element.radioLocation
+            if (event.isReceivedAt(radioLocation)) {
                 // decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
-                val (strength, receivedTransmission) = event.receivedAt(radio.currentLocation)
-                log.debug("${callSign} received with strength $strength the transmission ${receivedTransmission.message}")
+                val (strength, receivedTransmission) = event.receivedAt(radioLocation)
+                log.debug("$callSign received with strength $strength the transmission ${receivedTransmission.message}")
                 if (!strength.isNone() && receivedTransmission.isNotFromMe()) {
                     if (receivedTransmission.isForMe()) {
                         respondTo(receivedTransmission)
