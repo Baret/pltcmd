@@ -19,6 +19,10 @@ val Transmission.sender: CallSign
 val Transmission.receiver: CallSign
     get() = CallSign(message.split(',')[0])
 
+val Transmission.isOpening: Boolean
+    // see ConversationBuilder.establishComms()
+    get() = message.contains("come in")
+
 val OrderTransmission.orderTemplate: String
     // expecting "%s, this is %s, %s, %s."
     get() = messageTemplate.split(", ")[2]

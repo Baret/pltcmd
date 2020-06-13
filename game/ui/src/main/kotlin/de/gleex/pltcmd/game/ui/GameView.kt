@@ -10,12 +10,17 @@ import de.gleex.pltcmd.game.ui.fragments.*
 import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
+import de.gleex.pltcmd.model.radio.BroadcastEvent
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
+import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.world.Sector
+import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
+import org.hexworks.zircon.api.component.LogArea
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
@@ -63,7 +68,10 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val command
                 withSize(UiOptions.LOG_AREA_WIDTH, UiOptions.LOG_AREA_HEIGHT).
                 withAlignmentWithin(screen, ComponentAlignment.BOTTOM_RIGHT).
                 withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
-                build()
+                build().
+                also {
+                    it.logRadioCalls()
+                }
 
         screen.addComponents(sidebar, logArea, mainPart)
 
@@ -72,9 +80,9 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val command
 
         log.debug("Adding keyboard listener to screen")
         screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, phase ->
-            if(phase == UIEventPhase.TARGET) {
+            if (phase == UIEventPhase.TARGET) {
                 when (event.code) {
-                    KeyCode.KEY_A  -> {
+                    KeyCode.KEY_A -> {
                         gameWorld.scrollLeftBy(Sector.TILE_COUNT)
                         Processed
                     }
@@ -82,17 +90,17 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val command
                         gameWorld.scrollRightBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.KEY_S  -> {
+                    KeyCode.KEY_S -> {
                         gameWorld.scrollForwardBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.KEY_W  -> {
+                    KeyCode.KEY_W -> {
                         gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.KEY_Q  -> {
+                    KeyCode.KEY_Q -> {
                         GameOptions.displayRadioSignals.value = GameOptions.displayRadioSignals.value.not()
-                        log.debug("Toggled radio signal display to ${if(GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
+                        log.debug("Toggled radio signal display to ${if (GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
                         Processed
                     }
                     else          -> Pass
@@ -112,7 +120,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val command
 
         sidebar.addFragment(TickFragment(sidebarWidth))
 
-        if(GameOptions.displayRadioSignals.value) {
+        if (GameOptions.displayRadioSignals.value) {
             val radioSignalFragment = RadioSignalFragment(sidebarWidth)
             map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer(gameWorld, radioSignalFragment.selectedStrength, radioSignalFragment.selectedRange, map.absolutePosition))
             sidebar.addFragment(radioSignalFragment)
@@ -120,6 +128,18 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val command
 
         sidebar.addFragment(ThemeSelectorFragment(sidebarWidth, screen))
         sidebar.addFragment(TilesetSelectorFragment(sidebarWidth, map, sidebar))
+    }
+
+    private fun LogArea.logRadioCalls() {
+        globalEventBus.subscribeToBroadcasts { event: BroadcastEvent ->
+            val transmission = event.transmission
+            val message = transmission.message
+            if (transmission.isOpening) {
+                addHeader(message, false)
+            } else {
+                addParagraph(message, false, 5)
+            }
+        }
     }
 }
 
