@@ -11,15 +11,14 @@ import org.hexworks.amethyst.api.entity.EntityType
  * This file contains code for entities that have the RadioAttribute.
  */
 
-// TODO rename to Radiosomething
 /** Type marker for entities that have the [RadioAttribute] */
-interface Communicatable : EntityType
-typealias CommunicatableEntity = GameEntity<Communicatable>
+interface Broadcasting : EntityType
+typealias BroadcastingEntity = GameEntity<Broadcasting>
 
-val CommunicatableEntity.radio: RadioSender
+val BroadcastingEntity.radio: RadioSender
     get() = getAttribute(RadioAttribute::class).radio
 
 /** @see RadioSender.transmit */
-fun CommunicatableEntity.transmit(transmission: Transmission) {
+fun BroadcastingEntity.transmit(transmission: Transmission) {
     radio.transmit(transmission)
 }

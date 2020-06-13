@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.engine.systems.facets
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
-import de.gleex.pltcmd.game.engine.entities.types.Communicatable
+import de.gleex.pltcmd.game.engine.entities.types.Broadcasting
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -19,7 +19,7 @@ data class ExecuteOrder(
         val orderedTo: Coordinate?,
         override val context: GameContext,
         override val source: ElementEntity
-) : Command<Communicatable, GameContext>
+) : Command<Broadcasting, GameContext>
 
 internal object EvaluateOrder : BaseFacet<GameContext>(DestinationAttribute::class) {
     private val log = LoggerFactory.getLogger(EvaluateOrder::class)
