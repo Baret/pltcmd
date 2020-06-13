@@ -18,27 +18,26 @@ class CommandingElement(
         subordinates: Set<Element>
 ) : Element(corps, kind, rung, units) {
 
+    private val _subordinates: SetProperty<Element> = mutableSetOf<Element>().toProperty()
+
+    private val callSignProvider = CallSignProvider(corps, kind, rung, _subordinates)
+
     /**
      * The callsign this element is identified by. If commanded by another [CommandingElement] (i.e. [superordinate] is present)
      * the callsign is inherited. Otherwise the callsign given in the constructor is used.
      */
     var callSign: CallSign
         get() {
-            return if(superordinate.isPresent) {
-                superordinate.get().callSignFor(this)
-            } else {
-                ownCallSign
-            }
+            return superordinate
+                    .map { it.callSignFor(this) }
+                    .orElse(ownCallSign)
         }
         set(value) {
-            ownCallSign = value
+            callSignProvider.set(value)
         }
 
     override val description: String
         get() = "${super.description} $ownCallSign"
-
-    private val _subordinates: SetProperty<Element> = mutableSetOf<Element>().toProperty()
-    private val callSignProvider = SubCallSignProvider({callSign}, _subordinates)
 
     /**
      * The current subordinates this element is commanding.
@@ -78,7 +77,7 @@ class CommandingElement(
         get() = allUnits.sumBy { it.personnel }
 
     private fun callSignFor(subordinate: Element): CallSign =
-            callSignProvider.callSignFor(subordinate)
+            callSignProvider.getFor(subordinate)
 
     /**
      * Adds the given element to the [subordinates] and sets this element as the given element's [superordinate].

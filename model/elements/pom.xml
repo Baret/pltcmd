@@ -17,6 +17,10 @@
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>namegeneration</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.util</groupId>
             <artifactId>tests</artifactId>
             <type>test-jar</type>
         </dependency>
