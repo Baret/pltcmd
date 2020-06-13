@@ -10,11 +10,11 @@ import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
  * its superordinate determines the callsign. This class keeps track of the subordinates of
  * an element and makes sure they keep the same "sub callsign" as long as they are assigned.
  */
-class SubCallsignProvider(private val parentCallsign: () -> CallSign, private val observedSubordinates: ObservableSet<Element>) {
+class SubCallSignProvider(private val parentCallsign: () -> CallSign, observedSubordinates: ObservableSet<Element>) {
 
     private var currentFreeIndex = 1
 
-    private val callsignMap: MutableMap<Element, Int> = observedSubordinates
+    private val callSignMap: MutableMap<Element, Int> = observedSubordinates
             .value
             .associateWith { currentFreeIndex++ }
             .toMutableMap()
@@ -24,19 +24,18 @@ class SubCallsignProvider(private val parentCallsign: () -> CallSign, private va
             if(deletionHappened(change)) {
                 val deleted: Set<Element> = change.oldValue - change.newValue
                 deleted
-                        .filter { callsignMap.containsKey(it) }
-                        .forEach {
-                            updateIndex(callsignMap[it]!!)
-                            callsignMap.remove(it)
-                        }
+                    .filter { callSignMap.containsKey(it) }
+                    .forEach {
+                        updateIndex(callSignMap[it]!!)
+                        callSignMap.remove(it)
+                    }
             } else if(additionHappened(change)) {
                 val added = change.newValue - change.oldValue
                 added
-                        .forEach {
-                            callsignMap[it] = currentFreeIndex
-                            updateIndex()
-                        }
-
+                    .forEach {
+                        callSignMap[it] = currentFreeIndex
+                        updateIndex()
+                    }
             }
         }
     }
@@ -46,7 +45,7 @@ class SubCallsignProvider(private val parentCallsign: () -> CallSign, private va
                 if(i < currentFreeIndex) {
                     i
                 } else {
-                    (callsignMap.values.max() ?: 0) + 1
+                    (callSignMap.values.max() ?: 0) + 1
                 }
     }
 
@@ -57,9 +56,9 @@ class SubCallsignProvider(private val parentCallsign: () -> CallSign, private va
             change.newValue.size > change.oldValue.size
 
     fun callSignFor(subordinate: Element): CallSign {
-        require(callsignMap.containsKey(subordinate)) {
+        require(callSignMap.containsKey(subordinate)) {
             "Cannot provide subcallsign for '$parentCallsign' for unknown subordinate $subordinate"
         }
-        return parentCallsign.invoke() + "-${callsignMap[subordinate]!!}"
+        return parentCallsign.invoke() + "-${callSignMap[subordinate]!!}"
     }
 }

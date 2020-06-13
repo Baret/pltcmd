@@ -38,7 +38,7 @@ class CommandingElement(
         get() = "${super.description} $ownCallSign"
 
     private val _subordinates: SetProperty<Element> = mutableSetOf<Element>().toProperty()
-    private val callsignProvider = SubCallsignProvider({callSign}, _subordinates)
+    private val callSignProvider = SubCallSignProvider({callSign}, _subordinates)
 
     /**
      * The current subordinates this element is commanding.
@@ -78,7 +78,7 @@ class CommandingElement(
         get() = allUnits.sumBy { it.personnel }
 
     private fun callSignFor(subordinate: Element): CallSign =
-            callsignProvider.callSignFor(subordinate)
+            callSignProvider.callSignFor(subordinate)
 
     /**
      * Adds the given element to the [subordinates] and sets this element as the given element's [superordinate].
