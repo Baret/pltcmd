@@ -6,6 +6,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.orderTemplate
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * This object contains all possible conversations in the game.
@@ -35,7 +36,7 @@ object Conversations {
                 }
 
         companion object {
-            fun getOrder(transmission: OrderTransmission): Orders? = values().find { it.created(transmission) }
+            fun getOrder(transmission: OrderTransmission): Maybe<Orders> = Maybe.ofNullable(values().find { it.created(transmission) })
         }
     }
 

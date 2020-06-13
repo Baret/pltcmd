@@ -119,12 +119,12 @@ class RadioCommunicator(private val element: ElementEntity, private val game: Ga
 
     private fun executeOrderAndRespond(transmission: OrderTransmission) {
         val order = Conversations.Orders.getOrder(transmission)
-        if(order != null) {
+        if(order.isPresent) {
             // delegate to the game entity's logic to execute actual commands
             val orderedTo = transmission.location
             runBlocking {
                 // executed on next tick!
-                element.sendCommand(ExecuteOrder(order, orderedTo, game.context(), element))
+                element.sendCommand(ExecuteOrder(order.get(), orderedTo, game.context(), element))
             }
             sendNextTick(transmission.positiveAnswer)
         } else {
