@@ -19,7 +19,7 @@ import org.hexworks.zircon.api.uievent.UIEventResponse
 
 /**
  * Displays a list of entities and makes it possible to send them a command from `hq`.
- * Currently they get a move command send by the given `hq`. For now this fragment is just a debug/playaround
+ * Currently they get a move command sent by the given `hq`. For now this fragment is just a debug/playaround
  * feature. But it may be used as the base for the UI element used to send radio commands to elements.
  */
 class ElementCommandFragment(override val width: Int, private val world: GameWorld, val hq: RadioCommunicator, elements: List<ElementEntity>, private val mapOffset: Position) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
