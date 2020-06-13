@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.communication
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.*
-import de.gleex.pltcmd.game.engine.systems.facets.ExecuteOrder
+import de.gleex.pltcmd.game.engine.systems.facets.OrderCommand
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.CallSign
@@ -120,7 +120,7 @@ class RadioCommunicator(private val element: ElementEntity, private val game: Ga
             val orderedTo = transmission.location
             runBlocking {
                 // executed on next tick!
-                element.sendCommand(ExecuteOrder(order.get(), orderedTo, game.context(), element))
+                element.sendCommand(OrderCommand(order.get(), orderedTo, game.context(), element))
             }
             sendNextTick(transmission.positiveAnswer)
         } else {

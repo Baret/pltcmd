@@ -8,7 +8,7 @@ import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.systems.behaviours.Moving
 import de.gleex.pltcmd.game.engine.systems.behaviours.Wandering
-import de.gleex.pltcmd.game.engine.systems.facets.EvaluateOrder
+import de.gleex.pltcmd.game.engine.systems.facets.ExecuteOrder
 import de.gleex.pltcmd.game.engine.systems.facets.SetDestination
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.Element
@@ -28,7 +28,7 @@ object EntityFactory {
                         RadioAttribute(radioSender)
                 )
                 behaviors(Moving)
-                facets(SetDestination, EvaluateOrder)
+                facets(SetDestination, ExecuteOrder)
             })
 
     fun newWanderingElement(element: Element, initialPosition: Property<Coordinate>, affiliation: Affiliation = Affiliation.Unknown, radioSender: RadioSender): ElementEntity =

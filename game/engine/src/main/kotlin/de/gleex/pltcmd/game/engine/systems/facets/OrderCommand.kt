@@ -14,18 +14,18 @@ import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /** Command to give an entity an order **/
-data class ExecuteOrder(
+data class OrderCommand(
         val order: Conversations.Orders,
         val orderedTo: Coordinate?,
         override val context: GameContext,
         override val source: ElementEntity
 ) : Command<Broadcasting, GameContext>
 
-internal object EvaluateOrder : BaseFacet<GameContext>(DestinationAttribute::class) {
-    private val log = LoggerFactory.getLogger(EvaluateOrder::class)
+internal object ExecuteOrder : BaseFacet<GameContext>(DestinationAttribute::class) {
+    private val log = LoggerFactory.getLogger(ExecuteOrder::class)
 
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
-            command.responseWhenCommandIs(ExecuteOrder::class) { (order, orderedTo, context, entity) ->
+            command.responseWhenCommandIs(OrderCommand::class) { (order, orderedTo, context, entity) ->
                 when (order) {
                     Conversations.Orders.MoveTo -> runBlocking {
                         entity.executeCommand(MoveTo(orderedTo!!, context, entity))
