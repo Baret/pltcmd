@@ -54,11 +54,15 @@ class RadioCommunicator(private val element: ElementEntity, private val game: Ga
 
     init {
         globalEventBus.subscribeToTicks { tick ->
-            transmissionBuffer.
-                pop(tick.id).
-                ifPresent{
-                    element.transmit(it.transmit(newTransmissionContext()))
-                }
+            var toSend = transmissionBuffer.pop(tick.id)
+            if (toSend.isEmpty() && inConversationWith.value.isPresent) {
+                // If we had received a transmission we are either sending a response now or the conversation ended already.
+                // If both is false an expected answer is missing!
+                toSend = Maybe.of(missingResponse().firstTransmission)
+            }
+            toSend.ifPresent {
+                element.transmit(it.transmit(newTransmissionContext()))
+            }
         }
 
         globalEventBus.subscribeToBroadcasts { event ->
@@ -106,6 +110,14 @@ class RadioCommunicator(private val element: ElementEntity, private val game: Ga
             is TransmissionWithResponse -> sendNextTick(transmission.response)
             is TerminatingTransmission  -> endConversation()
         }
+    }
+
+    /** inConversationWith.value.isPresent must be true! */
+    private fun missingResponse(): Conversation {
+        val expectedSender = inConversationWith.value.get()
+        log.info("$expectedSender did not respond so we stop the conversation.")
+        endConversation()
+        return Conversations.Other.nothingHeard(callSign, expectedSender)
     }
 
     private fun endConversation() {

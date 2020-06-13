@@ -82,5 +82,14 @@ object Conversations {
                 conversation(receiver, sender) {
                     openingTransmission = terminatingResponse("stand by")
                 }
+
+        /**
+         * To be used when no reply is received from the receiver.
+         */
+        fun nothingHeard(sender: CallSign, receiver: CallSign) =
+                // tricky: as we use terminatingRESPONSE we need to flip sender and receiver
+                conversation(receiver, sender) {
+                    openingTransmission = terminatingResponse("nothing heard")
+                }
     }
 }
