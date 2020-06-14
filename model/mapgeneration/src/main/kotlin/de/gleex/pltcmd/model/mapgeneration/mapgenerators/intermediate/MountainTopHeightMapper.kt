@@ -86,7 +86,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
 
         val pickedLocations = mutableSetOf<Coordinate>()
         pickedAreas.forEach { mainCoordinate ->
-            for (i in 0 until mountainTopsPerMainCoordinate) {
+            repeat (mountainTopsPerMainCoordinate) {
                 val pickedLocation = pickRandomLocation(mainCoordinate, pickedLocations, mutableWorld)
                 pickedLocations.add(pickedLocation)
             }
@@ -95,7 +95,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         return pickedLocations.toSet()
     }
 
-    /** @return a random location inside the given []mainCoordinate] that is also in the given world and tries not to be in [pickedLocations] */
+    /** @return a random location inside the given [mainCoordinate] that is also in the given world and tries not to be in [pickedLocations] */
     private fun pickRandomLocation(mainCoordinate: MainCoordinate, pickedLocations: MutableSet<Coordinate>, mutableWorld: MutableWorld): Coordinate {
         var pickedLocation: Coordinate
         var tries = 3
