@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.game.application
 
-import de.gleex.pltcmd.game.communication.RadioCommunicator
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
@@ -45,12 +44,12 @@ fun main() {
                     .toSectorOrigin()
         }
         elementsToCommand.run {
-            add(visibleSector.createFriendly("Alpha", game, gameWorld).first)
-            add(visibleSector.createFriendly("Bravo", game, gameWorld).first)
-            add(visibleSector.createFriendly("Charlie", game, gameWorld).first)
+            add(visibleSector.createFriendly("Alpha", game, gameWorld))
+            add(visibleSector.createFriendly("Bravo", game, gameWorld))
+            add(visibleSector.createFriendly("Charlie", game, gameWorld))
         }
-        val hq = visibleSector.createFriendly("HQ", game, gameWorld, Affiliation.Self).second
-        screen.dock(GameView(gameWorld, tileGrid, hq, elementsToCommand))
+        val hq = visibleSector.createFriendly("HQ", game, gameWorld, Affiliation.Self)
+        screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
         // Adding some elements to every sector
         val elementsPerSector = 3
@@ -68,10 +67,9 @@ fun main() {
     }
 }
 
-private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld, affiliation: Affiliation = Affiliation.Friendly): Pair<ElementEntity, RadioCommunicator> {
-    val elementEntity = game.addElementInSector(this, callsign, affiliation)
+private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld, affiliation: Affiliation = Affiliation.Friendly): ElementEntity {
+    return game.addElementInSector(this, callsign, affiliation)
             .also(gameWorld::trackUnit)
-    return Pair(elementEntity, RadioCommunicator(elementEntity, game))
 }
 
 private fun showTitle(screen: Screen, tileGrid: TileGrid) {

@@ -17,10 +17,6 @@
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
-            <artifactId>communication</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>engine</artifactId>
         </dependency>
         <dependency>

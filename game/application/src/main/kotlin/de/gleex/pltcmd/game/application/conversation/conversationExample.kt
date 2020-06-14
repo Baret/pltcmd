@@ -1,8 +1,11 @@
 package de.gleex.pltcmd.game.application.conversation
 
-import de.gleex.pltcmd.game.communication.RadioCommunicator
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.callsign
+import de.gleex.pltcmd.game.engine.entities.types.inConversationWith
+import de.gleex.pltcmd.game.engine.systems.facets.ConversationCommand
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -23,6 +26,7 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.util.events.globalEventBus
+import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
@@ -52,6 +56,7 @@ fun main() {
     val sector = Sector(origin, tiles)
     val map = WorldMap.create(setOf(sector))
     val game = Game(Engine.default(), map, Random(GameOptions.DEBUG_MAP_SEED))
+    val context = game.context()
 
     globalEventBus.subscribeToBroadcasts { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
 
@@ -74,50 +79,58 @@ fun main() {
     val charlieEntity = EntityFactory.newElement(Element(charlieCallSign, emptySet()), charlieLocation, Affiliation.Friendly, charlieRadio)
     val zuluEntity = EntityFactory.newElement(Element(CallSign("Zulu-0"), emptySet()), zuluLocation, Affiliation.Neutral, zuluRadio)
 
-    val hqSender = RadioCommunicator(hqEntity, game)
-    val bravoSender = RadioCommunicator(bravoEntity, game)
-    val charlieSender = RadioCommunicator(charlieEntity, game)
-    // only listens
-    RadioCommunicator(zuluEntity, game)
+    buildUI(hqEntity, bravoEntity, charlieEntity)
 
-    buildUI(hqSender, bravoSender, charlieSender)
+    runBlocking {
+        println("creating SITREP from $hqRadio to $bravoRadio")
 
-    println("creating SITREP from $hqRadio to $bravoRadio")
+        hqEntity.sendCommand(ConversationCommand(
+                Conversations.Reports.sitrep(
+                        sender = hqCallSign,
+                        receiver = bravoCallSign
+                ),
+                context,
+                hqEntity
+        ))
 
-    hqSender.startCommunication(
-            Conversations.Reports.sitrep(
-                    sender = hqCallSign,
-                    receiver = bravoCallSign
-            ))
+        println("creating move to from $hqRadio to $charlieRadio")
 
-    println("creating move to from $hqRadio to $charlieRadio")
+        hqEntity.sendCommand(ConversationCommand(
+                Conversations.Orders.MoveTo.create(
+                        sender = hqCallSign,
+                        receiver = charlieCallSign,
+                        orderLocation = Coordinate(15, 178)
+                ),
+                context,
+                hqEntity
+        ))
 
-    hqSender.startCommunication(
-            Conversations.Orders.MoveTo.create(
-                    sender = hqCallSign,
-                    receiver = charlieCallSign,
-                    orderLocation = Coordinate(15, 178)
-            ))
+        println("creating engage from $hqRadio to $bravoRadio")
 
-    println("creating engage from $hqRadio to $bravoRadio")
+        hqEntity.sendCommand(ConversationCommand(
+                Conversations.Orders.EngageEnemyAt.create(
+                        sender = hqCallSign,
+                        receiver = bravoCallSign,
+                        orderLocation = Coordinate(24, 198)
+                ),
+                context,
+                hqEntity
+        ))
 
-    hqSender.startCommunication(
-            Conversations.Orders.EngageEnemyAt.create(
-                    sender = hqCallSign,
-                    receiver = bravoCallSign,
-                    orderLocation = Coordinate(24, 198)
-            ))
+        println("creating report position from $bravoRadio to $charlieRadio")
 
-    println("creating report position from $bravoRadio to $charlieRadio")
-
-    bravoSender.startCommunication(
-            Conversations.Reports.reportPosition(
-                    sender = bravoCallSign,
-                    receiver = charlieCallSign
-            ))
+        bravoEntity.sendCommand(ConversationCommand(
+                Conversations.Reports.reportPosition(
+                        sender = bravoCallSign,
+                        receiver = charlieCallSign
+                ),
+                context,
+                bravoEntity
+        ))
+    }
 }
 
-fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlieSender: RadioCommunicator) {
+fun buildUI(hqSender: ElementEntity, bravoSender: ElementEntity, charlieSender: ElementEntity) {
     val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
     val screen = application.tileGrid.toScreen()
 
@@ -154,20 +167,20 @@ fun buildUI(hqSender: RadioCommunicator, bravoSender: RadioCommunicator, charlie
 
                 // RadioCommunicator panels
                 val partSize = Size.create((contentSize.width - sideBarWidth) / 3, contentSize.height)
-                addComponent(ceateRadioCommuicatorPanel(hqSender, partSize))
-                addComponent(ceateRadioCommuicatorPanel(bravoSender, partSize))
-                addComponent(ceateRadioCommuicatorPanel(charlieSender, partSize))
+                addComponent(createRadioCommuicatorPanel(hqSender, partSize))
+                addComponent(createRadioCommuicatorPanel(bravoSender, partSize))
+                addComponent(createRadioCommuicatorPanel(charlieSender, partSize))
             }
 
     screen.addComponents(mainPanel, logArea)
     screen.display()
 }
 
-fun ceateRadioCommuicatorPanel(communicator: RadioCommunicator, size: Size): Component {
+fun createRadioCommuicatorPanel(element: ElementEntity, size: Size): Component {
     return Components.vbox().
             withSize(size).
             withSpacing(3).
-            withDecorations(ComponentDecorations.box(BoxType.DOUBLE, communicator.callSign.toString())).
+            withDecorations(ComponentDecorations.box(BoxType.DOUBLE, element.callsign.toString())).
             build().
             apply {
                 addComponent(Components.
@@ -177,7 +190,7 @@ fun ceateRadioCommuicatorPanel(communicator: RadioCommunicator, size: Size): Com
                         apply {
                             textProperty.updateFrom(
                                     createPropertyFrom("Talking to ")
-                                            bindPlusWith communicator.inConversationWith.bindTransform {
+                                            bindPlusWith element.inConversationWith.bindTransform {
                                         it.map { callSign -> callSign.toString() }
                                                 .orElse("nobody")
                                     })

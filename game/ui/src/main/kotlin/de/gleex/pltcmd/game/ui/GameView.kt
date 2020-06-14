@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.ui
 
-import de.gleex.pltcmd.game.communication.RadioCommunicator
+import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
@@ -30,7 +30,7 @@ import org.hexworks.zircon.api.view.base.BaseView
 /**
  * The view to display the map, radio log and interaction panel
  */
-class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val commandingElement: RadioCommunicator, val elementsToCommand: List<ElementEntity>) :
+class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val game: Game, val commandingElement: ElementEntity, val elementsToCommand: List<ElementEntity>) :
         BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     companion object {
@@ -114,7 +114,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val command
         val sidebarWidth = sidebar.contentSize.width
         sidebar.addFragment(CoordinateAtMousePosition(sidebarWidth, map, gameWorld))
 
-        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, map.absolutePosition)
+        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, map.absolutePosition, game)
         sidebar.addFragment(commandFragment)
         map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
 
