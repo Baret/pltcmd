@@ -121,13 +121,16 @@ class GameWorld(private val worldMap: WorldMap) :
     }
 
     private fun Coordinate.toPosition(): Position3D {
-        val translatedPos = Position.create(eastingFromLeft, getMaxY() - northingFromBottom) + topLeftOffset
-        return Position3D.from2DPosition(translatedPos)
+        // translate to 0,0 based grid then invert y axis
+        val translatedX = eastingFromLeft + topLeftOffset.x
+        val translatedY = northingFromBottom + topLeftOffset.y
+        return Position3D.create(translatedX, getMaxY() - translatedY, 0)
     }
 
     private fun Position3D.toCoordinate(): Coordinate {
-        val translatedPos = to2DPosition() - topLeftOffset
-        return Coordinate(translatedPos.x, getMaxY() - translatedPos.y)
+        // invert y axis then translate to map origin based grid
+        val invertedY = getMaxY() - y
+        return Coordinate(x - topLeftOffset.x, invertedY - topLeftOffset.y)
     }
 
     /**

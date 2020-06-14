@@ -38,7 +38,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
     val mainCoordinates: Set<MainCoordinate>
         get() {
             val coords = mutableSetOf<MainCoordinate>()
-            // TODO: add step(100) to not ask every single coordinate when you only need every 100th
+            // TODO: add `step(Sector.TILE_COUNT)` to not ask every single coordinate when you only need every sector
             for(c in bottomLeftCoordinate..topRightCoordinate) {
                 coords.add(c.toMainCoordinate())
             }
@@ -217,4 +217,13 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
      * Returns true if the given coordinate has already been (partly) generated.
      */
     operator fun contains(coordinate: Coordinate) = terrainMap.keys.contains(coordinate)
+
+    /**
+     * Ensures that the resulting position is inside this world.
+     * @return the given Coordinate or the nearest at the border of this map
+     **/
+    fun moveInside(location: Coordinate): Coordinate {
+        return WorldMap.Utils.moveInside(location, bottomLeftCoordinate, topRightCoordinate)
+    }
+
 }

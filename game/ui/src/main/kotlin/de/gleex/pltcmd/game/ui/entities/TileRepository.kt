@@ -9,6 +9,7 @@ import org.hexworks.zircon.api.builder.modifier.BorderBuilder
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.Symbols
+import org.hexworks.zircon.api.modifier.BorderPosition
 import org.hexworks.zircon.api.modifier.BorderType
 
 /**
@@ -44,6 +45,18 @@ object TileRepository {
                 withBackgroundColor(ColorRepository.forHeight(terrainHeight)).
                 withCharacter(terrainType.char()).
                 buildCharacterTile()
+
+    fun Tile.withGridBorder(borders: Set<BorderPosition>): Tile {
+        return if (borders.isEmpty()) {
+            this
+        } else {
+            withModifiers(BorderBuilder.newBuilder().
+                    withBorderPositions(borders).
+                    withBorderType(BorderType.DASHED).
+                    withBorderColor(ColorRepository.GRID_COLOR).
+                    build())
+        }
+    }
 
     private fun TerrainType?.char(): Char {
         if (this == null) return Symbols.INVERTED_QUESTION_MARK
