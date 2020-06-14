@@ -1,9 +1,9 @@
-package de.gleex.pltcmd.model.elements.reworked.dsl
+package de.gleex.pltcmd.model.elements.blueprint
 
-import de.gleex.pltcmd.model.elements.reworked.Corps
-import de.gleex.pltcmd.model.elements.reworked.ElementKind
-import de.gleex.pltcmd.model.elements.reworked.Rung
-import de.gleex.pltcmd.model.elements.reworked.units.Unit
+import de.gleex.pltcmd.model.elements.Corps
+import de.gleex.pltcmd.model.elements.ElementKind
+import de.gleex.pltcmd.model.elements.Rung
+import de.gleex.pltcmd.model.elements.units.Unit
 
 class ElementBlueprintStart(
         private val corps: Corps,

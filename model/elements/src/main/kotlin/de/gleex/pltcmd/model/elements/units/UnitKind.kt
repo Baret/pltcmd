@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.reworked.units
+package de.gleex.pltcmd.model.elements.units
 
 /**
  * [Unit]s are of different kind. Foot soldiers belong to infantry, trucks are unarmored and main battle tanks are

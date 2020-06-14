@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.reworked
+package de.gleex.pltcmd.model.elements
 
 /**
  * Every element (and all its subordinates) belong to a corps. That is one branch of service

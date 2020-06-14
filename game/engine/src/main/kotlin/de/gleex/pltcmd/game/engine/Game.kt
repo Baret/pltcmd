@@ -3,7 +3,9 @@ package de.gleex.pltcmd.game.engine
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
-import de.gleex.pltcmd.model.elements.*
+import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import org.hexworks.amethyst.api.Engine
@@ -33,13 +35,13 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     fun addElementInSector(sector: Sector, callsign: String = "Element ${random.nextInt(999_999)}", affiliation: Affiliation = Affiliation.Unknown): ElementEntity {
         val positionInSector = sector.randomCoordinate(random)
         val callSign = CallSign(callsign)
-        val element = Element(callSign, setOf(GenericUnit(UnitType.Soldier)))
+        val element = Elements.riflePlatoon.new()
         val elementEntity = if(affiliation == Affiliation.Friendly) {
                 EntityFactory.newElement(element, positionInSector, affiliation)
             } else {
                 EntityFactory.newWanderingElement(element, positionInSector, affiliation)
             }
-        log.debug("Adding element with callsign $callSign to engine at position $positionInSector")
+        log.debug("Adding ${element.description} with callsign $callSign to engine at position $positionInSector")
         return addEntity(elementEntity)
     }
 

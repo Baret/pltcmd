@@ -1,14 +1,14 @@
-package de.gleex.pltcmd.model.elements.reworked
+package de.gleex.pltcmd.model.elements
 
-import de.gleex.pltcmd.model.elements.reworked.Corps.Fighting
-import de.gleex.pltcmd.model.elements.reworked.Corps.Logistics
-import de.gleex.pltcmd.model.elements.reworked.ElementKind.Infantry
-import de.gleex.pltcmd.model.elements.reworked.Rung.*
-import de.gleex.pltcmd.model.elements.reworked.dsl.a
-import de.gleex.pltcmd.model.elements.reworked.dsl.times
-import de.gleex.pltcmd.model.elements.reworked.units.Units.*
-import de.gleex.pltcmd.model.elements.reworked.units.plus
-import de.gleex.pltcmd.model.elements.reworked.units.times
+import de.gleex.pltcmd.model.elements.Corps.Fighting
+import de.gleex.pltcmd.model.elements.Corps.Logistics
+import de.gleex.pltcmd.model.elements.ElementKind.Infantry
+import de.gleex.pltcmd.model.elements.Rung.*
+import de.gleex.pltcmd.model.elements.blueprint.a
+import de.gleex.pltcmd.model.elements.blueprint.times
+import de.gleex.pltcmd.model.elements.units.Units.*
+import de.gleex.pltcmd.model.elements.units.plus
+import de.gleex.pltcmd.model.elements.units.times
 
 /**
  * This object contains default compositions of elements. Probably ingame the player will buy smaller

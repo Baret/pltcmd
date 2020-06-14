@@ -9,20 +9,20 @@ import de.gleex.pltcmd.game.engine.systems.behaviours.Moving
 import de.gleex.pltcmd.game.engine.systems.behaviours.Wandering
 import de.gleex.pltcmd.game.engine.systems.facets.SetDestination
 import de.gleex.pltcmd.model.elements.Affiliation
-import de.gleex.pltcmd.model.elements.Element
+import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.newEntityOfType
 
 object EntityFactory {
 
-    fun newElement(element: Element, initialPosition: Coordinate, affiliation: Affiliation = Affiliation.Unknown): ElementEntity =
+    fun newElement(element: CommandingElement, initialPosition: Coordinate, affiliation: Affiliation = Affiliation.Unknown): ElementEntity =
             newEntityOfType(ElementType, {
                 attributes(ElementAttribute(element, affiliation), PositionAttribute(initialPosition), DestinationAttribute())
                 behaviors(Moving)
                 facets(SetDestination)
             })
 
-    fun newWanderingElement(element: Element, initialPosition: Coordinate, affiliation: Affiliation = Affiliation.Unknown): ElementEntity =
+    fun newWanderingElement(element: CommandingElement, initialPosition: Coordinate, affiliation: Affiliation = Affiliation.Unknown): ElementEntity =
             newElement(element, initialPosition, affiliation).apply { asMutableEntity().addBehavior(Wandering) }
 
 }

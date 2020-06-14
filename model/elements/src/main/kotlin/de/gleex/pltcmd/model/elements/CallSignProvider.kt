@@ -1,6 +1,5 @@
-package de.gleex.pltcmd.model.elements.reworked
+package de.gleex.pltcmd.model.elements
 
-import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.util.namegeneration.AlphabetPicker
 import de.gleex.pltcmd.util.namegeneration.Namegenerator
 import org.hexworks.cobalt.databinding.api.collection.ObservableSet
@@ -19,7 +18,7 @@ class CallSignProvider(
 
     // TODO: Pick name generator based on corps, kind and rung
     private val generator: Namegenerator = when(corps) {
-        Corps.Fighting -> AlphabetPicker() // Cool names
+        Corps.Fighting  -> AlphabetPicker() // Cool names
         Corps.Logistics -> AlphabetPicker() // Animal names
         // something like that...
         else            -> AlphabetPicker()
@@ -27,7 +26,7 @@ class CallSignProvider(
 
     private var callSign: CallSign = CallSign(generator.generate())
 
-    private val subCallSignProvider = SubCallSignProvider({callSign}, subordinates)
+    private val subCallSignProvider = SubCallSignProvider({ callSign }, subordinates)
 
     /**
      * Gets the current [CallSign].

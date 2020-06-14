@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.reworked
+package de.gleex.pltcmd.model.elements
 
 /**
  * An [Element]'s rung determines its position in the military hierarchy. An element can

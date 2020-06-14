@@ -1,7 +1,7 @@
-package de.gleex.pltcmd.model.elements.reworked.dsl
+package de.gleex.pltcmd.model.elements.blueprint
 
-import de.gleex.pltcmd.model.elements.reworked.*
-import de.gleex.pltcmd.model.elements.reworked.units.Unit
+import de.gleex.pltcmd.model.elements.*
+import de.gleex.pltcmd.model.elements.units.Unit
 
 class ElementBlueprint(
         private val corps: Corps,

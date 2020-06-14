@@ -1,13 +1,12 @@
 package de.gleex.pltcmd.game.application.examples.elementsReworked
 
-import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.elements.reworked.*
-import de.gleex.pltcmd.model.elements.reworked.dsl.a
-import de.gleex.pltcmd.model.elements.reworked.units.Unit
-import de.gleex.pltcmd.model.elements.reworked.units.Units
-import de.gleex.pltcmd.model.elements.reworked.units.Units.*
-import de.gleex.pltcmd.model.elements.reworked.units.plus
-import de.gleex.pltcmd.model.elements.reworked.units.times
+import de.gleex.pltcmd.model.elements.*
+import de.gleex.pltcmd.model.elements.blueprint.a
+import de.gleex.pltcmd.model.elements.units.Unit
+import de.gleex.pltcmd.model.elements.units.Units
+import de.gleex.pltcmd.model.elements.units.Units.*
+import de.gleex.pltcmd.model.elements.units.plus
+import de.gleex.pltcmd.model.elements.units.times
 
 fun main() {
     print("Lets assume the engine applies combat stats like 'firepower' to units.")

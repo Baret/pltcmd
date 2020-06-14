@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.reworked
+package de.gleex.pltcmd.model.elements
 
 /**
  * A blueprint used to create new instances of [T].

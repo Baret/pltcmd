@@ -1,7 +1,7 @@
-package de.gleex.pltcmd.model.elements.reworked.units
+package de.gleex.pltcmd.model.elements.units
 
-import de.gleex.pltcmd.model.elements.reworked.Blueprint
-import de.gleex.pltcmd.model.elements.reworked.units.UnitKind.*
+import de.gleex.pltcmd.model.elements.Blueprint
+import de.gleex.pltcmd.model.elements.units.UnitKind.*
 
 /**
  * This enum contains all units in the game.

@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.reworked.units
+package de.gleex.pltcmd.model.elements.units
 
 import org.hexworks.cobalt.core.platform.factory.UUIDFactory
 

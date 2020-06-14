@@ -1,6 +1,5 @@
-package de.gleex.pltcmd.model.elements.reworked
+package de.gleex.pltcmd.model.elements
 
-import de.gleex.pltcmd.model.elements.CallSign
 import kotlinx.collections.immutable.PersistentSet
 import org.hexworks.cobalt.databinding.api.collection.ObservableSet
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged

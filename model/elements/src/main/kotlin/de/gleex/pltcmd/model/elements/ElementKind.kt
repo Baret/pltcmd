@@ -1,7 +1,7 @@
-package de.gleex.pltcmd.model.elements.reworked
+package de.gleex.pltcmd.model.elements
 
-import de.gleex.pltcmd.model.elements.reworked.units.Unit
-import de.gleex.pltcmd.model.elements.reworked.units.UnitKind
+import de.gleex.pltcmd.model.elements.units.Unit
+import de.gleex.pltcmd.model.elements.units.UnitKind
 
 /**
  * [Element]s may be composed of different kinds of units. As it does not make

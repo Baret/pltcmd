@@ -1,7 +1,6 @@
-package de.gleex.pltcmd.model.elements.reworked
+package de.gleex.pltcmd.model.elements
 
-import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.elements.reworked.units.Unit
+import de.gleex.pltcmd.model.elements.units.Unit
 import org.hexworks.cobalt.databinding.api.collection.SetProperty
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 
