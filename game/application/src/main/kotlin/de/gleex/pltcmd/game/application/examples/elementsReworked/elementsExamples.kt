@@ -7,6 +7,7 @@ import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.Units.*
 import de.gleex.pltcmd.model.elements.units.plus
 import de.gleex.pltcmd.model.elements.units.times
+import org.hexworks.cobalt.datatypes.Maybe
 
 fun main() {
     print("Lets assume the engine applies combat stats like 'firepower' to units.")
@@ -22,9 +23,9 @@ fun main() {
 
     spacer()
 
-    println("let's create 2 default platoons and see how they look after adding a unit to a random element")
-    val luckyElement = (alpha.subordinates + bravo.subordinates).random()
     val newUnit = SniperTeam.new()
+    println("let's create 2 default platoons and see how they look after adding a $newUnit to a random element")
+    val luckyElement = (alpha.subordinates + bravo.subordinates).random()
     if(newUnit canBeAddedTo luckyElement) {
         luckyElement.addUnit(newUnit)
     }
@@ -41,9 +42,10 @@ fun main() {
     printCommandElement(wolfs)
     spacer()
     println("But after adding it to ${alpha.callSign}...")
-    val elementToRemoveFromAlpha = alpha.subordinates.random() as CommandingElement
     alpha.addElement(wolfs)
+    println("(callsign should be ${wolfs.callSign})")
     printCommandElement(wolfs)
+    val elementToRemoveFromAlpha = alpha.subordinates.random() as CommandingElement
     println("Its callsign should stay ${wolfs.callSign} when removing ${elementToRemoveFromAlpha.callSign} from ${alpha.callSign}")
     alpha.removeElement(elementToRemoveFromAlpha)
     printCommandElement(wolfs)
@@ -61,7 +63,8 @@ fun main() {
     printCommandElement(wolfs)
     spacer()
     println("When they are back on their own, they get back their cool callsign:")
-    bravo.removeElement(wolfs)
+    //bravo.removeElement(wolfs)
+    wolfs.superordinate = Maybe.empty()
     printCommandElement(wolfs)
     spacer()
     println("BTW, just to make it completely ridiculous, the company containing alpha and bravo: $company")
@@ -71,16 +74,16 @@ fun main() {
     // TODO: Make a unittest out of this
     println("Lets test some impossible cases...")
     println("You cannot put a squad into a squad and subordinates need to have the same kind...")
-    val sq1 = CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Squad, CallSign("sub"), setOf(Officer.new()), emptySet())
+    val sq1 = CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Squad, setOf(Officer.new()), emptySet())
     tryAndCatch {
-        CommandingElement(Corps.Fighting, ElementKind.Armored, Rung.Platoon, CallSign("superArmored"), setOf(Officer.new()), setOf(sq1))
+        CommandingElement(Corps.Fighting, ElementKind.Armored, Rung.Platoon, setOf(Officer.new()), setOf(sq1))
     }
     tryAndCatch {
-        CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Squad, CallSign("superSquad"), setOf(Officer.new()), setOf(sq1))
+        CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Squad, setOf(Officer.new()), setOf(sq1))
     }
     println("And the corps also has to match!")
     tryAndCatch {
-        CommandingElement(Corps.Reconnaissance, ElementKind.Infantry, Rung.Platoon, CallSign("recon platoon"), setOf(Officer.new()), setOf(sq1))
+        CommandingElement(Corps.Reconnaissance, ElementKind.Infantry, Rung.Platoon, setOf(Officer.new()), setOf(sq1))
     }
     println("You can also not put a tank into a mechanized infantry fireteam")
     tryAndCatch {

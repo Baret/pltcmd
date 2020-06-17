@@ -2,7 +2,8 @@ package de.gleex.pltcmd.model.elements
 
 import de.gleex.pltcmd.util.namegeneration.AlphabetPicker
 import de.gleex.pltcmd.util.namegeneration.Namegenerator
-import org.hexworks.cobalt.databinding.api.collection.ObservableSet
+import org.hexworks.cobalt.logging.api.LoggerFactory
+import kotlin.reflect.KProperty
 
 /**
  * This class is used to provide call signs for a commanding element and all its subordinates.
@@ -10,11 +11,14 @@ import org.hexworks.cobalt.databinding.api.collection.ObservableSet
  * by user input.
  */
 class CallSignProvider(
-        private val corps: Corps,
-        private val kind: ElementKind,
-        private val rung: Rung,
-        subordinates: ObservableSet<Element>
+        corps: Corps,
+        kind: ElementKind,
+        rung: Rung
 ) {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(CallSignProvider.javaClass)
+    }
 
     // TODO: Pick name generator based on corps, kind and rung
     private val generator: Namegenerator = when(corps) {
@@ -26,29 +30,10 @@ class CallSignProvider(
 
     private var callSign: CallSign = CallSign(generator.generate())
 
-    private val subCallSignProvider = SubCallSignProvider({ callSign }, subordinates)
+    operator fun getValue(commandingElement: CommandingElement, property: KProperty<*>): CallSign = callSign
 
-    /**
-     * Gets the current [CallSign].
-     */
-    fun get() = callSign
-
-    /**
-     * Gets the [CallSign] for the given subordinate.
-     *
-     * @see SubCallSignProvider
-     */
-    fun getFor(subordinate: Element) = subCallSignProvider.callSignFor(subordinate)
-
-    /**
-     * Sets the current [CallSign] to the given value.
-     */
-    fun set(newCallSign: String) = set(CallSign(newCallSign))
-
-    /**
-     * Sets the current [CallSign] to the given value.
-     */
-    fun set(newCallSign: CallSign) {
-        callSign = newCallSign
+    operator fun setValue(commandingElement: CommandingElement, property: KProperty<*>, callSign: CallSign) {
+        log.debug("${this.callSign} is now know as $callSign")
+        this.callSign = callSign
     }
 }

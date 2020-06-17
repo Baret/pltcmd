@@ -2,6 +2,8 @@ package de.gleex.pltcmd.model.elements
 
 import de.gleex.pltcmd.model.elements.units.Unit
 import org.hexworks.cobalt.core.platform.factory.UUIDFactory
+import org.hexworks.cobalt.databinding.api.extension.toProperty
+import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**
@@ -18,7 +20,7 @@ open class Element(
         val kind: ElementKind,
         val rung: Rung,
         units: Set<Unit>,
-        superordinate: CommandingElement? = null
+        initialSuperOrdinate: Maybe<CommandingElement> = Maybe.empty()
 ) {
     /**
      * Unique ID of this element used to identify it, for example in [equals].
@@ -37,12 +39,31 @@ open class Element(
      */
     val units: Set<Unit> = _units
 
-    private var _superordinate = Maybe.ofNullable(superordinate)
+    private var _superordinate: Property<Maybe<CommandingElement>> =
+            initialSuperOrdinate
+                    .toProperty()
+                    .apply {
+                        onChange {
+                            println("superordinate of ${this@Element} changed to ${it.newValue}")
+                            it.oldValue.ifPresent { oldSuperordinate ->
+                                if(oldSuperordinate.removeElement(this@Element)) {
+                                    println("removed ${this@Element} from $oldSuperordinate")
+                                }
+                            }
+                        }
+                    }
+
     /**
      * If this element is currently being commanded this [Maybe] contains the superordinate.
+     *
+     * When this elements gets a new superordinate it automatically removes itself from the
+     * former superordinate (if it was present).
      */
-    val superordinate: Maybe<CommandingElement>
-        get() = _superordinate
+    var superordinate: Maybe<CommandingElement>
+        get() = _superordinate.value
+        set(value) {
+            _superordinate.updateValue(value)
+        }
 
     init {
         require(units.isNotEmpty()) {
@@ -80,26 +101,6 @@ open class Element(
      * @see MutableSet.remove
      */
     fun removeUnit(unit: Unit): Boolean = _units.remove(unit)
-
-    /**
-     * Sets the [superordinate] of this element. If this element is currently being commanded
-     * you have to clear its current superordinate first.
-     *
-     * @see clearSuperordinate
-     */
-    internal fun setSuperordinate(commandingElement: CommandingElement) {
-        require(superordinate.isEmpty() || superordinate.get().subordinates.contains(this).not()) {
-            "Can not set new superordinate in $this. It has to be removed from current commanding element first: ${superordinate.get()}"
-        }
-        _superordinate = Maybe.of(commandingElement)
-    }
-
-    /**
-     * Removes the current superordinate.
-     */
-    internal fun clearSuperordinate() {
-        _superordinate = Maybe.empty()
-    }
 
     override fun toString() = "${description} [id=$id, ${units.size} units${superordinate.map { ",superordinate=$it" }.orElse("")}]"
 

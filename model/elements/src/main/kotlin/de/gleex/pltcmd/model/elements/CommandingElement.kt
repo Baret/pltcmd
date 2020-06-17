@@ -2,7 +2,9 @@ package de.gleex.pltcmd.model.elements
 
 import de.gleex.pltcmd.model.elements.units.Unit
 import org.hexworks.cobalt.databinding.api.collection.SetProperty
+import org.hexworks.cobalt.databinding.api.event.*
 import org.hexworks.cobalt.databinding.api.extension.toProperty
+import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * A commanding element is in charge of other elements and represented in the command net by its callsign if it is not
@@ -12,31 +14,61 @@ class CommandingElement(
         corps: Corps,
         kind: ElementKind,
         rung: Rung,
-        private var ownCallSign: CallSign,
         units: Set<Unit>,
         subordinates: Set<Element>
 ) : Element(corps, kind, rung, units) {
 
-    private val _subordinates: SetProperty<Element> = mutableSetOf<Element>().toProperty()
+    private val _subordinates: SetProperty<Element> =
+            mutableSetOf<Element>()
+                    .toProperty()
+                    .apply {
+                        onChange { (oldSet, newSet, _, type) ->
+                            val removedElements = mutableSetOf<Element>()
+                            val addedElements = mutableSetOf<Element>()
+                            when(type) {
+                                is ListAdd<*>           -> addedElements.add((type as ListAdd<Element>).element)
+                                is ListAddAt<*>         -> addedElements.add((type as ListAddAt<Element>).element)
+                                is ListAddAll<*>        -> addedElements.addAll((type as ListAddAll<Element>).elements)
+                                is ListAddAllAt<*>      -> addedElements.addAll((type as ListAddAllAt<Element>).c)
+                                is ListRemove<*>        -> removedElements.add((type as ListRemove<Element>).element)
+                                is ListRemoveAt         -> removedElements.add(oldSet.elementAt((type as ListRemoveAt).index))
+                                is ListSet<*>           -> {
+                                    val t = (type as ListSet<Element>)
+                                    removedElements.add(oldSet.elementAt(t.index))
+                                    addedElements.add(t.element)
+                                }
+                                is ListRemoveAll<*>     -> removedElements.addAll((type as ListRemoveAll<Element>).elements)
+                                is ListClear            -> removedElements.addAll(oldSet)
+                                is ScalarChange         -> {
+                                    if(oldSet.size > newSet.size) {
+                                        removedElements.addAll(oldSet - newSet)
+                                    } else {
+                                        addedElements.addAll(newSet - oldSet)
+                                    }
+                                }
+                            }
+                            addedElements.forEach {
+                                it.superordinate = Maybe.of(this@CommandingElement)
+                            }
+                            removedElements
+                                    .filter { it.superordinate.isPresent }
+                                    .filter { it.superordinate.get() == this@CommandingElement }
+                                    .forEach {
+                                        it.superordinate = Maybe.empty()
+                                    }
+                        }
+                    }
 
-    private val callSignProvider = CallSignProvider(corps, kind, rung, _subordinates)
+    private val callSignProvider = CallSignProvider(corps, kind, rung)
 
     /**
      * The callsign this element is identified by. If commanded by another [CommandingElement] (i.e. [superordinate] is present)
-     * the callsign is inherited. Otherwise the callsign given in the constructor is used.
+     * the callsign is inherited. Otherwise the won callsign is used.
      */
-    var callSign: CallSign
-        get() {
-            return superordinate
-                    .map { it.callSignFor(this) }
-                    .orElse(ownCallSign)
-        }
-        set(value) {
-            callSignProvider.set(value)
-        }
+    var callSign: CallSign by callSignProvider
 
     override val description: String
-        get() = "${super.description} $ownCallSign"
+        get() = "${super.description} ${callSign}"
 
     /**
      * The current subordinates this element is commanding.
@@ -75,9 +107,6 @@ class CommandingElement(
     val totalSoldiers: Int
         get() = allUnits.sumBy { it.personnel }
 
-    private fun callSignFor(subordinate: Element): CallSign =
-            callSignProvider.getFor(subordinate)
-
     /**
      * Adds the given element to the [subordinates] and sets this element as the given element's [superordinate].
      *
@@ -93,11 +122,7 @@ class CommandingElement(
         }
         if(canElementBeAdded(element)) {
             // TODO: Maybe a commanding element could get a max number of subordinates so that you cannot stack elements into it endlessly
-            if(element.superordinate.isPresent) {
-                element.superordinate.get().removeElement(element)
-                element.clearSuperordinate()
-            }
-            element.setSuperordinate(this)
+            println("Adding $element to $this")
             _subordinates.add(element)
             return true
         }
@@ -115,12 +140,11 @@ class CommandingElement(
     fun removeElement(element: Element): Boolean {
         if(_subordinates.contains(element)) {
             _subordinates.remove(element)
-            element.clearSuperordinate()
             return true
         }
         return false
     }
 
     override fun toString() =
-            "$description [id=$id, ${subordinates.size} subordinates, $totalUnits total units${superordinate.map { ", superordinate present" }.orElse("")}]"
+            "$description [id=$id, ${subordinates.size} subordinates, $totalUnits total units${superordinate.map { ", superordinate=$it" }.orElse("")}]"
 }

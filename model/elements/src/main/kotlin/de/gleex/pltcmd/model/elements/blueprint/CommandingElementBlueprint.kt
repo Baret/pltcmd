@@ -11,7 +11,7 @@ class CommandingElementBlueprint(
         private val subordinates: Set<Element>
 ) : Blueprint<CommandingElement> {
 
-    override fun new() = CommandingElement(corps, kind, rung, CallSign("WIP"), units, subordinates)
+    override fun new() = CommandingElement(corps, kind, rung, units, subordinates)
 
     operator fun times(i: Int) = List(i) { new() }.toSet()
 }

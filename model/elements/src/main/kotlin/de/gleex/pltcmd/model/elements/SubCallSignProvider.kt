@@ -37,6 +37,7 @@ class SubCallSignProvider(private val parentCallsign: () -> CallSign, observedSu
                     }
             }
         }
+        println("Initialized subcallsignprovider with ${observedSubordinates.size} subordinates. Mapping: $callSignMap")
     }
 
     private fun updateIndex(i: Int = currentFreeIndex) {
