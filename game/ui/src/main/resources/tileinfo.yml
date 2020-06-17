@@ -1,0 +1,73 @@
+---
+name: pltcmd                             # The name of the tileset
+size: 16                                  # The size of a tile (only square tiles are supported right now)
+files:                                    # A list of the files in this tileset
+  - name: tileset.png                       # name of a file
+    tilesPerRow: 11                       # The number of tiles in each row of the file
+    tiles:                                # A list of **all** the tiles in this file
+      - name: PInfantry                   # The name of the tile
+        tags: [infantry, platoon]        # Optional. All unique words in name will be saved as tags ('giant' and 'ant' in this case
+        char: Y                           # Optional. If not present the first character of the name will be used
+        description: Infantry platoon or other sized element.           # Optional. If not present it will be empty
+      - name: Armored
+        tags: [armored, platoon]
+        char: A
+        description: Armored platoon or other sized element.
+      - name: HQ
+        tags: [hq]
+        char: H
+        description: The HQ of a faction.
+      - name: Aerial rotary
+        tags: [aerial, rotary, platoon]
+        char: X
+        description: Aerial helicopter platoon or other sized element.
+      - name: Engineers
+        tags: [engineers, platoon]
+        char: E
+        description: Combat engineer platoon or other sized element.
+      - name: Cavalry
+        tags: [cavalry, platoon]
+        char: C
+        description: Cavalry platoon or other sized element.
+      - name: Transport
+        tags: [transport, platoon]
+        char: T
+        description: Transport platoon or other sized element.
+      - name: Supply
+        tags: [supply, platoon]
+        char: S
+        description: Supply platoon or other sized element.
+      - name: Medical
+        tags: [medical, platoon]
+        char: M
+        description: Medical platoon or other sized element.
+      - name: Artillery
+        tags: [artillery, platoon]
+        char: a
+        description: Artillery platoon or other sized element.
+      - name: Mortar
+        tags: [mortar, platoon]
+        char: m
+        description: Mortar platoon or other sized element.
+      - name: Signals
+        tags: [signals]
+        char: s
+        description: Signals element.
+      - name: Motorized Infantry
+        tags: [motorized, infantry, platoon]
+        char: o
+        description: Motorized infantry platoon or other sized element.
+      - name: Mechanized Infantry
+        tags: [mechanized, infantry, platoon]
+        char: e
+        description: Mechanized infantry platoon or other sized element.
+      - name: Aerial fixed wing
+        tags: [aerial, fixed, wing, platoon]
+        char: W
+        description: Aerial fixed wing platoon or other sized element.
+      - name: Infantry
+        tags: [friendly]
+      - name: Infantry
+        tags: [hostile]
+      - name: Infantry
+        tags: [unknown]

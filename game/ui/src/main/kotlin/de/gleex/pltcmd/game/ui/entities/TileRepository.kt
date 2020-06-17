@@ -5,6 +5,8 @@ import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
+import org.hexworks.cobalt.logging.api.LoggerFactory
+import org.hexworks.zircon.api.GraphicalTilesetResources
 import org.hexworks.zircon.api.builder.modifier.BorderBuilder
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Tile
@@ -17,22 +19,35 @@ import org.hexworks.zircon.api.modifier.BorderType
  */
 object TileRepository {
 
+    private val tilesetResource = GraphicalTilesetResources.loadTilesetFromJar(16, 16, "/tileset_pltcmd.zip")
+    private val log = LoggerFactory.getLogger(TileRepository.javaClass)
+
+    init {
+        log.info("loaded tileset $tilesetResource with path ${tilesetResource.path}")
+        log.info("URI to zip: ${this.javaClass.getResource("/tileset_pltcmd.zip")}")
+    }
+
     /**
      * All tiles used to display elements (aka units) on the map.
      */
     object Elements {
-        private fun platoonTile(colorForeground: TileColor, colorBackground: TileColor) =
+        private fun platoonTile(colorForeground: TileColor, colorBackground: TileColor, affiliationTag: String) =
                 Tile.newBuilder().
-                withForegroundColor(colorForeground).
-                withBackgroundColor(colorBackground).
-                withCharacter('X').
-                withModifiers(BorderBuilder.newBuilder().withBorderColor(colorBackground).build()).
-                buildCharacterTile()
+                withTileset(tilesetResource).
+                withName("Infantry").
+                withTags(setOf(affiliationTag)).
+//                withForegroundColor(colorForeground).
+//                withBackgroundColor(colorBackground).
+//                withCharacter('X').
+//                withModifiers(BorderBuilder.newBuilder().withBorderColor(colorBackground).build()).
+                buildGraphicalTile()
 
         fun platoon(affiliation: Affiliation): Tile {
             // TODO: cache the tiles, because they are immutable
             val (foreground, background) = ColorRepository.forAffiliation(affiliation)
-            return platoonTile(foreground, background)
+            val affiliationTag = affiliation.name.toLowerCase()
+            log.info("Getting tile with affiliation $affiliationTag")
+            return platoonTile(foreground, background, affiliationTag)
         }
     }
 

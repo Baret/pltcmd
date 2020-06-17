@@ -45,11 +45,12 @@ fun main() {
             add(visibleSector.createFriendly("Alpha", game, gameWorld))
             add(visibleSector.createFriendly("Bravo", game, gameWorld))
             add(visibleSector.createFriendly("Charlie", game, gameWorld))
+            add(visibleSector.createHostile("Tango", game, gameWorld))
         }
         screen.dock(GameView(gameWorld, tileGrid, elementsToCommand))
 
         // Adding some elements to every sector
-        val elementsPerSector = 3
+        val elementsPerSector = 0
         generatedMap.sectors.forEach { sector ->
             repeat(elementsPerSector) {
                 game.addElementInSector(sector)?.
@@ -66,6 +67,11 @@ fun main() {
 
 private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld): ElementEntity {
     return game.addElementInSector(this, callsign, Affiliation.Friendly)
+            .also(gameWorld::trackUnit)
+}
+
+private fun Sector.createHostile(callsign: String, game: Game, gameWorld: GameWorld): ElementEntity {
+    return game.addElementInSector(this, callsign, Affiliation.Hostile)
             .also(gameWorld::trackUnit)
 }
 
