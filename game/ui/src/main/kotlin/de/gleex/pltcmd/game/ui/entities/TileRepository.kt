@@ -32,15 +32,16 @@ object TileRepository {
      */
     object Elements {
         private fun platoonTile(colorForeground: TileColor, colorBackground: TileColor, affiliationTag: String) =
-                Tile.newBuilder().
-                withTileset(tilesetResource).
-                withName("Infantry").
-                withTags(setOf(affiliationTag)).
+                Tile.createGraphicTile("Infantry $affiliationTag", setOf(affiliationTag), tilesetResource)
+//                newBuilder().
+//                withTileset(tilesetResource).
+//                withName("Infantry").
+//                withTags(setOf(affiliationTag)).
 //                withForegroundColor(colorForeground).
 //                withBackgroundColor(colorBackground).
 //                withCharacter('X').
 //                withModifiers(BorderBuilder.newBuilder().withBorderColor(colorBackground).build()).
-                buildGraphicalTile()
+//                buildGraphicalTile()
 
         fun platoon(affiliation: Affiliation): Tile {
             // TODO: cache the tiles, because they are immutable

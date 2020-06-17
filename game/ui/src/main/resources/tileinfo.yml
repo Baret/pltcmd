@@ -65,9 +65,6 @@ files:                                    # A list of the files in this tileset
         tags: [aerial, fixed, wing, platoon]
         char: W
         description: Aerial fixed wing platoon or other sized element.
-      - name: Infantry
-        tags: [friendly]
-      - name: Infantry
-        tags: [hostile]
-      - name: Infantry
-        tags: [unknown]
+      - name: Infantry friendly
+      - name: Infantry hostile
+      - name: Infantry unknown
