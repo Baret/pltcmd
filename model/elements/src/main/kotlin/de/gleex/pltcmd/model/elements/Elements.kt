@@ -27,7 +27,7 @@ object Elements {
             a(Fighting, Infantry, Squad) consistingOf Officer + Medic commanding rifleTeam + weaponsTeam
 
     val riflePlatoon get() =
-            a(Fighting, Infantry, Platoon) consistingOf 2 * Officer + Medic + Rifleman commanding 3 * rifleSquad
+            a(Fighting, Infantry, Platoon) consistingOf 2 * Officer + Medic + Radioman commanding 3 * rifleSquad
 
 
     val engineerTeam =
@@ -37,5 +37,5 @@ object Elements {
             a(Logistics, Infantry, Squad) consistingOf Officer + Medic commanding 2 * engineerTeam
 
     val engineerPlatoon =
-            a(Logistics, Infantry, Platoon) consistingOf 2 * Officer + Medic + Rifleman commanding 4 * engineerSquad
+            a(Logistics, Infantry, Platoon) consistingOf 2 * Officer + Medic + Radioman commanding 4 * engineerSquad
 }

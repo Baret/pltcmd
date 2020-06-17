@@ -37,6 +37,14 @@ enum class Units(
      */
     Officer,
     /**
+     * Radiomen support [Officer]s by extending their radio range. They carry a manpack radio with
+     * more power than the standard radio issued to officers. It can be deployed when stationary to
+     * further increase the range.
+     *
+     * Radiomen are usually attached to platoons or larger elements.
+     */
+    Radioman,
+    /**
      * The job of a medic is to keep his fellow soldiers ready to fight or at least alive.
      */
     Medic,
