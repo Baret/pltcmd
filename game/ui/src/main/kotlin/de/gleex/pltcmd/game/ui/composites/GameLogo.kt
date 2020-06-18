@@ -1,7 +1,9 @@
 package de.gleex.pltcmd.game.ui.composites
 
 import de.gleex.pltcmd.game.options.UiOptions
-import org.hexworks.zircon.api.CharacterTileStrings
+import javafx.scene.image.Image
+import org.hexworks.cobalt.logging.api.LoggerFactory
+import org.hexworks.zircon.api.ImageDictionaryTilesetResources
 import org.hexworks.zircon.api.Modifiers
 import org.hexworks.zircon.api.builder.graphics.LayerBuilder
 import org.hexworks.zircon.api.color.ANSITileColor
@@ -13,6 +15,7 @@ import org.hexworks.zircon.api.graphics.StyleSet
 import org.hexworks.zircon.api.graphics.Symbols
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.shape.LineFactory
+import java.io.File
 import kotlin.math.roundToInt
 
 /**
@@ -25,6 +28,8 @@ object GameLogo {
             .withForegroundColor(UiOptions.THEME.primaryBackgroundColor)
             .withBackgroundColor(ANSITileColor.BLACK)
 
+    private val log = LoggerFactory.getLogger(GameLogo.javaClass)
+
     fun drawOnto(parent: TileGrid) {
         val logoSize = Size.create(parent.width, (parent.width / 1.6).roundToInt())
         val logoOffset = Position.zero().withRelativeY(((parent.height - logoSize.height) / 2.0).roundToInt())
@@ -35,7 +40,28 @@ object GameLogo {
                 .build()
 
         parent.addLayer(mainLayer)
+        val path = "./artwork/logos/"
+        val tilesetResource = ImageDictionaryTilesetResources.loadTilesetFromFilesystem(path)
+        val imageName = "logo_full_text_inv.png"
+        val image = Image(File(path + imageName).inputStream())
+        val tile = Tile.createImageTile(imageName, tilesetResource)
+        log.info("Drawing tile $tile")
+        val imageSizeInTiles = Size.create((image.width / mainLayer.tileset.width).toInt(), (image.height / mainLayer.tileset.height).toInt())
+        val ox = (parent.size.width - imageSizeInTiles.width) / 2
+        val oy = (parent.size.height - imageSizeInTiles.height) / 2
+        val offSet = Position.create(ox, oy)
+        log.info("image: ${image.width} * ${image.height} px, $imageSizeInTiles tiles")
+        log.info("parent size: ${parent.size}")
+        log.info("Drawing at offset $offSet")
 
+        val imageLayer = LayerBuilder
+                .newBuilder()
+                .withOffset(offSet)
+                .withSize(imageSizeInTiles)
+                .build()
+        imageLayer.draw(tile, imageLayer.position)
+        parent.addLayer(imageLayer)
+/*
         val logoCenterX = logoSize.width / 2
         val logoCenterY = logoSize.height / 2
 
@@ -61,6 +87,7 @@ object GameLogo {
                         .withText("c m d")
                         .build(),
                 Position.create(logoCenterX + 3, logoCenterY).withRelative(logoOffset))
+ */
     }
 
     private fun Layer.drawMainLine(topLeftCorner: Position, lowerPoint: Position, upperPoint: Position, bottomRightCorner: Position) {
