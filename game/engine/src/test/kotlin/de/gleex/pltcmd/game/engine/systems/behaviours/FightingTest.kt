@@ -1,11 +1,9 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.affiliation
-import de.gleex.pltcmd.game.engine.entities.types.combatStats
-import de.gleex.pltcmd.game.engine.entities.types.currentPosition
+import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.combat.CombatStats
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.core.spec.style.StringSpec
@@ -54,9 +52,11 @@ private fun setupCombat(attackerPosition: Coordinate, attackerStats: CombatStats
     val attacker = mockk<ElementEntity>()
     every { attacker.combatStats } returns attackerStats
     every { attacker.currentPosition } returns attackerPosition
+    every { attacker.callsign } returns CallSign("attacker")
     val target = mockk<ElementEntity>()
     every { target.combatStats } returns targetStats
     every { target.affiliation } returns Affiliation.Hostile
+    every { target.callsign } returns CallSign("target")
 
     val context = mockk<GameContext>()
     every { context.findElementAt(any()) } returns Maybe.empty()
