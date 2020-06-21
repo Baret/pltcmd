@@ -79,6 +79,11 @@ fun main() {
     val charlieEntity = EntityFactory.newElement(Element(charlieCallSign, emptySet()), charlieLocation, Affiliation.Friendly, charlieRadio)
     val zuluEntity = EntityFactory.newElement(Element(CallSign("Zulu-0"), emptySet()), zuluLocation, Affiliation.Neutral, zuluRadio)
 
+    game.addEntity(hqEntity)
+    game.addEntity(bravoEntity)
+    game.addEntity(charlieEntity)
+    game.addEntity(zuluEntity)
+
     buildUI(hqEntity, bravoEntity, charlieEntity)
 
     runBlocking {
