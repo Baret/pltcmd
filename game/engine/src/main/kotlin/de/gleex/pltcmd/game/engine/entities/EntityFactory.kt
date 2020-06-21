@@ -6,6 +6,7 @@ import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
+import de.gleex.pltcmd.game.engine.systems.behaviours.Fighting
 import de.gleex.pltcmd.game.engine.systems.behaviours.Moving
 import de.gleex.pltcmd.game.engine.systems.behaviours.Wandering
 import de.gleex.pltcmd.game.engine.systems.facets.SetDestination
@@ -19,7 +20,7 @@ object EntityFactory {
     fun newElement(element: Element, initialPosition: Coordinate, affiliation: Affiliation = Affiliation.Unknown): ElementEntity =
             newEntityOfType(ElementType, {
                 attributes(ElementAttribute(element, affiliation), PositionAttribute(initialPosition), DestinationAttribute(), CombatAttribute())
-                behaviors(Moving)
+                behaviors(Moving, Fighting)
                 facets(SetDestination)
             })
 
