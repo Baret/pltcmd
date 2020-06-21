@@ -36,7 +36,7 @@ class MapCoordinates(
 
     private fun drawGridCoordinates(topLeftCoordinate: Coordinate, topLeftPos: Position, mapOffset: Position) {
         // move to next grid marker
-        val offsetToGridX = topLeftCoordinate.eastingFromLeft % MapGrid.GRID_WIDTH
+        val offsetToGridX = Math.floorMod(topLeftCoordinate.eastingFromLeft, MapGrid.GRID_WIDTH)
         for (i in offsetToGridX until size.width - 1 step MapGrid.GRID_WIDTH) {
             // top
             val topCoordinateText = createTopText(topLeftCoordinate, i)
@@ -44,8 +44,8 @@ class MapCoordinates(
             drawCentered(topCoordinateText, topGridPosition)
         }
 
-        val offsetToGridY = topLeftCoordinate.northingFromBottom % MapGrid.GRID_WIDTH
-        for (i in offsetToGridY until size.width - 1 step MapGrid.GRID_WIDTH) {
+        val offsetToGridY = Math.floorMod(topLeftCoordinate.northingFromBottom, MapGrid.GRID_WIDTH)
+        for (i in offsetToGridY until size.height - 1 step MapGrid.GRID_WIDTH) {
             // left
             val leftCoordinateText = createLeftText(topLeftCoordinate, i)
             val leftGridPosition = topLeftPos.withRelativeY(i + mapOffset.y)
