@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.engine
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
+import de.gleex.pltcmd.game.engine.entities.types.combatStats
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.world.Sector
@@ -31,7 +32,16 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     fun <T : EntityType> addEntity(entity: GameEntity<T>) = entity.also {
         engine.addEntity(it)
         if (it.type is ElementType) {
-            allElements.add(it as ElementEntity)
+            val element = it as ElementEntity
+            allElements.add(element)
+            // TODO does this logic belong here?
+            // remove corpses
+            require(element.combatStats.isAlive.value)
+            element.combatStats.isAlive.onChange {isAlive ->
+                require(!isAlive.newValue)
+                allElements.remove(element)
+                engine.removeEntity(element)
+            }
         }
     }
 
