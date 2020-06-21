@@ -8,7 +8,7 @@ import de.gleex.pltcmd.model.elements.CallSign
 import org.hexworks.amethyst.api.base.BaseEntityType
 
 /** Represents an element in an army. */
-object ElementType : BaseEntityType("element", "A movable element."), Movable
+object ElementType : BaseEntityType("element", "A movable element."), Movable, Combatant
 typealias ElementEntity = GameEntity<ElementType>
 
 val ElementEntity.callsign: CallSign

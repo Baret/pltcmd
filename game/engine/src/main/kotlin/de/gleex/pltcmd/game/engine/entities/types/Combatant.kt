@@ -10,14 +10,14 @@ import org.hexworks.amethyst.api.entity.EntityType
  * This file contains code for entities that have the [CombatAttribute].
  */
 
-interface Fighting : EntityType
-typealias FightingEntity = GameEntity<Fighting>
+interface Combatant : EntityType
+typealias CombatantEntity = GameEntity<Combatant>
 
 /** Access to [CombatStats] */
-val FightingEntity.combatStats: CombatStats
+val CombatantEntity.combatStats: CombatStats
     get() = getAttribute(CombatAttribute::class).stats
 
-/** This fighting entity attacks the given [target] */
-fun FightingEntity.attack(target: FightingEntity) {
+/** This combatant attacks the given [target] */
+internal fun CombatantEntity.attack(target: CombatantEntity) {
     combatStats.attack(target.combatStats)
 }
