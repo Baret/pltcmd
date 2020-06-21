@@ -1,9 +1,6 @@
 package de.gleex.pltcmd.game.ui.entities
 
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.affiliation
-import de.gleex.pltcmd.game.engine.entities.types.currentPosition
-import de.gleex.pltcmd.game.engine.entities.types.position
+import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -67,6 +64,10 @@ class GameWorld(private val worldMap: WorldMap) :
         element.position.onChange {
             it.oldValue.hideUnit()
             showUnit(element)
+        }
+        require(element.combatStats.isAlive.value)
+        element.combatStats.isAlive.onChange {
+            element.currentPosition.hideUnit()
         }
     }
 

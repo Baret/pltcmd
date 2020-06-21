@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.engine
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
+import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.combatStats
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.model.elements.*
@@ -39,10 +40,15 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
             require(element.combatStats.isAlive.value)
             element.combatStats.isAlive.onChange {isAlive ->
                 require(!isAlive.newValue)
-                allElements.remove(element)
-                engine.removeEntity(element)
+                removeElement(element)
             }
         }
+    }
+
+    private fun removeElement(element: ElementEntity) {
+        log.debug("Removing element ${element.callsign} from game")
+        allElements.remove(element)
+        engine.removeEntity(element)
     }
 
     /**
