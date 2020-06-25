@@ -16,8 +16,10 @@ data class CombatStats(val firepower: ObservableValue<Int> = 20.toProperty(), va
     val isAlive: ObservableValue<Boolean> = health.bindTransform { it > 0 }
 
     fun attack(target: CombatStats) {
-        target.health.transformValue { it - firepower.value }
-        log.debug("attack with ${firepower.value} fire power resulted in target health of ${target.health.value}")
+        if (target.isAlive.value) {
+            target.health.transformValue { it - firepower.value }
+            log.debug("attack with ${firepower.value} fire power resulted in target health of ${target.health.value}")
+        }
     }
 
     companion object {

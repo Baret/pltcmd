@@ -28,7 +28,7 @@ internal object Fighting : BaseBehavior<GameContext>(CombatAttribute::class, Pos
         val currentPosition = attacker.currentPosition
         val enemyToAttack = currentPosition.neighbors()
                 .map(context::findElementAt)
-                .filter { it.isPresent && it.get().affiliation == Affiliation.Hostile }
+                .filter { it.isEnemy() }
                 .map(Maybe<ElementEntity>::get)
                 .firstOrNull()
         if (enemyToAttack != null) {
@@ -36,5 +36,8 @@ internal object Fighting : BaseBehavior<GameContext>(CombatAttribute::class, Pos
             attacker attack enemyToAttack
         }
     }
+
+    private fun Maybe<ElementEntity>.isEnemy(): Boolean =
+            filter { entity -> entity.affiliation == Affiliation.Hostile && entity.combatStats.isAlive.value }.isPresent
 
 }
