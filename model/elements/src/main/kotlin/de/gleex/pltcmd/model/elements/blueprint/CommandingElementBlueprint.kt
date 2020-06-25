@@ -3,7 +3,7 @@ package de.gleex.pltcmd.model.elements.blueprint
 import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.units.Unit
 
-class CommandingElementBlueprint(
+data class CommandingElementBlueprint(
         private val corps: Corps,
         private val kind: ElementKind,
         private val rung: Rung,
