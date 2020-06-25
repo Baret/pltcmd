@@ -36,11 +36,6 @@ class Unit(val blueprint: Units) {
     val kind
         get() = blueprint.kind
 
-    /**
-     * Checks if the given blueprint is equal to the one of this unit.
-     */
-    fun isA(blueprint: Units): Boolean = this.blueprint == blueprint
-
     override fun toString() = "${blueprint.kind} $name [id=$id]"
 
     override fun equals(other: Any?): Boolean {

@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty
  * It picks a random (hopefully) unique call sign at creation time but it may be overwritten i.e.
  * by user input.
  */
-class CallSignProvider(
+internal class CallSignProvider(
         corps: Corps,
         kind: ElementKind,
         rung: Rung

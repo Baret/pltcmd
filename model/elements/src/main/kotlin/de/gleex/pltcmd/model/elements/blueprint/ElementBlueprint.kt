@@ -29,13 +29,13 @@ data class ElementBlueprint(
      *
      * @return a new [CommandingElementBlueprint] with the given subordinates
      */
-    infix fun commanding(subordinates: List<Blueprint<Element>>) = CommandingElementBlueprint(corps, kind, rung, units, subordinates)
+    internal infix fun commanding(subordinates: List<Blueprint<Element>>) = CommandingElementBlueprint(corps, kind, rung, units, subordinates)
 
     operator fun times(i: Int) = List(i) { this.copy() }
 
     operator fun plus(blueprint: ElementBlueprint) = listOf(this, blueprint)
 }
 
-operator fun Int.times(blueprint: ElementBlueprint) = blueprint * this
+internal operator fun Int.times(blueprint: ElementBlueprint) = blueprint * this
 
-fun Collection<Blueprint<Element>>.new(): Set<Element> = map { it.new() }.toSet()
+internal fun Collection<Blueprint<Element>>.new(): Set<Element> = map { it.new() }.toSet()

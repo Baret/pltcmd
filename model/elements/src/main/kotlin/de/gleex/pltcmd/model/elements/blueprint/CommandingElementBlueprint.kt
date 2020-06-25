@@ -26,4 +26,4 @@ data class CommandingElementBlueprint(
     operator fun times(i: Int) = List(i) { copy() }
 }
 
-operator fun Int.times(blueprint: CommandingElementBlueprint) = blueprint * this
+internal operator fun Int.times(blueprint: CommandingElementBlueprint) = blueprint * this
