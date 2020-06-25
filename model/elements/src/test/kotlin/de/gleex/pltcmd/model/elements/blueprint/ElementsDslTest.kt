@@ -1,12 +1,14 @@
 package de.gleex.pltcmd.model.elements.blueprint
 
-import de.gleex.pltcmd.model.elements.Corps
-import de.gleex.pltcmd.model.elements.ElementKind
-import de.gleex.pltcmd.model.elements.Rung
+import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.units.Units
+import de.gleex.pltcmd.model.elements.units.times
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
+import io.kotest.inspectors.forAll
+import io.kotest.matchers.beInstanceOf
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 
 class ElementsDslTest : StringSpec({
@@ -36,6 +38,22 @@ class ElementsDslTest : StringSpec({
                         CommandingElementBlueprint(Corps.Fighting, ElementKind.Infantry, Rung.Squad, listOf(Units.Rifleman), listOf(ElementBlueprint(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, listOf(Units.Rifleman)))))
         ) { createdBlueprint: CommandingElementBlueprint, expectedBlueprint: CommandingElementBlueprint ->
             createdBlueprint shouldBe expectedBlueprint
+        }
+    }
+
+    val blueprint = a(Corps.CombatSupport, ElementKind.Armored, Rung.Battalion) consistingOf 5 * Units.MainBattleTank
+    "An ${ElementBlueprint::class.simpleName} should create an ${Element::class.simpleName}" {
+        blueprint should beInstanceOf(ElementBlueprint::class)
+        blueprint.new() should beInstanceOf(Element::class)
+    }
+
+    "A ${CommandingElementBlueprint::class.simpleName} should create a ${CommandingElement::class.simpleName}" {
+        val commandingBlueprint = blueprint commanding 2 * (a(Corps.CombatSupport, ElementKind.Armored, Rung.Platoon) consistingOf 3 * Units.LightTank)
+        commandingBlueprint should beInstanceOf(CommandingElementBlueprint::class)
+        val commandingElement = commandingBlueprint.new()
+        commandingElement should beInstanceOf(CommandingElement::class)
+        commandingElement.subordinates.forAll {
+            it should beInstanceOf(Element::class)
         }
     }
 })

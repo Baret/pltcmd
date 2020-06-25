@@ -15,5 +15,15 @@ class CommandingElementTest: WordSpec({
         "only contain subordinates lower in rung" {
 
         }
+
+        "set itself as superordinate in all subordinates" {
+            // create new CE, check all subs
+
+            // add new sub, check its super
+        }
+
+        "be removed from its subordinate when removeElement() is called" {
+
+        }
     }
 })
