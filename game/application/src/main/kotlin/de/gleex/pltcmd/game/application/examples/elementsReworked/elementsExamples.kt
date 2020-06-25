@@ -1,11 +1,10 @@
 package de.gleex.pltcmd.game.application.examples.elementsReworked
 
 import de.gleex.pltcmd.model.elements.*
-import de.gleex.pltcmd.model.elements.blueprint.a
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.Units.*
-import de.gleex.pltcmd.model.elements.units.plus
+import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.elements.units.times
 import org.hexworks.cobalt.datatypes.Maybe
 
@@ -55,10 +54,12 @@ fun main() {
     printCommandElement(alpha)
     printCommandElement(bravo)
     println("...and even put ${alpha.callSign} and ${bravo.callSign} into a ${Rung.Company}")
-    val company = (a(
+    val company = CommandingElement(
             Corps.Fighting,
             ElementKind.Infantry,
-            Rung.Company) consistingOf 2 * Officer + Medic + Grenadier + Rifleman commanding setOf(alpha, bravo)).new()
+            Rung.Company,
+            (2 * Officer + Medic + Grenadier + Rifleman).new(),
+            setOf(alpha, bravo))
     company.callSign = CallSign("Wild Hogs")
     printCommandElement(wolfs)
     spacer()
