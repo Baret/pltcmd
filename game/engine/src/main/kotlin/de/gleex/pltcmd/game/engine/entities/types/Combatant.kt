@@ -18,6 +18,6 @@ val CombatantEntity.combatStats: CombatStats
     get() = getAttribute(CombatAttribute::class).stats
 
 /** This combatant attacks the given [target] */
-internal fun CombatantEntity.attack(target: CombatantEntity) {
+internal infix fun CombatantEntity.attack(target: CombatantEntity) {
     combatStats.attack(target.combatStats)
 }

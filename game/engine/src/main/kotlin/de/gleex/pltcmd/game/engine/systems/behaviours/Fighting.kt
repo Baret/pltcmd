@@ -33,7 +33,7 @@ internal object Fighting : BaseBehavior<GameContext>(CombatAttribute::class, Pos
                 .firstOrNull()
         if (enemyToAttack != null) {
             log.info("${attacker.callsign} attacks ${enemyToAttack.callsign}")
-            attacker.attack(enemyToAttack)
+            attacker attack enemyToAttack
         }
     }
 
