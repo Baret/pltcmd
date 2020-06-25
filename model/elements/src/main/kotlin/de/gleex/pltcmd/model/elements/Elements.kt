@@ -7,7 +7,6 @@ import de.gleex.pltcmd.model.elements.Rung.*
 import de.gleex.pltcmd.model.elements.blueprint.a
 import de.gleex.pltcmd.model.elements.blueprint.times
 import de.gleex.pltcmd.model.elements.units.Units.*
-import de.gleex.pltcmd.model.elements.units.plus
 import de.gleex.pltcmd.model.elements.units.times
 
 /**
@@ -17,16 +16,16 @@ import de.gleex.pltcmd.model.elements.units.times
  */
 object Elements {
 
-    val rifleTeam get() =
+    val rifleTeam =
             a(Fighting, Infantry, Fireteam) consistingOf 3 * Rifleman + Grenadier
 
-    val weaponsTeam get() =
+    val weaponsTeam =
             a(Fighting, Infantry, Fireteam) consistingOf 2 * Rifleman + HMGTeam
 
-    val rifleSquad get() =
+    val rifleSquad =
             a(Fighting, Infantry, Squad) consistingOf Officer + Medic commanding rifleTeam + weaponsTeam
 
-    val riflePlatoon get() =
+    val riflePlatoon =
             a(Fighting, Infantry, Platoon) consistingOf 2 * Officer + Medic + Radioman commanding 3 * rifleSquad
 
 

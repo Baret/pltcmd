@@ -6,14 +6,19 @@ import io.kotest.data.row
 import io.kotest.matchers.ints.shouldBeBetween
 
 class ReasonableDefaultElementsTest: WordSpec({
+    val infantryFireteamSize = 2 to 4
+    val infantrySquadSize = 8 to 12
+    val infantryPlatoonSize = 30 to 50
+    
     forAll(
-            row(Elements.rifleTeam, 2, 4),
-            row(Elements.rifleSquad, 8, 12),
-            row(Elements.riflePlatoon, 30, 50),
-            row(Elements.engineerTeam, 2, 4),
-            row(Elements.engineerSquad, 8, 12),
-            row(Elements.engineerPlatoon, 30, 50)
-    ) { element, min, max ->
+            row(Elements.rifleTeam, infantryFireteamSize),
+            row(Elements.weaponsTeam, infantryFireteamSize),
+            row(Elements.rifleSquad, infantrySquadSize),
+            row(Elements.riflePlatoon, infantryPlatoonSize),
+            row(Elements.engineerTeam, infantryFireteamSize),
+            row(Elements.engineerSquad, infantrySquadSize),
+            row(Elements.engineerPlatoon, infantryPlatoonSize)
+    ) { element, (min, max) ->
         "The default $element" should {
             "have between $min and $max soldiers" {
                 val newElement = element.new()

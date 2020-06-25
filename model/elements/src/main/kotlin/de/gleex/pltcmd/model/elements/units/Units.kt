@@ -208,13 +208,16 @@ enum class Units(
 
     override fun new() = Unit(this)
 
-    operator fun times(multiplier: Int) = List(multiplier) { new() }.toSet()
+    operator fun times(multiplier: Int): List<Units> = List(multiplier) { this }
 
-    operator fun plus(unitList: Set<Unit>) = unitList + this.new()
+    operator fun plus(unitBlueprints: List<Units>): List<Units> = unitBlueprints + this
 
-    operator fun plus(otherBlueprint: Units) = setOf(this.new(), otherBlueprint.new())
+    operator fun plus(otherBlueprint: Units): List<Units> = listOf(this, otherBlueprint)
 }
 
 operator fun Int.times(blueprint: Units) = blueprint * this
 
-operator fun Set<Unit>.plus(additionalUnit: Units) = additionalUnit + this
+/**
+ * Convenience function to turn a collection of unit blueprints ([Units]) into a set of actual [Unit]s.
+ */
+fun Collection<Units>.new(): Set<Unit> = map { it.new() }.toSet()

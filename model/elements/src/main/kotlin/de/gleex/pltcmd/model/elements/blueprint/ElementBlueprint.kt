@@ -1,23 +1,38 @@
 package de.gleex.pltcmd.model.elements.blueprint
 
 import de.gleex.pltcmd.model.elements.*
-import de.gleex.pltcmd.model.elements.units.Unit
+import de.gleex.pltcmd.model.elements.units.Units
 
+/**
+ * A blueprint used to create new instances of [Element].
+ *
+ * To create instances of [CommandingElement] use a [CommandingElementBlueprint].
+ */
 data class ElementBlueprint(
         private val corps: Corps,
         private val kind: ElementKind,
         private val rung: Rung,
-        private val units: Set<Unit>
+        private val units: List<Units>
 ): Blueprint<Element> {
-    private var subordinates: List<ElementBlueprint>? = null
+    override fun new() = Element(
+                                    corps,
+                                    kind,
+                                    rung,
+                                    units.map(Units::new).toSet()
+                                )
 
-    override fun new() = Element(corps, kind, rung, units)
+    /**
+     * When adding this method to the building process the resulting element will be a [CommandingElement].
+     *
+     * @return a new [CommandingElementBlueprint] with the given subordinates
+     */
+    infix fun commanding(subordinates: List<Blueprint<Element>>) = CommandingElementBlueprint(corps, kind, rung, units, subordinates)
 
-    infix fun commanding(subordinates: Set<Element>) = CommandingElementBlueprint(corps, kind, rung, units, subordinates)
+    operator fun times(i: Int) = List(i) { this.copy() }
 
-    operator fun times(i: Int) = List(i) { new() }.toSet()
-
-    operator fun plus(blueprint: ElementBlueprint) = setOf(this.new(), blueprint.new())
+    operator fun plus(blueprint: ElementBlueprint) = listOf(this, blueprint)
 }
 
 operator fun Int.times(blueprint: ElementBlueprint) = blueprint * this
+
+fun Collection<Blueprint<Element>>.new(): Set<Element> = map { it.new() }.toSet()

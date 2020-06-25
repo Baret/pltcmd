@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.model.elements.blueprint
 
 import de.gleex.pltcmd.model.elements.Corps
-import de.gleex.pltcmd.model.elements.Element
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.elements.Rung
 import de.gleex.pltcmd.model.elements.units.Units
@@ -14,28 +13,27 @@ class ElementsDslTest : StringSpec({
     "Building an element with the DSL should result in the correct element blueprint" {
         forAll(
                 row(
-                        a(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam) consistingOf setOf(Units.Rifleman.new()),
-                        ElementBlueprint(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, setOf(Units.Rifleman.new()))),
+                        a(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam) consistingOf listOf(Units.Rifleman),
+                        ElementBlueprint(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, listOf(Units.Rifleman))),
                 row(
-                        a(Corps.CombatSupport, ElementKind.MotorizedInfantry, Rung.Battalion) consistingOf setOf(Units.TransportTruck.new()),
-                        ElementBlueprint(Corps.CombatSupport, ElementKind.MotorizedInfantry, Rung.Battalion, setOf(Units.TransportTruck.new()))),
+                        a(Corps.CombatSupport, ElementKind.MotorizedInfantry, Rung.Battalion) consistingOf listOf(Units.TransportTruck),
+                        ElementBlueprint(Corps.CombatSupport, ElementKind.MotorizedInfantry, Rung.Battalion, listOf(Units.TransportTruck))),
                 row(
-                        a(Corps.Logistics, ElementKind.Aerial, Rung.Squad) consistingOf setOf(Units.HelicopterHeavyLift.new()),
-                        ElementBlueprint(Corps.Logistics, ElementKind.Aerial, Rung.Squad, setOf(Units.HelicopterHeavyLift.new()))),
+                        a(Corps.Logistics, ElementKind.Aerial, Rung.Squad) consistingOf listOf(Units.HelicopterHeavyLift),
+                        ElementBlueprint(Corps.Logistics, ElementKind.Aerial, Rung.Squad, listOf(Units.HelicopterHeavyLift))),
                 row(
-                        a(Corps.Reconnaissance, ElementKind.Armored, Rung.Platoon) consistingOf setOf(Units.LightTank.new()),
-                        ElementBlueprint(Corps.Reconnaissance, ElementKind.Armored, Rung.Platoon, setOf(Units.LightTank.new())))
+                        a(Corps.Reconnaissance, ElementKind.Armored, Rung.Platoon) consistingOf listOf(Units.LightTank),
+                        ElementBlueprint(Corps.Reconnaissance, ElementKind.Armored, Rung.Platoon, listOf(Units.LightTank)))
         ) { createdBlueprint: ElementBlueprint, expectedBlueprint: ElementBlueprint ->
             createdBlueprint shouldBe expectedBlueprint
         }
     }
 
     "Building a commanding element with the DSL should result in the correct element blueprint" {
-        val subElement1: Element = Element(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, setOf(Units.Rifleman.new()))
         forAll(
                 row(
-                        a(Corps.Fighting, ElementKind.Infantry, Rung.Squad) consistingOf setOf(Units.Rifleman.new()) commanding setOf(subElement1),
-                        CommandingElementBlueprint(Corps.Fighting, ElementKind.Infantry, Rung.Squad, setOf(Units.Rifleman.new()), setOf(subElement1)))
+                        a(Corps.Fighting, ElementKind.Infantry, Rung.Squad) consistingOf listOf(Units.Rifleman) commanding listOf(a(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam) consistingOf listOf(Units.Rifleman)),
+                        CommandingElementBlueprint(Corps.Fighting, ElementKind.Infantry, Rung.Squad, listOf(Units.Rifleman), listOf(ElementBlueprint(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, listOf(Units.Rifleman)))))
         ) { createdBlueprint: CommandingElementBlueprint, expectedBlueprint: CommandingElementBlueprint ->
             createdBlueprint shouldBe expectedBlueprint
         }
