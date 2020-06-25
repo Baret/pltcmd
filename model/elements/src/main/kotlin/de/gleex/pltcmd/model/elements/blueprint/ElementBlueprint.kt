@@ -12,7 +12,10 @@ data class ElementBlueprint(
         private val corps: Corps,
         private val kind: ElementKind,
         private val rung: Rung,
-        private val units: List<Units>
+        /**
+         * Visible for testing.
+         */
+        internal val units: List<Units>
 ): Blueprint<Element> {
     override fun new() = Element(
                                     corps,

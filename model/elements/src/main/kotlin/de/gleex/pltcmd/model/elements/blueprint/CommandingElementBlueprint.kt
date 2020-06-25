@@ -11,8 +11,14 @@ data class CommandingElementBlueprint(
         private val corps: Corps,
         private val kind: ElementKind,
         private val rung: Rung,
-        private val units: List<Units>,
-        private val subordinates: List<Blueprint<Element>>
+        /**
+         * Visible for testing.
+         */
+        internal val units: List<Units>,
+        /**
+         * Visible for testing.
+         */
+        internal val subordinates: List<Blueprint<Element>>
 ) : Blueprint<CommandingElement> {
 
     override fun new() = CommandingElement(corps, kind, rung, units.new(), subordinates.new())
