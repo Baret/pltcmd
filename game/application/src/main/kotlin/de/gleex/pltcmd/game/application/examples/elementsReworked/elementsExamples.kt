@@ -25,7 +25,7 @@ fun main() {
     val newUnit = SniperTeam.new()
     println("let's create 2 default platoons and see how they look after adding a $newUnit to a random element")
     val luckyElement = (alpha.subordinates + bravo.subordinates).random()
-    if(newUnit canBeAddedTo luckyElement) {
+    if(newUnit canBeSubordinateOf luckyElement) {
         luckyElement.addUnit(newUnit)
     }
     spacer()

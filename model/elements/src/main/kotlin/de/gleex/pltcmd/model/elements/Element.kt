@@ -80,14 +80,14 @@ open class Element(
     /**
      * Adds the given unit to this element, if possible. If [kind] does not allow the unit an exception is thrown.
      *
-     * Check with [canUnitBeAdded] (or [canBeAddedTo]) before calling!
+     * Check with [canUnitBeAdded] (or [canBeSubordinateOf]) before calling!
      *
      * @return true if the unit has been added, false if it was already present
      *
      * @see MutableSet.add
      */
     fun addUnit(newUnit: Unit): Boolean {
-        require(newUnit canBeAddedTo this) {
+        require(newUnit canBeSubordinateOf this) {
             "An element of kind $kind can only have units of kind ${kind.allowedUnitKinds}, but got: ${newUnit.kind}"
         }
         return _units.add(newUnit)
@@ -119,4 +119,4 @@ open class Element(
 /**
  * Infix function to have a more readable way of calling [Element.canUnitBeAdded].
  */
-infix fun Unit.canBeAddedTo(element: Element) = element.canUnitBeAdded(this)
+infix fun Unit.canBeSubordinateOf(element: Element) = element.canUnitBeAdded(this)

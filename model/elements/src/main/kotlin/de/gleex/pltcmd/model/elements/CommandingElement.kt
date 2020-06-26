@@ -15,7 +15,7 @@ class CommandingElement(
         kind: ElementKind,
         rung: Rung,
         units: Set<Unit>,
-        subordinates: Set<Element>
+        subordinates: Set<Element> = emptySet()
 ) : Element(corps, kind, rung, units) {
 
     private val _subordinates: SetProperty<Element> =
@@ -129,7 +129,12 @@ class CommandingElement(
         return false
     }
 
-    private fun canElementBeAdded(element: Element): Boolean =
+    /**
+     * Returns true if given element can be added to this element via [addElement].
+     *
+     * @see canBeSubordinateOf
+     */
+    fun canElementBeAdded(element: Element): Boolean =
             (corps == element.corps && kind == element.kind && rung > element.rung)
 
     /**
@@ -148,3 +153,8 @@ class CommandingElement(
     override fun toString() =
             "$description [id=$id, ${subordinates.size} subordinates, $totalUnits total units${superordinate.map { ", superordinate=$it" }.orElse("")}]"
 }
+
+/**
+ * Infix variant for [CommandingElement.canElementBeAdded].
+ */
+infix fun Element.canBeSubordinateOf(commandingElement: CommandingElement) = commandingElement.canElementBeAdded(this)
