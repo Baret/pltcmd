@@ -26,24 +26,29 @@ class CommandingElement(
                             val removedElements = mutableSetOf<Element>()
                             val addedElements = mutableSetOf<Element>()
                             when(type) {
-                                is ListAdd<*>           -> addedElements.add((type as ListAdd<Element>).element)
-                                is ListAddAt<*>         -> addedElements.add((type as ListAddAt<Element>).element)
-                                is ListAddAll<*>        -> addedElements.addAll((type as ListAddAll<Element>).elements)
-                                is ListAddAllAt<*>      -> addedElements.addAll((type as ListAddAllAt<Element>).c)
-                                is ListRemove<*>        -> removedElements.add((type as ListRemove<Element>).element)
-                                is ListRemoveAt         -> removedElements.add(oldSet.elementAt((type as ListRemoveAt).index))
-                                is ListSet<*>           -> {
-                                    val t = (type as ListSet<Element>)
-                                    removedElements.add(oldSet.elementAt(t.index))
-                                    addedElements.add(t.element)
-                                }
-                                is ListRemoveAll<*>     -> removedElements.addAll((type as ListRemoveAll<Element>).elements)
-                                is ListClear            -> removedElements.addAll(oldSet)
                                 is ScalarChange         -> {
                                     if(oldSet.size > newSet.size) {
                                         removedElements.addAll(oldSet - newSet)
                                     } else {
                                         addedElements.addAll(newSet - oldSet)
+                                    }
+                                }
+                                is ListChange -> {
+                                    when(type) {
+                                        is ListAdd<*>           -> addedElements.add((type as ListAdd<Element>).element)
+                                        is ListAddAt<*>         -> addedElements.add((type as ListAddAt<Element>).element)
+                                        is ListAddAll<*>        -> addedElements.addAll((type as ListAddAll<Element>).elements)
+                                        is ListAddAllAt<*>      -> addedElements.addAll((type as ListAddAllAt<Element>).c)
+                                        is ListRemove<*>        -> removedElements.add((type as ListRemove<Element>).element)
+                                        is ListRemoveAt         -> removedElements.add(oldSet.elementAt((type as ListRemoveAt).index))
+                                        is ListSet<*>       -> {
+                                            val t = (type as ListSet<Element>)
+                                            removedElements.add(oldSet.elementAt(t.index))
+                                            addedElements.add(t.element)
+                                        }
+                                        is ListRemoveAll<*> -> removedElements.addAll((type as ListRemoveAll<Element>).elements)
+                                        is ListClear        -> removedElements.addAll(oldSet)
+                                        is ListRemoveAllWhen<*> -> removedElements.addAll(oldSet.filter { oldItem -> (type.predicate as (Element) -> Boolean)(oldItem) })
                                     }
                                 }
                             }
