@@ -4,6 +4,7 @@ import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.elements.units.times
 import de.gleex.pltcmd.util.tests.shouldContainValue
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forNone
@@ -13,6 +14,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 class CommandingElementTest : WordSpec() {
@@ -148,6 +150,16 @@ class CommandingElementTest : WordSpec() {
                 ce.subordinates shouldContainExactly setOf(sub2)
                 sub1.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
                 sub2.superordinate shouldContainValue ce
+            }
+        }
+
+        "The superordinate of a commanding element" should {
+            "not be itself (this)" {
+                val commandingElement = newCE()
+                shouldThrow<IllegalArgumentException> {
+                    commandingElement.superordinate = Maybe.of(commandingElement)
+                    Any()
+                }
             }
         }
     }

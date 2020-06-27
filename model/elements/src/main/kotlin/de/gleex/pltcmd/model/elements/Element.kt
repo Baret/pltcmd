@@ -62,6 +62,12 @@ open class Element(
     var superordinate: Maybe<CommandingElement>
         get() = _superordinate.value
         set(value) {
+            if(value.isPresent) {
+                require(value.get() != this) {
+                    "An element cannot be the superordinate of itself!"
+                }
+            }
+            println("Setting to superordinate: $value")
             _superordinate.updateValue(value)
         }
 

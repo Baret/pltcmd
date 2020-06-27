@@ -17,7 +17,7 @@ internal class CallSignProvider(
 ) {
 
     companion object {
-        private val log = LoggerFactory.getLogger(CallSignProvider.javaClass)
+        private val log = LoggerFactory.getLogger(CallSignProvider::class)
     }
 
     // TODO: Pick name generator based on corps, kind and rung
