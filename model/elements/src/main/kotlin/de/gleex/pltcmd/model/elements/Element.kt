@@ -40,18 +40,7 @@ open class Element(
     val units: Set<Unit> = _units
 
     private var _superordinate: Property<Maybe<CommandingElement>> =
-            initialSuperOrdinate
-                    .toProperty()
-                    .apply {
-                        onChange {
-                            println("superordinate of ${this@Element} changed to ${it.newValue}")
-                            it.oldValue.ifPresent { oldSuperordinate ->
-                                if(oldSuperordinate.removeElement(this@Element)) {
-                                    println("removed ${this@Element} from $oldSuperordinate")
-                                }
-                            }
-                        }
-                    }
+            initialSuperOrdinate.toProperty()
 
     /**
      * If this element is currently being commanded this [Maybe] contains the superordinate.
@@ -67,7 +56,6 @@ open class Element(
                     "An element cannot be the superordinate of itself!"
                 }
             }
-            println("Setting to superordinate: $value")
             _superordinate.updateValue(value)
         }
 

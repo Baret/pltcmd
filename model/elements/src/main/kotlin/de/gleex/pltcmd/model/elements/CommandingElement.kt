@@ -122,7 +122,6 @@ class CommandingElement(
         }
         if(canElementBeAdded(element)) {
             // TODO: Maybe a commanding element could get a max number of subordinates so that you cannot stack elements into it endlessly
-            println("Adding $element to $this")
             _subordinates.add(element)
             return true
         }
