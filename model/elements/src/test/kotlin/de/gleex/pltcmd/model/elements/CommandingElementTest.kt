@@ -3,11 +3,15 @@ package de.gleex.pltcmd.model.elements
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.elements.units.times
-import io.kotest.assertions.fail
+import de.gleex.pltcmd.util.tests.shouldContainValue
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forNone
+import io.kotest.matchers.collections.beEmpty
+import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -43,7 +47,7 @@ class CommandingElementTest : WordSpec() {
                     checkSubordination(commandingElement, subElement)
                 }
             }
-            
+
             "have been checked against all ${Corps.values().size} corps" {
                 invalidCorps + validCorps shouldHaveSize Corps.values().size
             }
@@ -89,21 +93,61 @@ class CommandingElementTest : WordSpec() {
                     checkSubordination(commandingElement, subElement)
                 }
             }
-            
+
             "have been checked against all ${Rung.values().size} rungs" {
                 invalidRungs + validRungs shouldHaveSize Rung.values().size
             }
+        }
 
-            "!set itself as superordinate in all subordinates" {
-                fail("not yet implemented")
-                // create new CE, check all subs
+        "Regarding subordinates, a commanding element" should {
 
-                // add new sub, check its super
+            "return true for an element that is being added twice" {
+                val ce = newCE()
+                val sub = buildSubElement()
+                ce.addElement(sub) shouldBe true
+                ce.addElement(sub) shouldBe true
             }
 
-            "!be removed from its subordinate when removeElement() is called" {
-                fail("not yet implemented")
+            "set itself as superordinate in all subordinates" {
+                // create new CE, check all subs
+                val ce = newCE()
+                val sub1 = buildSubElement()
+                val sub2 = buildSubElement()
+                val sub3 = buildSubElement()
+                val allSubs = setOf(sub1, sub2, sub3)
 
+                ce.subordinates should beEmpty()
+                allSubs.forAll {
+                    it.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                }
+
+                ce.addElement(sub1) shouldBe true
+                ce.addElement(sub2) shouldBe true
+                ce.addElement(sub3) shouldBe true
+
+                ce.subordinates shouldContainAll allSubs
+                ce.subordinates shouldHaveSize 3
+                allSubs.forAll {
+                    it.superordinate shouldContainValue ce
+                }
+            }
+
+            "be removed from its subordinate when removeElement() is called" {
+                val sub1 = buildSubElement()
+                val sub2 = buildSubElement()
+                val bothSubs = setOf(sub1, sub2)
+                val ce = CommandingElement(defaultCorps, defaultElementKind, Rung.Platoon, (2 * Units.Radioman).new(), bothSubs)
+
+                ce.subordinates shouldContainExactly bothSubs
+                bothSubs.forAll {
+                    it.superordinate shouldContainValue ce
+                }
+
+                ce.removeElement(sub1)
+
+                ce.subordinates shouldContainExactly setOf(sub2)
+                sub1.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                sub2.superordinate shouldContainValue ce
             }
         }
     }
@@ -120,8 +164,14 @@ class CommandingElementTest : WordSpec() {
         commandingElement.subordinates shouldHaveSize subElementCountBefore + 1
     }
 
+    /**
+     * Creates a new [CommandingElement] with the [defaultCorps], [defaultElementKind] and rung [Rung.Platoon].
+     */
     private fun newCE() = CommandingElement(defaultCorps, defaultElementKind, Rung.Platoon, (2 * Units.Officer + Units.Radioman + Units.Grenadier).new())
 
+    /**
+     * Creates a new [Element] with [defaultCorps], [defaultElementKind] and [defaultRung] if not otherwise stated.
+     */
     private fun buildSubElement(
             corps: Corps = defaultCorps,
             kind: ElementKind = defaultElementKind,
