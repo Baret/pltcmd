@@ -75,7 +75,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
             } else {
                 // If we had received a transmission we are either sending a response now or the conversation ended already.
                 // If both is false an expected answer is missing!
-                toSend = missingResponse(state.inConversationWith.get()).firstTransmission
+                toSend = nothingHeardFrom(state.inConversationWith.get()).firstTransmission
             }
         }
         toSend?.let(::transmit)
@@ -139,7 +139,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
         }
     }
 
-    private fun missingResponse(expectedSender: CallSign): Conversation {
+    private fun nothingHeardFrom(expectedSender: CallSign): Conversation {
         log.info("$expectedSender did not respond so $callSign cancels the conversation.")
         endConversation()
         return Conversations.Other.nothingHeard(callSign, expectedSender)
