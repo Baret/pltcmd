@@ -24,7 +24,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.context.Transmiss
  * @param [messageTemplate] the template of the message. It may contain [format] placeholders to be replaced with the [placeholderValueProviders]
  * @param [placeholderValueProviders] provides a value for each placeholder in [messageTemplate] from a [TransmissionContext]
  */
-abstract class Transmission(private val messageTemplate: String, private val placeholderValueProviders: List<TransmissionContext.() -> Any?>) {
+abstract sealed class Transmission(private val messageTemplate: String, private val placeholderValueProviders: List<TransmissionContext.() -> Any?>) {
 
     private var _message: String = messageTemplate
 
@@ -41,3 +41,30 @@ abstract class Transmission(private val messageTemplate: String, private val pla
         return this
     }
 }
+
+/**
+ * An order has two answers, a positive and a negative one.
+ */
+data class OrderTransmission(
+        internal val messageTemplate: String,
+        val positiveAnswer: Transmission,
+        val negativeAnswer: Transmission,
+        private val placeholderValueProviders: List<TransmissionContext.() -> Any?> = emptyList()
+) : Transmission(messageTemplate, placeholderValueProviders)
+
+/**
+ * Transmissions of this kind have a follow up transmission.
+ */
+data class TransmissionWithResponse(
+        private val messageTemplate: String,
+        val response: Transmission,
+        private val placeholderValueProviders: List<TransmissionContext.() -> Any?> = emptyList()
+) : Transmission(messageTemplate, placeholderValueProviders)
+
+/**
+ * A transmission typically ending with "out" (not enforced by this class!) with no following transmissions.
+ */
+data class TerminatingTransmission(
+        private val messageTemplate: String,
+        private val placeholderValueProviders: List<TransmissionContext.() -> Any?> = emptyList()
+) : Transmission(messageTemplate, placeholderValueProviders)
