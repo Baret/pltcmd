@@ -51,6 +51,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
         startRadio()
     }
 
+    /** Start listening to radio broadcasts */
     fun startRadio() {
         log.debug("$callSign is listening to radio broadcasts...")
         broadcastSubscription = globalEventBus.subscribeToBroadcasts { event ->
@@ -58,6 +59,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
         }
     }
 
+    /** Stop listening to radio broadcasts */
     fun stopRadio() {
         broadcastSubscription?.dispose()
         broadcastSubscription = null
