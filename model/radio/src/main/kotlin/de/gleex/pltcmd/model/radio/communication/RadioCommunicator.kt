@@ -96,7 +96,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
             // decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
             val (strength, receivedTransmission) = event.receivedAt(radioLocation)
             log.debug("$callSign received with strength $strength the transmission ${receivedTransmission.message}")
-            if (!strength.isNone() && receivedTransmission.isNotFromMe()) {
+            if (strength.isAny() && receivedTransmission.isSentBySomeoneElse()) {
                 if (receivedTransmission.isForMe()) {
                     respondTo(receivedTransmission)
                 } else {
@@ -196,7 +196,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
         return hasReceiver(callSign)
     }
 
-    private fun Transmission.isNotFromMe(): Boolean {
+    private fun Transmission.isSentBySomeoneElse(): Boolean {
         return sender != callSign
     }
 
