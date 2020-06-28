@@ -33,8 +33,8 @@ class ConversationBuilderTest : WordSpec({
         "have correct template message" {
             readbackWithoutPlaceholders.message shouldBe "Test Sender, this is Test Receiver, roger, tested %s back, out."
         }
-        readbackWithoutPlaceholders.transmit(context)
-        "have correct transmitted message" {
+        readbackWithoutPlaceholders.formatMessage(context)
+        "have correct formatted message" {
             readbackWithoutPlaceholders.message shouldBe "Test Sender, this is Test Receiver, roger, tested placeholder value back, out."
         }
     }

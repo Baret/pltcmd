@@ -76,15 +76,18 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
                 toSend = missingResponse(state.inConversationWith.get()).firstTransmission
             }
         }
-        toSend?.apply {
-            radio.transmit(transmit(radioContext.newTransmissionContext()))
-        }
+        toSend?.let(::transmit)
 
         // if no conversation is going on, check if we should start a new one
         if (!state.isInConversation()) {
             state.pollConversation()
                     ?.let { startConversation(it) }
         }
+    }
+
+    private fun transmit(transmission: Transmission) {
+        transmission.formatMessage(radioContext.newTransmissionContext())
+        radio.transmit(transmission)
     }
 
     private fun onBroadcast(event: BroadcastEvent) {

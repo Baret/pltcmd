@@ -19,7 +19,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.context.Transmiss
  * __Example:__
  *
  * A message template might be "Alpha, this is Bravo, our position is %s". When the time comes for Bravo to transmit
- * this transmission it calls [transmit] with its [TransmissionContext] which holds Bravo's current position.
+ * this transmission it calls [formatMessage] with its [TransmissionContext] which holds Bravo's current position.
  *
  * @param [messageTemplate] the template of the message. It may contain [format] placeholders to be replaced with the [placeholderValueProviders]
  * @param [placeholderValueProviders] provides a value for each placeholder in [messageTemplate] from a [TransmissionContext]
@@ -32,9 +32,9 @@ abstract class Transmission(private val messageTemplate: String, private val pla
         get() = _message
 
     /**
-     * Applies the given context to the message temlpate. After this call receivers can properly decode [message].
+     * Applies the given context to the message template. After this call receivers can properly decode [message].
      */
-    fun transmit(context: TransmissionContext): Transmission {
+    fun formatMessage(context: TransmissionContext): Transmission {
         val placeholderValues = placeholderValueProviders.map { it(context) }
                 .toTypedArray()
         _message = messageTemplate.format(*placeholderValues)
