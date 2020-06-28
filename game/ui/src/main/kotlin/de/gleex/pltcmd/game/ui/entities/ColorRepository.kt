@@ -16,7 +16,7 @@ object ColorRepository {
     val FRIENDLY = TileColor.create(42, 42, 254)
     val FRIENDLY_TRANSPARENT = FRIENDLY.withAlpha(ALPHA_BG)
 
-    val HOSTILE = TileColor.create(252, 100, 100)
+    val HOSTILE = TileColor.create(251, 4, 33)
     val HOSTILE_TRANSPARENT = HOSTILE.withAlpha(ALPHA_BG)
 
     val UNKNOWN = TileColor.create(245, 241, 132)
