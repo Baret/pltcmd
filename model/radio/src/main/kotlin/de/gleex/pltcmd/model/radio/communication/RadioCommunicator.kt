@@ -26,8 +26,8 @@ import java.util.*
 // technically this is a facade that delegates to RadioTransmitter and RadioReceiver which share the same state
 class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
     private val state: CommunicatorState = CommunicatorState()
-    private val sender = SendingCommunicator(callSign, radio, state)
-    private val receiver = ReceivingCommunicator(callSign, radio, state, sender)
+    private val sender = SendingCommunicator(callSign, state, radio)
+    private val receiver = ReceivingCommunicator(callSign, state, sender)
 
     var radioContext: RadioContext
         get() = sender.radioContext
@@ -61,7 +61,7 @@ class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
 
 }
 
-internal open class CommonCommunicator internal constructor(internal val callSign: CallSign, internal val radio: RadioSender, internal val state: CommunicatorState) {
+internal open class CommonCommunicator internal constructor(internal val callSign: CallSign, internal val state: CommunicatorState) {
 
     companion object {
         internal val log = LoggerFactory.getLogger(RadioCommunicator::class)
@@ -81,8 +81,8 @@ internal open class CommonCommunicator internal constructor(internal val callSig
 
 }
 
-internal class ReceivingCommunicator internal constructor(callSign: CallSign, radio: RadioSender, state: CommunicatorState, private val sender: SendingCommunicator)
-    : CommonCommunicator(callSign, radio, state) {
+internal class ReceivingCommunicator internal constructor(callSign: CallSign, state: CommunicatorState, private val sender: SendingCommunicator)
+    : CommonCommunicator(callSign, state) {
     private var broadcastSubscription: Subscription? = null
 
     /** Start listening to radio broadcasts */
@@ -101,7 +101,7 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, ra
     }
 
     private fun onBroadcast(event: BroadcastEvent) {
-        val radioLocation = radio.currentLocation
+        val radioLocation = radioContext.currentLocation
         if (event.isReceivedAt(radioLocation)) {
             // decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
             val (strength, receivedTransmission) = event.receivedAt(radioLocation)
@@ -182,8 +182,8 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, ra
 
 }
 
-internal class SendingCommunicator internal constructor(callSign: CallSign, radio: RadioSender, state: CommunicatorState)
-    : CommonCommunicator(callSign, radio, state) {
+internal class SendingCommunicator internal constructor(callSign: CallSign, state: CommunicatorState, internal val radio: RadioSender)
+    : CommonCommunicator(callSign, state) {
 
     private val conversationQueue: Queue<Conversation> = LinkedList()
     private val transmissionBuffer: Queue<Transmission> = LinkedList()

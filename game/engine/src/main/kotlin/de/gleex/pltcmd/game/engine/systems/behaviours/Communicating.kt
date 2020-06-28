@@ -34,9 +34,12 @@ internal object Communicating : BaseBehavior<GameContext>(ElementAttribute::clas
 
 /** [RadioContext] that uses an [ElementEntity] for interactions */
 class ElementRadioContext(private val element: ElementEntity, private val context: GameContext) : RadioContext {
+    override val currentLocation: Coordinate
+        get() = element.currentPosition
+
     // TODO: Fill the context from element. It should be provided by the corresponding game entity (probably via Properties or ObservableValues)
     override fun newTransmissionContext() = TransmissionContext(
-            element.currentPosition,
+            currentLocation,
             Random.nextInt(40, 50),
             Random.nextInt(3, 10),
             Random.nextInt(0, 4))
