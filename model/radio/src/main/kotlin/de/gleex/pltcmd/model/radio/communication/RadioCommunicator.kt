@@ -66,6 +66,86 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
         log.debug("$callSign stopped listening to radio broadcasts.")
     }
 
+    private fun onBroadcast(event: BroadcastEvent) {
+        val radioLocation = radio.currentLocation
+        if (event.isReceivedAt(radioLocation)) {
+            // decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
+            val (strength, receivedTransmission) = event.receivedAt(radioLocation)
+            log.debug("$callSign received with strength $strength the transmission ${receivedTransmission.message}")
+            if (strength.isAny() && receivedTransmission.isSentBySomeoneElse()) {
+                if (receivedTransmission.isForMe()) {
+                    respondTo(receivedTransmission)
+                } else {
+                    gatherInformationFrom(receivedTransmission)
+                }
+            }
+        }
+    }
+
+    private fun Transmission.isSentBySomeoneElse(): Boolean {
+        return sender != callSign
+    }
+
+    private fun Transmission.isForMe(): Boolean {
+        return hasReceiver(callSign)
+    }
+
+    private fun respondTo(incomingTransmission: Transmission) {
+        val sender = incomingTransmission.sender
+        if (!state.isInConversation()) {
+            state.setInConversationWith(sender)
+        }
+
+        if (state.isInConversationWith(sender)) {
+            state.receivedReply()
+            sendResponseTo(incomingTransmission)
+        } else {
+            replyWithStandBy(incomingTransmission)
+        }
+    }
+
+    private fun sendResponseTo(transmission: Transmission) {
+        when (transmission) {
+            is OrderTransmission        -> executeOrderAndRespond(transmission)
+            is TransmissionWithResponse -> send(transmission.response)
+            is TerminatingTransmission  -> endConversation()
+        }
+    }
+
+    private fun executeOrderAndRespond(transmission: OrderTransmission) {
+        val order = Conversations.Orders.getOrder(transmission)
+        if (order.isPresent) {
+            // delegate to the game entity's logic to execute actual commands
+            val orderedTo = transmission.location
+            radioContext.executeOrder(order.get(), orderedTo)
+            send(transmission.positiveAnswer)
+        } else {
+            send(transmission.negativeAnswer)
+        }
+    }
+
+    private fun replyWithStandBy(incomingTransmission: Transmission) {
+        if (incomingTransmission is TerminatingTransmission) {
+            endConversation()
+        } else {
+            queueConversation(Conversation(callSign, incomingTransmission.sender, nextTransmissionOf(incomingTransmission)))
+            send(Conversations.Other.standBy(callSign, incomingTransmission.sender).firstTransmission)
+        }
+    }
+
+    private fun nextTransmissionOf(transmission: Transmission) =
+            // TODO: This probably has to be improved, but currently is only used when sending a "stand by" response
+            (transmission as TransmissionWithResponse).response
+
+    private fun gatherInformationFrom(transmission: Transmission) {
+        // TODO: Learn stuff from transmissions and add it to the "knowledge" of this unit
+        val contacts = transmission.contactLocations
+        if (contacts.isNotEmpty()) {
+            log.debug("${callSign}: learned about enemies at ${contacts.joinToString()}")
+            // radioContext.addKnowledge(contacts)
+        }
+    }
+
     /** Starts or continues [Conversation]s by sending [Transmission]s. May do nothing. */
     fun proceedWithConversation() {
         var toSend: Transmission? = state.transmissionBuffer.poll()
@@ -92,53 +172,6 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
         radio.transmit(transmission)
     }
 
-    private fun onBroadcast(event: BroadcastEvent) {
-        val radioLocation = radio.currentLocation
-        if (event.isReceivedAt(radioLocation)) {
-            // decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
-            val (strength, receivedTransmission) = event.receivedAt(radioLocation)
-            log.debug("$callSign received with strength $strength the transmission ${receivedTransmission.message}")
-            if (strength.isAny() && receivedTransmission.isSentBySomeoneElse()) {
-                if (receivedTransmission.isForMe()) {
-                    respondTo(receivedTransmission)
-                } else {
-                    gatherInformationFrom(receivedTransmission)
-                }
-            }
-        }
-    }
-
-    private fun respondTo(incomingTransmission: Transmission) {
-        val sender = incomingTransmission.sender
-        if (!state.isInConversation()) {
-            state.setInConversationWith(sender)
-        }
-
-        if (state.isInConversationWith(sender)) {
-            state.receivedReply()
-            sendResponseTo(incomingTransmission)
-        } else {
-            replyWithStandBy(incomingTransmission)
-        }
-    }
-
-    private fun replyWithStandBy(incomingTransmission: Transmission) {
-        if (incomingTransmission is TerminatingTransmission) {
-            endConversation()
-        } else {
-            queueConversation(Conversation(callSign, incomingTransmission.sender, nextTransmissionOf(incomingTransmission)))
-            send(Conversations.Other.standBy(callSign, incomingTransmission.sender).firstTransmission)
-        }
-    }
-
-    private fun sendResponseTo(transmission: Transmission) {
-        when (transmission) {
-            is OrderTransmission        -> executeOrderAndRespond(transmission)
-            is TransmissionWithResponse -> send(transmission.response)
-            is TerminatingTransmission  -> endConversation()
-        }
-    }
-
     private fun nothingHeardFrom(expectedSender: CallSign): Conversation {
         log.info("$expectedSender did not respond so $callSign cancels the conversation.")
         endConversation()
@@ -147,27 +180,6 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
 
     private fun endConversation() {
         state.clearInConversationWith()
-    }
-
-    private fun executeOrderAndRespond(transmission: OrderTransmission) {
-        val order = Conversations.Orders.getOrder(transmission)
-        if (order.isPresent) {
-            // delegate to the game entity's logic to execute actual commands
-            val orderedTo = transmission.location
-            radioContext.executeOrder(order.get(), orderedTo)
-            send(transmission.positiveAnswer)
-        } else {
-            send(transmission.negativeAnswer)
-        }
-    }
-
-    private fun gatherInformationFrom(transmission: Transmission) {
-        // TODO: Learn stuff from transmissions and add it to the "knowledge" of this unit
-        val contacts = transmission.contactLocations
-        if (contacts.isNotEmpty()) {
-            log.debug("${callSign}: learned about enemies at ${contacts.joinToString()}")
-            // radioContext.addKnowledge(contacts)
-        }
     }
 
     /**
@@ -193,17 +205,5 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
             endConversation()
         }
     }
-
-    private fun Transmission.isForMe(): Boolean {
-        return hasReceiver(callSign)
-    }
-
-    private fun Transmission.isSentBySomeoneElse(): Boolean {
-        return sender != callSign
-    }
-
-    private fun nextTransmissionOf(transmission: Transmission) =
-            // TODO: This probably has to be improved, but currently is only used when sending a "stand by" response
-            (transmission as TransmissionWithResponse).response
 
 }
