@@ -38,6 +38,6 @@ internal object Fighting : BaseBehavior<GameContext>(CombatAttribute::class, Pos
     }
 
     private fun Maybe<ElementEntity>.isEnemy(): Boolean =
-            filter { entity -> entity.affiliation == Affiliation.Hostile && entity.combatStats.isAlive.value }.isPresent
+            filter { entity -> entity.affiliation == Affiliation.Hostile && entity.combatStats.isAlive }.isPresent
 
 }

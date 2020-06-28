@@ -60,21 +60,18 @@ class GameWorld(private val worldMap: WorldMap) :
 
     /** adds a marker to the map which is synced with the position of the given element */
     fun trackUnit(element: ElementEntity) {
-        showUnit(element)
+        element.showOnMap()
         element.position.onChange {
             it.oldValue.hideUnit()
-            showUnit(element)
+            element.showOnMap()
         }
-        require(element.combatStats.isAlive.value)
-        element.combatStats.isAlive.onChange {
-            element.currentPosition.hideUnit()
-        }
+        element.combatStats onDeath { element.hide() }
     }
 
-    private fun showUnit(element: ElementEntity) {
-        val affiliation = element.affiliation
+    private fun ElementEntity.showOnMap() {
+        val affiliation = affiliation
         val elementTile = TileRepository.Elements.platoon(affiliation)
-        element.currentPosition.setUnit(elementTile)
+        currentPosition.setUnit(elementTile)
     }
 
     private fun Coordinate.setUnit(unitTile: Tile) {
@@ -84,7 +81,11 @@ class GameWorld(private val worldMap: WorldMap) :
         }
     }
 
-    private fun Coordinate.hideUnit() {
+    private fun ElementEntity.hide() {
+        currentPosition.hideUnit()
+    }
+
+        private fun Coordinate.hideUnit() {
         val position = toPosition()
         fetchBlockAt(position).ifPresent {
             it.resetUnit()

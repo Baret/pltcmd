@@ -35,14 +35,12 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
         if (it.type is ElementType) {
             val element = it as ElementEntity
             allElements.add(element)
-            // TODO does this logic belong here?
-            // remove corpses
-            require(element.combatStats.isAlive.value)
-            element.combatStats.isAlive.onChange {isAlive ->
-                require(!isAlive.newValue)
-                removeElement(element)
-            }
+            removeOnDeath(element)
         }
+    }
+
+    private fun removeOnDeath(element: ElementEntity) {
+        element.combatStats onDeath { removeElement(element) }
     }
 
     private fun removeElement(element: ElementEntity) {

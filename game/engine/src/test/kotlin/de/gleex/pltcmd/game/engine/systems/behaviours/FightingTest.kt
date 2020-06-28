@@ -101,6 +101,6 @@ private fun assertCombatResult(attackerStats: CombatStats, targetStats: CombatSt
     assertSoftly {
         attackerStats.health.value shouldBe 100
         targetStats.health.value shouldBe expectedHealth
-        targetStats.isAlive.value shouldBe expectedAlive
+        targetStats.isAlive shouldBe expectedAlive
     }
 }
