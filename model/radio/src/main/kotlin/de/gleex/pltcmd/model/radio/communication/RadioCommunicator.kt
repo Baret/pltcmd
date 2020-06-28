@@ -22,13 +22,18 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * A [RadioCommunicator] participates in radio communications. It sends with the given radio each time [proceedWithConversation]
  * is called and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [EventBus].
  */
-class RadioCommunicator(private val callSign: CallSign, private val radio: RadioSender) {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(RadioCommunicator::class)
-    }
-
+// technically this is a facade that delegates to RadioTransmitter and RadioReceiver which share the same state
+class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
     private val state: CommunicatorState = CommunicatorState()
+    private val sender = SendingCommunicator(callSign, radio, state)
+    private val receiver = ReceivingCommunicator(callSign, radio, state, sender)
+
+    var radioContext: RadioContext
+        get() = sender.radioContext
+        set(value) {
+            sender.radioContext = value
+            receiver.radioContext = value
+        }
 
     /**
      * This property is used if multiple transmissions are received to separate the active and delayed conversations.
@@ -36,6 +41,30 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
      **/
     val inConversationWith: ObservableValue<Maybe<CallSign>>
         get() = state._inConversationWith
+
+    init {
+        startRadio()
+    }
+
+    /** Start listening to radio broadcasts */
+    fun startRadio() = receiver.startRadio()
+
+    /** Stop listening to radio broadcasts */
+    fun stopRadio() = receiver.stopRadio()
+
+    /** Starts or continues [Conversation]s by sending [Transmission]s. May do nothing. */
+    fun proceedWithConversation() = sender.proceedWithConversation()
+
+    /** Start the given conversation on the next free transmission slot. See [proceedWithConversation] */
+    fun queueConversation(conversation: Conversation) = sender.queueConversation(conversation)
+
+}
+
+internal open class CommonCommunicator internal constructor(internal val callSign: CallSign, internal val radio: RadioSender, internal val state: CommunicatorState) {
+
+    companion object {
+        internal val log = LoggerFactory.getLogger(RadioCommunicator::class)
+    }
 
     private var _radioContext: RadioContext? = null
     var radioContext: RadioContext
@@ -45,11 +74,15 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
             _radioContext = value
         }
 
-    private var broadcastSubscription: Subscription? = null
-
-    init {
-        startRadio()
+    internal open fun endConversation() {
+        state.clearInConversationWith()
     }
+
+}
+
+internal class ReceivingCommunicator internal constructor(callSign: CallSign, radio: RadioSender, state: CommunicatorState, private val sender: SendingCommunicator)
+    : CommonCommunicator(callSign, radio, state) {
+    private var broadcastSubscription: Subscription? = null
 
     /** Start listening to radio broadcasts */
     fun startRadio() {
@@ -107,7 +140,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
     private fun sendResponseTo(transmission: Transmission) {
         when (transmission) {
             is OrderTransmission        -> executeOrderAndRespond(transmission)
-            is TransmissionWithResponse -> send(transmission.response)
+            is TransmissionWithResponse -> sender.send(transmission.response)
             is TerminatingTransmission  -> endConversation()
         }
     }
@@ -118,9 +151,9 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
             // delegate to the game entity's logic to execute actual commands
             val orderedTo = transmission.location
             radioContext.executeOrder(order.get(), orderedTo)
-            send(transmission.positiveAnswer)
+            sender.send(transmission.positiveAnswer)
         } else {
-            send(transmission.negativeAnswer)
+            sender.send(transmission.negativeAnswer)
         }
     }
 
@@ -128,8 +161,8 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
         if (incomingTransmission is TerminatingTransmission) {
             endConversation()
         } else {
-            queueConversation(Conversation(callSign, incomingTransmission.sender, nextTransmissionOf(incomingTransmission)))
-            send(Conversations.Other.standBy(callSign, incomingTransmission.sender).firstTransmission)
+            sender.queueConversation(Conversation(callSign, incomingTransmission.sender, nextTransmissionOf(incomingTransmission)))
+            sender.send(Conversations.Other.standBy(callSign, incomingTransmission.sender).firstTransmission)
         }
     }
 
@@ -145,6 +178,11 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
             // radioContext.addKnowledge(contacts)
         }
     }
+
+}
+
+internal class SendingCommunicator internal constructor(callSign: CallSign, radio: RadioSender, state: CommunicatorState)
+    : CommonCommunicator(callSign, radio, state) {
 
     /** Starts or continues [Conversation]s by sending [Transmission]s. May do nothing. */
     fun proceedWithConversation() {
@@ -178,10 +216,6 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
         return Conversations.Other.nothingHeard(callSign, expectedSender)
     }
 
-    private fun endConversation() {
-        state.clearInConversationWith()
-    }
-
     /**
      * Sends the firs transmission of the given [Conversation] when there is not a conversation going on. In that case it will be queued.
      */
@@ -199,11 +233,10 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
         state.conversationQueue.offer(conversation)
     }
 
-    private fun send(transmission: Transmission) {
+    internal fun send(transmission: Transmission) {
         state.transmissionBuffer.add(transmission)
         if (transmission is TerminatingTransmission) {
             endConversation()
         }
     }
-
 }
