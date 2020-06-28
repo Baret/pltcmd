@@ -52,7 +52,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
     }
 
     fun startRadio() {
-        log.debug("listening to radio broadcasts...")
+        log.debug("$callSign is listening to radio broadcasts...")
         broadcastSubscription = globalEventBus.subscribeToBroadcasts { event ->
             onBroadcast(event)
         }
@@ -61,7 +61,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
     fun stopRadio() {
         broadcastSubscription?.dispose()
         broadcastSubscription = null
-        log.debug("stopped listening to radio broadcasts.")
+        log.debug("$callSign stopped listening to radio broadcasts.")
     }
 
     /** Starts or continues [Conversation]s by sending [Transmission]s. May do nothing. */
@@ -135,7 +135,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
     }
 
     private fun missingResponse(expectedSender: CallSign): Conversation {
-        log.info("$expectedSender did not respond so we stop the conversation.")
+        log.info("$expectedSender did not respond so $callSign cancels the conversation.")
         endConversation()
         return Conversations.Other.nothingHeard(callSign, expectedSender)
     }
