@@ -44,17 +44,11 @@ class RadioSender(private val location: ObservableValue<Coordinate>, power: Doub
         get() = _cachedReachableTiles ?: fillReachableTiles()
 
     private fun fillReachableTiles(): CoordinateRectangle {
-        val start = System.currentTimeMillis()
-        try {
-            synchronized(this) {
-                if (_cachedReachableTiles == null) {
-                    _cachedReachableTiles = calculateReachableFields()
-                }
-                return _cachedReachableTiles!!
+        synchronized(this) {
+            if (_cachedReachableTiles == null) {
+                _cachedReachableTiles = calculateReachableFields()
             }
-        } finally {
-            val duration = System.currentTimeMillis() - start
-            log.debug("Calculating reachable tiles at $currentLocation with $signal took $duration ms")
+            return _cachedReachableTiles!!
         }
     }
 
@@ -65,12 +59,18 @@ class RadioSender(private val location: ObservableValue<Coordinate>, power: Doub
     }
 
     private fun calculateReachableFields(): CoordinateRectangle {
-        val maxReachOverAir = signal.maxRange
-        // create bounding box (clamped to map borders)
-        val bottomLeftCoordinate = map.moveInside(currentLocation.movedBy(-maxReachOverAir, -maxReachOverAir))
-        val topRightCoordinate = map.moveInside(currentLocation.movedBy(maxReachOverAir, maxReachOverAir))
-        // TODO a circle is more appropriate
-        return CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
+        val start = System.currentTimeMillis()
+        try {
+            val maxReachOverAir = signal.maxRange
+            // create bounding box (clamped to map borders)
+            val bottomLeftCoordinate = map.moveInside(currentLocation.movedBy(-maxReachOverAir, -maxReachOverAir))
+            val topRightCoordinate = map.moveInside(currentLocation.movedBy(maxReachOverAir, maxReachOverAir))
+            // TODO a circle is more appropriate
+            return CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
+        } finally {
+            val duration = System.currentTimeMillis() - start
+            log.debug("Calculating reachable tiles at $currentLocation with $signal took $duration ms")
+        }
     }
 
     /** Sends out the given transmission. */
