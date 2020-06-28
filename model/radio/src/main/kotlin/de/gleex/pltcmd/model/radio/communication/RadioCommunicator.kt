@@ -17,6 +17,7 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.events.api.Subscription
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import java.util.*
 
 /**
  * A [RadioCommunicator] participates in radio communications. It sends with the given radio each time [proceedWithConversation]
@@ -184,9 +185,12 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, ra
 internal class SendingCommunicator internal constructor(callSign: CallSign, radio: RadioSender, state: CommunicatorState)
     : CommonCommunicator(callSign, radio, state) {
 
+    private val conversationQueue: Queue<Conversation> = LinkedList()
+    private val transmissionBuffer: Queue<Transmission> = LinkedList()
+
     /** Starts or continues [Conversation]s by sending [Transmission]s. May do nothing. */
     fun proceedWithConversation() {
-        var toSend: Transmission? = state.transmissionBuffer.poll()
+        var toSend: Transmission? = transmissionBuffer.poll()
         if (toSend == null && state.isInConversation()) {
             if (state.isWaitingForReplay()) {
                 state.waitForReplay()
@@ -200,7 +204,7 @@ internal class SendingCommunicator internal constructor(callSign: CallSign, radi
 
         // if no conversation is going on, check if we should start a new one
         if (!state.isInConversation()) {
-            state.pollConversation()
+            conversationQueue.poll()
                     ?.let { startConversation(it) }
         }
     }
@@ -230,11 +234,11 @@ internal class SendingCommunicator internal constructor(callSign: CallSign, radi
     }
 
     fun queueConversation(conversation: Conversation) {
-        state.conversationQueue.offer(conversation)
+        conversationQueue.offer(conversation)
     }
 
     internal fun send(transmission: Transmission) {
-        state.transmissionBuffer.add(transmission)
+        transmissionBuffer.add(transmission)
         if (transmission is TerminatingTransmission) {
             endConversation()
         }
