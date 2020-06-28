@@ -71,7 +71,7 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
 
     private fun sendMoveTo() {
         val conversation = MoveTo.create(hq.callsign, selectedElement.callsign, destinationProperty.value)
-        log.info("Sending conversation to ${conversation.receiver}: $conversation")
+        log.debug("Sending conversation to ${conversation.receiver}: $conversation")
         runBlocking {
             hq.sendCommand(ConversationCommand(conversation, game.context(), hq))
         }
