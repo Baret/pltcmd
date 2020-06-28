@@ -13,10 +13,11 @@ internal data class CommunicatorState(
         val _inConversationWith: Property<Maybe<CallSign>> = createPropertyFrom(Maybe.empty()),
         val conversationQueue: Queue<Conversation> = LinkedList(),
         val transmissionBuffer: Queue<Transmission> = LinkedList(),
-        private var waitForReplay: Int = MAX_RESPONSE_DELAY
+        private var waitForReply: Int = MAX_RESPONSE_DELAY
 ) {
     companion object {
-        private val MAX_RESPONSE_DELAY = 1
+        /** The number of turns to wait for a response before canceling the running conversation */
+        private const val MAX_RESPONSE_DELAY = 1
     }
 
     val inConversationWith: Maybe<CallSign>
@@ -26,27 +27,21 @@ internal data class CommunicatorState(
 
     fun isInConversationWith(callSign: CallSign): Boolean = _inConversationWith.value.filter { it == callSign }.isPresent
 
-    fun setInConverationWith(callSign: CallSign) = _inConversationWith.updateValue(Maybe.of(callSign))
+    fun setInConversationWith(callSign: CallSign) = _inConversationWith.updateValue(Maybe.of(callSign))
 
-    fun clearInConverationWith() = _inConversationWith.updateValue(Maybe.empty())
+    fun clearInConversationWith() = _inConversationWith.updateValue(Maybe.empty())
 
-    fun pollConversation(): Conversation? {
-        val conversation: Conversation? = conversationQueue.poll()
-        if (conversation != null) {
-            println("polling conversation $conversation")
-        }
-        return conversation
-    }
+    fun pollConversation(): Conversation? = conversationQueue.poll()
 
-    fun isWaitingForReplay() = waitForReplay > 0
+    fun isWaitingForReplay() = waitForReply > 0
 
     fun waitForReplay() {
         if (isWaitingForReplay()) {
-            waitForReplay--
+            waitForReply--
         }
     }
 
     fun receivedReply() {
-        waitForReplay = MAX_RESPONSE_DELAY
+        waitForReply = MAX_RESPONSE_DELAY
     }
 }

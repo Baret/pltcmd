@@ -13,6 +13,8 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.location
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.util.events.globalEventBus
+import org.hexworks.cobalt.databinding.api.value.ObservableValue
+import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.events.api.Subscription
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -32,7 +34,8 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
      * This property is used if multiple transmissions are received to separate the active and delayed conversations.
      * TODO is visible as a debug feature for the test UI, might be reduced later
      **/
-    val inConversationWith = state._inConversationWith
+    val inConversationWith: ObservableValue<Maybe<CallSign>>
+        get() = state._inConversationWith
 
     private var _radioContext: RadioContext? = null
     var radioContext: RadioContext
@@ -103,7 +106,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
     private fun respondTo(incomingTransmission: Transmission) {
         val sender = incomingTransmission.sender
         if (!state.isInConversation()) {
-            state.setInConverationWith(sender)
+            state.setInConversationWith(sender)
         }
 
         if (state.isInConversationWith(sender)) {
@@ -138,7 +141,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
     }
 
     private fun endConversation() {
-        state.clearInConverationWith()
+        state.clearInConversationWith()
     }
 
     private fun executeOrderAndRespond(transmission: OrderTransmission) {
@@ -170,7 +173,7 @@ class RadioCommunicator(private val callSign: CallSign, private val radio: Radio
             // try again next tick
             queueConversation(conversation)
         } else {
-            state.setInConverationWith(conversation.receiver)
+            state.setInConversationWith(conversation.receiver)
             send(conversation.firstTransmission)
         }
     }
