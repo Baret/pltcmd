@@ -87,6 +87,9 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
 
     /** Start listening to radio broadcasts */
     fun startRadio() {
+        if(broadcastSubscription != null) {
+            stopRadio()
+        }
         log.debug("$callSign is listening to radio broadcasts...")
         broadcastSubscription = globalEventBus.subscribeToBroadcasts { event ->
             onBroadcast(event)
