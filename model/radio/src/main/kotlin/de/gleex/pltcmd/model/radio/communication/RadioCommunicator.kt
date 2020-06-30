@@ -192,8 +192,8 @@ internal class SendingCommunicator internal constructor(callSign: CallSign, stat
     fun proceedWithConversation() {
         var toSend: Transmission? = transmissionBuffer.poll()
         if (toSend == null && state.isInConversation()) {
-            if (state.isWaitingForReplay()) {
-                state.waitForReplay()
+            if (state.isWaitingForReply()) {
+                state.waitForReply()
             } else {
                 // If we had received a transmission we are either sending a response now or the conversation ended already.
                 // If both is false an expected answer is missing!

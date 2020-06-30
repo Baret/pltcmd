@@ -27,10 +27,10 @@ internal data class CommunicatorState(
 
     fun clearInConversationWith() = _inConversationWith.updateValue(Maybe.empty())
 
-    fun isWaitingForReplay() = waitForReply > 0
+    fun isWaitingForReply() = waitForReply > 0
 
-    fun waitForReplay() {
-        if (isWaitingForReplay()) {
+    fun waitForReply() {
+        if (isWaitingForReply()) {
             waitForReply--
         }
     }
