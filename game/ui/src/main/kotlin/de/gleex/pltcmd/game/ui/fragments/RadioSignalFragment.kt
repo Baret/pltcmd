@@ -89,7 +89,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
         val strengthInput = Components.
                 horizontalSlider().
                 withMinValue(1).
-                withMaxValue(1501).
+                withMaxValue(5001).
                 withNumberOfSteps(min(30, width)).
                 withSize(width, 2).
                 build().

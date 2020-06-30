@@ -5,6 +5,7 @@ package de.gleex.pltcmd.model.elements
  */
 enum class Affiliation {
     Unknown,
+    Self,
     Friendly,
     Neutral,
     Hostile

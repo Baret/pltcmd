@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.engine
 
+import de.gleex.pltcmd.game.ticks.TickId
 import de.gleex.pltcmd.model.world.WorldMap
 import org.hexworks.amethyst.api.Context
 import kotlin.random.Random
@@ -9,4 +10,4 @@ import kotlin.random.Random
  *
  * @param currentTick the tick that is currently being simulated. May be used to trigger scheduled actions.
  */
-data class GameContext(val currentTick: Int, val world: WorldMap, val random: Random) : Context
+data class GameContext(val currentTick: TickId, val world: WorldMap, val random: Random) : Context

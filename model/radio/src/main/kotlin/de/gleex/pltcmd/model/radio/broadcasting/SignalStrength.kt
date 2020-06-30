@@ -32,6 +32,11 @@ data class SignalStrength(val strength: Double) {
      */
     fun isNone() = strength == MIN_ALLOWED_VALUE
 
+    /**
+     * Returns true if a signal is left (it is greater than 0.0).
+     */
+    fun isAny() = strength > MIN_ALLOWED_VALUE
+
     operator fun times(multiplicand: Int) = strength * multiplicand
 
     operator fun times(multiplicand: Double) = strength * multiplicand
