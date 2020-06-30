@@ -88,7 +88,8 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (World
     screen.dock(generatingView)
 
     val mapGenerator = WorldMapGenerator(
-            GameOptions.DEBUG_MAP_SEED,
+            //GameOptions.DEBUG_MAP_SEED,
+            System.currentTimeMillis(),
             worldWidthInTiles,
             worldHeightInTiles
     )
