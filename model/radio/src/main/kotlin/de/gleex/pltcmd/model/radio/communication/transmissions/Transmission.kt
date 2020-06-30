@@ -24,7 +24,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.context.Transmiss
  * @param [messageTemplate] the template of the message. It may contain [format] placeholders to be replaced with the [placeholderValueProviders]
  * @param [placeholderValueProviders] provides a value for each placeholder in [messageTemplate] from a [TransmissionContext]
  */
-abstract sealed class Transmission(private val messageTemplate: String, private val placeholderValueProviders: List<TransmissionContext.() -> Any?>) {
+sealed class Transmission(private val messageTemplate: String, private val placeholderValueProviders: List<TransmissionContext.() -> Any?>) {
 
     private var _message: String = messageTemplate
 
