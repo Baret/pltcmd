@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.application.examples.elementsReworked
+package de.gleex.pltcmd.game.application.examples.elements
 
 import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.units.Unit
