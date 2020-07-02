@@ -37,9 +37,9 @@ enum class Units(
      */
     Officer,
     /**
-     * Radiomen support [Officer]s by extending their radio range. They carry a manpack radio with
-     * more power than the standard radio issued to officers. It can be deployed when stationary to
-     * further increase the range.
+     * Radiomen or "radiotelephone operators" (RTO) support [Officer]s by extending their radio range.
+     * They carry a manpack radio with more power than the standard radio issued to officers.
+     * It can be deployed when stationary to further increase the range.
      *
      * Radiomen are usually attached to platoons or larger elements.
      */
@@ -53,14 +53,13 @@ enum class Units(
      */
     CombatEngineer,
     /**
-     * A heavy machine gun (HMG) team crews a heavy weapon. It consists of a gunner and an ammo
-     * bearer that also helps to adjust fire thus increasing accuracy. The weapon itself can
-     * also be used by only one of the two soldiers, but less effective.
+     * A heavy machine gun (HMG) team crews a heavy weapon. It consists of a gunner, an ammo
+     * bearer and an assistant gunner that helps to adjust fire, thus increasing accuracy.
      *
      * An HMG mainly provides suppressive fire against enemy infantry but can also inflict damage
      * to light vehicles.
      */
-    HMGTeam(personnel = 2),
+    HMGTeam(personnel = 3, personnelMinimum = 2),
     /**
      * The two soldiers that form an AT-Team (anti tank) carry a rocket launcher and ammunition to engage even
      * heavily armored ground targets.
@@ -165,7 +164,7 @@ enum class Units(
     /**
      * This unit is used to remove enemy minefields.
      */
-    MineRemoverTank(ArmoredHeavy, personnel = 3, personnelMinimum = 3),
+    MineClearingTank(ArmoredHeavy, personnel = 3, personnelMinimum = 3),
     /**
      * A self propelled artillery is used for long-range indirect bombardment. It is a tracked vehicle
      * that can move through any terrain to reach an ideal position from where it is ready for fire missions.
@@ -173,8 +172,9 @@ enum class Units(
     Artillery(ArmoredHeavy, personnel = 5, personnelMinimum = 4),
 
     /**
-     * A scout plane is a simple, light plane that can relatively quickly (compared to [Scout]s that move by foot)
-     * travel to unknown terrain and report it.
+     * A scout plane is a light single-engine prop airplane that can relatively quickly
+     * (compared to [Scout]s that move by foot) travel to unknown terrain and report it.
+     * By that it provides cheap aerial reconnaissance.
      */
     ScoutPlane(AerialLight, personnel = 2, personnelMinimum = 1),
     /**

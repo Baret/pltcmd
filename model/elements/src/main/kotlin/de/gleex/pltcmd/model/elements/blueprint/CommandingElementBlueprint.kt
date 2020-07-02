@@ -23,7 +23,17 @@ data class CommandingElementBlueprint(
 
     override fun new() = CommandingElement(corps, kind, rung, units.new(), subordinates.new())
 
+    internal infix fun commanding(subordinates: List<Blueprint<Element>>) = copy(
+            corps = corps,
+            kind = kind,
+            rung = rung,
+            units = units,
+            subordinates = subordinates + this.subordinates
+    )
+
     operator fun times(i: Int) = List(i) { copy() }
+
+    operator fun plus(list: List<Blueprint<Element>>): List<Blueprint<Element>> = list + this
 }
 
 internal operator fun Int.times(blueprint: CommandingElementBlueprint) = blueprint * this
