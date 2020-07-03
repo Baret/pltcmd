@@ -19,6 +19,12 @@ internal class ElementBlueprintStart(
      * or to create a commanding element by chaining [ElementBlueprint.commanding].
      */
     infix fun consistingOf(units: List<Units>) = ElementBlueprint(corps, kind, rung, units)
+
+    /**
+     * Returns an actual [ElementBlueprint] which can be used to create an instance of an element
+     * or to create a commanding element by chaining [ElementBlueprint.commanding].
+     */
+    infix fun consistingOf(unit: Units) = consistingOf(listOf(unit))
 }
 
 /**

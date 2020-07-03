@@ -3,6 +3,7 @@ package de.gleex.pltcmd.model.elements
 import de.gleex.pltcmd.model.elements.Corps.Fighting
 import de.gleex.pltcmd.model.elements.Corps.Logistics
 import de.gleex.pltcmd.model.elements.ElementKind.Infantry
+import de.gleex.pltcmd.model.elements.ElementKind.MotorizedInfantry
 import de.gleex.pltcmd.model.elements.Rung.*
 import de.gleex.pltcmd.model.elements.blueprint.CommandingElementBlueprint
 import de.gleex.pltcmd.model.elements.blueprint.ElementBlueprint
@@ -48,8 +49,15 @@ object Elements {
     fun all(): Map<String, Blueprint<Element>> =
             allElements() + allCommandingElements()
 
+    /**
+     * Tries to find the name of the given blueprint by searching [Elements.all].
+     */
+    fun nameOf(blueprint: Blueprint<Element>): String? {
+        return all().entries.firstOrNull { it.value == blueprint }?.key
+    }
+
     // ======================
-    //      Infantry
+    //      Infantry (INF)
     // ======================
 
     private val squadLead = Officer + Medic
@@ -81,8 +89,21 @@ object Elements {
     val antiAirSquad =
             a(Fighting, Infantry, Squad) consistingOf squadLead commanding 2 * antiAirTeam
 
+    val motorizedInfantryTeam =
+            a(Fighting, MotorizedInfantry, Fireteam) consistingOf 3 * Rifleman + Grenadier
+
+    val motorizedTransportSquad =
+            a(Fighting, MotorizedInfantry, Squad) consistingOf 1 * TransportTruck + Officer
+
+    val motorizedInfantrySquad =
+            // TODO: Add something like rifleSquad.withKind(MotirizedInfantry) to reuse existing blueprints
+            a(Fighting, MotorizedInfantry, Squad) consistingOf squadLead commanding 2 * motorizedInfantryTeam
+
+    val motorizedInfantryPlatoon =
+            a(Fighting, MotorizedInfantry, Platoon) consistingOf platoonLead commanding 3 * motorizedInfantrySquad + motorizedTransportSquad
+
     /**
-     * This is just the commanding element of a platoon without subordinates.
+     * This is just the commanding element of a platoon without subordinates. "An empty platoon".
      */
     val fightingInfantryPlatoonCommand =
             a(Fighting, Infantry, Platoon) consistingOf platoonLead commanding emptyList()
@@ -109,4 +130,17 @@ object Elements {
 
     val engineerPlatoon =
             a(Logistics, Infantry, Platoon) consistingOf platoonLead commanding 4 * engineerSquad
+
+    // ======================
+    //      Motorized INF (MOT)
+    // ======================
+
+    val transportTruckTeam =
+            a(Logistics, MotorizedInfantry, Fireteam) consistingOf TransportTruck
+
+    val transportTruckSquad =
+            a(Logistics, MotorizedInfantry, Squad) consistingOf squadLead commanding 2 * transportTruckTeam
+
+    val transportTruckPlatoon =
+            a(Logistics, MotorizedInfantry, Platoon) consistingOf platoonLead commanding 3 * transportTruckSquad
 }
