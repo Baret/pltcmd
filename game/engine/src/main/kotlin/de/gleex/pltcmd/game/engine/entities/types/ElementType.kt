@@ -5,14 +5,14 @@ import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.elements.Element
+import de.gleex.pltcmd.model.elements.CommandingElement
 import org.hexworks.amethyst.api.base.BaseEntityType
 
 /** Represents an element in an army. */
 object ElementType : BaseEntityType("element", "A movable and cummunicatable element."), Movable, Communicatable, Combatant
 typealias ElementEntity = GameEntity<ElementType>
 
-private val ElementEntity.element: Element
+private val ElementEntity.element: CommandingElement
     get() = getAttribute(ElementAttribute::class).element.value
 
 val ElementEntity.callsign: CallSign

@@ -13,7 +13,7 @@ import de.gleex.pltcmd.game.ui.fragments.TickFragment
 import de.gleex.pltcmd.game.ui.fragments.TilesetSelectorFragment
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.elements.Element
+import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
@@ -74,10 +74,11 @@ fun main() {
     val bravoCallSign = CallSign("Bravo-2")
     val charlieCallSign = CallSign("Charlie-1")
 
-    val hqEntity = EntityFactory.newElement(Element(hqCallSign, emptySet()), hqLocation, Affiliation.Self, hqRadio)
-    val bravoEntity = EntityFactory.newElement(Element(bravoCallSign, emptySet()), bravoLocation, Affiliation.Friendly, bravoRadio)
-    val charlieEntity = EntityFactory.newElement(Element(charlieCallSign, emptySet()), charlieLocation, Affiliation.Friendly, charlieRadio)
-    val zuluEntity = EntityFactory.newElement(Element(CallSign("Zulu-0"), emptySet()), zuluLocation, Affiliation.Neutral, zuluRadio)
+    // TODO use pre-defined call signs
+    val hqEntity = EntityFactory.newElement(Elements.rifleSquad.new(), hqLocation, Affiliation.Self, hqRadio)
+    val bravoEntity = EntityFactory.newElement(Elements.rifleSquad.new(), bravoLocation, Affiliation.Friendly, bravoRadio)
+    val charlieEntity = EntityFactory.newElement(Elements.rifleSquad.new(), charlieLocation, Affiliation.Friendly, charlieRadio)
+    val zuluEntity = EntityFactory.newElement(Elements.rifleSquad.new(), zuluLocation, Affiliation.Neutral, zuluRadio)
 
     game.addEntity(hqEntity)
     game.addEntity(bravoEntity)
