@@ -6,13 +6,12 @@ import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.combatStats
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
-import de.gleex.pltcmd.model.elements.Affiliation
-import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
-import de.gleex.pltcmd.model.elements.*
+import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
