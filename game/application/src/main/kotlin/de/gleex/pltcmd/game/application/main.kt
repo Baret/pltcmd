@@ -40,13 +40,17 @@ fun main() {
         val game = Game(Engine.default(), generatedMap, Random(GameOptions.DEBUG_MAP_SEED))
 
         val elementsToCommand = mutableListOf<ElementEntity>()
-        val visibleSector = generatedMap.sectors.first { it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin() }
+        val visibleSector = generatedMap.sectors.first {
+            it.origin == gameWorld.visibleTopLeftCoordinate()
+                    .toSectorOrigin()
+        }
         elementsToCommand.run {
             add(visibleSector.createFriendly("Alpha", game, gameWorld))
             add(visibleSector.createFriendly("Bravo", game, gameWorld))
             add(visibleSector.createFriendly("Charlie", game, gameWorld))
         }
-        screen.dock(GameView(gameWorld, tileGrid, elementsToCommand))
+        val hq = visibleSector.createFriendly("HQ", game, gameWorld, Affiliation.Self)
+        screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
         // Adding some elements to every sector
         val elementsPerSector = 3
@@ -58,14 +62,14 @@ fun main() {
                         }
             }
         }
-        Ticker.start(game)
+        Ticker.start()
         // cleanup
-        screen.onShutdown { Ticker.stopGame() }
+        screen.onShutdown { Ticker.stop() }
     }
 }
 
-private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld): ElementEntity {
-    return game.addElementInSector(this, callsign, Affiliation.Friendly)
+private fun Sector.createFriendly(callsign: String, game: Game, gameWorld: GameWorld, affiliation: Affiliation = Affiliation.Friendly): ElementEntity {
+    return game.addElementInSector(this, callsign, affiliation)
             .also(gameWorld::trackUnit)
 }
 
@@ -84,7 +88,8 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (World
     screen.dock(generatingView)
 
     val mapGenerator = WorldMapGenerator(
-            GameOptions.DEBUG_MAP_SEED,
+            //GameOptions.DEBUG_MAP_SEED,
+            System.currentTimeMillis(),
             worldWidthInTiles,
             worldHeightInTiles
     )

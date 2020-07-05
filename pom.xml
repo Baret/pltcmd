@@ -5,7 +5,7 @@
 	<groupId>de.gleex.pltcmd</groupId>
 	<artifactId>pltcmd</artifactId>
 	<packaging>pom</packaging>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 
 	<name>PltCmd</name>
 	<description>PltCmd is a strategy game that puts you in control of a whole army with nothing but a radio at your hands.</description>
@@ -14,7 +14,7 @@
 		<connection>scm:git:https://github.com/Baret/pltcmd.git</connection>
 		<developerConnection>scm:git:git@github.com:Baret/pltcmd.git</developerConnection>
 		<url>https://github.com/Baret/pltcmd</url>
-		<tag>HEAD</tag>
+		<tag>pltcmd-0.1.0</tag>
 	</scm>
 
 	<modules>

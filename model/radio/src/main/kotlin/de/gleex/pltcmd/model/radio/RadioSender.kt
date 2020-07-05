@@ -9,47 +9,100 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.events.globalEventBus
+import org.hexworks.cobalt.databinding.api.value.ObservableValue
+import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * A walkie-talkie or radio station that sends [Transmission]s out over the map as [RadioSignal]s.
  *
- * @param callSign the identity of this sender in the radio network
  * @param location from where on the map the broadcast is emitted
  * @param power with which broadcasts are sent over the map
  * @param map the terrain over which broadcasts are sent
  */
-class RadioSender(val location: Coordinate, power: Double, private val map: WorldMap) {
+class RadioSender(private val location: ObservableValue<Coordinate>, power: Double, private val map: WorldMap) {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(RadioSender::class)
+    }
+
+    init {
+        location.onChange {
+            invalidateReachableTiles()
+        }
+    }
+
+    val currentLocation: Coordinate
+        get() = location.value
 
     private val signal = RadioSignal(power)
 
-    // pre-computed as we send with constant power over a fixed world
+    // cached as we send with constant power over a fixed world
+    private var _cachedReachableTiles: CoordinateRectangle? = null
+
     // visible for tests
-    internal val reachableTiles: CoordinateRectangle = calculateReachableFields()
+    internal val reachableTiles: CoordinateRectangle
+        get() = _cachedReachableTiles ?: fillReachableTiles()
+
+    private fun fillReachableTiles(): CoordinateRectangle {
+        synchronized(this) {
+            if (_cachedReachableTiles == null) {
+                _cachedReachableTiles = calculateReachableFields()
+            }
+            return _cachedReachableTiles!!
+        }
+    }
+
+    private fun invalidateReachableTiles() {
+        synchronized(this) {
+            _cachedReachableTiles = null
+        }
+    }
 
     private fun calculateReachableFields(): CoordinateRectangle {
-        val maxReachOverAir = signal.maxRange
-        // create bounding box (clamped to map borders)
-        val bottomLeftCoordinate = map.moveInside(location.movedBy(-maxReachOverAir, -maxReachOverAir))
-        val topRightCoordinate = map.moveInside(location.movedBy(maxReachOverAir, maxReachOverAir))
-        // TODO a circle is more appropriate
-        return CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
+        val start = System.currentTimeMillis()
+        try {
+            val maxReachOverAir = signal.maxRange
+            // create bounding box (clamped to map borders)
+            val bottomLeftCoordinate = map.moveInside(currentLocation.movedBy(-maxReachOverAir, -maxReachOverAir))
+            val topRightCoordinate = map.moveInside(currentLocation.movedBy(maxReachOverAir, maxReachOverAir))
+            // TODO a circle is more appropriate
+            return CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
+        } finally {
+            val duration = System.currentTimeMillis() - start
+            log.debug("Calculating reachable tiles at $currentLocation with $signal took $duration ms")
+        }
     }
 
     /** Sends out the given transmission. */
     fun transmit(transmission: Transmission) {
-        globalEventBus.publishTransmission(this, reachableTiles, transmission)
+        globalEventBus.publishTransmission(createBroadcast(), transmission)
     }
 
-    /** @return the [SignalStrength] at the given location if sent from this sender */
-    // TODO should the sender know how its signal is received? Or should the terrain be managed outside?
-    // maybe rename this class as it else only wraps RadioSignal
+    /** copy of the current state that persists mutable values like [currentLocation] and the resulting [reachableTiles] */
+    private fun createBroadcast() = Broadcast(currentLocation, signal, reachableTiles, map)
+
+}
+
+/** A [RadioSignal] emitted from a [senderLocation] that travels over a [map] */
+data class Broadcast(
+        val senderLocation: Coordinate,
+        val signal: RadioSignal,
+        private val receivableAt: CoordinateRectangle,
+        private val map: WorldMap
+) {
+
+    fun isReceivedAt(location: Coordinate): Boolean {
+        return receivableAt.contains(location)
+    }
+
+    /** @return the [SignalStrength] at the given location when receiving this broadcast at the [target] */
     fun signalAtTarget(target: Coordinate): SignalStrength {
         val terrain = terrainTo(target)
         return signal.along(terrain)
     }
 
     private fun terrainTo(target: Coordinate): List<Terrain> {
-        val path = CoordinatePath.line(location, target)
+        val path = CoordinatePath.line(senderLocation, target)
         return map.getTerrainAt(path)
     }
 

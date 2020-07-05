@@ -33,10 +33,10 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
     /**
      * Initializes a conversation and adds the two messages as order and expected readback response.
      */
-    fun genericOrder(orderMessage: String, readback: String) {
+    fun genericOrder(orderMessage: String, readback: String, vararg placeholderValueProviders: TransmissionContext.() -> Any?) {
         establishComms {
-            order(orderMessage) {
-                readback(readback)
+            order(orderMessage, *placeholderValueProviders) {
+                readback(readback, *placeholderValueProviders)
             }
         }
     }
@@ -66,10 +66,10 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
     fun terminatingResponse(message: String, vararg placeholderValueProviders: TransmissionContext.() -> Any?) =
             TerminatingTransmission(message.asTransmission(toReceiver = false, terminating = true), placeholderValueProviders.asList())
 
-    fun order(message: String, readbackSupplier: () -> TerminatingTransmission): OrderTransmission {
+    fun order(message: String, vararg placeholderValueProviders: TransmissionContext.() -> Any?, readbackSupplier: () -> TerminatingTransmission): OrderTransmission {
         val readback = readbackSupplier.invoke()
         // TODO: negative() needs to be some kind of "transmission with wildcard" that can be filled with the reason, when it is being sent
-        return OrderTransmission(message.asTransmission(), readback, negative())
+        return OrderTransmission(message.asTransmission(), readback, negative(), placeholderValueProviders.asList())
     }
 
     /**
