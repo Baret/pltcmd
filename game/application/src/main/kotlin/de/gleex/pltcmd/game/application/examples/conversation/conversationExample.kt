@@ -74,11 +74,10 @@ fun main() {
     val bravoCallSign = CallSign("Bravo-2")
     val charlieCallSign = CallSign("Charlie-1")
 
-    // TODO use pre-defined call signs
-    val hqEntity = EntityFactory.newElement(Elements.rifleSquad.new(), hqLocation, Affiliation.Self, hqRadio)
-    val bravoEntity = EntityFactory.newElement(Elements.rifleSquad.new(), bravoLocation, Affiliation.Friendly, bravoRadio)
-    val charlieEntity = EntityFactory.newElement(Elements.rifleSquad.new(), charlieLocation, Affiliation.Friendly, charlieRadio)
-    val zuluEntity = EntityFactory.newElement(Elements.rifleSquad.new(), zuluLocation, Affiliation.Neutral, zuluRadio)
+    val hqEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = hqCallSign }, hqLocation, Affiliation.Self, hqRadio)
+    val bravoEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = bravoCallSign }, bravoLocation, Affiliation.Friendly, bravoRadio)
+    val charlieEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = charlieCallSign }, charlieLocation, Affiliation.Friendly, charlieRadio)
+    val zuluEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = CallSign("Zulu-0") }, zuluLocation, Affiliation.Neutral, zuluRadio)
 
     game.addEntity(hqEntity)
     game.addEntity(bravoEntity)
