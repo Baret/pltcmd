@@ -37,7 +37,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     /**
      * Creates a [GameContext] for the current tick.
      */
-    fun context(): GameContext = GameContext(Ticker.currentTick, world,, allElements.toSet() random)
+    fun context(): GameContext = GameContext(Ticker.currentTick, world, allElements.toSet(), random)
 
     /**
      * Adds the given entity to the engine and returns it to make chained calls possible.
