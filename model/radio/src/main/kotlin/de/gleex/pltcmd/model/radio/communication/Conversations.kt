@@ -2,8 +2,11 @@ package de.gleex.pltcmd.model.radio.communication
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.building.conversation
+import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.orderTemplate
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * This object contains all possible conversations in the game.
@@ -13,23 +16,28 @@ object Conversations {
     /**
      * All orders. An order typically initializes comms, sends an order and expects a positive _readback_ or a negative answer
      */
-    object Orders {
-        fun moveTo(sender: CallSign, receiver: CallSign, targetLocation: Coordinate) =
-                orderConversation(sender, receiver, "move to $targetLocation", "moving to $targetLocation")
+    enum class Orders(private val messageTemplate: String, private val readback: String) {
 
-        fun goFirm(sender: CallSign, receiver: CallSign) =
-                orderConversation(sender, receiver, "go fim", "going firm")
+        MoveTo("move to %s", "moving to %s"),
+        GoFirm("go firm", "going firm"),
+        EngageEnemyAt("engage enemy at %s", "engaging enemy at %s");
 
-        fun engageEnemyAt(sender: CallSign, receiver: CallSign, enemyLocation: Coordinate) =
-                orderConversation(sender, receiver, "engage enemy at $enemyLocation", "engaging enemy at $enemyLocation")
+        fun created(transmission: OrderTransmission): Boolean {
+            return messageTemplate == transmission.orderTemplate
+        }
 
-        private fun orderConversation(sender: CallSign, receiver: CallSign, order: String, readback: String) =
+        fun create(sender: CallSign, receiver: CallSign, orderLocation: Coordinate): Conversation =
                 conversation(sender, receiver) {
                     genericOrder(
-                            orderMessage = order,
-                            readback = readback
+                            messageTemplate,
+                            readback,
+                            { orderLocation }
                     )
                 }
+
+        companion object {
+            fun getOrder(transmission: OrderTransmission): Maybe<Orders> = Maybe.ofNullable(values().find { it.created(transmission) })
+        }
     }
 
     /**
@@ -73,6 +81,15 @@ object Conversations {
                 // tricky: as we use terminatingRESPONSE we need to flip sender and receiver
                 conversation(receiver, sender) {
                     openingTransmission = terminatingResponse("stand by")
+                }
+
+        /**
+         * To be used when no reply is received from the receiver.
+         */
+        fun nothingHeard(sender: CallSign, receiver: CallSign) =
+                // tricky: as we use terminatingRESPONSE we need to flip sender and receiver
+                conversation(receiver, sender) {
+                    openingTransmission = terminatingResponse("nothing heard")
                 }
     }
 }

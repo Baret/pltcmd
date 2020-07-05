@@ -16,6 +16,9 @@ object GameOptions {
      */
     val displayRadioSignals: Property<Boolean> = createPropertyFrom(false)
 
+    /** The strength of a radio if not specified. */
+    const val defaultRadioPower = 5000.0
+
     /**
      * Seed used to always create the same map which is useful for development.
      */
@@ -24,7 +27,7 @@ object GameOptions {
     /**
      * The origin of the map. In other words the world map's bottom left corner is this coordinate.
      */
-    val MAP_ORIGIN: Coordinate = Coordinate(0, 0)
+    val MAP_ORIGIN: Coordinate = Coordinate(150, 300)
 
     /**
      * Horizontal number of sectors in the world.

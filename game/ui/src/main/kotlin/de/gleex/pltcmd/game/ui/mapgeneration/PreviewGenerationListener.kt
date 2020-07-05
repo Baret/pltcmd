@@ -12,8 +12,15 @@ class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: 
     private val displaySize = previewWorld.actualSize.to2DSize()
     private val tilesPerPreviewWidth = generatedWorldWidth / displaySize.width
     private val tilesPerPreviewHeight = generatedWorldHeight / displaySize.height
+    private var offsetX: Int? = null
+    private var offsetY: Int? = null
 
     private val averageTerrainMap: MutableMap<Position3D, AverageTerrain> = mutableMapOf()
+
+    override fun startGeneration(origin: Coordinate) {
+        offsetX = origin.eastingFromLeft
+        offsetY = origin.northingFromBottom
+    }
 
     override fun terrainGenerated(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         val gameAreaPosition = coordinate.toGameAreaPosition()
@@ -26,8 +33,8 @@ class PreviewGenerationListener(generatedWorldWidth: Int, generatedWorldHeight: 
 
     /** Maps the coordinate to the position in the preview. */
     private fun Coordinate.toGameAreaPosition(): Position3D {
-        val x = eastingFromLeft / tilesPerPreviewWidth
-        val y = northingFromBottom / tilesPerPreviewHeight
+        val x = (eastingFromLeft - offsetX!!) / tilesPerPreviewWidth
+        val y = (northingFromBottom - offsetY!!) / tilesPerPreviewHeight
         // invert y axis to map northing of coordinate to view y
         return Position3D.create(x, displaySize.height - y, 0)
     }

@@ -11,6 +11,7 @@ import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 
 class RadioSenderTest : StringSpec() {
     private val map = WorldMap.create(setOf(sectorAtWithTerrain(Coordinate(0, 0)) {
@@ -18,10 +19,11 @@ class RadioSenderTest : StringSpec() {
     }))
 
     init {
-        val location = Coordinate(1, 2)
+        val coordinate = Coordinate(1, 2)
+        val location = coordinate.toProperty()
 
         "reachableTiles of a minimal sender must be one tile" {
-            val expectedReachableTilesMinimum = CoordinateRectangle(location, 1, 1)
+            val expectedReachableTilesMinimum = CoordinateRectangle(coordinate, 1, 1)
 
             val minimumSender = RadioSender(location, RadioSignal.MIN_POWER_THRESHOLD, map)
             minimumSender.reachableTiles shouldBe expectedReachableTilesMinimum

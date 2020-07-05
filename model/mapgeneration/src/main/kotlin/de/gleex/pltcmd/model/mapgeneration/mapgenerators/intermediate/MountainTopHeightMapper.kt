@@ -15,12 +15,13 @@ import kotlin.random.Random
  * Creates a number of mountain tops and slowly decreases the terrain around them.
  */
 class MountainTopHeightMapper(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
-    private val MAX_TERRAIN = if(context.hilliness < 0.3) TerrainHeight.MAX - 1 else TerrainHeight.MAX
+    private val MAX_TERRAIN = if (context.hilliness < 0.3) TerrainHeight.MAX - 1 else TerrainHeight.MAX
     private val MIN_TERRAIN = TerrainHeight.FOUR
 
     private val log = LoggerFactory.getLogger(this::class)
 
     private val mountainTopsPerMainCoordinate: Int = (4.0 * context.hilliness).roundToInt()
+
     /**
      * x % of main coordinates are picked to put a mountain in them
      */
@@ -48,23 +49,21 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
     private fun generateMountains(initialFrontier: Set<Coordinate>, mutableWorld: MutableWorld) {
         var targetDistance = 0
         workFrontier(
-            initialFrontier,
-            { currentCoordinate: Coordinate ->
-                val currentHeight: TerrainHeight? = mutableWorld.heightAt(currentCoordinate)
-                if (currentHeight != null && currentHeight > MIN_TERRAIN) {
-                    mutableWorld.
-                        neighborsOf(currentCoordinate).
-                        filter {
-                            it.isNotProcessed()
-                        }.
-                        forEach { neighbor ->
-                            mutableWorld[neighbor] = currentHeight.lowerOrEqual(rand, steepness)
-                            neighbor.addToNextFrontier()
-                            context.mountainTops.add(neighbor, currentCoordinate, targetDistance)
-                        }
-                }
-            },
-            { targetDistance++ })
+                initialFrontier,
+                { currentCoordinate: Coordinate ->
+                    val currentHeight: TerrainHeight? = mutableWorld.heightAt(currentCoordinate)
+                    if (currentHeight != null && currentHeight > MIN_TERRAIN) {
+                        mutableWorld.
+                                neighborsOf(currentCoordinate).
+                                filter { it.isNotProcessed() }.
+                                forEach { neighbor ->
+                                    mutableWorld[neighbor] = currentHeight.lowerOrEqual(rand, steepness)
+                                    neighbor.addToNextFrontier()
+                                    context.mountainTops.add(neighbor, currentCoordinate, targetDistance)
+                                }
+                    }
+                },
+                { targetDistance++ })
     }
 
     private fun findMountainTops(area: CoordinateArea, mutableWorld: MutableWorld): Set<Coordinate> {
@@ -79,7 +78,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         var tries = 0
         while (pickedAreas.size < mountainTopAreasToFind && tries < 1000) {
             val candidate = mainCoordinates.random(rand)
-            if(candidate.toCoordinate() in area) {
+            if (candidate.toCoordinate() in area) {
                 pickedAreas.add(candidate)
             }
             tries++
@@ -87,12 +86,25 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
 
         val pickedLocations = mutableSetOf<Coordinate>()
         pickedAreas.forEach { mainCoordinate ->
-            for(i in 0 until mountainTopsPerMainCoordinate)
-                pickedLocations.add(
-                        mainCoordinate.toCoordinate()
-                                .movedBy(rand.nextInt(100), rand.nextInt(100)))
+            repeat (mountainTopsPerMainCoordinate) {
+                val pickedLocation = pickRandomLocation(mainCoordinate, pickedLocations, mutableWorld)
+                pickedLocations.add(pickedLocation)
+            }
         }
         log.debug("Found ${pickedLocations.size} mountain top locations: ${pickedLocations.sorted()}")
         return pickedLocations.toSet()
     }
+
+    /** @return a random location inside the given [mainCoordinate] that is also in the given world and tries not to be in [pickedLocations] */
+    private fun pickRandomLocation(mainCoordinate: MainCoordinate, pickedLocations: MutableSet<Coordinate>, mutableWorld: MutableWorld): Coordinate {
+        var pickedLocation: Coordinate
+        var tries = 3
+        do {
+            val randomLocation = mainCoordinate.toCoordinate()
+                    .movedBy(rand.nextInt(MainCoordinate.TILE_COUNT), rand.nextInt(MainCoordinate.TILE_COUNT))
+            pickedLocation = mutableWorld.moveInside(randomLocation)
+        } while (!pickedLocations.contains(pickedLocation) && --tries > 0)
+        return pickedLocation
+    }
+
 }

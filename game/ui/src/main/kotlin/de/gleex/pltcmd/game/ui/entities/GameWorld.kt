@@ -1,9 +1,6 @@
 package de.gleex.pltcmd.game.ui.entities
 
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.affiliation
-import de.gleex.pltcmd.game.engine.entities.types.currentPosition
-import de.gleex.pltcmd.game.engine.entities.types.position
+import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -63,17 +60,18 @@ class GameWorld(private val worldMap: WorldMap) :
 
     /** adds a marker to the map which is synced with the position of the given element */
     fun trackUnit(element: ElementEntity) {
-        showUnit(element)
+        element.showOnMap()
         element.position.onChange {
             it.oldValue.hideUnit()
-            showUnit(element)
+            element.showOnMap()
         }
+        element.combatStats onDeath { element.hide() }
     }
 
-    private fun showUnit(element: ElementEntity) {
-        val affiliation = element.affiliation
+    private fun ElementEntity.showOnMap() {
+        val affiliation = affiliation
         val elementTile = TileRepository.Elements.platoon(affiliation)
-        element.currentPosition.setUnit(elementTile)
+        currentPosition.setUnit(elementTile)
     }
 
     private fun Coordinate.setUnit(unitTile: Tile) {
@@ -83,7 +81,11 @@ class GameWorld(private val worldMap: WorldMap) :
         }
     }
 
-    private fun Coordinate.hideUnit() {
+    private fun ElementEntity.hide() {
+        currentPosition.hideUnit()
+    }
+
+        private fun Coordinate.hideUnit() {
         val position = toPosition()
         fetchBlockAt(position).ifPresent {
             it.resetUnit()
@@ -121,13 +123,16 @@ class GameWorld(private val worldMap: WorldMap) :
     }
 
     private fun Coordinate.toPosition(): Position3D {
-        val translatedPos = Position.create(eastingFromLeft, getMaxY() - northingFromBottom) + topLeftOffset
-        return Position3D.from2DPosition(translatedPos)
+        // translate to 0,0 based grid then invert y axis
+        val translatedX = eastingFromLeft + topLeftOffset.x
+        val translatedY = northingFromBottom + topLeftOffset.y
+        return Position3D.create(translatedX, getMaxY() - translatedY, 0)
     }
 
     private fun Position3D.toCoordinate(): Coordinate {
-        val translatedPos = to2DPosition() - topLeftOffset
-        return Coordinate(translatedPos.x, getMaxY() - translatedPos.y)
+        // invert y axis then translate to map origin based grid
+        val invertedY = getMaxY() - y
+        return Coordinate(x - topLeftOffset.x, invertedY - topLeftOffset.y)
     }
 
     /**

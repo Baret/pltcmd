@@ -13,7 +13,7 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     /**
      * Converts this coordinate to a [MainCoordinate]
      */
-    fun toMainCoordinate() = MainCoordinate(eastingFromLeft / 100, northingFromBottom / 100)
+    fun toMainCoordinate() = MainCoordinate(eastingFromLeft / MainCoordinate.TILE_COUNT, northingFromBottom / MainCoordinate.TILE_COUNT)
 
     /** Creates a new [Coordinate] that is moved by the given amount to the east from this coordinate */
     fun withRelativeEasting(toEast: Int) = withEasting(eastingFromLeft + toEast)
