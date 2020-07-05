@@ -1,9 +1,6 @@
 package de.gleex.pltcmd.game.engine.entities
 
-import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
-import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
-import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
+import de.gleex.pltcmd.game.engine.attributes.*
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.systems.behaviours.Communicating
@@ -11,6 +8,7 @@ import de.gleex.pltcmd.game.engine.systems.behaviours.Moving
 import de.gleex.pltcmd.game.engine.systems.behaviours.Wandering
 import de.gleex.pltcmd.game.engine.systems.facets.ConversationSender
 import de.gleex.pltcmd.game.engine.systems.facets.ExecuteOrder
+import de.gleex.pltcmd.game.engine.systems.facets.IntentPursuing
 import de.gleex.pltcmd.game.engine.systems.facets.SetDestination
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.Element
@@ -25,6 +23,7 @@ object EntityFactory {
     fun newElement(element: Element, initialPosition: Property<Coordinate>, affiliation: Affiliation = Affiliation.Unknown, radioSender: RadioSender): ElementEntity =
             newEntityOfType(ElementType, {
                 attributes(
+                        CommandersIntent(),
                         ElementAttribute(element, affiliation),
                         PositionAttribute(initialPosition),
                         DestinationAttribute(),
@@ -32,7 +31,7 @@ object EntityFactory {
                         RadioAttribute(RadioCommunicator(element.callSign, radioSender))
                 )
                 behaviors(Moving, Communicating)
-                facets(SetDestination, ExecuteOrder, ConversationSender)
+                facets(IntentPursuing, SetDestination, ExecuteOrder, ConversationSender)
             })
 
     fun newWanderingElement(element: Element, initialPosition: Property<Coordinate>, affiliation: Affiliation = Affiliation.Unknown, radioSender: RadioSender): ElementEntity =

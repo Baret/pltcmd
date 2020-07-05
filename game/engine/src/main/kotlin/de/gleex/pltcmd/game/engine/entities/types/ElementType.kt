@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
+import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
@@ -24,3 +25,6 @@ val ElementEntity.affiliation
     get() = findAttribute(ElementAttribute::class)
             .map { it.reportedAffiliation.value }
             .orElse(Affiliation.Unknown)
+
+internal val ElementEntity.commandersIntent
+    get() = getAttribute(CommandersIntent::class)
