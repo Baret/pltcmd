@@ -33,6 +33,14 @@ class ElementTest : WordSpec({
         }
     }
 
+    "An element" should {
+        "always contain units" {
+            shouldThrow<IllegalArgumentException> {
+                Element(Corps.Fighting, ElementKind.Armored, Rung.Company, emptySet())
+            }
+        }
+    }
+
     // Test element creation with invalid unit kinds
     ElementKind.values()
             .forEach { elementKind ->

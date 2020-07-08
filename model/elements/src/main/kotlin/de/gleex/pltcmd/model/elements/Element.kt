@@ -34,13 +34,18 @@ open class Element(
     open val description get() = "$corps $kind $rung"
 
     private val _units: MutableSet<Unit> = mutableSetOf()
+
     /**
      * All [Unit]s forming this element.
      */
     val units: Set<Unit> = _units
 
     private var _superordinate: Property<Maybe<CommandingElement>> =
-            initialSuperOrdinate.toProperty()
+            initialSuperOrdinate.toProperty { newValue ->
+                newValue.fold({ true }) {
+                    it != this
+                }
+            }
 
     /**
      * If this element is currently being commanded this [Maybe] contains the superordinate.
@@ -51,19 +56,16 @@ open class Element(
     var superordinate: Maybe<CommandingElement>
         get() = _superordinate.value
         set(value) {
-            if(value.isPresent) {
-                require(value.get() != this) {
-                    "An element cannot be the superordinate of itself!"
-                }
+            require(_superordinate.updateValue(value).successful) {
+                "An element cannot be the superordinate of itself!"
             }
-            _superordinate.updateValue(value)
         }
 
     init {
         require(units.isNotEmpty()) {
             "An element must have at least one unit."
         }
-        units.forEach{ addUnit(it) }
+        units.forEach { addUnit(it) }
     }
 
     /**
@@ -96,7 +98,8 @@ open class Element(
      */
     fun removeUnit(unit: Unit): Boolean = _units.remove(unit)
 
-    override fun toString() = "${description} [id=$id, ${units.size} units${superordinate.map { ",superordinate=$it" }.orElse("")}]"
+    override fun toString() = "${description} [id=$id, ${units.size} units${superordinate.map { ",superordinate=$it" }
+            .orElse("")}]"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
