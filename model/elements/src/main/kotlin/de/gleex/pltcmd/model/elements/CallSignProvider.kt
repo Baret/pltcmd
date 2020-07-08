@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.model.elements
 
 import de.gleex.pltcmd.util.namegeneration.AlphabetPicker
-import de.gleex.pltcmd.util.namegeneration.Namegenerator
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.reflect.KProperty
 
@@ -20,15 +19,18 @@ internal class CallSignProvider(
         private val log = LoggerFactory.getLogger(CallSignProvider::class)
     }
 
-    // TODO: Pick name generator based on corps, kind and rung
-    private val generator: Namegenerator = when(corps) {
-        Corps.Fighting  -> AlphabetPicker() // Cool names
-        Corps.Logistics -> AlphabetPicker() // Animal names
-        // something like that...
-        else            -> AlphabetPicker()
-    }
+    private var callSign: CallSign
 
-    private var callSign: CallSign = CallSign(generator.generate())
+    init {
+        // TODO: Pick name generator based on corps, kind and rung
+        callSign = CallSign(
+                when(corps) {
+                    Corps.Fighting  -> AlphabetPicker() // Cool names
+                    Corps.Logistics -> AlphabetPicker() // Animal names
+                    // something like that...
+                    else            -> AlphabetPicker()
+                }.generate())
+    }
 
     operator fun getValue(commandingElement: CommandingElement, property: KProperty<*>): CallSign = callSign
 
