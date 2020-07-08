@@ -94,6 +94,9 @@ class CommandingElement(
         }
         if (canElementBeAdded(element)) {
             // TODO: Maybe a commanding element could get a max number of subordinates so that you cannot stack elements into it endlessly
+            element.superordinate.ifPresent {
+                it.removeElement(element)
+            }
             _subordinates.add(element)
             return true
         }

@@ -4,6 +4,7 @@ import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.elements.units.times
 import de.gleex.pltcmd.util.tests.shouldContainValue
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
@@ -30,7 +31,7 @@ class CommandingElementTest : WordSpec() {
     init {
         "A commanding element" should {
 
-            var commandingElement = newCE()
+            var commandingElement = buildCommandingElement()
 
             val invalidCorps = Corps.values()
                     .filter { it != commandingElement.corps }
@@ -54,7 +55,7 @@ class CommandingElementTest : WordSpec() {
                 invalidCorps + validCorps shouldHaveSize Corps.values().size
             }
 
-            commandingElement = newCE()
+            commandingElement = buildCommandingElement()
             val invalidKinds = ElementKind.values()
                     .filter { it != commandingElement.kind }
             "NOT allow adding elements of kind $invalidKinds when it is of kind ${commandingElement.kind} itself" {
@@ -77,7 +78,7 @@ class CommandingElementTest : WordSpec() {
                 invalidKinds + validKinds shouldHaveSize ElementKind.values().size
             }
 
-            commandingElement = newCE()
+            commandingElement = buildCommandingElement()
             val invalidRungs = Rung.values()
                     .filter { it >= commandingElement.rung }
             "NOT allow adding elements of rung $invalidRungs when it is of rung ${commandingElement.rung} itself (only smaller rungs allowed)" {
@@ -104,7 +105,7 @@ class CommandingElementTest : WordSpec() {
         "Regarding subordinates, a commanding element" should {
 
             "return true for an element that is being added twice" {
-                val ce = newCE()
+                val ce = buildCommandingElement()
                 val sub = buildSubElement()
                 ce.addElement(sub) shouldBe true
                 ce.addElement(sub) shouldBe true
@@ -112,7 +113,7 @@ class CommandingElementTest : WordSpec() {
 
             "set itself as superordinate in all subordinates" {
                 // create new CE, check all subs
-                val ce = newCE()
+                val ce = buildCommandingElement()
                 val sub1 = buildSubElement()
                 val sub2 = buildSubElement()
                 val sub3 = buildSubElement()
@@ -153,9 +154,45 @@ class CommandingElementTest : WordSpec() {
             }
         }
 
+        "When moving an element from one superordinate to another, all elements" should {
+            "stay consistent" {
+                val super1 = buildCommandingElement()
+                val super2 = buildCommandingElement()
+                val sub = buildSubElement()
+
+                log.info("All three elements should be 'empty'")
+
+                assertSoftly {
+                    super1.subordinates should beEmpty()
+                    super2.subordinates should beEmpty()
+                    sub.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                }
+
+                super1.addElement(sub)
+
+                log.info("Subordinate should be in super1")
+
+                assertSoftly {
+                    super1.subordinates shouldContainExactly setOf(sub)
+                    super2.subordinates should beEmpty()
+                    sub.superordinate shouldContainValue super1
+                }
+
+                super2.addElement(sub)
+
+                log.info("Subordinate should now be in super2 while super1 is empty again")
+
+                assertSoftly {
+                    super1.subordinates should beEmpty()
+                    super2.subordinates shouldContainExactly setOf(sub)
+                    sub.superordinate shouldContainValue super2
+                }
+            }
+        }
+
         "The superordinate of a commanding element" should {
             "not be itself (this)" {
-                val commandingElement = newCE()
+                val commandingElement = buildCommandingElement()
                 shouldThrow<IllegalArgumentException> {
                     commandingElement.superordinate = Maybe.of(commandingElement)
                     Any()
@@ -179,7 +216,7 @@ class CommandingElementTest : WordSpec() {
     /**
      * Creates a new [CommandingElement] with the [defaultCorps], [defaultElementKind] and rung [Rung.Platoon].
      */
-    private fun newCE() = CommandingElement(defaultCorps, defaultElementKind, Rung.Platoon, (2 * Units.Officer + Units.Radioman + Units.Grenadier).new())
+    private fun buildCommandingElement() = CommandingElement(defaultCorps, defaultElementKind, Rung.Platoon, (2 * Units.Officer + Units.Radioman + Units.Grenadier).new())
 
     /**
      * Creates a new [Element] with [defaultCorps], [defaultElementKind] and [defaultRung] if not otherwise stated.
