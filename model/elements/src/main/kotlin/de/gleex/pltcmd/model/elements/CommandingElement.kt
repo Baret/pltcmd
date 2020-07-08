@@ -7,7 +7,7 @@ import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**
- * A commanding element is in charge of other elements and represented in the command net by its callsign if it is not
+ * A commanding element is in charge of other elements and represented in the command net by its [callSign] if it is not
  * currently a subordinate itself.
  */
 class CommandingElement(
@@ -67,8 +67,7 @@ class CommandingElement(
     private val callSignProvider = CallSignProvider(corps, kind, rung)
 
     /**
-     * The callsign this element is identified by. If commanded by another [CommandingElement] (i.e. [superordinate] is present)
-     * the callsign is inherited. Otherwise the won callsign is used.
+     * The callsign this element is identified by on the radio net.
      */
     var callSign: CallSign by callSignProvider
 
