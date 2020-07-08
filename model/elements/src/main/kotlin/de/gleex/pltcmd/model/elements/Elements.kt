@@ -5,10 +5,7 @@ import de.gleex.pltcmd.model.elements.Corps.Logistics
 import de.gleex.pltcmd.model.elements.ElementKind.Infantry
 import de.gleex.pltcmd.model.elements.ElementKind.MotorizedInfantry
 import de.gleex.pltcmd.model.elements.Rung.*
-import de.gleex.pltcmd.model.elements.blueprint.CommandingElementBlueprint
-import de.gleex.pltcmd.model.elements.blueprint.ElementBlueprint
-import de.gleex.pltcmd.model.elements.blueprint.a
-import de.gleex.pltcmd.model.elements.blueprint.times
+import de.gleex.pltcmd.model.elements.blueprint.*
 import de.gleex.pltcmd.model.elements.units.Units.*
 import de.gleex.pltcmd.model.elements.units.times
 import kotlin.reflect.KVisibility
@@ -46,13 +43,13 @@ object Elements {
     /**
      * All available blueprints. For specific variants see [allCommandingElements] and [allElements]
      */
-    fun all(): Map<String, Blueprint<Element>> =
+    fun all(): Map<String, AbstractElementBlueprint<*>> =
             allElements() + allCommandingElements()
 
     /**
      * Tries to find the name of the given blueprint by searching [Elements.all].
      */
-    fun nameOf(blueprint: Blueprint<Element>): String? {
+    fun nameOf(blueprint: AbstractElementBlueprint<*>): String? {
         return all().entries.firstOrNull { it.value == blueprint }?.key
     }
 
