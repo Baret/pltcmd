@@ -206,11 +206,20 @@ enum class Units(
      */
     HelicopterGunship(AerialHeavy, personnel = 2, personnelMinimum = 2);
 
+    init {
+        require(personnel > 0) {
+            "There needs to be personnel in a unit."
+        }
+        require(personnel >= personnelMinimum) {
+            "Personnel count ($personnel) needs to be at least minimum personnel ($personnelMinimum)"
+        }
+    }
+
     override fun new() = Unit(this)
 
     operator fun times(multiplier: Int): List<Units> = List(multiplier) { this }
 
-    operator fun plus(unitBlueprints: List<Units>): List<Units> = unitBlueprints + this
+    operator fun plus(unitBlueprints: List<Units>): List<Units> = listOf(this, *unitBlueprints.toTypedArray())
 
     operator fun plus(otherBlueprint: Units): List<Units> = listOf(this, otherBlueprint)
 }
