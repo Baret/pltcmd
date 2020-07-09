@@ -7,12 +7,12 @@ import de.gleex.pltcmd.model.elements.units.new
 /**
  * Base class for the element blueprints.
  */
-sealed class AbstractElementBlueprint<T: Element>(
+sealed class AbstractElementBlueprint<T : Element>(
         internal val corps: Corps,
         internal val kind: ElementKind,
         internal val rung: Rung,
         internal val units: List<Units>
-): Blueprint<T> {
+) : Blueprint<T> {
     /**
      * When adding this method to the building process the resulting element will be a [CommandingElement].
      *
@@ -20,6 +20,15 @@ sealed class AbstractElementBlueprint<T: Element>(
      */
     internal open infix fun commanding(subordinates: List<AbstractElementBlueprint<*>>) =
             CommandingElementBlueprint(corps, kind, rung, units, subordinates)
+
+
+    abstract operator fun times(i: Int): List<AbstractElementBlueprint<*>>
+
+    operator fun plus(blueprint: AbstractElementBlueprint<*>): List<AbstractElementBlueprint<out Element>> =
+            listOf(this, blueprint)
+
+    operator fun plus(blueprints: List<AbstractElementBlueprint<*>>): List<AbstractElementBlueprint<out Element>> =
+            listOf(this, *blueprints.toTypedArray())
 
     // generated equals and hashCode
     override fun equals(other: Any?): Boolean {
@@ -66,9 +75,8 @@ class ElementBlueprint(
                     .toSet()
     )
 
-    operator fun times(i: Int) = List(i) { ElementBlueprint(corps, kind, rung, units) }
-
-    operator fun plus(blueprint: ElementBlueprint) = listOf(this, blueprint)
+    override fun times(i: Int) =
+            List(i) { ElementBlueprint(corps, kind, rung, units) }
 }
 
 /**
@@ -88,10 +96,8 @@ class CommandingElementBlueprint(
         return super.commanding(subordinates + this.subordinates)
     }
 
-    operator fun times(i: Int) =
+    override operator fun times(i: Int) =
             List(i) { CommandingElementBlueprint(corps, kind, rung, units, subordinates) }
-
-    operator fun plus(list: List<AbstractElementBlueprint<*>>): List<AbstractElementBlueprint<*>> = list + this
 
     // generated equals and hashCode
     override fun equals(other: Any?): Boolean {
@@ -113,9 +119,7 @@ class CommandingElementBlueprint(
 
 }
 
-internal operator fun Int.times(blueprint: CommandingElementBlueprint) = blueprint * this
-
-internal operator fun Int.times(blueprint: ElementBlueprint) = blueprint * this
+internal operator fun Int.times(blueprint: AbstractElementBlueprint<*>) = blueprint * this
 
 internal fun Collection<AbstractElementBlueprint<*>>.new(): Set<Element> = map { it.new() }.toSet()
 
