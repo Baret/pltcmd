@@ -6,6 +6,7 @@ import de.gleex.pltcmd.model.elements.Rung.*
 import de.gleex.pltcmd.model.elements.blueprint.*
 import de.gleex.pltcmd.model.elements.units.Units.*
 import de.gleex.pltcmd.model.elements.units.times
+import java.util.*
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubtypeOf
@@ -21,28 +22,30 @@ object Elements {
     /**
      * Returns all commanding elements associated with their name.
      */
-    fun allCommandingElements(): Map<String, CommandingElementBlueprint> =
+    fun allCommandingElements(): SortedMap<String, CommandingElementBlueprint> =
             this::class
                     .declaredMemberProperties
                     .filter { it.visibility == KVisibility.PUBLIC }
                     .filter {it.returnType.isSubtypeOf(CommandingElementBlueprint::class.starProjectedType) }
                     .associate { it.name to it.getter.call(this) as CommandingElementBlueprint }
+                    .toSortedMap()
 
     /**
      * Returns all elements associated with their name.
      */
-    fun allElements(): Map<String, ElementBlueprint> =
+    fun allElements(): SortedMap<String, ElementBlueprint> =
             this::class
                     .declaredMemberProperties
                     .filter { it.visibility == KVisibility.PUBLIC }
                     .filter {it.returnType.isSubtypeOf(ElementBlueprint::class.starProjectedType) }
                     .associate { it.name to it.getter.call(this) as ElementBlueprint }
+                    .toSortedMap()
 
     /**
      * All available blueprints. For specific variants see [allCommandingElements] and [allElements]
      */
-    fun all(): Map<String, AbstractElementBlueprint<*>> =
-            allElements() + allCommandingElements()
+    fun all(): SortedMap<String, AbstractElementBlueprint<*>> =
+            (allElements() + allCommandingElements()).toSortedMap()
 
     /**
      * Tries to find the name of the given blueprint by searching [Elements.all].
@@ -74,17 +77,23 @@ object Elements {
     val antiAirTeam =
             a(Fighting, Infantry, Fireteam) consistingOf 2 * Rifleman + AntiAirTeam
 
+    /**
+     * This is just the commanding element of a squad without subordinates. "An empty squad".
+     */
+    val fightingInfantrySquadCommand =
+            a(Fighting, Infantry, Squad) consistingOf squadLead commanding emptyList()
+
     val rifleSquad =
-            a(Fighting, Infantry, Squad) consistingOf squadLead commanding 2 * rifleTeam
+            fightingInfantrySquadCommand commanding 2 * rifleTeam
 
     val weaponsSquad =
-            a(Fighting, Infantry, Squad) consistingOf squadLead commanding 2 * weaponsTeam
+            fightingInfantrySquadCommand commanding 2 * weaponsTeam
 
     val antiTankSquad =
-            a(Fighting, Infantry, Squad) consistingOf squadLead commanding 2 * antiTankTeam
+            fightingInfantrySquadCommand commanding 2 * antiTankTeam
 
     val antiAirSquad =
-            a(Fighting, Infantry, Squad) consistingOf squadLead commanding 2 * antiAirTeam
+            fightingInfantrySquadCommand commanding 2 * antiAirTeam
 
     /**
      * This is just the commanding element of a platoon without subordinates. "An empty platoon".
@@ -109,17 +118,16 @@ object Elements {
     // ======================
 
     val motorizedInfantryTeam =
-            a(Fighting, MotorizedInfantry, Fireteam) consistingOf 3 * Rifleman + Grenadier
+            rifleTeam withKind MotorizedInfantry
 
     val motorizedTransportSquad =
             a(Fighting, MotorizedInfantry, Squad) consistingOf 1 * TransportTruck + Officer
 
     val motorizedInfantrySquad =
-            // TODO: Add something like rifleSquad.withKind(MotirizedInfantry) to reuse existing blueprints
-            a(Fighting, MotorizedInfantry, Squad) consistingOf squadLead commanding 2 * motorizedInfantryTeam
+            fightingInfantrySquadCommand withKind MotorizedInfantry commanding 2 * motorizedInfantryTeam
 
     val motorizedInfantryPlatoon =
-            a(Fighting, MotorizedInfantry, Platoon) consistingOf platoonLead commanding 3 * motorizedInfantrySquad + motorizedTransportSquad
+            fightingInfantryPlatoonCommand withKind MotorizedInfantry commanding 3 * motorizedInfantrySquad + motorizedTransportSquad
 
     // ######################
     // Logistics corps
@@ -133,10 +141,10 @@ object Elements {
             a(Logistics, Infantry, Fireteam) consistingOf Rifleman + 2 * CombatEngineer + Grenadier
 
     val engineerSquad =
-            a(Logistics, Infantry, Squad) consistingOf squadLead commanding 2 * engineerTeam
+            fightingInfantrySquadCommand withCorps Logistics commanding 2 * engineerTeam
 
     val engineerPlatoon =
-            a(Logistics, Infantry, Platoon) consistingOf platoonLead commanding 4 * engineerSquad
+            fightingInfantryPlatoonCommand withCorps Logistics commanding 4 * engineerSquad
 
     // ======================
     //      Motorized INF (MOT)

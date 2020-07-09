@@ -59,6 +59,16 @@ sealed class AbstractElementBlueprint<T : Element>(
                 "units=$units" +
                 ")"
     }
+
+    /**
+     * Returns a copy of this blueprint with the given [ElementKind].
+     */
+    abstract infix fun withKind(newKind: ElementKind): AbstractElementBlueprint<*>
+
+    /**
+     * Returns a copy of this blueprint with the given [Corps].
+     */
+    abstract infix fun withCorps(newCorps: Corps): AbstractElementBlueprint<*>
 }
 
 /**
@@ -86,6 +96,10 @@ class ElementBlueprint(
 
     override fun times(i: Int) =
             List(i) { ElementBlueprint(corps, kind, rung, units) }
+
+    override fun withKind(newKind: ElementKind) = ElementBlueprint(corps, newKind, rung, units)
+
+    override fun withCorps(newCorps: Corps) = ElementBlueprint(newCorps, kind, rung, units)
 }
 
 /**
@@ -104,6 +118,12 @@ class CommandingElementBlueprint(
     override fun commanding(subordinates: List<AbstractElementBlueprint<*>>): CommandingElementBlueprint {
         return super.commanding(subordinates + this.subordinates)
     }
+
+    override fun withKind(newKind: ElementKind) =
+            CommandingElementBlueprint(corps, newKind, rung, units, subordinates.map { it.withKind(newKind) })
+
+    override fun withCorps(newCorps: Corps) =
+            CommandingElementBlueprint(newCorps, kind, rung, units, subordinates.map { it.withCorps(newCorps) })
 
     override operator fun times(i: Int) =
             List(i) { CommandingElementBlueprint(corps, kind, rung, units, subordinates) }
