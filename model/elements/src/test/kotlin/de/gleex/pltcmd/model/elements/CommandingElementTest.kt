@@ -42,13 +42,10 @@ class CommandingElementTest : WordSpec() {
                 }
             }
 
-            val validCorps = Corps.values()
-                    .filter { it == commandingElement.corps }
-            "allow adding elements of corps $validCorps when it is of corps ${commandingElement.corps} itself" {
-                validCorps.forAll {
-                    val subElement = buildSubElement(corps = it)
-                    checkSubordination(commandingElement, subElement)
-                }
+            val validCorps = commandingElement.corps
+            "allow adding elements of the same corps when it is of corps ${commandingElement.corps} itself" {
+                val subElement = buildSubElement(corps = validCorps)
+                checkSubordination(commandingElement, subElement)
             }
 
             "have been checked against all ${Corps.values().size} corps" {
@@ -68,8 +65,8 @@ class CommandingElementTest : WordSpec() {
             val validKinds = ElementKind.values()
                     .filter { it == commandingElement.kind }
             "allow adding elements of kind $validKinds when it is of kind ${commandingElement.kind} itself" {
-                validCorps.forAll {
-                    val subElement = buildSubElement(corps = it)
+                validKinds.forAll {
+                    val subElement = buildSubElement(kind = it)
                     checkSubordination(commandingElement, subElement)
                 }
             }
