@@ -104,13 +104,13 @@ object Elements {
     val riflePlatoon =
             fightingInfantryPlatoonCommand commanding 3 * rifleSquad
 
-    val heavyInfantryPlatoonHMG =
+    val heavyInfantryHMGPlatoon =
             fightingInfantryPlatoonCommand commanding rifleSquad + 2 * weaponsSquad
 
-    val heavyInfantryPlatoonAT =
+    val heavyInfantryATPlatoon =
             fightingInfantryPlatoonCommand commanding rifleSquad + 2 * antiTankSquad
 
-    val heavyInfantryPlatoonAA =
+    val heavyInfantryAAPlatoon =
             fightingInfantryPlatoonCommand commanding rifleSquad + 2 * antiAirSquad
 
     // ======================

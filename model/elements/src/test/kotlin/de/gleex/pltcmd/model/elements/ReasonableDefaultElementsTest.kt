@@ -69,9 +69,9 @@ class ReasonableDefaultElementsTest : WordSpec() {
 
                 row(Elements.fightingInfantryPlatoonCommand, 3 to 5),
                 row(Elements.riflePlatoon, infantryPlatoonSize),
-                row(Elements.heavyInfantryPlatoonHMG, infantryPlatoonSize),
-                row(Elements.heavyInfantryPlatoonAT, infantryPlatoonSize),
-                row(Elements.heavyInfantryPlatoonAA, infantryPlatoonSize),
+                row(Elements.heavyInfantryHMGPlatoon, infantryPlatoonSize),
+                row(Elements.heavyInfantryATPlatoon, infantryPlatoonSize),
+                row(Elements.heavyInfantryAAPlatoon, infantryPlatoonSize),
                 row(Elements.motorizedInfantryPlatoon, infantryPlatoonSize),
 
                 row(Elements.engineerTeam, infantryFireteamSize),
