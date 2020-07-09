@@ -50,6 +50,15 @@ sealed class AbstractElementBlueprint<T : Element>(
         result = 31 * result + units.hashCode()
         return result
     }
+
+    override fun toString(): String {
+        return "${this::class.simpleName}(" +
+                "corps=$corps, " +
+                "kind=$kind, " +
+                "rung=$rung, " +
+                "units=$units" +
+                ")"
+    }
 }
 
 /**

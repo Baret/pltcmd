@@ -1,9 +1,7 @@
 package de.gleex.pltcmd.model.elements
 
-import de.gleex.pltcmd.model.elements.Corps.Fighting
-import de.gleex.pltcmd.model.elements.Corps.Logistics
-import de.gleex.pltcmd.model.elements.ElementKind.Infantry
-import de.gleex.pltcmd.model.elements.ElementKind.MotorizedInfantry
+import de.gleex.pltcmd.model.elements.Corps.*
+import de.gleex.pltcmd.model.elements.ElementKind.*
 import de.gleex.pltcmd.model.elements.Rung.*
 import de.gleex.pltcmd.model.elements.blueprint.*
 import de.gleex.pltcmd.model.elements.units.Units.*
@@ -53,14 +51,16 @@ object Elements {
         return all().entries.firstOrNull { it.value == blueprint }?.key
     }
 
+    // ######################
+    // Fighting corps
+    // ######################
+
     // ======================
     //      Infantry (INF)
     // ======================
 
     private val squadLead = Officer + Medic
     private val platoonLead = 2 * Officer + Medic + Radioman
-
-    // Fighting corps
 
     val rifleTeam =
             a(Fighting, Infantry, Fireteam) consistingOf 3 * Rifleman + Grenadier
@@ -86,19 +86,6 @@ object Elements {
     val antiAirSquad =
             a(Fighting, Infantry, Squad) consistingOf squadLead commanding 2 * antiAirTeam
 
-    val motorizedInfantryTeam =
-            a(Fighting, MotorizedInfantry, Fireteam) consistingOf 3 * Rifleman + Grenadier
-
-    val motorizedTransportSquad =
-            a(Fighting, MotorizedInfantry, Squad) consistingOf 1 * TransportTruck + Officer
-
-    val motorizedInfantrySquad =
-            // TODO: Add something like rifleSquad.withKind(MotirizedInfantry) to reuse existing blueprints
-            a(Fighting, MotorizedInfantry, Squad) consistingOf squadLead commanding 2 * motorizedInfantryTeam
-
-    val motorizedInfantryPlatoon =
-            a(Fighting, MotorizedInfantry, Platoon) consistingOf platoonLead commanding 3 * motorizedInfantrySquad + motorizedTransportSquad
-
     /**
      * This is just the commanding element of a platoon without subordinates. "An empty platoon".
      */
@@ -117,7 +104,30 @@ object Elements {
     val heavyInfantryPlatoonAA =
             fightingInfantryPlatoonCommand commanding rifleSquad + 2 * antiAirSquad
 
+    // ======================
+    //      Motorized INF (MOT)
+    // ======================
+
+    val motorizedInfantryTeam =
+            a(Fighting, MotorizedInfantry, Fireteam) consistingOf 3 * Rifleman + Grenadier
+
+    val motorizedTransportSquad =
+            a(Fighting, MotorizedInfantry, Squad) consistingOf 1 * TransportTruck + Officer
+
+    val motorizedInfantrySquad =
+            // TODO: Add something like rifleSquad.withKind(MotirizedInfantry) to reuse existing blueprints
+            a(Fighting, MotorizedInfantry, Squad) consistingOf squadLead commanding 2 * motorizedInfantryTeam
+
+    val motorizedInfantryPlatoon =
+            a(Fighting, MotorizedInfantry, Platoon) consistingOf platoonLead commanding 3 * motorizedInfantrySquad + motorizedTransportSquad
+
+    // ######################
     // Logistics corps
+    // ######################
+
+    // ======================
+    //      Infantry (INF)
+    // ======================
 
     val engineerTeam =
             a(Logistics, Infantry, Fireteam) consistingOf Rifleman + 2 * CombatEngineer + Grenadier
@@ -140,4 +150,25 @@ object Elements {
 
     val transportTruckPlatoon =
             a(Logistics, MotorizedInfantry, Platoon) consistingOf platoonLead commanding 3 * transportTruckSquad
+
+    // ======================
+    //      Aerial (AIR)
+    // ======================
+
+    val transportHelicopterSquad =
+            a(Logistics, Aerial, Squad) consistingOf 2 * HelicopterTransport commanding emptyList()
+
+    val transportHelicopterPlatoon =
+            a(Logistics, Aerial, Platoon) consistingOf HelicopterHMG commanding 3 * transportHelicopterSquad
+
+    // ######################
+    // Recon corps
+    // ######################
+
+    // ======================
+    //      Aerial (AIR)
+    // ======================
+
+    val reconPlane =
+            a(Reconnaissance, Aerial, Fireteam) consistingOf ScoutPlane commanding emptyList()
 }
