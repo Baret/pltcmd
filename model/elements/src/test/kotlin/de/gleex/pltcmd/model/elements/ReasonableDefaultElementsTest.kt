@@ -33,9 +33,9 @@ class ReasonableDefaultElementsTest : WordSpec() {
         val infantrySquadSize = 8 to 12
         val infantryPlatoonSize = 30 to 50
 
-        "The list of ${Elements.all().size} default elements" should {
-            "be listed here" {
-                val allElements = Elements.all()
+        val allElements = Elements.all()
+        "The list of ${allElements.size} default elements" should {
+            "result in valid instances" {
                 log.info("The ${allElements.size} default elements (trying to instantiate each):")
                 allElements
                         .forEach { entry ->
@@ -44,7 +44,7 @@ class ReasonableDefaultElementsTest : WordSpec() {
                             log.info("\t\t$blueprint")
                             if (blueprint is CommandingElementBlueprint) {
                                 blueprint.subordinates.forEach { sub ->
-                                    log.info("\t\t${0x251C.toChar()} ${Elements.nameOf(sub)}")
+                                    log.info("\t\t├ ${Elements.nameOf(sub)}")
                                 }
                             }
                             blueprint shouldBe instanceOf(CommandingElementBlueprint::class).or(instanceOf(ElementBlueprint::class))
