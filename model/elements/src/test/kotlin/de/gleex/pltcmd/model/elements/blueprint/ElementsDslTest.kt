@@ -1,7 +1,11 @@
 package de.gleex.pltcmd.model.elements.blueprint
 
-import de.gleex.pltcmd.model.elements.*
-import de.gleex.pltcmd.model.elements.units.Units
+import de.gleex.pltcmd.model.elements.CommandingElement
+import de.gleex.pltcmd.model.elements.Corps.*
+import de.gleex.pltcmd.model.elements.Element
+import de.gleex.pltcmd.model.elements.ElementKind.*
+import de.gleex.pltcmd.model.elements.Rung.*
+import de.gleex.pltcmd.model.elements.units.Units.*
 import de.gleex.pltcmd.model.elements.units.times
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.blocking.forAll
@@ -15,40 +19,54 @@ class ElementsDslTest : StringSpec({
     "Building an element with the DSL should result in the correct element blueprint" {
         forAll(
                 row(
-                        a(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam) consistingOf listOf(Units.Rifleman),
-                        ElementBlueprint(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, listOf(Units.Rifleman))),
+                        a(Fighting, Infantry, Fireteam) consistingOf listOf(Rifleman),
+                        ElementBlueprint(Fighting, Infantry, Fireteam, listOf(Rifleman))),
                 row(
-                        a(Corps.CombatSupport, ElementKind.MotorizedInfantry, Rung.Battalion) consistingOf listOf(Units.TransportTruck),
-                        ElementBlueprint(Corps.CombatSupport, ElementKind.MotorizedInfantry, Rung.Battalion, listOf(Units.TransportTruck))),
+                        a(CombatSupport, MotorizedInfantry, Battalion) consistingOf listOf(TransportTruck),
+                        ElementBlueprint(CombatSupport, MotorizedInfantry, Battalion, listOf(TransportTruck))),
                 row(
-                        a(Corps.Logistics, ElementKind.Aerial, Rung.Squad) consistingOf listOf(Units.HelicopterHeavyLift),
-                        ElementBlueprint(Corps.Logistics, ElementKind.Aerial, Rung.Squad, listOf(Units.HelicopterHeavyLift))),
+                        a(Logistics, Aerial, Squad) consistingOf listOf(HelicopterHeavyLift),
+                        ElementBlueprint(Logistics, Aerial, Squad, listOf(HelicopterHeavyLift))),
                 row(
-                        a(Corps.Reconnaissance, ElementKind.Armored, Rung.Platoon) consistingOf listOf(Units.LightTank),
-                        ElementBlueprint(Corps.Reconnaissance, ElementKind.Armored, Rung.Platoon, listOf(Units.LightTank)))
+                        a(Reconnaissance, Armored, Platoon) consistingOf listOf(LightTank),
+                        ElementBlueprint(Reconnaissance, Armored, Platoon, listOf(LightTank)))
         ) { createdBlueprint: ElementBlueprint, expectedBlueprint: ElementBlueprint ->
             createdBlueprint shouldBe expectedBlueprint
         }
     }
 
     "Building a commanding element with the DSL should result in the correct element blueprint" {
+        val heavyLiftSquad = a(Logistics, Aerial, Squad) consistingOf HelicopterHeavyLift
+        val airSupportSquad = a(Logistics, Aerial, Squad) consistingOf 2 * HelicopterHMG
         forAll(
                 row(
-                        a(Corps.Fighting, ElementKind.Infantry, Rung.Squad) consistingOf listOf(Units.Rifleman) commanding listOf(a(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam) consistingOf listOf(Units.Rifleman)),
-                        CommandingElementBlueprint(Corps.Fighting, ElementKind.Infantry, Rung.Squad, listOf(Units.Rifleman), listOf(ElementBlueprint(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, listOf(Units.Rifleman)))))
+                        a(Fighting, Infantry, Squad) consistingOf listOf(Rifleman) commanding listOf(a(Fighting, Infantry, Fireteam) consistingOf listOf(Rifleman)),
+                        CommandingElementBlueprint(Fighting, Infantry, Squad, listOf(Rifleman), listOf(ElementBlueprint(Fighting, Infantry, Fireteam, listOf(Rifleman))))),
+                row(
+                        a(Logistics, Aerial, Platoon) consistingOf listOf(HelicopterTransport) commanding listOf(),
+                        CommandingElementBlueprint(Logistics, Aerial, Platoon, listOf(HelicopterTransport), listOf())),
+                row(
+                        a(Logistics, Aerial, Platoon) consistingOf HelicopterTransport commanding 2 * heavyLiftSquad + airSupportSquad,
+                        CommandingElementBlueprint(Logistics, Aerial, Platoon,
+                                listOf(HelicopterTransport),
+                                listOf(
+                                        ElementBlueprint(Logistics, Aerial, Squad, listOf(HelicopterHeavyLift)),
+                                        ElementBlueprint(Logistics, Aerial, Squad, listOf(HelicopterHeavyLift)),
+                                        ElementBlueprint(Logistics, Aerial, Squad, listOf(HelicopterHMG, HelicopterHMG))
+                                )))
         ) { createdBlueprint: CommandingElementBlueprint, expectedBlueprint: CommandingElementBlueprint ->
             createdBlueprint shouldBe expectedBlueprint
         }
     }
 
-    val blueprint = a(Corps.CombatSupport, ElementKind.Armored, Rung.Battalion) consistingOf 5 * Units.MainBattleTank
+    val blueprint = a(CombatSupport, Armored, Battalion) consistingOf 5 * MainBattleTank
     "An ${ElementBlueprint::class.simpleName} should create an ${Element::class.simpleName}" {
         blueprint should beInstanceOf(ElementBlueprint::class)
         blueprint.new() should beInstanceOf(Element::class)
     }
 
     "A ${CommandingElementBlueprint::class.simpleName} should create a ${CommandingElement::class.simpleName}" {
-        val commandingBlueprint = blueprint commanding 2 * (a(Corps.CombatSupport, ElementKind.Armored, Rung.Platoon) consistingOf 3 * Units.LightTank)
+        val commandingBlueprint = blueprint commanding 2 * (a(CombatSupport, Armored, Platoon) consistingOf 3 * LightTank)
         commandingBlueprint should beInstanceOf(CommandingElementBlueprint::class)
         val commandingElement = commandingBlueprint.new()
         commandingElement should beInstanceOf(CommandingElement::class)
