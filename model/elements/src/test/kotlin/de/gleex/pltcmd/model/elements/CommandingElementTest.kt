@@ -9,10 +9,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forNone
-import io.kotest.matchers.collections.beEmpty
-import io.kotest.matchers.collections.shouldContainAll
-import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.collections.*
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import org.hexworks.cobalt.datatypes.Maybe
@@ -190,10 +187,10 @@ class CommandingElementTest : WordSpec() {
      */
     private fun checkSubordination(commandingElement: CommandingElement, subElementToAdd: Element) {
         log.info("Checking if (1) can be added to (2)\n(1) $subElementToAdd\n(2) $commandingElement")
-        val subElementCountBefore = commandingElement.subordinates.size
+        commandingElement.subordinates shouldNotContain subElementToAdd
         subElementToAdd canBeSubordinateOf commandingElement shouldBe true
         commandingElement.addElement(subElementToAdd) shouldBe true
-        commandingElement.subordinates shouldHaveSize subElementCountBefore + 1
+        commandingElement.subordinates shouldContain subElementToAdd
     }
 
     /**
