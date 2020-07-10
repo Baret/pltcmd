@@ -48,14 +48,7 @@ class CommandingElementBlueprintTest : ShouldSpec() {
                             squad.subordinates
                                     .forEachIndexed { i, fireteam ->
                                         context("Fireteam ($i)") {
-                                            should("should only have unit blueprints, no units") {
-                                                (fireteam as ElementBlueprint).units.forAll {
-                                                    it should beInstanceOf<Units>()
-                                                }
-                                                fireteam.units.forNone {
-                                                    it should beInstanceOf<Unit>()
-                                                }
-                                            }
+                                            assertUnits(fireteam)
                                         }
                                     }
                         }
@@ -63,8 +56,8 @@ class CommandingElementBlueprintTest : ShouldSpec() {
         }
     }
 
-    private suspend fun ContextScope.assertUnits(commandingElementBlueprint: CommandingElementBlueprint) {
-        should("only contain unit blueprints, no units") {
+    private suspend fun ContextScope.assertUnits(commandingElementBlueprint: AbstractElementBlueprint<*>) {
+        should("should only contain unit blueprints, no units") {
             commandingElementBlueprint.units.forAll {
                 it should beInstanceOf<Units>()
             }
