@@ -42,14 +42,9 @@ class CommandingElementTest : WordSpec() {
                 }
             }
 
-            val validCorps = commandingElement.corps
             "allow adding elements of the same corps when it is of corps ${commandingElement.corps} itself" {
-                val subElement = buildSubElement(corps = validCorps)
+                val subElement = buildSubElement(corps = commandingElement.corps)
                 checkSubordination(commandingElement, subElement)
-            }
-
-            "have been checked against all ${Corps.values().size} corps" {
-                invalidCorps + validCorps shouldHaveSize Corps.values().size
             }
 
             commandingElement = buildCommandingElement()
@@ -62,17 +57,9 @@ class CommandingElementTest : WordSpec() {
                 }
             }
 
-            val validKinds = ElementKind.values()
-                    .filter { it == commandingElement.kind }
-            "allow adding elements of kind $validKinds when it is of kind ${commandingElement.kind} itself" {
-                validKinds.forAll {
-                    val subElement = buildSubElement(kind = it)
-                    checkSubordination(commandingElement, subElement)
-                }
-            }
-
-            "have been checked against all ${ElementKind.values().size} kinds" {
-                invalidKinds + validKinds shouldHaveSize ElementKind.values().size
+            "allow adding elements of the same kind when it is of kind ${commandingElement.kind} itself" {
+                val subElement = buildSubElement(kind = commandingElement.kind)
+                checkSubordination(commandingElement, subElement)
             }
 
             commandingElement = buildCommandingElement()
@@ -202,8 +189,7 @@ class CommandingElementTest : WordSpec() {
      * Asserts that [subElementToAdd] can be added to [commandingElement].
      */
     private fun checkSubordination(commandingElement: CommandingElement, subElementToAdd: Element) {
-        log.info("Checking if \t\t$subElementToAdd")
-        log.info("can be added to \t$commandingElement")
+        log.info("Checking if (1) can be added to (2)\n(1) $subElementToAdd\n(2) $commandingElement")
         val subElementCountBefore = commandingElement.subordinates.size
         subElementToAdd canBeSubordinateOf commandingElement shouldBe true
         commandingElement.addElement(subElementToAdd) shouldBe true
