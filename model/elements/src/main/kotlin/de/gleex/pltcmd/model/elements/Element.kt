@@ -22,6 +22,7 @@ open class Element(
         units: Set<Unit>,
         initialSuperOrdinate: Maybe<CommandingElement> = Maybe.empty()
 ) {
+
     /**
      * Unique ID of this element used to identify it, for example in [equals].
      */
@@ -39,6 +40,12 @@ open class Element(
      * All [Unit]s forming this element.
      */
     val units: Set<Unit> = _units
+
+    /**
+     * The total number of soldiers making up this element (all [Unit.personnel] summed up).
+     */
+    open val totalSoldiers
+            get() = units.sumBy { it.personnel }
 
     private var _superordinate: Property<Maybe<CommandingElement>> =
             initialSuperOrdinate.toProperty { newValue ->

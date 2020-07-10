@@ -73,10 +73,7 @@ class CommandingElement(
     val totalUnits: Int
         get() = allUnits.size
 
-    /**
-     * The total number of soldiers making up this element (all [Unit.personnel] summed up).
-     */
-    val totalSoldiers: Int
+    override val totalSoldiers: Int
         get() = allUnits.sumBy { it.personnel }
 
     /**

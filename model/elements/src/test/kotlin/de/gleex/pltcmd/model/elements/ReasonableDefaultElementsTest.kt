@@ -81,12 +81,7 @@ class ReasonableDefaultElementsTest : WordSpec() {
             "Soldier count: The default ${Elements.nameOf(elementBlueprint)}" should {
                 "have between $min and $max soldiers" {
                     val newElement = elementBlueprint.new()
-                    val soldierCount = if (newElement is CommandingElement) {
-                        newElement.totalSoldiers
-                    } else {
-                        newElement.units.sumBy { it.personnel }
-                    }
-                    soldierCount.shouldBeBetween(min, max)
+                    newElement.totalSoldiers.shouldBeBetween(min, max)
                 }
             }
         }
