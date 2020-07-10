@@ -6,19 +6,22 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forExactly
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 
 class ElementTest : WordSpec({
 
+    val officer = Units.Officer.new()
     val rifleman = Units.Rifleman.new()
-    val simpleElement = Element(Corps.Reconnaissance, ElementKind.MotorizedInfantry, Rung.Fireteam, setOf(Units.Officer.new(), rifleman, rifleman))
+    val simpleElement = Element(Corps.Reconnaissance, ElementKind.MotorizedInfantry, Rung.Fireteam, setOf(officer, rifleman))
     "A simple element $simpleElement" should {
         "contain 2 units" {
             simpleElement.units shouldHaveSize 2
             simpleElement.units.forExactly(1) { it.blueprint shouldBe Units.Officer }
             simpleElement.units.forExactly(1) { it.blueprint shouldBe Units.Rifleman }
+            simpleElement.units shouldContainExactlyInAnyOrder setOf(officer, rifleman)
         }
         val newUnit = Units.RadioJeep.new()
         "have 3 units when adding a $newUnit" {
