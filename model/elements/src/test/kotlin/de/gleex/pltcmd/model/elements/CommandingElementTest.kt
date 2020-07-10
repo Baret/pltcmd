@@ -125,7 +125,10 @@ class CommandingElementTest : WordSpec() {
                         val sub1 = buildSubElement()
                         val sub2 = buildSubElement()
                         val bothSubs = setOf(sub1, sub2)
-                        val ce = CommandingElement(defaultCorps, defaultElementKind, Rung.Platoon, (2 * Units.Radioman).new(), bothSubs)
+                        val ce = buildCommandingElement()
+                        bothSubs.forEach {
+                            ce.addElement(it)
+                        }
 
                         ce.subordinates shouldContainExactly bothSubs
                         bothSubs.forAll {
