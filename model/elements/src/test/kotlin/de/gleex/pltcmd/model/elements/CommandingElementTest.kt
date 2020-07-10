@@ -115,8 +115,7 @@ class CommandingElementTest : WordSpec() {
                         ce.addElement(sub2) shouldBe true
                         ce.addElement(sub3) shouldBe true
 
-                        ce.subordinates shouldContainAll allSubs
-                        ce.subordinates shouldHaveSize 3
+                        ce.subordinates shouldContainExactly allSubs
                         allSubs.forAll {
                             it.superordinate shouldContainValue ce
                         }
