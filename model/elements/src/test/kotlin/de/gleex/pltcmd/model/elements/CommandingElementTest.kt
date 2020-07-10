@@ -26,9 +26,8 @@ class CommandingElementTest : WordSpec() {
     }
 
     init {
-        "A commanding element" should {
-
-            var commandingElement = buildCommandingElement()
+        "The corps of a commanding element" should {
+            val commandingElement = buildCommandingElement()
 
             val invalidCorps = Corps.values()
                     .filter { it != commandingElement.corps }
@@ -43,8 +42,11 @@ class CommandingElementTest : WordSpec() {
                 val subElement = buildSubElement(corps = commandingElement.corps)
                 checkSubordination(commandingElement, subElement)
             }
+        }
 
-            commandingElement = buildCommandingElement()
+        "The element kind of a commanding element" should {
+            val commandingElement = buildCommandingElement()
+
             val invalidKinds = ElementKind.values()
                     .filter { it != commandingElement.kind }
             "NOT allow adding elements of kind $invalidKinds when it is of kind ${commandingElement.kind} itself" {
@@ -58,8 +60,11 @@ class CommandingElementTest : WordSpec() {
                 val subElement = buildSubElement(kind = commandingElement.kind)
                 checkSubordination(commandingElement, subElement)
             }
+        }
 
-            commandingElement = buildCommandingElement()
+        "The rung of a subordinate" should {
+            val commandingElement = buildCommandingElement()
+
             val invalidRungs = Rung.values()
                     .filter { it >= commandingElement.rung }
             "NOT allow adding elements of rung $invalidRungs when it is of rung ${commandingElement.rung} itself (only smaller rungs allowed)" {
@@ -83,103 +88,106 @@ class CommandingElementTest : WordSpec() {
             }
         }
 
-        "Regarding subordinates, a commanding element" should {
+        "Regarding subordinates, a commanding element" should
+                {
 
-            "return true for an element that is being added twice" {
-                val ce = buildCommandingElement()
-                val sub = buildSubElement()
-                ce.addElement(sub) shouldBe true
-                ce.addElement(sub) shouldBe true
-            }
+                    "return true for an element that is being added twice" {
+                        val ce = buildCommandingElement()
+                        val sub = buildSubElement()
+                        ce.addElement(sub) shouldBe true
+                        ce.addElement(sub) shouldBe true
+                    }
 
-            "set itself as superordinate in all subordinates" {
-                // create new CE, check all subs
-                val ce = buildCommandingElement()
-                val sub1 = buildSubElement()
-                val sub2 = buildSubElement()
-                val sub3 = buildSubElement()
-                val allSubs = setOf(sub1, sub2, sub3)
+                    "set itself as superordinate in all subordinates" {
+                        // create new CE, check all subs
+                        val ce = buildCommandingElement()
+                        val sub1 = buildSubElement()
+                        val sub2 = buildSubElement()
+                        val sub3 = buildSubElement()
+                        val allSubs = setOf(sub1, sub2, sub3)
 
-                ce.subordinates should beEmpty()
-                allSubs.forAll {
-                    it.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                        ce.subordinates should beEmpty()
+                        allSubs.forAll {
+                            it.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                        }
+
+                        ce.addElement(sub1) shouldBe true
+                        ce.addElement(sub2) shouldBe true
+                        ce.addElement(sub3) shouldBe true
+
+                        ce.subordinates shouldContainAll allSubs
+                        ce.subordinates shouldHaveSize 3
+                        allSubs.forAll {
+                            it.superordinate shouldContainValue ce
+                        }
+                    }
+
+                    "be removed from its subordinate when removeElement() is called" {
+                        val sub1 = buildSubElement()
+                        val sub2 = buildSubElement()
+                        val bothSubs = setOf(sub1, sub2)
+                        val ce = CommandingElement(defaultCorps, defaultElementKind, Rung.Platoon, (2 * Units.Radioman).new(), bothSubs)
+
+                        ce.subordinates shouldContainExactly bothSubs
+                        bothSubs.forAll {
+                            it.superordinate shouldContainValue ce
+                        }
+
+                        ce.removeElement(sub1)
+
+                        ce.subordinates shouldContainExactly setOf(sub2)
+                        sub1.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                        sub2.superordinate shouldContainValue ce
+                    }
                 }
 
-                ce.addElement(sub1) shouldBe true
-                ce.addElement(sub2) shouldBe true
-                ce.addElement(sub3) shouldBe true
+        "When moving an element from one superordinate to another, all elements" should
+                {
+                    "stay consistent" {
+                        val super1 = buildCommandingElement()
+                        val super2 = buildCommandingElement()
+                        val sub = buildSubElement()
 
-                ce.subordinates shouldContainAll allSubs
-                ce.subordinates shouldHaveSize 3
-                allSubs.forAll {
-                    it.superordinate shouldContainValue ce
-                }
-            }
+                        log.info("All three elements should be 'empty'")
 
-            "be removed from its subordinate when removeElement() is called" {
-                val sub1 = buildSubElement()
-                val sub2 = buildSubElement()
-                val bothSubs = setOf(sub1, sub2)
-                val ce = CommandingElement(defaultCorps, defaultElementKind, Rung.Platoon, (2 * Units.Radioman).new(), bothSubs)
+                        assertSoftly {
+                            super1.subordinates should beEmpty()
+                            super2.subordinates should beEmpty()
+                            sub.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                        }
 
-                ce.subordinates shouldContainExactly bothSubs
-                bothSubs.forAll {
-                    it.superordinate shouldContainValue ce
-                }
+                        super1.addElement(sub)
 
-                ce.removeElement(sub1)
+                        log.info("Subordinate should be in super1")
 
-                ce.subordinates shouldContainExactly setOf(sub2)
-                sub1.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
-                sub2.superordinate shouldContainValue ce
-            }
-        }
+                        assertSoftly {
+                            super1.subordinates shouldContainExactly setOf(sub)
+                            super2.subordinates should beEmpty()
+                            sub.superordinate shouldContainValue super1
+                        }
 
-        "When moving an element from one superordinate to another, all elements" should {
-            "stay consistent" {
-                val super1 = buildCommandingElement()
-                val super2 = buildCommandingElement()
-                val sub = buildSubElement()
+                        super2.addElement(sub)
 
-                log.info("All three elements should be 'empty'")
+                        log.info("Subordinate should now be in super2 while super1 is empty again")
 
-                assertSoftly {
-                    super1.subordinates should beEmpty()
-                    super2.subordinates should beEmpty()
-                    sub.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                        assertSoftly {
+                            super1.subordinates should beEmpty()
+                            super2.subordinates shouldContainExactly setOf(sub)
+                            sub.superordinate shouldContainValue super2
+                        }
+                    }
                 }
 
-                super1.addElement(sub)
-
-                log.info("Subordinate should be in super1")
-
-                assertSoftly {
-                    super1.subordinates shouldContainExactly setOf(sub)
-                    super2.subordinates should beEmpty()
-                    sub.superordinate shouldContainValue super1
+        "The superordinate of a commanding element" should
+                {
+                    "not be itself (this)" {
+                        val commandingElement = buildCommandingElement()
+                        shouldThrow<IllegalArgumentException> {
+                            commandingElement.superordinate = Maybe.of(commandingElement)
+                            Any()
+                        }
+                    }
                 }
-
-                super2.addElement(sub)
-
-                log.info("Subordinate should now be in super2 while super1 is empty again")
-
-                assertSoftly {
-                    super1.subordinates should beEmpty()
-                    super2.subordinates shouldContainExactly setOf(sub)
-                    sub.superordinate shouldContainValue super2
-                }
-            }
-        }
-
-        "The superordinate of a commanding element" should {
-            "not be itself (this)" {
-                val commandingElement = buildCommandingElement()
-                shouldThrow<IllegalArgumentException> {
-                    commandingElement.superordinate = Maybe.of(commandingElement)
-                    Any()
-                }
-            }
-        }
     }
 
     /**
