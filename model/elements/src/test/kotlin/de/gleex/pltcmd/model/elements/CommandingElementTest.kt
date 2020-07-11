@@ -143,42 +143,44 @@ class CommandingElementTest : WordSpec() {
                     }
                 }
 
-        "When moving an element from one superordinate to another, all elements" should
-                {
-                    "stay consistent" {
-                        val super1 = buildCommandingElement()
-                        val super2 = buildCommandingElement()
-                        val sub = buildSubElement()
+        "When moving an element from one superordinate to another, all elements should stay consistent" When {
+            val super1 = buildCommandingElement()
+            val super2 = buildCommandingElement()
+            val sub = buildSubElement()
 
-                        log.info("All three elements should be 'empty'")
-
-                        assertSoftly {
-                            super1.subordinates should beEmpty()
-                            super2.subordinates should beEmpty()
-                            sub.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
-                        }
-
-                        super1.addElement(sub)
-
-                        log.info("Subordinate should be in super1")
-
-                        assertSoftly {
-                            super1.subordinates shouldContainExactly setOf(sub)
-                            super2.subordinates should beEmpty()
-                            sub.superordinate shouldContainValue super1
-                        }
-
-                        super2.addElement(sub)
-
-                        log.info("Subordinate should now be in super2 while super1 is empty again")
-
-                        assertSoftly {
-                            super1.subordinates should beEmpty()
-                            super2.subordinates shouldContainExactly setOf(sub)
-                            sub.superordinate shouldContainValue super2
-                        }
+            "created all three elements" should {
+                "be 'empty'" {
+                    assertSoftly {
+                        super1.subordinates should beEmpty()
+                        super2.subordinates should beEmpty()
+                        sub.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
                     }
                 }
+            }
+
+            super1.addElement(sub)
+
+            "added to first commanding element subordinate" should {
+                "be in super1" {
+                    assertSoftly {
+                        super1.subordinates shouldContainExactly setOf(sub)
+                        super2.subordinates should beEmpty()
+                        sub.superordinate shouldContainValue super1
+                    }
+                }
+            }
+
+            super2.addElement(sub)
+            "added to second commanding element subordinate" should {
+                "now be in super2 while super1 is empty again" {
+                    assertSoftly {
+                        super1.subordinates should beEmpty()
+                        super2.subordinates shouldContainExactly setOf(sub)
+                        sub.superordinate shouldContainValue super2
+                    }
+                }
+            }
+        }
 
         "The superordinate of a commanding element" should
                 {
