@@ -108,7 +108,7 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
         if (event.isReceivedAt(radioLocation)) {
             // decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
             val (strength, receivedTransmission) = event.receivedAt(radioLocation)
-            log.debug("$callSign received with strength $strength the transmission ${receivedTransmission.message}")
+            //log.debug("$callSign received with strength $strength the transmission ${receivedTransmission.message}")
             if (strength.isAny() && receivedTransmission.isSentBySomeoneElse()) {
                 if (receivedTransmission.isForMe()) {
                     respondTo(receivedTransmission)
