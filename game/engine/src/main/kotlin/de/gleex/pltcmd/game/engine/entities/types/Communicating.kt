@@ -16,19 +16,22 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  */
 
 /** Type marker for entities that have the [RadioAttribute] */
-interface Communicatable : EntityType
-typealias CommunicatableEntity = GameEntity<Communicatable>
+interface Communicating : EntityType
+typealias CommunicatingEntity = GameEntity<Communicating>
 
-private val log = LoggerFactory.getLogger(Communicatable::class)
+private val log = LoggerFactory.getLogger(Communicating::class)
 
-internal val CommunicatableEntity.communicator: RadioCommunicator
+internal val CommunicatingEntity.communicator: RadioCommunicator
     get() = getAttribute(RadioAttribute::class).communicator
 
 /** TODO is visible as a debug feature for the test UI, might be removed later */
-val CommunicatableEntity.inConversationWith: ObservableValue<Maybe<CallSign>>
+val CommunicatingEntity.inConversationWith: ObservableValue<Maybe<CallSign>>
     get() = communicator.inConversationWith
 
-internal fun CommunicatableEntity.startConversation(conversation: Conversation) {
+/**
+ * Queues the given conversation.
+ */
+internal fun CommunicatingEntity.startConversation(conversation: Conversation) {
     log.debug("${(this as ElementEntity).callsign} starting conversation $conversation")
     communicator.queueConversation(conversation)
 }

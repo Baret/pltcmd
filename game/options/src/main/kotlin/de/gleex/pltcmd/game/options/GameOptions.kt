@@ -24,6 +24,15 @@ object GameOptions {
      */
     const val DEBUG_MAP_SEED: Long = 5488540751658L
 
+    const val USE_DEBUG_MAP_SEED: Boolean = true
+
+    val MAP_SEED: Long =
+            if (USE_DEBUG_MAP_SEED) {
+                DEBUG_MAP_SEED
+            } else {
+                System.currentTimeMillis()
+            }
+
     /**
      * The origin of the map. In other words the world map's bottom left corner is this coordinate.
      */

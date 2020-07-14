@@ -154,7 +154,7 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
         if (order.isPresent) {
             // delegate to the game entity's logic to execute actual commands
             val orderedTo = transmission.location
-            radioContext.executeOrder(order.get(), orderedTo)
+            radioContext.executeOrder(order.get(), transmission.sender, orderedTo)
             sender.send(transmission.positiveAnswer)
         } else {
             sender.send(transmission.negativeAnswer)

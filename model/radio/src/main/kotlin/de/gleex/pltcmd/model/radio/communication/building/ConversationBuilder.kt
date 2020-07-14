@@ -55,10 +55,29 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         }
     }
 
-    fun request(message: String, responseSupplier: () -> Transmission): TransmissionWithResponse {
-        return transmissionWithResponse(message, responseSupplier)
+    /**
+     * A request is a transmission from the sender to the receiver expecting a response.
+     *
+     * Answers of the receivers may be created with [response].
+     *
+     * @return a [TransmissionWithResponse]
+     */
+    fun request(message: String, vararg placeholderValueProviders: TransmissionContext.() -> Any?, responseSupplier: () -> Transmission): TransmissionWithResponse {
+        return transmissionWithResponse(
+                message = message,
+                responseSupplier = responseSupplier,
+                toReceiver = true,
+                placeholderValueProviders = *placeholderValueProviders
+        )
     }
 
+    /**
+     * A response is an answer of the receiver back to the sender expecting another message.
+     *
+     * Basically this is a [request] but in the other direction.
+     *
+     * @return a [TransmissionWithResponse]
+     */
     fun response(message: String, nextTransmission: () -> Transmission): TransmissionWithResponse {
         return transmissionWithResponse(message, nextTransmission, false)
     }
@@ -83,9 +102,9 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
 
     private fun negative() = terminatingResponse("negative")
 
-    private fun transmissionWithResponse(message: String, responseSupplier: () -> Transmission, toReceiver: Boolean = true): TransmissionWithResponse {
+    private fun transmissionWithResponse(message: String, responseSupplier: () -> Transmission, toReceiver: Boolean = true, vararg placeholderValueProviders: TransmissionContext.() -> Any?): TransmissionWithResponse {
         val response = responseSupplier.invoke()
-        return TransmissionWithResponse(message.asTransmission(toReceiver), response)
+        return TransmissionWithResponse(message.asTransmission(toReceiver), response, placeholderValueProviders.asList())
     }
 
     /**

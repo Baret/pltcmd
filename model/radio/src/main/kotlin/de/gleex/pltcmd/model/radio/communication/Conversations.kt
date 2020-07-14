@@ -70,6 +70,17 @@ object Conversations {
                 }
     }
 
+    object Messages {
+        fun destinationReached(sender: CallSign, receiver: CallSign) =
+                conversation(sender, receiver) {
+                    establishComms {
+                        request("we have reached our destination. We are at %s", TransmissionContext::position) {
+                            terminatingResponse("copy that")
+                        }
+                    }
+                }
+    }
+
     /**
      * This category contains all conversations that are neither orders nor reports.
      */

@@ -30,8 +30,8 @@ object EntityFactory {
                         // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter
                         RadioAttribute(RadioCommunicator(element.callSign, radioSender))
                 )
-                behaviors(Moving, Communicating)
-                facets(IntentPursuing, SetDestination, ExecuteOrder, ConversationSender)
+                behaviors(IntentPursuing, Moving, Communicating)
+                facets(SetDestination, ExecuteOrder, ConversationSender)
             })
 
     fun newWanderingElement(element: Element, initialPosition: Property<Coordinate>, affiliation: Affiliation = Affiliation.Unknown, radioSender: RadioSender): ElementEntity =

@@ -37,7 +37,7 @@ fun main() {
         // ui
         val gameWorld = GameWorld(generatedMap)
         // model
-        val game = Game(Engine.default(), generatedMap, Random(GameOptions.DEBUG_MAP_SEED))
+        val game = Game(Engine.default(), generatedMap, Random(GameOptions.MAP_SEED))
 
         val elementsToCommand = mutableListOf<ElementEntity>()
         val visibleSector = generatedMap.sectors.first {
@@ -88,8 +88,7 @@ private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (World
     screen.dock(generatingView)
 
     val mapGenerator = WorldMapGenerator(
-            //GameOptions.DEBUG_MAP_SEED,
-            System.currentTimeMillis(),
+            GameOptions.MAP_SEED,
             worldWidthInTiles,
             worldHeightInTiles
     )

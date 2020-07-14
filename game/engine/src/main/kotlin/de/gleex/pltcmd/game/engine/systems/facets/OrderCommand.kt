@@ -3,15 +3,20 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
-import de.gleex.pltcmd.game.engine.attributes.goals.ReachDestination
+import de.gleex.pltcmd.game.engine.attributes.goals.MoveToGoal
+import de.gleex.pltcmd.game.engine.attributes.goals.PatrolAreaGoal
+import de.gleex.pltcmd.game.engine.attributes.goals.RadioGoal
 import de.gleex.pltcmd.game.engine.attributes.goals.andThen
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
+import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.commandersIntent
+import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.*
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.MoveTo
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Command
 import org.hexworks.amethyst.api.Consumed
@@ -23,6 +28,7 @@ import de.gleex.pltcmd.game.engine.systems.facets.MoveTo as MoveToCommand
 /** Command to give an element an order **/
 data class OrderCommand(
         val order: Conversations.Orders,
+        val orderedBy: CallSign,
         val orderedTo: Coordinate?,
         override val context: GameContext,
         override val source: ElementEntity
@@ -32,11 +38,14 @@ internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, C
     private val log = LoggerFactory.getLogger(ExecuteOrder::class)
 
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
-            command.responseWhenCommandIs(OrderCommand::class) { (order, orderedTo, context, entity) ->
+            command.responseWhenCommandIs(OrderCommand::class) { (order, orderedBy, orderedTo, context, entity) ->
                 runBlocking {
                     when (order) {
                         MoveTo -> {
-                            entity.commandersIntent.butNow(EngageEnemyAt()).andThen(ReachDestination(orderedTo!!).andThen(UnloadCargoGoal()).andThen(ReportGoal(Conversations.Reports.sitrep())))
+                            entity.commandersIntent.set(
+                                    MoveToGoal(orderedTo!!)
+                                            .andThen(RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))
+                                            .andThen(PatrolAreaGoal(CoordinateRectangle(orderedTo.movedBy(-5, -5), 10, 10))))
                             Consumed
                         }//entity.executeCommand(MoveToCommand(orderedTo!!, context, entity))
                         // TODO just moving to the enemy might not be the best approach

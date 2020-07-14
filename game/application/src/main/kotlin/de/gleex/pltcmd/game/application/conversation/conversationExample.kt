@@ -55,7 +55,7 @@ fun main() {
             toSortedSet()
     val sector = Sector(origin, tiles)
     val map = WorldMap.create(setOf(sector))
-    val game = Game(Engine.default(), map, Random(GameOptions.DEBUG_MAP_SEED))
+    val game = Game(Engine.default(), map, Random(GameOptions.MAP_SEED))
     val context = game.context()
 
     globalEventBus.subscribeToBroadcasts { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
