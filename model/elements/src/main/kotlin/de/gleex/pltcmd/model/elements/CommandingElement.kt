@@ -6,8 +6,9 @@ import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**
- * A commanding element is in charge of other elements and represented in the command net by its [callSign] if it is not
- * currently a subordinate itself.
+ * A commanding element may be in charge of other elements and is represented on the command net by its [callSign].
+ *
+ * Just like a basic [Element] it may have a superordinate itself.
  */
 class CommandingElement(
         corps: Corps,
@@ -22,13 +23,10 @@ class CommandingElement(
                     .toProperty()
                     .apply {
                         onChange { (oldSet, newSet, _, _) ->
-                            if (oldSet.size > newSet.size) {
-                                // element(s) have been removed
-                                (oldSet - newSet).removeSuperordinates()
-                            } else {
-                                // element(s) have been added
-                                (newSet - oldSet).setSelfAsSuperordinate()
-                            }
+                            // element(s) have been removed
+                            (oldSet - newSet).removeSuperordinates()
+                            // element(s) have been added
+                            (newSet - oldSet).setSelfAsSuperordinate()
                         }
                     }
 
@@ -40,7 +38,7 @@ class CommandingElement(
     var callSign: CallSign by callSignProvider
 
     override val description: String
-        get() = "${super.description} ${callSign}"
+        get() = "${super.description} $callSign"
 
     /**
      * The current subordinates this element is commanding.
@@ -123,10 +121,10 @@ class CommandingElement(
 
     private fun Collection<Element>.removeSuperordinates() {
         filter { it.superordinate.isPresent }
-        .filter { it.superordinate.get() == this@CommandingElement }
-        .forEach {
-            it.superordinate = Maybe.empty()
-        }
+                .filter { it.superordinate.get() == this@CommandingElement }
+                .forEach {
+                    it.superordinate = Maybe.empty()
+                }
     }
 
     private fun Collection<Element>.setSelfAsSuperordinate() {
