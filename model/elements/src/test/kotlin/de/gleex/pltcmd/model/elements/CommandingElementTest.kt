@@ -3,6 +3,7 @@ package de.gleex.pltcmd.model.elements
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.elements.units.times
+import de.gleex.pltcmd.util.tests.beEmptyMaybe
 import de.gleex.pltcmd.util.tests.shouldContainValue
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
@@ -108,7 +109,7 @@ class CommandingElementTest : WordSpec() {
 
                         ce.subordinates should beEmpty()
                         allSubs.forAll {
-                            it.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                            it.superordinate should beEmptyMaybe()
                         }
 
                         ce.addElement(sub1) shouldBe true
@@ -138,7 +139,7 @@ class CommandingElementTest : WordSpec() {
                         ce.removeElement(sub1)
 
                         ce.subordinates shouldContainExactly setOf(sub2)
-                        sub1.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                        sub1.superordinate should beEmptyMaybe()
                         sub2.superordinate shouldContainValue ce
                     }
                 }
@@ -154,7 +155,7 @@ class CommandingElementTest : WordSpec() {
                             assertSoftly {
                                 super1.subordinates should beEmpty()
                                 super2.subordinates should beEmpty()
-                                sub.superordinate should de.gleex.pltcmd.util.tests.beEmpty()
+                                sub.superordinate should beEmptyMaybe()
                             }
                         }
                     }

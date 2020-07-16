@@ -8,7 +8,8 @@ import org.hexworks.cobalt.datatypes.Maybe
 /**
  * A commanding element may be in charge of other elements and is represented on the command net by its [callSign].
  *
- * Just like a basic [Element] it may have a superordinate itself.
+ * Just like a basic [Element] it may have a superordinate itself which means it should no longer be addressed
+ * directly on the command net.
  */
 class CommandingElement(
         corps: Corps,
