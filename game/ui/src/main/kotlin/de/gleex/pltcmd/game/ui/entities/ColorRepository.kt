@@ -19,6 +19,9 @@ object ColorRepository {
     val FRIENDLY = TileColor.create(42, 42, 254)
     val FRIENDLY_TRANSPARENT = FRIENDLY.withAlpha(ALPHA_BG)
 
+    val HOSTILE = TileColor.create(251, 4, 33)
+    val HOSTILE_TRANSPARENT = HOSTILE.withAlpha(ALPHA_BG)
+
     val UNKNOWN = TileColor.create(245, 241, 132)
     val UNKNOWN_TRANSPARENT = UNKNOWN.withAlpha(ALPHA_BG)
 
@@ -27,6 +30,7 @@ object ColorRepository {
      */
     fun forAffiliation(affiliation: Affiliation) = when(affiliation) {
         Affiliation.Friendly -> FRIENDLY to FRIENDLY_TRANSPARENT
+        Affiliation.Hostile -> HOSTILE to HOSTILE_TRANSPARENT
         Affiliation.Self -> HQ to HQ_TRANSPARENT
         else -> UNKNOWN to UNKNOWN_TRANSPARENT
     }

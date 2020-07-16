@@ -56,7 +56,7 @@ fun main() {
         val elementsPerSector = 3
         generatedMap.sectors.forEach { sector ->
             repeat(elementsPerSector) {
-                game.addElementInSector(sector)?.
+                game.addElementInSector(sector, affiliation = Affiliation.Hostile)?.
                     let {
                             gameWorld.trackUnit(it)
                         }

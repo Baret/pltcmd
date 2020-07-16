@@ -2,6 +2,9 @@ package de.gleex.pltcmd.game.engine
 
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.ElementType
+import de.gleex.pltcmd.game.engine.entities.types.callsign
+import de.gleex.pltcmd.game.engine.entities.types.combatStats
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -19,6 +22,8 @@ import kotlin.random.Random
 
 data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random: Random) {
 
+    private val allElements: MutableSet<ElementEntity> = mutableSetOf()
+
     companion object {
         private val log = LoggerFactory.getLogger(Game::class)
     }
@@ -32,12 +37,29 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     /**
      * Creates a [GameContext] for the current tick.
      */
-    fun context(): GameContext = GameContext(Ticker.currentTick, world, random)
+    fun context(): GameContext = GameContext(Ticker.currentTick, world, allElements.toSet(), random)
 
     /**
      * Adds the given entity to the engine and returns it to make chained calls possible.
      */
-    fun <T : EntityType> addEntity(entity: GameEntity<T>) = entity.also { engine.addEntity(it) }
+    fun <T : EntityType> addEntity(entity: GameEntity<T>) = entity.also {
+        engine.addEntity(it)
+        if (it.type is ElementType) {
+            val element = it as ElementEntity
+            allElements.add(element)
+            removeOnDeath(element)
+        }
+    }
+
+    private fun removeOnDeath(element: ElementEntity) {
+        element.combatStats onDeath { removeElement(element) }
+    }
+
+    private fun removeElement(element: ElementEntity) {
+        log.debug("Removing element ${element.callsign} from game")
+        allElements.remove(element)
+        engine.removeEntity(element)
+    }
 
     /**
      * Adds a new element in the given sector and returns it.

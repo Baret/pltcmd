@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.attributes.*
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.systems.behaviours.Communicating
+import de.gleex.pltcmd.game.engine.systems.behaviours.Fighting
 import de.gleex.pltcmd.game.engine.systems.behaviours.Moving
 import de.gleex.pltcmd.game.engine.systems.behaviours.Wandering
 import de.gleex.pltcmd.game.engine.systems.facets.ConversationSender
@@ -28,9 +29,10 @@ object EntityFactory {
                         PositionAttribute(initialPosition),
                         DestinationAttribute(),
                         // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter
-                        RadioAttribute(RadioCommunicator(element.callSign, radioSender))
+                        RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
+                        CombatAttribute()
                 )
-                behaviors(IntentPursuing, Moving, Communicating)
+                behaviors(IntentPursuing, Moving, Communicating, Fighting)
                 facets(SetDestination, ExecuteOrder, ConversationSender)
             })
 

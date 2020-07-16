@@ -10,7 +10,7 @@ import de.gleex.pltcmd.model.elements.Element
 import org.hexworks.amethyst.api.base.BaseEntityType
 
 /** Represents an element in an army. */
-object ElementType : BaseEntityType("element", "A movable and communicating element."), Movable, Communicating
+object ElementType : BaseEntityType("element", "A movable and communicating element."), Movable, Communicating, Combatant
 typealias ElementEntity = GameEntity<ElementType>
 
 private val ElementEntity.element: Element
