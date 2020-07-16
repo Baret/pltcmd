@@ -8,6 +8,8 @@ import de.gleex.pltcmd.model.elements.units.Units
 /**
  * The start of an [ElementBlueprint]. It sets the basic values for the resulting element. After
  * these are set units can be added by calling [consistingOf] (possibly as infix function).
+ *
+ * @sample a
  */
 internal class ElementBlueprintStart(
         private val corps: Corps,
@@ -31,5 +33,4 @@ internal class ElementBlueprintStart(
  * To start declaring an [ElementBlueprint] you first need an [ElementBlueprintStart]. It sets
  * the basic values for the resulting element.
  */
-internal fun a(corps: Corps, kind: ElementKind, rung: Rung) =
-        ElementBlueprintStart(corps, kind, rung)
+internal typealias a = ElementBlueprintStart

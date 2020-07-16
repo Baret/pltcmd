@@ -13,6 +13,7 @@ sealed class AbstractElementBlueprint<T : Element>(
         internal val rung: Rung,
         internal val units: List<Units>
 ) : Blueprint<T> {
+
     /**
      * When adding this method to the building process the resulting element will be a [CommandingElement].
      *
@@ -22,7 +23,7 @@ sealed class AbstractElementBlueprint<T : Element>(
             CommandingElementBlueprint(corps, kind, rung, units, subordinates)
 
 
-    abstract operator fun times(i: Int): List<AbstractElementBlueprint<*>>
+    abstract operator fun times(i: Int): List<AbstractElementBlueprint<T>>
 
     operator fun plus(blueprint: AbstractElementBlueprint<*>): List<AbstractElementBlueprint<out Element>> =
             listOf(this, blueprint)
@@ -43,6 +44,16 @@ sealed class AbstractElementBlueprint<T : Element>(
         return true
     }
 
+    /**
+     * Returns a copy of this blueprint with the given [ElementKind].
+     */
+    abstract infix fun withKind(newKind: ElementKind): AbstractElementBlueprint<T>
+
+    /**
+     * Returns a copy of this blueprint with the given [Corps].
+     */
+    abstract infix fun withCorps(newCorps: Corps): AbstractElementBlueprint<T>
+
     override fun hashCode(): Int {
         var result = corps.hashCode()
         result = 31 * result + kind.hashCode()
@@ -59,16 +70,6 @@ sealed class AbstractElementBlueprint<T : Element>(
                 "units=$units" +
                 ")"
     }
-
-    /**
-     * Returns a copy of this blueprint with the given [ElementKind].
-     */
-    abstract infix fun withKind(newKind: ElementKind): AbstractElementBlueprint<*>
-
-    /**
-     * Returns a copy of this blueprint with the given [Corps].
-     */
-    abstract infix fun withCorps(newCorps: Corps): AbstractElementBlueprint<*>
 }
 
 /**
