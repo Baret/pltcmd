@@ -61,17 +61,17 @@ class ElementsDslTest : StringSpec({
 
     val blueprint = a(CombatSupport, Armored, Battalion) consistingOf 5 * MainBattleTank
     "An ${ElementBlueprint::class.simpleName} should create an ${Element::class.simpleName}" {
-        blueprint should beInstanceOf(ElementBlueprint::class)
-        blueprint.new() should beInstanceOf(Element::class)
+        blueprint should beInstanceOf<ElementBlueprint>()
+        blueprint.new() should beInstanceOf<Element>()
     }
 
     "A ${CommandingElementBlueprint::class.simpleName} should create a ${CommandingElement::class.simpleName}" {
         val commandingBlueprint = blueprint commanding 2 * (a(CombatSupport, Armored, Platoon) consistingOf 3 * LightTank)
-        commandingBlueprint should beInstanceOf(CommandingElementBlueprint::class)
+        commandingBlueprint should beInstanceOf<CommandingElementBlueprint>()
         val commandingElement = commandingBlueprint.new()
-        commandingElement should beInstanceOf(CommandingElement::class)
+        commandingElement should beInstanceOf<CommandingElement>()
         commandingElement.subordinates.forAll {
-            it should beInstanceOf(Element::class)
+            it should beInstanceOf<Element>()
         }
     }
 })

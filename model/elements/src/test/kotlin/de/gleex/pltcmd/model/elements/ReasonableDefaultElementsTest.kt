@@ -7,13 +7,13 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.collections.shouldBeSorted
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.instanceOf
 import io.kotest.matchers.ints.shouldBeBetween
 import io.kotest.matchers.nulls.beNull
-import io.kotest.matchers.shouldBe
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.beEmpty
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -33,11 +33,11 @@ class ReasonableDefaultElementsTest : WordSpec() {
         val infantrySquadSize = 8 to 12
         val infantryPlatoonSize = 30 to 50
 
-        val allElements = Elements.all()
-        "The list of ${allElements.size} default elements" should {
+        val allDefaultElements = Elements.all()
+        "The list of ${allDefaultElements.size} default elements" should {
             "result in valid instances" {
-                log.info("The ${allElements.size} default elements (trying to instantiate each):")
-                allElements
+                log.info("The ${allDefaultElements.size} default elements (trying to instantiate each):")
+                allDefaultElements
                         .forEach { entry ->
                             log.info("\t${entry.key}:")
                             val blueprint = entry.value
@@ -47,8 +47,8 @@ class ReasonableDefaultElementsTest : WordSpec() {
                                     log.info("\t\t├ ${Elements.nameOf(sub)}")
                                 }
                             }
-                            blueprint shouldBe instanceOf(CommandingElementBlueprint::class).or(instanceOf(ElementBlueprint::class))
-                            blueprint.new() shouldBe instanceOf(Element::class)
+                            blueprint should beInstanceOf<CommandingElementBlueprint>().or(beInstanceOf<ElementBlueprint>())
+                            blueprint.new() should beInstanceOf<Element>()
                         }
             }
         }
@@ -97,35 +97,41 @@ class ReasonableDefaultElementsTest : WordSpec() {
             "Unit count: The default ${Elements.nameOf(elementBlueprint)}" should {
                 "have between $min and $max units" {
                     val newElement = elementBlueprint.new()
-                    val soldierCount = if (newElement is CommandingElement) {
+                    val unitCount = if (newElement is CommandingElement) {
                         newElement.totalUnits
                     } else {
                         newElement.units.size
                     }
-                    soldierCount.shouldBeBetween(min, max)
+                    unitCount.shouldBeBetween(min, max)
                 }
             }
         }
 
         "All default elements" should {
             "be sorted" {
-                Elements.all().keys.toList()
+                allDefaultElements
+                        .keys
+                        .toList()
                         .shouldBeSorted()
-                Elements.allElements().keys.toList()
+                Elements.allElements()
+                        .keys
+                        .toList()
                         .shouldBeSorted()
-                Elements.allCommandingElements().keys.toList()
+                Elements.allCommandingElements()
+                        .keys
+                        .toList()
                         .shouldBeSorted()
             }
 
             "have a name" {
-                Elements.all()
-                        .map { it.key }
+                allDefaultElements
+                        .keys
                         .forAll { name ->
                             name shouldNot beNull()
                             name shouldNot beEmpty()
                         }
 
-                Elements.all()
+                allDefaultElements
                         .map { Elements.nameOf(it.value) }
                         .forAll { lookedUpName ->
                             lookedUpName shouldNot beNull()
@@ -147,7 +153,7 @@ class ReasonableDefaultElementsTest : WordSpec() {
                         }
                         .map { it.getter.call(Elements) as AbstractElementBlueprint<*> }
 
-                Elements.all().values.shouldContainExactly(publicBlueprints)
+                allDefaultElements.values.shouldContainExactly(publicBlueprints)
                 // all fields of Elements should be one of the subclasses of AbstractElementBlueprint
                 publicBlueprints shouldHaveSize publicFields.size
             }
