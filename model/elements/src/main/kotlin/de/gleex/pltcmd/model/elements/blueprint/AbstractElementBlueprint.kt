@@ -19,7 +19,7 @@ sealed class AbstractElementBlueprint<T : Element>(
     operator fun plus(blueprint: AbstractElementBlueprint<*>): List<AbstractElementBlueprint<out Element>> =
             listOf(this, blueprint)
 
-    operator fun plus(blueprints: List<AbstractElementBlueprint<*>>): List<AbstractElementBlueprint<out Element>> =
+    operator fun plus(blueprints: Collection<AbstractElementBlueprint<*>>): List<AbstractElementBlueprint<out Element>> =
             listOf(this, *blueprints.toTypedArray())
 
     /**
@@ -72,9 +72,6 @@ class ElementBlueprint(
         corps: Corps,
         kind: ElementKind,
         rung: Rung,
-        /**
-         * Visible for testing.
-         */
         units: List<Units>
 ) : AbstractElementBlueprint<Element>(corps, kind, rung, units) {
 
