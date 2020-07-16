@@ -14,15 +14,6 @@ sealed class AbstractElementBlueprint<T : Element>(
         internal val units: List<Units>
 ) : Blueprint<T> {
 
-    /**
-     * When adding this method to the building process the resulting element will be a [CommandingElement].
-     *
-     * @return a new [CommandingElementBlueprint] with the given subordinates
-     */
-    internal open infix fun commanding(subordinates: List<AbstractElementBlueprint<*>>) =
-            CommandingElementBlueprint(corps, kind, rung, units, subordinates)
-
-
     abstract operator fun times(i: Int): List<AbstractElementBlueprint<T>>
 
     operator fun plus(blueprint: AbstractElementBlueprint<*>): List<AbstractElementBlueprint<out Element>> =
@@ -30,6 +21,16 @@ sealed class AbstractElementBlueprint<T : Element>(
 
     operator fun plus(blueprints: List<AbstractElementBlueprint<*>>): List<AbstractElementBlueprint<out Element>> =
             listOf(this, *blueprints.toTypedArray())
+
+    /**
+     * Returns a copy of this blueprint with the given [ElementKind].
+     */
+    abstract infix fun withKind(newKind: ElementKind): AbstractElementBlueprint<T>
+
+    /**
+     * Returns a copy of this blueprint with the given [Corps].
+     */
+    abstract infix fun withCorps(newCorps: Corps): AbstractElementBlueprint<T>
 
     // generated equals and hashCode
     override fun equals(other: Any?): Boolean {
@@ -43,16 +44,6 @@ sealed class AbstractElementBlueprint<T : Element>(
 
         return true
     }
-
-    /**
-     * Returns a copy of this blueprint with the given [ElementKind].
-     */
-    abstract infix fun withKind(newKind: ElementKind): AbstractElementBlueprint<T>
-
-    /**
-     * Returns a copy of this blueprint with the given [Corps].
-     */
-    abstract infix fun withCorps(newCorps: Corps): AbstractElementBlueprint<T>
 
     override fun hashCode(): Int {
         var result = corps.hashCode()
@@ -115,10 +106,6 @@ class CommandingElementBlueprint(
 ) : AbstractElementBlueprint<CommandingElement>(corps, kind, rung, units) {
 
     override fun new() = CommandingElement(corps, kind, rung, units.new(), subordinates.new())
-
-    override fun commanding(subordinates: List<AbstractElementBlueprint<*>>): CommandingElementBlueprint {
-        return super.commanding(subordinates + this.subordinates)
-    }
 
     override fun withKind(newKind: ElementKind) =
             CommandingElementBlueprint(corps, newKind, rung, units, subordinates.map { it.withKind(newKind) })

@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.elements.blueprint
 
+import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Corps
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.elements.Rung
@@ -34,3 +35,14 @@ internal class ElementBlueprintStart(
  * the basic values for the resulting element.
  */
 internal typealias a = ElementBlueprintStart
+
+/**
+ * When adding this method to the building process the resulting element will be a [CommandingElement].
+ *
+ * @return a new [CommandingElementBlueprint] with the given subordinates
+ */
+internal infix fun AbstractElementBlueprint<*>.commanding(subordinates: List<AbstractElementBlueprint<*>>): CommandingElementBlueprint =
+        when(this) {
+            is ElementBlueprint           -> CommandingElementBlueprint(corps, kind, rung, units, subordinates)
+            is CommandingElementBlueprint -> CommandingElementBlueprint(corps, kind, rung, units, subordinates + this.subordinates)
+        }
