@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.mapgeneration.dijkstra
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.util.tests.beEmpty
+import de.gleex.pltcmd.util.tests.beEmptyMaybe
 import de.gleex.pltcmd.util.tests.shouldContainValue
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.WordSpec
@@ -25,7 +25,7 @@ class DijkstraMapTest: WordSpec({
         }
 
         "should not calculate any paths except from the target" {
-            map.pathFrom(Coordinate(0, 0)) should beEmpty()
+            map.pathFrom(Coordinate(0, 0)) should beEmptyMaybe()
             val path = map.pathFrom(target)
             path.get() shouldHaveSingleElement target
 
@@ -44,7 +44,7 @@ class DijkstraMapTest: WordSpec({
         map.add(c3, c2, 2)
 
         "have no path from a coordinate outside" {
-            map.pathFrom(Coordinate(1,1)) should beEmpty()
+            map.pathFrom(Coordinate(1,1)) should beEmptyMaybe()
         }
 
         "have a correct full path" {

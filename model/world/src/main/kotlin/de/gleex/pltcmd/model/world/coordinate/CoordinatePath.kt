@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.model.world.coordinate
 
-import de.gleex.util.geometry.pointsOfLine
+import de.gleex.pltcmd.util.geometry.pointsOfLine
 
 /**
  * A line from one point to another that contains each points on that path.

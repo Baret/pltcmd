@@ -1,4 +1,4 @@
-package de.gleex.util.geometry
+package de.gleex.pltcmd.util.geometry
 
 import kotlin.math.abs
 

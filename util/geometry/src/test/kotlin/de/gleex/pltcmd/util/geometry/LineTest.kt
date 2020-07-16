@@ -1,4 +1,4 @@
-package de.gleex.util.geometry
+package de.gleex.pltcmd.util.geometry
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
