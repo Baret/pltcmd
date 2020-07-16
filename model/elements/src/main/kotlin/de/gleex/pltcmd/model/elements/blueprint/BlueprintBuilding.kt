@@ -46,3 +46,8 @@ internal infix fun AbstractElementBlueprint<*>.commanding(subordinates: List<Abs
             is ElementBlueprint           -> CommandingElementBlueprint(corps, kind, rung, units, subordinates)
             is CommandingElementBlueprint -> CommandingElementBlueprint(corps, kind, rung, units, subordinates + this.subordinates)
         }
+
+/**
+ * When an element blueprint is turned into a [CommandingElementBlueprint] but does not (yet) have any subordinates.
+ */
+internal val noSubordinates = emptyList<AbstractElementBlueprint<*>>()

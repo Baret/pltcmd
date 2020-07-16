@@ -81,7 +81,7 @@ object Elements {
      * This is just the commanding element of a squad without subordinates. "An empty squad".
      */
     val fightingInfantrySquadCommand =
-            a(Fighting, Infantry, Squad) consistingOf squadLead commanding emptyList()
+            a(Fighting, Infantry, Squad) consistingOf squadLead commanding noSubordinates
 
     val rifleSquad =
             fightingInfantrySquadCommand commanding 2 * rifleTeam
@@ -99,7 +99,7 @@ object Elements {
      * This is just the commanding element of a platoon without subordinates. "An empty platoon".
      */
     val fightingInfantryPlatoonCommand =
-            a(Fighting, Infantry, Platoon) consistingOf platoonLead commanding emptyList()
+            a(Fighting, Infantry, Platoon) consistingOf platoonLead commanding noSubordinates
 
     val riflePlatoon =
             fightingInfantryPlatoonCommand commanding 3 * rifleSquad
@@ -164,7 +164,7 @@ object Elements {
     // ======================
 
     val transportHelicopterSquad =
-            a(Logistics, Aerial, Squad) consistingOf 2 * HelicopterTransport commanding emptyList()
+            a(Logistics, Aerial, Squad) consistingOf 2 * HelicopterTransport commanding noSubordinates
 
     val transportHelicopterPlatoon =
             a(Logistics, Aerial, Platoon) consistingOf HelicopterHMG commanding 3 * transportHelicopterSquad
@@ -178,5 +178,5 @@ object Elements {
     // ======================
 
     val reconPlane =
-            a(Reconnaissance, Aerial, Fireteam) consistingOf ScoutPlane commanding emptyList()
+            a(Reconnaissance, Aerial, Fireteam) consistingOf ScoutPlane commanding noSubordinates
 }

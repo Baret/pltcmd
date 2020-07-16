@@ -43,8 +43,8 @@ class ElementsDslTest : StringSpec({
                         a(Fighting, Infantry, Squad) consistingOf listOf(Rifleman) commanding listOf(a(Fighting, Infantry, Fireteam) consistingOf listOf(Rifleman)),
                         CommandingElementBlueprint(Fighting, Infantry, Squad, listOf(Rifleman), listOf(ElementBlueprint(Fighting, Infantry, Fireteam, listOf(Rifleman))))),
                 row(
-                        a(Logistics, Aerial, Platoon) consistingOf listOf(HelicopterTransport) commanding listOf(),
-                        CommandingElementBlueprint(Logistics, Aerial, Platoon, listOf(HelicopterTransport), listOf())),
+                        a(Logistics, Aerial, Platoon) consistingOf listOf(HelicopterTransport) commanding noSubordinates,
+                        CommandingElementBlueprint(Logistics, Aerial, Platoon, listOf(HelicopterTransport), emptyList())),
                 row(
                         a(Logistics, Aerial, Platoon) consistingOf HelicopterTransport commanding 2 * heavyLiftSquad + airSupportSquad,
                         CommandingElementBlueprint(Logistics, Aerial, Platoon,
