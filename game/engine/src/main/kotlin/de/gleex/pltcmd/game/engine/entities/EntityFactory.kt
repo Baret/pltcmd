@@ -3,14 +3,8 @@ package de.gleex.pltcmd.game.engine.entities
 import de.gleex.pltcmd.game.engine.attributes.*
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
-import de.gleex.pltcmd.game.engine.systems.behaviours.Communicating
-import de.gleex.pltcmd.game.engine.systems.behaviours.Fighting
-import de.gleex.pltcmd.game.engine.systems.behaviours.Moving
-import de.gleex.pltcmd.game.engine.systems.behaviours.Wandering
-import de.gleex.pltcmd.game.engine.systems.facets.ConversationSender
-import de.gleex.pltcmd.game.engine.systems.facets.ExecuteOrder
-import de.gleex.pltcmd.game.engine.systems.facets.IntentPursuing
-import de.gleex.pltcmd.game.engine.systems.facets.SetDestination
+import de.gleex.pltcmd.game.engine.systems.behaviours.*
+import de.gleex.pltcmd.game.engine.systems.facets.*
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.radio.RadioSender
@@ -40,3 +34,27 @@ object EntityFactory {
             newElement(element, initialPosition, affiliation, radioSender).apply { asMutableEntity().addBehavior(Wandering) }
 
 }
+
+fun CommandingElement.toEntityAt(elementPosition: Property<Coordinate>, affiliation: Affiliation, radioSender: RadioSender): ElementEntity =
+        newEntityOfType(ElementType) {
+            attributes(
+                    CommandersIntent(),
+                    ElementAttribute(this@toEntityAt, affiliation),
+                    PositionAttribute(elementPosition),
+                    MovementPath(),
+                    MovementSpeed(6.0),
+                    MovementProgress(),
+                    RadioAttribute(RadioCommunicator(callSign, radioSender)),
+                    CombatAttribute()
+            )
+            behaviors(
+                    Communicating,
+                    MovingForOneMinute
+            )
+            facets(
+                    ConversationSender,
+                    ExecuteOrder,
+                    PathFinding,
+                    PositionChanging
+            )
+        }

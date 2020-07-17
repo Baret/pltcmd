@@ -4,7 +4,7 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.util.geometry.pointsOfLine
+import de.gleex.pltcmd.util.geometry.pointsOfLine
 import org.hexworks.amethyst.api.Command
 import org.hexworks.cobalt.datatypes.Maybe
 

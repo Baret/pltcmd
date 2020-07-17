@@ -5,6 +5,7 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.zircon.api.data.Size3D
+import java.util.concurrent.TimeUnit
 
 /**
  * Options that change the behaviour of the game.
@@ -18,6 +19,8 @@ object GameOptions {
 
     /** The strength of a radio if not specified. */
     const val defaultRadioPower = 5000.0
+
+    val tickRate = 3L to TimeUnit.SECONDS
 
     /**
      * Seed used to always create the same map which is useful for development.
