@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.engine.systems.facets
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.commands.SetDestination
 import de.gleex.pltcmd.game.engine.entities.types.movementPath
 import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -19,8 +18,8 @@ object PathFinding : BaseFacet<GameContext>() {
     private val log = LoggerFactory.getLogger(PathFinding::class)
 
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>): Response {
-        return command.responseWhenCommandIs(SetDestination::class) {
-            val (destination, _, entity) = command as SetDestination
+        return command.responseWhenCommandIs(MoveTo::class) {
+            val (destination, _, entity) = it
             val pathStack = Stack<Coordinate>()
             val currentPosition = entity.position.value
             log.debug("Finding path from $currentPosition to $destination...")

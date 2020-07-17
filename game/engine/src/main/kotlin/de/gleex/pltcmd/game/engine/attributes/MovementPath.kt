@@ -7,4 +7,4 @@ import java.util.*
 /**
  * The current path an element is moving along.
  */
-internal data class MovementPath(var path: Stack<Coordinate> = Stack()): Attribute
+internal class MovementPath(var path: Stack<Coordinate> = Stack()): Attribute

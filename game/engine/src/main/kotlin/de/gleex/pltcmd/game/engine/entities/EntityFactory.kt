@@ -41,20 +41,15 @@ fun CommandingElement.toEntityAt(elementPosition: Property<Coordinate>, affiliat
                     CommandersIntent(),
                     ElementAttribute(this@toEntityAt, affiliation),
                     PositionAttribute(elementPosition),
+                    DestinationAttribute(),
+                    RadioAttribute(RadioCommunicator(this@toEntityAt.callSign, radioSender)),
+                    CombatAttribute(),
+
+                    // Trying stuff...
                     MovementPath(),
                     MovementSpeed(6.0),
-                    MovementProgress(),
-                    RadioAttribute(RadioCommunicator(callSign, radioSender)),
-                    CombatAttribute()
+                    MovementProgress()
             )
-            behaviors(
-                    Communicating,
-                    MovingForOneMinute
-            )
-            facets(
-                    ConversationSender,
-                    ExecuteOrder,
-                    PathFinding,
-                    PositionChanging
-            )
+            behaviors(IntentPursuing, MovingForOneMinute, Communicating, Fighting)
+            facets(PathFinding, ExecuteOrder, ConversationSender, PositionChanging)
         }
