@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
+import de.gleex.pltcmd.game.engine.attributes.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
@@ -11,9 +11,9 @@ import kotlin.math.sign
 
 /**
  * Changes the position of an entity based on its destination.
- * Required attributes: [PositionAttribute], [DestinationAttribute] (required for actual movement)
+ * Required attributes: [PositionAttribute], [MovementPath] (required for actual movement)
  **/
-internal object Moving : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
+internal object Moving : BaseBehavior<GameContext>(PositionAttribute::class, MovementPath::class) {
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         if (entity.type !is Movable) {
@@ -28,10 +28,6 @@ internal object Moving : BaseBehavior<GameContext>(PositionAttribute::class, Des
         }
         val startLocation = movable.currentPosition
         val destination = movable.destination.get()
-        if (startLocation == destination) {
-            movable.reachedDestination()
-            return false
-        }
         movable.currentPosition = moveForward(startLocation, destination)
         return true
     }

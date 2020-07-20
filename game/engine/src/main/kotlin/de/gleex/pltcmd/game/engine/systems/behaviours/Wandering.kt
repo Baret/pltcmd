@@ -1,25 +1,25 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
+import de.gleex.pltcmd.game.engine.attributes.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
+import de.gleex.pltcmd.game.engine.commands.MoveTo
 import de.gleex.pltcmd.game.engine.entities.types.Movable
 import de.gleex.pltcmd.game.engine.entities.types.MovableEntity
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.entities.types.hasNoDestination
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import de.gleex.pltcmd.game.engine.systems.facets.MoveTo
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.base.BaseBehavior
 
 /**
  * Wandering entities move randomly around the map.
  *
- * Required attributes: [PositionAttribute], [DestinationAttribute]
+ * Required attributes: [PositionAttribute], [MovementPath]
  */
 internal val Wandering = ChooseRandomDestination.and(Moving)
 
-internal object ChooseRandomDestination : BaseBehavior<GameContext>(PositionAttribute::class, DestinationAttribute::class) {
+internal object ChooseRandomDestination : BaseBehavior<GameContext>(PositionAttribute::class, MovementPath::class) {
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         if (entity.type !is Movable) {

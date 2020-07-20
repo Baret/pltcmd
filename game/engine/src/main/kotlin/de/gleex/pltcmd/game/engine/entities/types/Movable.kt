@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
-import de.gleex.pltcmd.game.engine.attributes.DestinationAttribute
 import de.gleex.pltcmd.game.engine.attributes.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.MovementProgress
 import de.gleex.pltcmd.game.engine.attributes.MovementSpeed
@@ -14,15 +13,16 @@ import java.util.*
  * This file contains code for entities that have the [DestinationAttribute].
  */
 
-/** Type marker for entities that are [Positionable] and have the [DestinationAttribute] */
+/** Type marker for entities that are [Positionable] and can update their position by moving. */
 interface Movable : Positionable
 typealias MovableEntity = GameEntity<Movable>
 
-/** Access to the value of the [DestinationAttribute] of a [MovableEntity] */
-var MovableEntity.destination: Maybe<Coordinate>
-    get() = getAttribute(DestinationAttribute::class).coordinate
-    internal set(value) {
-        getAttribute(DestinationAttribute::class).coordinate = value
+/**
+ * The destination of an entity determined by its current [movementPath]
+ */
+val MovableEntity.destination: Maybe<Coordinate>
+    get() {
+        return Maybe.ofNullable(movementPath.firstOrNull())
     }
 
 /**
@@ -46,8 +46,3 @@ val MovableEntity.baseSpeedInKph: Double
 /** Check if a destination is set. */
 val MovableEntity.hasNoDestination: Boolean
     get() = destination.isEmpty()
-
-/** Clears the destination of this movable entity. */
-internal fun MovableEntity.reachedDestination() {
-    destination = Maybe.empty()
-}

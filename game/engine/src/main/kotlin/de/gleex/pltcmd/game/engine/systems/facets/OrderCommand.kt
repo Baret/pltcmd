@@ -14,7 +14,6 @@ import de.gleex.pltcmd.game.engine.entities.types.commandersIntent
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.*
-import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.MoveTo
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import kotlinx.coroutines.runBlocking
@@ -23,7 +22,7 @@ import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.base.BaseFacet
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import de.gleex.pltcmd.game.engine.systems.facets.MoveTo as MoveToCommand
+import de.gleex.pltcmd.game.engine.commands.MoveTo as MoveToCommand
 
 /** Command to give an element an order **/
 data class OrderCommand(

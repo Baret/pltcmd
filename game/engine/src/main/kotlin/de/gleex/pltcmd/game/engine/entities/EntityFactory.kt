@@ -21,13 +21,12 @@ object EntityFactory {
                         CommandersIntent(),
                         ElementAttribute(element, affiliation),
                         PositionAttribute(initialPosition),
-                        DestinationAttribute(),
                         // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter
                         RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
                         CombatAttribute()
                 )
                 behaviors(IntentPursuing, Moving, Communicating, Fighting)
-                facets(SetDestination, ExecuteOrder, ConversationSender)
+                facets(ExecuteOrder, ConversationSender)
             })
 
     fun newWanderingElement(element: CommandingElement, initialPosition: Property<Coordinate>, affiliation: Affiliation = Affiliation.Unknown, radioSender: RadioSender): ElementEntity =
@@ -41,7 +40,6 @@ fun CommandingElement.toEntityAt(elementPosition: Property<Coordinate>, affiliat
                     CommandersIntent(),
                     ElementAttribute(this@toEntityAt, affiliation),
                     PositionAttribute(elementPosition),
-                    DestinationAttribute(),
                     RadioAttribute(RadioCommunicator(this@toEntityAt.callSign, radioSender)),
                     CombatAttribute(),
 
