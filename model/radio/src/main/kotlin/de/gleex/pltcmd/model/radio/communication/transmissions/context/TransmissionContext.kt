@@ -7,7 +7,7 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
  * This way a sender's properties can be injected into the message of a transmission.
  */
 data class TransmissionContext(
-        val position: Coordinate,
+        val senderPosition: Coordinate,
         val fightingReady: Int,
         val woundedCount: Int,
         val killedCount: Int)

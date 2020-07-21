@@ -6,7 +6,9 @@ import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.game.engine.systems.facets.ConversationCommand
 import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.MoveTo
+import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.PatrolAreaAt
 import kotlinx.coroutines.runBlocking
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
@@ -45,11 +47,14 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
             apply {
                 addFragment(elementSelect)
                 addComponent(Components.
-                    label().
+                    button().
                     withSize(width, 1).
                     build().
                     apply {
                         textProperty.updateFrom(createPropertyFrom("Move to ") bindPlusWith destinationProperty.bindTransform { it.toString() }, true)
+                        onActivated {
+                            send(MoveTo)
+                        }
                     })
                 addComponent(Components.
                     button().
@@ -58,7 +63,8 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
                     build().
                     apply {
                         onActivated {
-                            sendMoveTo()
+                            textProperty.updateFrom(createPropertyFrom("Patrol at ") bindPlusWith destinationProperty.bindTransform { it.toString() }, true)
+                            send(PatrolAreaAt)
                         }
                     })
             }
@@ -69,8 +75,8 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
         return UIEventResponse.processed()
     }
 
-    private fun sendMoveTo() {
-        val conversation = MoveTo.create(hq.callsign, selectedElement.callsign, destinationProperty.value)
+    private fun send(order: Conversations.Orders) {
+        val conversation = order.create(hq.callsign, selectedElement.callsign, destinationProperty.value)
         log.debug("Sending conversation to ${conversation.receiver}: $conversation")
         runBlocking {
             hq.sendCommand(ConversationCommand(conversation, game.context(), hq))

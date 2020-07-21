@@ -44,14 +44,21 @@ internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, C
                             log.debug("Sending MoveTo command for destination $orderedTo")
                             entity.commandersIntent.set(
                                     MoveToGoal(orderedTo!!)
-                                            .andThen(RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))
-                                            .andThen(PatrolAreaGoal(CoordinateRectangle(orderedTo.movedBy(-5, -5), 10, 10))))
+                                            .andThen(RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy))))
                             Consumed
                         }//entity.executeCommand(MoveToCommand(orderedTo!!, context, entity))
                         // TODO just moving to the enemy might not be the best approach
                         EngageEnemyAt -> entity.executeCommand(MoveToCommand(orderedTo!!, context, entity))
                         // TODO implement go firm
                         GoFirm        -> TODO()
+                        Halt -> TODO()
+                        PatrolAreaAt -> {
+                            entity.commandersIntent.set(
+                                    MoveToGoal(orderedTo!!)
+                                            .andThen(RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))
+                                            .andThen(PatrolAreaGoal(CoordinateRectangle(orderedTo.movedBy(-5, -5), 10, 10))))
+                            Consumed
+                        }
                     }
                 }
             }

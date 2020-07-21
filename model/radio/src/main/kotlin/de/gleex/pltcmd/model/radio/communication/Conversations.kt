@@ -3,7 +3,6 @@ package de.gleex.pltcmd.model.radio.communication
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.building.conversation
 import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
-import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.orderTemplate
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.datatypes.Maybe
@@ -19,8 +18,11 @@ object Conversations {
     enum class Orders(private val messageTemplate: String, private val readback: String) {
 
         MoveTo("move to %s", "moving to %s"),
+        Halt("hold your position", "halting. We are at %s"),
         GoFirm("go firm", "going firm"),
-        EngageEnemyAt("engage enemy at %s", "engaging enemy at %s");
+        PatrolAreaAt("patrol area at %s", "moving to %s for a patrol"),
+        EngageEnemyAt("engage enemy at %s", "engaging enemy at %s"),
+        ;
 
         fun created(transmission: OrderTransmission): Boolean {
             return messageTemplate == transmission.orderTemplate
@@ -48,7 +50,7 @@ object Conversations {
                 conversation(sender, receiver) {
                     establishComms {
                         request("report position") {
-                            terminatingResponse("we are at %s", TransmissionContext::position)
+                            terminatingResponse("we are at %s", { senderPosition })
                         }
                     }
                 }
@@ -62,9 +64,9 @@ object Conversations {
                     establishComms {
                         request("send a SITREP") {
                             terminatingResponse("we have %d soldiers ready to fight! %d wounded, %d killed",
-                                    TransmissionContext::fightingReady,
-                                    TransmissionContext::woundedCount,
-                                    TransmissionContext::killedCount)
+                                    { fightingReady },
+                                    { woundedCount },
+                                    { killedCount })
                         }
                     }
                 }
@@ -74,7 +76,7 @@ object Conversations {
         fun destinationReached(sender: CallSign, receiver: CallSign) =
                 conversation(sender, receiver) {
                     establishComms {
-                        request("we have reached our destination. We are at %s", TransmissionContext::position) {
+                        request("we have reached our destination. We are at %s", { senderPosition }) {
                             terminatingResponse("copy that")
                         }
                     }
