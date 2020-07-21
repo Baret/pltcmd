@@ -20,7 +20,13 @@ object GameOptions {
     /** The strength of a radio if not specified. */
     const val defaultRadioPower = 5000.0
 
-    val tickRate = 3L to TimeUnit.SECONDS
+    /**
+     * The amount of time between each tick.
+     */
+    object tickRate {
+        val duration: Long = 3L
+        val timeUnit: TimeUnit = TimeUnit.SECONDS
+    }
 
     /**
      * Seed used to always create the same map which is useful for development.

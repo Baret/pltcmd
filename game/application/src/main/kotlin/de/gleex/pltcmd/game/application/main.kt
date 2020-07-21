@@ -86,8 +86,7 @@ fun main() {
                         }
             }
         }
-        val (duration, timeunit) = GameOptions.tickRate
-        Ticker.start(duration, timeunit)
+        Ticker.start(GameOptions.tickRate.duration, GameOptions.tickRate.timeUnit)
         // cleanup
         screen.onShutdown { Ticker.stop() }
     }
