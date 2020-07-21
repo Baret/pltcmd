@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.engine.entities
 
 import de.gleex.pltcmd.game.engine.attributes.*
+import de.gleex.pltcmd.game.engine.attributes.stats.ElementMovementSpeed
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.systems.behaviours.*
@@ -45,7 +46,7 @@ fun CommandingElement.toEntityAt(elementPosition: Property<Coordinate>, affiliat
 
                     // Trying stuff...
                     MovementPath(),
-                    MovementSpeed(6.0),
+                    ElementMovementSpeed(this@toEntityAt),
                     MovementProgress()
             )
             behaviors(IntentPursuing, MovingForOneMinute, Communicating, Fighting)

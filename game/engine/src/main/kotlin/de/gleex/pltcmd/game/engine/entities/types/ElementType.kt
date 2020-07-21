@@ -13,7 +13,7 @@ import org.hexworks.amethyst.api.base.BaseEntityType
 object ElementType : BaseEntityType("element", "A movable and communicating element."), Movable, Communicating, Combatant
 typealias ElementEntity = GameEntity<ElementType>
 
-private val ElementEntity.element: CommandingElement
+val ElementEntity.element: CommandingElement
     get() = getAttribute(ElementAttribute::class).element.value
 
 val ElementEntity.callsign: CallSign

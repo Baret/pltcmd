@@ -3,8 +3,8 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.MovementProgress
-import de.gleex.pltcmd.game.engine.attributes.MovementSpeed
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
+import de.gleex.pltcmd.game.engine.attributes.stats.ElementMovementSpeed
 import de.gleex.pltcmd.game.engine.commands.UpdatePosition
 import de.gleex.pltcmd.game.engine.entities.types.*
 import org.hexworks.amethyst.api.base.BaseBehavior
@@ -15,7 +15,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 object MovingForOneMinute :
         BaseBehavior<GameContext>(
                 PositionAttribute::class,
-                MovementSpeed::class,
+                ElementMovementSpeed::class,
                 MovementPath::class,
                 MovementProgress::class
         ) {

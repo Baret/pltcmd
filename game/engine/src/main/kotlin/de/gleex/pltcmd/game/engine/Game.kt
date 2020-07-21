@@ -11,11 +11,11 @@ import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.Affiliation
-import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.elements.Elements
+import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.entity.EntityType
@@ -67,10 +67,12 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     /**
      * Adds a new element in the given sector and returns it.
      */
-    fun addElementInSector(sector: Sector, callsign: String = "Element ${random.nextInt(999_999)}", affiliation: Affiliation = Affiliation.Unknown): ElementEntity {
-        val positionInSector = sector.randomCoordinate(random)
-        val callSign = CallSign(callsign)
-        val element = Elements.riflePlatoon.new().apply { this.callSign = callSign }
+    fun addElementInSector(
+            sector: Sector,
+            element: CommandingElement,
+            positionInSector: Coordinate = sector.randomCoordinate(random),
+            affiliation: Affiliation = Affiliation.Unknown
+    ): ElementEntity {
         val elementPosition = positionInSector.toProperty()
         val radioSender = RadioSender(elementPosition, GameOptions.defaultRadioPower, world)
         val elementEntity = if (affiliation == Affiliation.Friendly || affiliation == Affiliation.Self) {
@@ -79,7 +81,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
         } else {
             EntityFactory.newWanderingElement(element, elementPosition, affiliation, radioSender)
         }
-        log.debug("Adding ${element.description} with callsign $callSign to engine at position $positionInSector")
+        log.debug("Adding ${element.description} with callsign ${element.callSign} to engine at position $positionInSector")
         return addEntity(elementEntity)
     }
 

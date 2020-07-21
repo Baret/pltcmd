@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.engine.entities.types
 
 import de.gleex.pltcmd.game.engine.attributes.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.MovementProgress
-import de.gleex.pltcmd.game.engine.attributes.MovementSpeed
+import de.gleex.pltcmd.game.engine.attributes.stats.ElementMovementSpeed
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -41,7 +41,7 @@ var MovableEntity.movementProgress: Double
     }
 
 val MovableEntity.baseSpeedInKph: Double
-    get() = getAttribute(MovementSpeed::class).baseSpeedInKph
+    get() = getAttribute(ElementMovementSpeed::class).minimum
 
 /** Check if a destination is set. */
 val MovableEntity.hasNoDestination: Boolean
