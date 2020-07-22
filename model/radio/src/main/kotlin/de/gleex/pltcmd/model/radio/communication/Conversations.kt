@@ -3,6 +3,7 @@ package de.gleex.pltcmd.model.radio.communication
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.building.conversation
 import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
+import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.orderTemplate
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.datatypes.Maybe
@@ -15,25 +16,36 @@ object Conversations {
     /**
      * All orders. An order typically initializes comms, sends an order and expects a positive _readback_ or a negative answer
      */
-    enum class Orders(private val messageTemplate: String, private val readback: String) {
+    enum class Orders(private val messageTemplate: String, private val readback: String, vararg contextParameters: TransmissionContext.() -> Any?) {
 
         MoveTo("move to %s", "moving to %s"),
         Halt("hold your position", "halting. We are at %s"),
+        // TODO: For a good readback we would need to know the previous order here
+        Continue("continue with your order", "continuing"),
         GoFirm("go firm", "going firm"),
         PatrolAreaAt("patrol area at %s", "moving to %s for a patrol"),
         EngageEnemyAt("engage enemy at %s", "engaging enemy at %s"),
         ;
 
+        private val orderParameters = contextParameters
+
         fun created(transmission: OrderTransmission): Boolean {
             return messageTemplate == transmission.orderTemplate
         }
 
-        fun create(sender: CallSign, receiver: CallSign, orderLocation: Coordinate): Conversation =
+        /**
+         * Creates a [Conversation] from this order.
+         *
+         * @param sender the initiator of the conversation is the one giving the order
+         * @param receiver receives the order
+         * @param orderLocation optional location to be injected into the conversation (usually the destination of the order)
+         */
+        fun create(sender: CallSign, receiver: CallSign, orderLocation: Coordinate? = null): Conversation =
                 conversation(sender, receiver) {
                     genericOrder(
                             messageTemplate,
                             readback,
-                            { orderLocation }
+                            { orderLocation ?: senderPosition }
                     )
                 }
 

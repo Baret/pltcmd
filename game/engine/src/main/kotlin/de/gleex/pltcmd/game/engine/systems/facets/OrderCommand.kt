@@ -3,10 +3,8 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
-import de.gleex.pltcmd.game.engine.attributes.goals.MoveToGoal
-import de.gleex.pltcmd.game.engine.attributes.goals.PatrolAreaGoal
-import de.gleex.pltcmd.game.engine.attributes.goals.RadioGoal
-import de.gleex.pltcmd.game.engine.attributes.goals.andThen
+import de.gleex.pltcmd.game.engine.attributes.flags.Halted
+import de.gleex.pltcmd.game.engine.attributes.goals.*
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.callsign
@@ -40,7 +38,7 @@ internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, C
             command.responseWhenCommandIs(OrderCommand::class) { (order, orderedBy, orderedTo, context, entity) ->
                 runBlocking {
                     when (order) {
-                        MoveTo -> {
+                        MoveTo        -> {
                             log.debug("Sending MoveTo command for destination $orderedTo")
                             entity.commandersIntent.set(
                                     MoveToGoal(orderedTo!!)
@@ -51,8 +49,17 @@ internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, C
                         EngageEnemyAt -> entity.executeCommand(MoveToCommand(orderedTo!!, context, entity))
                         // TODO implement go firm
                         GoFirm        -> TODO()
-                        Halt -> TODO()
-                        PatrolAreaAt -> {
+                        Halt          -> {
+                            entity.asMutableEntity().addAttribute(Halted)
+                            entity.commandersIntent.butNow(HaltGoal)
+                            Consumed
+                        }
+                        Continue      -> {
+                            entity.asMutableEntity()
+                                    .removeAttribute(Halted)
+                            Consumed
+                        }
+                        PatrolAreaAt  -> {
                             entity.commandersIntent.set(
                                     MoveToGoal(orderedTo!!)
                                             .andThen(RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))
