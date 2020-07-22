@@ -44,6 +44,9 @@ var MovableEntity.movementProgress: Double
 val MovableEntity.baseSpeedInKph: Double
     get() = getAttribute(MovementSpeed::class).value
 
+val MovableEntity.currentSpeedInKph: Double
+    get() = movementModifiers.fold(baseSpeedInKph) { speed: Double, modifier: MovementModifier -> modifier(speed) }
+
 /** Check if a destination is set. */
 val MovableEntity.hasNoDestination: Boolean
     get() = destination.isEmpty()

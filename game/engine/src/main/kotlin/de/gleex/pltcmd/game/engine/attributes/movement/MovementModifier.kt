@@ -8,17 +8,17 @@ import kotlin.math.min
  */
 sealed class MovementModifier : Attribute {
 
-    abstract operator fun invoke(speed: MovementSpeed): Double
+    abstract operator fun invoke(speed: Double): Double
 
     open class Mutator(private val factor: Double) : MovementModifier() {
-        override fun invoke(speed: MovementSpeed) = speed.value * factor
+        override fun invoke(speed: Double) = speed * factor
     }
 
     open class Prevention() : MovementModifier() {
-        override fun invoke(speed: MovementSpeed) = 0.0
+        override fun invoke(speed: Double) = 0.0
     }
 
     open class SpeedCap(private val maxSpeedInKph: Double) : MovementModifier() {
-        override fun invoke(speed: MovementSpeed) = min(speed.value, maxSpeedInKph)
+        override fun invoke(speed: Double) = min(speed, maxSpeedInKph)
     }
 }

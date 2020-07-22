@@ -31,9 +31,9 @@ object MovingForOneMinute :
             return false
         }
         return if(entity.movementPath.isNotEmpty()) {
-            val travelDistanceInTiles = entity.baseSpeedInKph / 6.0
+            val travelDistanceInTiles = entity.currentSpeedInKph / 6.0
             entity.movementProgress += travelDistanceInTiles
-            log.debug("${entity.callsign} travels $travelDistanceInTiles per tick. New progress: ${entity.movementProgress}")
+            log.debug("${entity.callsign} travels $travelDistanceInTiles per tick with a base speed of ${entity.baseSpeedInKph} and current speed of ${entity.currentSpeedInKph} km/h. New progress: ${entity.movementProgress}")
             while (entity.movementProgress >= 1.0 && entity.movementPath.isNotEmpty()) {
                 val oldPosition = entity.position.value
                 entity.executeCommand(UpdatePosition(oldPosition, entity.movementPath.pop(), context, entity))

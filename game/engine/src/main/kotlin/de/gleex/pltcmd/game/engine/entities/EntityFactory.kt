@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.engine.entities
 
 import de.gleex.pltcmd.game.engine.attributes.*
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementSpeed
@@ -10,9 +11,11 @@ import de.gleex.pltcmd.game.engine.systems.behaviours.*
 import de.gleex.pltcmd.game.engine.systems.facets.*
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CommandingElement
+import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.newEntityOfType
 import org.hexworks.cobalt.databinding.api.property.Property
 
@@ -37,20 +40,26 @@ object EntityFactory {
 
 }
 
-fun CommandingElement.toEntityAt(elementPosition: Property<Coordinate>, affiliation: Affiliation, radioSender: RadioSender): ElementEntity =
-        newEntityOfType(ElementType) {
-            attributes(
-                    CommandersIntent(),
-                    ElementAttribute(this@toEntityAt, affiliation),
-                    PositionAttribute(elementPosition),
-                    RadioAttribute(RadioCommunicator(this@toEntityAt.callSign, radioSender)),
-                    CombatAttribute(),
+fun CommandingElement.toEntityAt(elementPosition: Property<Coordinate>, affiliation: Affiliation, radioSender: RadioSender): ElementEntity {
+    val attributes: MutableList<Attribute> = mutableListOf(
+            CommandersIntent(),
+            ElementAttribute(this@toEntityAt, affiliation),
+            PositionAttribute(elementPosition),
+            RadioAttribute(RadioCommunicator(this@toEntityAt.callSign, radioSender)),
+            CombatAttribute(),
 
-                    // Trying stuff...
-                    MovementPath(),
-                    MovementSpeed(this@toEntityAt),
-                    MovementProgress()
-            )
-            behaviors(IntentPursuing, MovingForOneMinute, Communicating, Fighting)
-            facets(PathFinding, ExecuteOrder, ConversationSender, PositionChanging)
-        }
+            // Trying stuff...
+            MovementPath(),
+            MovementSpeed(this@toEntityAt),
+            MovementProgress()
+    )
+    // Lets say we have a speed limit for aerial elements (just for testing)
+    if(kind == ElementKind.Aerial) {
+        attributes += MovementModifier.SpeedCap(18.0)
+    }
+    return newEntityOfType(ElementType) {
+        attributes(*attributes.toTypedArray())
+        behaviors(IntentPursuing, MovingForOneMinute, Communicating, Fighting)
+        facets(PathFinding, ExecuteOrder, ConversationSender, PositionChanging)
+    }
+}
