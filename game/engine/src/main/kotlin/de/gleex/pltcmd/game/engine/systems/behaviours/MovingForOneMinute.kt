@@ -33,15 +33,15 @@ object MovingForOneMinute :
         return if(entity.movementPath.isNotEmpty()) {
             val travelDistanceInTiles = entity.baseSpeedInKph / 6.0
             entity.movementProgress += travelDistanceInTiles
-            log.info("${entity.callsign} travels $travelDistanceInTiles per tick. New progress: ${entity.movementProgress}")
+            log.debug("${entity.callsign} travels $travelDistanceInTiles per tick. New progress: ${entity.movementProgress}")
             while (entity.movementProgress >= 1.0 && entity.movementPath.isNotEmpty()) {
                 val oldPosition = entity.position.value
                 entity.executeCommand(UpdatePosition(oldPosition, entity.movementPath.pop(), context, entity))
                 if(oldPosition != entity.position.value) {
-                    log.info("${entity.callsign} sucessfully moved from $oldPosition to ${entity.position}")
+                    log.debug("${entity.callsign} sucessfully moved from $oldPosition to ${entity.position}")
                     entity.movementProgress -= 1.0
                 } else {
-                    log.info("${entity.callsign} was stopped by something! Progress left: ${entity.movementProgress}")
+                    log.debug("${entity.callsign} was stopped by something! Progress left: ${entity.movementProgress}")
                     break
                 }
             }

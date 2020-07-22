@@ -66,7 +66,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
 
         val logArea = Components.logArea().
                 withSize(UiOptions.LOG_AREA_WIDTH, UiOptions.LOG_AREA_HEIGHT).
-                withAlignmentWithin(screen, ComponentAlignment.BOTTOM_RIGHT).
+                withAlignmentWithin(screen, ComponentAlignment.BOTTOM_LEFT).
                 withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
                 build().
                 also {
