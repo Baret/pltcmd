@@ -7,12 +7,14 @@ import org.hexworks.amethyst.api.Attribute
 abstract class ElementStats(element: CommandingElement) : Attribute {
     protected abstract val unitStats: Map<Unit, Double>
 
-    val average: Double
+    protected val average: Double
         get() = unitStats.values.average()
-    val minimum: Double
+    protected val minimum: Double
         get() = unitStats.values.min() ?: 0.0
-    val maximum: Double
+    protected val maximum: Double
         get() = unitStats.values.max() ?: 0.0
+
+    abstract val value: Double
 
     /**
      * @return the value for the given [Unit] or null if the unit is nor present.

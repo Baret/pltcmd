@@ -1,29 +1,24 @@
 package de.gleex.pltcmd.game.engine.attributes.movement
 
 import org.hexworks.amethyst.api.Attribute
+import kotlin.math.min
 
 /**
  * A movement modifier influences movement of an entity. It may for example change the speed or prevent movement altogether.
  */
-interface MovementModifier: Attribute {
-    /**
-     * The type of a modifier describes how it affects movement.
-     */
-    enum class Type {
-        /**
-         * A mutating [MovementModifier] changes the value of the current speed.
-         */
-        Mutator,
-        /**
-         * A [MovementModifier] of this type prevents movement. This means if at least one modifier
-         * of this type is present the entity can not move.
-         */
-        Prevention,
-        /**
-         * [MovementModifier] with this type cap the speed to a maximum value.
-         */
-        Cap
+sealed class MovementModifier : Attribute {
+
+    abstract operator fun invoke(speed: MovementSpeed): Double
+
+    open class Mutator(private val factor: Double) : MovementModifier() {
+        override fun invoke(speed: MovementSpeed) = speed.value * factor
     }
 
-    val type: Type
+    open class Prevention() : MovementModifier() {
+        override fun invoke(speed: MovementSpeed) = 0.0
+    }
+
+    open class SpeedCap(private val maxSpeedInKph: Double) : MovementModifier() {
+        override fun invoke(speed: MovementSpeed) = min(speed.value, maxSpeedInKph)
+    }
 }
