@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.engine.attributes
+package de.gleex.pltcmd.game.engine.attributes.movement
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Attribute

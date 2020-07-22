@@ -1,7 +1,8 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
-import de.gleex.pltcmd.game.engine.attributes.MovementPath
-import de.gleex.pltcmd.game.engine.attributes.MovementProgress
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
 import de.gleex.pltcmd.game.engine.attributes.stats.ElementMovementSpeed
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
@@ -46,3 +47,17 @@ val MovableEntity.baseSpeedInKph: Double
 /** Check if a destination is set. */
 val MovableEntity.hasNoDestination: Boolean
     get() = destination.isEmpty()
+
+/**
+ * All currently active [MovementModifier]s this entity has.
+ */
+val MovableEntity.movementModifiers: Sequence<MovementModifier>
+    get() = attributes
+            .filter { it is MovementModifier }
+            .map { it as MovementModifier }
+
+/**
+ * True if this entity is currently able to move because it has not [movementModifiers] of type [MovementModifier.Type.Prevention]
+ */
+val MovableEntity.canMove: Boolean
+    get() = movementModifiers.none { it.type == MovementModifier.Type.Prevention }

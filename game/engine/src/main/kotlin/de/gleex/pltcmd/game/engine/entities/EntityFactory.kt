@@ -1,6 +1,8 @@
 package de.gleex.pltcmd.game.engine.entities
 
 import de.gleex.pltcmd.game.engine.attributes.*
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
 import de.gleex.pltcmd.game.engine.attributes.stats.ElementMovementSpeed
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType

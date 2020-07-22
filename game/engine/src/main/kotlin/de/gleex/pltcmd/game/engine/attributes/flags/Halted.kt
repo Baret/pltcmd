@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.game.engine.attributes.flags
 
-import org.hexworks.amethyst.api.Attribute
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
 
-object Halted: Attribute
+object Halted: MovementModifier {
+    override val type = MovementModifier.Type.Prevention
+}

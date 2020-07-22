@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.engine.attributes
+package de.gleex.pltcmd.game.engine.attributes.movement
 
 import org.hexworks.amethyst.api.Attribute
 
