@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.engine.entities
 
+import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.*
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
@@ -17,6 +18,7 @@ import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.newEntityOfType
+import org.hexworks.amethyst.api.system.Behavior
 import org.hexworks.cobalt.databinding.api.property.Property
 
 object EntityFactory {
@@ -57,9 +59,19 @@ fun CommandingElement.toEntityAt(elementPosition: Property<Coordinate>, affiliat
     if(kind == ElementKind.Aerial) {
         attributes += MovementModifier.SpeedCap(18.0)
     }
+
+    val behaviors: MutableList<Behavior<GameContext>> = mutableListOf(
+            IntentPursuing,
+            MovingForOneMinute,
+            Communicating,
+            Fighting
+    )
+    if(kind == ElementKind.Infantry) {
+        behaviors.add(0, StopsWhileTransmitting)
+    }
     return newEntityOfType(ElementType) {
         attributes(*attributes.toTypedArray())
-        behaviors(IntentPursuing, MovingForOneMinute, Communicating, Fighting)
+        behaviors(*behaviors.toTypedArray())
         facets(PathFinding, ExecuteOrder, ConversationSender, PositionChanging)
     }
 }

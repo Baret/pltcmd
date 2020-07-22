@@ -59,7 +59,7 @@ fun main() {
 
             val alpha = visibleSector.createFriendly(Elements.transportHelicopterPlatoon.new()
                     .apply { callSign = CallSign("Alpha") }, game, gameWorld)
-            val bravo = visibleSector.createFriendly(Elements.transportTruckPlatoon.new()
+            val bravo = visibleSector.createFriendly(Elements.riflePlatoon.new()
                     .apply { callSign = CallSign("Bravo") }, game, gameWorld)
             val charlie = visibleSector.createFriendly(Elements.reconPlane.new()
                     .apply { callSign = CallSign("Charlie") }, game, gameWorld)

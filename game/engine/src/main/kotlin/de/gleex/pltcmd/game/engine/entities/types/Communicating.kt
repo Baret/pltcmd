@@ -28,6 +28,10 @@ internal val CommunicatingEntity.communicator: RadioCommunicator
 val CommunicatingEntity.inConversationWith: ObservableValue<Maybe<CallSign>>
     get() = communicator.inConversationWith
 
+/** True if this entity is currently in a conversation */
+val CommunicatingEntity.isTransmitting
+    get() = communicator.inConversationWith.value.isPresent
+
 /**
  * Queues the given conversation.
  */
