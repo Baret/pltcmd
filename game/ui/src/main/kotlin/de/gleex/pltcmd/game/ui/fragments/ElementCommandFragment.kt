@@ -1,10 +1,10 @@
 package de.gleex.pltcmd.game.ui.fragments
 
 import de.gleex.pltcmd.game.engine.Game
+import de.gleex.pltcmd.game.engine.commands.ConversationCommand
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.position
-import de.gleex.pltcmd.game.engine.systems.facets.ConversationCommand
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations

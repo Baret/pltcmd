@@ -5,6 +5,7 @@ import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
 import de.gleex.pltcmd.game.engine.attributes.flags.Transmitting
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.entities.types.Communicating
+import de.gleex.pltcmd.game.engine.extensions.addIfMissing
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
@@ -21,8 +22,7 @@ object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class)
                     .fold(whenEmpty = {
                         if (entity.isTransmitting) {
                             log.debug("${(entity as ElementEntity).callsign} is transmitting, adding attribute.")
-                            entity.asMutableEntity()
-                                    .addAttribute(Transmitting)
+                            entity.addIfMissing(Transmitting)
                             updated = true
                         }
                     }, whenPresent = {

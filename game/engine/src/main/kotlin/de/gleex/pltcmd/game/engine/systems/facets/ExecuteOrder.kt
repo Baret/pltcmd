@@ -5,14 +5,12 @@ import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.flags.Halted
 import de.gleex.pltcmd.game.engine.attributes.goals.*
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.ElementType
+import de.gleex.pltcmd.game.engine.commands.OrderCommand
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.commandersIntent
-import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.game.engine.extensions.addIfMissing
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.*
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Command
@@ -21,15 +19,6 @@ import org.hexworks.amethyst.api.base.BaseFacet
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import de.gleex.pltcmd.game.engine.commands.MoveTo as MoveToCommand
-
-/** Command to give an element an order **/
-data class OrderCommand(
-        val order: Conversations.Orders,
-        val orderedBy: CallSign,
-        val orderedTo: Coordinate?,
-        override val context: GameContext,
-        override val source: ElementEntity
-) : Command<ElementType, GameContext>
 
 internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, CommandersIntent::class) {
     private val log = LoggerFactory.getLogger(ExecuteOrder::class)
@@ -50,7 +39,7 @@ internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, C
                         // TODO implement go firm
                         GoFirm        -> TODO()
                         Halt          -> {
-                            entity.asMutableEntity().addAttribute(Halted)
+                            entity.addIfMissing(Halted)
                             entity.commandersIntent.butNow(HaltGoal)
                             Consumed
                         }

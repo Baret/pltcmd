@@ -3,12 +3,12 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
+import de.gleex.pltcmd.game.engine.commands.OrderCommand
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.communicator
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import de.gleex.pltcmd.game.engine.systems.facets.OrderCommand
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.RadioContext

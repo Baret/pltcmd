@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.*
@@ -133,7 +134,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
     private fun LogArea.logRadioCalls() {
         globalEventBus.subscribeToBroadcasts { event: BroadcastEvent ->
             val transmission = event.transmission
-            val message = transmission.message
+            val message = "${Ticker.currentTick}: ${transmission.message}"
             if (transmission.isOpening) {
                 addHeader(message, false)
             } else {

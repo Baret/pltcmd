@@ -8,6 +8,7 @@ import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementSpeed
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
+import de.gleex.pltcmd.game.engine.extensions.addIfMissing
 import de.gleex.pltcmd.game.engine.systems.behaviours.*
 import de.gleex.pltcmd.game.engine.systems.facets.*
 import de.gleex.pltcmd.model.elements.Affiliation
@@ -19,6 +20,7 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.newEntityOfType
 import org.hexworks.amethyst.api.system.Behavior
+import org.hexworks.amethyst.api.system.Facet
 import org.hexworks.cobalt.databinding.api.property.Property
 
 object EntityFactory {
@@ -38,7 +40,8 @@ object EntityFactory {
             })
 
     fun newWanderingElement(element: CommandingElement, initialPosition: Property<Coordinate>, affiliation: Affiliation = Affiliation.Unknown, radioSender: RadioSender): ElementEntity =
-            newElement(element, initialPosition, affiliation, radioSender).apply { asMutableEntity().addBehavior(Wandering) }
+            newElement(element, initialPosition, affiliation, radioSender)
+                    .apply { addIfMissing(Wandering) }
 
 }
 
@@ -55,6 +58,7 @@ fun CommandingElement.toEntityAt(elementPosition: Property<Coordinate>, affiliat
             MovementSpeed(this@toEntityAt),
             MovementProgress()
     )
+    // TODO: Make systems comparable so we do not need to make sure this if/else madness has the correct order
     // Lets say we have a speed limit for aerial elements (just for testing)
     if(kind == ElementKind.Aerial) {
         attributes += MovementModifier.SpeedCap(18.0)
@@ -69,9 +73,19 @@ fun CommandingElement.toEntityAt(elementPosition: Property<Coordinate>, affiliat
     if(kind == ElementKind.Infantry) {
         behaviors.add(0, StopsWhileTransmitting)
     }
+
+    val facets: MutableList<Facet<GameContext>> = mutableListOf(
+            PathFinding,
+            ExecuteOrder,
+            ConversationSender,
+            PositionChanging
+    )
+    if(kind == ElementKind.Infantry) {
+        facets.add(0, MakesSecurityHalts)
+    }
     return newEntityOfType(ElementType) {
         attributes(*attributes.toTypedArray())
         behaviors(*behaviors.toTypedArray())
-        facets(PathFinding, ExecuteOrder, ConversationSender, PositionChanging)
+        facets(*facets.toTypedArray())
     }
 }

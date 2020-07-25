@@ -1,6 +1,9 @@
 package de.gleex.pltcmd.game.engine.extensions
 
+import de.gleex.pltcmd.game.engine.GameContext
 import org.hexworks.amethyst.api.Attribute
+import org.hexworks.amethyst.api.system.Behavior
+import org.hexworks.amethyst.api.system.Facet
 import kotlin.reflect.KClass
 
 
@@ -17,3 +20,30 @@ internal fun <T : Attribute> AnyGameEntity.getAttribute(attribute: KClass<T>) =
  */
 internal fun <T : Attribute> AnyGameEntity.hasAttribute(attribute: KClass<T>): Boolean =
         findAttribute(attribute).isPresent
+
+/**
+ * Adds the given attribute if no attribute of type [A] is present.
+ */
+internal inline fun <reified A : Attribute> AnyGameEntity.addIfMissing(attribute: A) {
+    if(findAttribute(A::class).isEmpty()) {
+        asMutableEntity().addAttribute(attribute)
+    }
+}
+
+/**
+ * Adds the given behavior if no attribute of type [B] is present.
+ */
+internal inline fun <reified B : Behavior<GameContext>> AnyGameEntity.addIfMissing(behavior: B) {
+    if(findBehavior(B::class).isEmpty()) {
+        asMutableEntity().addBehavior(behavior)
+    }
+}
+
+/**
+ * Adds the given facet if no attribute of type [F] is present.
+ */
+internal inline fun <reified F : Facet<GameContext>> AnyGameEntity.addIfMissing(facet: F) {
+    if(findFacet(F::class).isEmpty()) {
+        asMutableEntity().addFacet(facet)
+    }
+}
