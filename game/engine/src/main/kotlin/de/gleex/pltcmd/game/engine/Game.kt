@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.engine
 
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
-import de.gleex.pltcmd.game.engine.entities.toEntityAt
+import de.gleex.pltcmd.game.engine.entities.toEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.callsign
@@ -76,8 +76,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
         val elementPosition = positionInSector.toProperty()
         val radioSender = RadioSender(elementPosition, GameOptions.defaultRadioPower, world)
         val elementEntity = if (affiliation == Affiliation.Friendly || affiliation == Affiliation.Self) {
-            //EntityFactory.newElement(element, elementPosition, affiliation, radioSender)
-            element.toEntityAt(elementPosition, affiliation, radioSender)
+            element.toEntity(elementPosition, affiliation, radioSender)
         } else {
             EntityFactory.newWanderingElement(element, elementPosition, affiliation, radioSender)
         }

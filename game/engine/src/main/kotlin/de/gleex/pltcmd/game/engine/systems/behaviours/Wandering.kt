@@ -17,9 +17,7 @@ import org.hexworks.amethyst.api.base.BaseBehavior
  *
  * Required attributes: [PositionAttribute], [MovementPath]
  */
-internal val Wandering = ChooseRandomDestination.and(Moving)
-
-internal object ChooseRandomDestination : BaseBehavior<GameContext>(PositionAttribute::class, MovementPath::class) {
+internal object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, MovementPath::class) {
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         if (entity.type !is Movable) {

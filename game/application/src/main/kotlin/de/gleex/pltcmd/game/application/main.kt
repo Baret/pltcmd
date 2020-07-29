@@ -80,8 +80,8 @@ fun main() {
         val elementsPerSector = 0
         generatedMap.sectors.forEach { sector ->
             repeat(elementsPerSector) {
-                game.addElementInSector(sector, Elements.rifleSquad.new(), affiliation = Affiliation.Hostile)?.
-                    let {
+                game.addElementInSector(sector, Elements.rifleSquad.new(), affiliation = Affiliation.Hostile)
+                        .let {
                             gameWorld.trackUnit(it)
                         }
             }

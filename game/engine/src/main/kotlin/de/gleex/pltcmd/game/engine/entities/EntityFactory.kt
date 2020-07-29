@@ -25,19 +25,54 @@ import org.hexworks.cobalt.databinding.api.property.Property
 
 object EntityFactory {
 
-    fun newElement(element: CommandingElement, initialPosition: Property<Coordinate>, affiliation: Affiliation = Affiliation.Unknown, radioSender: RadioSender): ElementEntity =
-            newEntityOfType(ElementType, {
-                attributes(
-                        CommandersIntent(),
-                        ElementAttribute(element, affiliation),
-                        PositionAttribute(initialPosition),
-                        // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter
-                        RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
-                        CombatAttribute()
-                )
-                behaviors(IntentPursuing, Moving, Communicating, Fighting)
-                facets(ExecuteOrder, ConversationSender)
-            })
+    fun newElement(
+            element: CommandingElement,
+            initialPosition: Property<Coordinate>,
+            affiliation: Affiliation = Affiliation.Unknown,
+            radioSender: RadioSender
+    ): ElementEntity {
+        val attributes: MutableList<Attribute> = mutableListOf(
+                CommandersIntent(),
+                ElementAttribute(element, affiliation),
+                PositionAttribute(initialPosition),
+                RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
+                CombatAttribute(),
+
+                MovementPath(),
+                MovementSpeed(element),
+                MovementProgress()
+        )
+        // TODO: Make systems comparable so we do not need to make sure this if/else madness has the correct order
+        // Lets say we have a speed limit for aerial elements (just for testing)
+        if(element.kind == ElementKind.Aerial) {
+            attributes += MovementModifier.SpeedCap(18.0)
+        }
+
+        val behaviors: MutableList<Behavior<GameContext>> = mutableListOf(
+                IntentPursuing,
+                MovingForOneMinute,
+                Communicating,
+                Fighting
+        )
+        if(element.kind == ElementKind.Infantry) {
+            behaviors.add(0, StopsWhileTransmitting)
+        }
+
+        val facets: MutableList<Facet<GameContext>> = mutableListOf(
+                PathFinding,
+                ExecuteOrder,
+                ConversationSender,
+                PositionChanging
+        )
+        if(element.kind == ElementKind.Infantry) {
+            facets.add(0, MakesSecurityHalts)
+        }
+        return newEntityOfType(ElementType) {
+            attributes(*attributes.toTypedArray())
+            behaviors(*behaviors.toTypedArray())
+            facets(*facets.toTypedArray())
+        }
+    }
 
     fun newWanderingElement(element: CommandingElement, initialPosition: Property<Coordinate>, affiliation: Affiliation = Affiliation.Unknown, radioSender: RadioSender): ElementEntity =
             newElement(element, initialPosition, affiliation, radioSender)
@@ -45,47 +80,9 @@ object EntityFactory {
 
 }
 
-fun CommandingElement.toEntityAt(elementPosition: Property<Coordinate>, affiliation: Affiliation, radioSender: RadioSender): ElementEntity {
-    val attributes: MutableList<Attribute> = mutableListOf(
-            CommandersIntent(),
-            ElementAttribute(this@toEntityAt, affiliation),
-            PositionAttribute(elementPosition),
-            RadioAttribute(RadioCommunicator(this@toEntityAt.callSign, radioSender)),
-            CombatAttribute(),
-
-            // Trying stuff...
-            MovementPath(),
-            MovementSpeed(this@toEntityAt),
-            MovementProgress()
-    )
-    // TODO: Make systems comparable so we do not need to make sure this if/else madness has the correct order
-    // Lets say we have a speed limit for aerial elements (just for testing)
-    if(kind == ElementKind.Aerial) {
-        attributes += MovementModifier.SpeedCap(18.0)
-    }
-
-    val behaviors: MutableList<Behavior<GameContext>> = mutableListOf(
-            IntentPursuing,
-            MovingForOneMinute,
-            Communicating,
-            Fighting
-    )
-    if(kind == ElementKind.Infantry) {
-        behaviors.add(0, StopsWhileTransmitting)
-    }
-
-    val facets: MutableList<Facet<GameContext>> = mutableListOf(
-            PathFinding,
-            ExecuteOrder,
-            ConversationSender,
-            PositionChanging
-    )
-    if(kind == ElementKind.Infantry) {
-        facets.add(0, MakesSecurityHalts)
-    }
-    return newEntityOfType(ElementType) {
-        attributes(*attributes.toTypedArray())
-        behaviors(*behaviors.toTypedArray())
-        facets(*facets.toTypedArray())
-    }
+/**
+ * Turns this [CommandingElement] into an entity using [EntityFactory.newElement]
+ */
+fun CommandingElement.toEntity(elementPosition: Property<Coordinate>, affiliation: Affiliation, radioSender: RadioSender): ElementEntity {
+    return EntityFactory.newElement(this, elementPosition, affiliation, radioSender)
 }

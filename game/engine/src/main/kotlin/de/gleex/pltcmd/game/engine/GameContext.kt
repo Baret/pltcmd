@@ -14,7 +14,12 @@ import kotlin.random.Random
  *
  * @param currentTick the tick that is currently being simulated. May be used to trigger scheduled actions.
  */
-data class GameContext(val currentTick: TickId, val world: WorldMap, private val allElements: Set<ElementEntity>, val random: Random) : Context {
+data class GameContext(
+        val currentTick: TickId,
+        val world: WorldMap,
+        private val allElements: Set<ElementEntity>,
+        val random: Random
+) : Context {
 
     fun findElementAt(location: Coordinate): Maybe<ElementEntity> {
         return Maybe.ofNullable(allElements.find { it.currentPosition == location })
