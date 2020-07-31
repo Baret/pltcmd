@@ -8,8 +8,11 @@ import org.hexworks.amethyst.api.Command
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
-class PatrolAreaGoal(private val patrolAt: CoordinateArea) : Goal() {
-    var nextDestination: Coordinate? = null
+/**
+ * This goal finds random destinations in the given area and moves there.
+ */
+class PatrolAreaGoal(private val patrolAt: CoordinateArea) : EndlessGoal() {
+    private var nextDestination: Coordinate? = null
 
     companion object {
         private val log = LoggerFactory.getLogger(PatrolAreaGoal::class)
@@ -17,10 +20,6 @@ class PatrolAreaGoal(private val patrolAt: CoordinateArea) : Goal() {
 
     init {
         log.info("Created goal PATROL AREA: $patrolAt")
-    }
-
-    override fun isFinished(element: ElementEntity): Boolean {
-        return false
     }
 
     override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
