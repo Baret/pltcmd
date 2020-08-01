@@ -4,7 +4,6 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import org.hexworks.amethyst.api.Command
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.*
 
 /**
@@ -17,12 +16,8 @@ abstract class Goal(vararg subGoals: Goal) {
 
     private val subGoals = Stack<Goal>()
 
-    private val log = LoggerFactory.getLogger(Goal::class)
-
     init {
-        log.debug("Initializing goal with ${subGoals.size} subgoals")
         subGoals.reversed().forEach {
-            log.debug("\tPushing subgoal $it")
             this.subGoals.push(it)
         }
     }

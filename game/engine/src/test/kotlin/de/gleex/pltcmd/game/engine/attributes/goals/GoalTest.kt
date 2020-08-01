@@ -16,12 +16,9 @@ import org.hexworks.amethyst.api.Command
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.newEntityOfType
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 
 class GoalTest : WordSpec() {
-
-    private val log = LoggerFactory.getLogger(GoalTest::class)
 
     private val testEntity: ElementEntity = newEntityOfType(ElementType) {
         // no attributes etc. needed yet
@@ -42,7 +39,6 @@ class GoalTest : WordSpec() {
 
                 var expectedValue = 1
                 repeat(3) {
-                    log.debug("testing $testGoal with expected value $expectedValue...")
                     testGoal.isFinished(testEntity) shouldBe false
                     val commandMaybe = testGoal.step(testEntity, testContext)
                     commandMaybe shouldNot beEmptyMaybe()
