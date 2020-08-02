@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import org.hexworks.amethyst.api.Command
 import org.hexworks.cobalt.datatypes.Maybe
+import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.*
 
 /**
@@ -15,6 +16,8 @@ import java.util.*
 abstract class Goal(vararg subGoals: Goal) {
 
     private val subGoals = Stack<Goal>()
+
+    private val log = LoggerFactory.getLogger(Goal::class)
 
     init {
         addSubGoals(*subGoals)
@@ -55,7 +58,8 @@ abstract class Goal(vararg subGoals: Goal) {
         while (hasSubGoals()
                 && subGoals.peek()
                         .isFinished(element)) {
-            subGoals.pop()
+            val popped = subGoals.pop()
+            log.debug("Popped sub-goal $popped")
         }
     }
 
@@ -64,6 +68,7 @@ abstract class Goal(vararg subGoals: Goal) {
      * onto the sub-goal-stack in reversed order)
      */
     protected fun addSubGoals(vararg additionalSubGoals: Goal) {
+        log.debug("Pushing ${additionalSubGoals.size} goals onto the stack")
         additionalSubGoals.reversed()
                 .forEach {
                     subGoals.push(it)

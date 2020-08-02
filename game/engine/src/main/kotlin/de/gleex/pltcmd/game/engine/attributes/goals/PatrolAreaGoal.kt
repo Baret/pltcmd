@@ -9,7 +9,7 @@ import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
- * This goal finds random destinations in the given area and moves there.
+ * This goal finds random destinations in the given area and moves there. This goal is an [EndlessGoal]!
  */
 class PatrolAreaGoal(private val patrolAt: CoordinateArea) : EndlessGoal() {
     private var nextDestination: Coordinate? = null

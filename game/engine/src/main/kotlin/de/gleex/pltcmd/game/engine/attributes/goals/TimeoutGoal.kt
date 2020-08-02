@@ -8,8 +8,15 @@ import org.hexworks.cobalt.datatypes.Maybe
 /**
  * This is a wrapper around another goal. It gets executed for a given number of ticks or until the wrapped goal
  * is finished. This class is especially useful to limit [EndlessGoal]s.
+ *
+ * @param onTimeoutReached is called after the last step when the timeout reaches 0. So first [goal] does the last step,
+ *                          then this function is invoked.
  */
-open class TimeoutGoal(numberOfTurns: Int, private val goal: Goal): Goal() {
+open class TimeoutGoal(
+        numberOfTurns: Int,
+        private val goal: Goal,
+        private val onTimeoutReached: (element: ElementEntity, context: GameContext) -> Unit = { _, _ -> }
+) : Goal() {
     private var turnsRemaining = numberOfTurns + 1
 
     override fun isFinished(element: ElementEntity): Boolean =
@@ -18,5 +25,10 @@ open class TimeoutGoal(numberOfTurns: Int, private val goal: Goal): Goal() {
     override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
         turnsRemaining--
         return goal.step(element, context)
+                .also {
+                    if (turnsRemaining <= 0) {
+                        onTimeoutReached(element, context)
+                    }
+                }
     }
 }
