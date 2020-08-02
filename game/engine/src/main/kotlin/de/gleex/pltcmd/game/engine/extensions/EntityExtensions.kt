@@ -22,6 +22,12 @@ internal fun <T : Attribute> AnyGameEntity.hasAttribute(attribute: KClass<T>): B
         findAttribute(attribute).isPresent
 
 /**
+ * Checks if this entity has the given facet (shorthand version for findFacet).
+ */
+internal fun <T: Facet<GameContext>> AnyGameEntity.hasFacet(facet: KClass<T>): Boolean =
+        findFacet(facet).isPresent
+
+/**
  * Adds the given attribute if no attribute of type [A] is present.
  */
 internal inline fun <reified A : Attribute> AnyGameEntity.addIfMissing(attribute: A) {

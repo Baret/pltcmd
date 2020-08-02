@@ -17,16 +17,16 @@ abstract class Goal(vararg subGoals: Goal) {
     private val subGoals = Stack<Goal>()
 
     init {
-        subGoals.reversed().forEach {
-            this.subGoals.push(it)
-        }
+        addSubGoals(*subGoals)
     }
 
     /**
      * Returns true if this goal does not need any more steps.
      */
-    open fun isFinished(element: ElementEntity): Boolean =
-            subGoals.isEmpty()
+    open fun isFinished(element: ElementEntity): Boolean {
+        popFinishedSubGoals(element)
+        return hasSubGoals().not()
+    }
 
     /**
      * Advances this goal by one step. It may return a command that needs to be executed by the element.
@@ -42,16 +42,39 @@ abstract class Goal(vararg subGoals: Goal) {
      * Calls [step] on the next unfinished sub-goal. All finished goals are popped off the sub-goal-stack.
      */
     protected fun stepSubGoals(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
-        while (subGoals.isNotEmpty() && subGoals.peek().isFinished(element)) {
-            subGoals.pop()
-        }
-        return if(subGoals.isEmpty()) {
+        popFinishedSubGoals(element)
+        return if (subGoals.isEmpty()) {
             Maybe.empty()
         } else {
             subGoals.peek()
                     .step(element, context)
         }
     }
+
+    private fun popFinishedSubGoals(element: ElementEntity) {
+        while (hasSubGoals()
+                && subGoals.peek()
+                        .isFinished(element)) {
+            subGoals.pop()
+        }
+    }
+
+    /**
+     * Adds the given goals to the list of sub-goals so that they are executed in the given order (they are pushed
+     * onto the sub-goal-stack in reversed order)
+     */
+    protected fun addSubGoals(vararg additionalSubGoals: Goal) {
+        additionalSubGoals.reversed()
+                .forEach {
+                    subGoals.push(it)
+                }
+    }
+
+    /**
+     * Returns true if sub-goals are present
+     */
+    protected fun hasSubGoals(): Boolean =
+            subGoals.isNotEmpty()
 }
 
 fun Goal.andThen(nextGoal: Goal): Goal = AndGoal(this, nextGoal)

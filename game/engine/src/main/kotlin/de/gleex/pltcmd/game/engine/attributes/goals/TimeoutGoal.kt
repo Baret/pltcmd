@@ -9,7 +9,7 @@ import org.hexworks.cobalt.datatypes.Maybe
  * This is a wrapper around another goal. It gets executed for a given number of ticks or until the wrapped goal
  * is finished. This class is especially useful to limit [EndlessGoal]s.
  */
-abstract class TimeoutGoal(numberOfTurns: Int, private val goal: Goal): Goal() {
+open class TimeoutGoal(numberOfTurns: Int, private val goal: Goal): Goal() {
     private var turnsRemaining = numberOfTurns + 1
 
     override fun isFinished(element: ElementEntity): Boolean =

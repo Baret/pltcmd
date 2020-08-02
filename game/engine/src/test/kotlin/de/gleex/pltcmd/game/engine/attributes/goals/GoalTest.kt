@@ -54,8 +54,10 @@ class GoalTest : FreeSpec() {
                     }
                 }
 
-                testGoal.step(testEntity, testContext) should beEmptyMaybe()
-                testGoal.isFinished(testEntity) shouldBe true
+                "It should be finished after 3 steps" {
+                    testGoal.isFinished(testEntity) shouldBe true
+                    testGoal.step(testEntity, testContext) should beEmptyMaybe()
+                }
             }
         }
     }
