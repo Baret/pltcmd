@@ -14,4 +14,16 @@ class RootGoal : EndlessGoal() {
         return Maybe.empty()
     }
 
+    fun clear() =
+            this.also {
+                super.clearSubGoals()
+            }
+
+    fun push(goal: Goal) =
+            this.also {
+                addSubGoals(goal)
+            }
+
+    fun pop(): Maybe<Goal> =
+            popSubGoal()
 }

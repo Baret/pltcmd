@@ -46,7 +46,7 @@ abstract class Goal(vararg subGoals: Goal) {
      */
     protected fun stepSubGoals(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
         popFinishedSubGoals(element)
-        return if (subGoals.isEmpty()) {
+        return if (hasSubGoals().not()) {
             Maybe.empty()
         } else {
             subGoals.peek()
@@ -54,7 +54,20 @@ abstract class Goal(vararg subGoals: Goal) {
         }
     }
 
-    private fun popFinishedSubGoals(element: ElementEntity) {
+    /**
+     * Pops the current sub-goal off the stack if it is not empty.
+     */
+    protected fun popSubGoal(): Maybe<Goal> =
+        if(hasSubGoals()) {
+            Maybe.of(subGoals.pop())
+        } else {
+            Maybe.empty()
+        }
+
+    /**
+     * Pops all sub-goals off the that are already finished.
+     */
+    protected fun popFinishedSubGoals(element: ElementEntity) {
         while (hasSubGoals()
                 && subGoals.peek()
                         .isFinished(element)) {
@@ -68,9 +81,10 @@ abstract class Goal(vararg subGoals: Goal) {
      * onto the sub-goal-stack in reversed order)
      */
     protected fun addSubGoals(vararg additionalSubGoals: Goal) {
-        log.debug("Pushing ${additionalSubGoals.size} goals onto the stack")
+        log.debug("Pushing ${additionalSubGoals.size} goals onto the stack of ${this::class.simpleName}")
         additionalSubGoals.reversed()
                 .forEach {
+                    log.debug("\t-> $it")
                     subGoals.push(it)
                 }
     }
@@ -80,6 +94,6 @@ abstract class Goal(vararg subGoals: Goal) {
      */
     protected fun hasSubGoals(): Boolean =
             subGoals.isNotEmpty()
-}
 
-fun Goal.andThen(nextGoal: Goal): Goal = AndGoal(this, nextGoal)
+    protected fun clearSubGoals() = subGoals.clear()
+}
