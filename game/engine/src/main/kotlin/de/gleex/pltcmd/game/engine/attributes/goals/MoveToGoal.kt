@@ -16,7 +16,7 @@ import org.hexworks.cobalt.datatypes.Maybe
  * This goal should not be set directly, as it is rather dumb. Use [ReachDestination] to make sure the element will
  * eventually get to the destination.
  */
-class MoveToGoal(private val destination: Coordinate): Goal() {
+data class MoveToGoal(private val destination: Coordinate): Goal() {
     override fun isFinished(element: ElementEntity): Boolean =
             element.position.value == destination
 

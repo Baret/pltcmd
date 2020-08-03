@@ -58,8 +58,8 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
                         .withSize(width, 1)
                         .build()
                         .apply {
+                            textProperty.updateFrom(createPropertyFrom("Patrol at ") bindPlusWith destinationProperty.bindTransform { it.toString() }, true)
                             onActivated {
-                                textProperty.updateFrom(createPropertyFrom("Patrol ") bindPlusWith destinationProperty.bindTransform { it.toString() }, true)
                                 sendOrder(PatrolAreaAt)
                             }
                         })

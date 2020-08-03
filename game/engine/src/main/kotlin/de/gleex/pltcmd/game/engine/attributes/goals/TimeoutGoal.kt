@@ -17,18 +17,22 @@ open class TimeoutGoal(
         private val goal: Goal,
         private val onTimeoutReached: (element: ElementEntity, context: GameContext) -> Unit = { _, _ -> }
 ) : Goal() {
-    private var turnsRemaining = numberOfTurns + 1
+    private var ticksRemaining = numberOfTurns + 1
 
     override fun isFinished(element: ElementEntity): Boolean =
-            turnsRemaining <= 0 || goal.isFinished(element)
+            ticksRemaining <= 0 || goal.isFinished(element)
 
     override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
-        turnsRemaining--
+        ticksRemaining--
         return goal.step(element, context)
                 .also {
-                    if (turnsRemaining <= 0) {
+                    if (ticksRemaining <= 0) {
                         onTimeoutReached(element, context)
                     }
                 }
+    }
+
+    override fun toString(): String {
+        return "TimeoutGoal(goal=$goal, turnsRemaining=$ticksRemaining)"
     }
 }

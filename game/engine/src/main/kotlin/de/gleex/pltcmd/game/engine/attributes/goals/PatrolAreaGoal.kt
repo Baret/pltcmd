@@ -7,9 +7,12 @@ import org.hexworks.amethyst.api.Command
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**
- * This goal finds random destinations in the given area and moves there. This goal is an [EndlessGoal]!
+ * This goal finds random destinations in the given area and moves there. At each waypoint the
+ * element makes a [SecurityHalt].
+ *
+ * This goal is an [EndlessGoal]!
  */
-class PatrolAreaGoal(private val patrolAt: CoordinateArea) : EndlessGoal() {
+data class PatrolAreaGoal(private val patrolAt: CoordinateArea) : EndlessGoal() {
     override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
         if (hasSubGoals().not()) {
             val randomDestination = context

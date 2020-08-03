@@ -6,6 +6,6 @@ package de.gleex.pltcmd.game.engine.attributes.goals
  *
  * @param ticksToHalt number of ticks to execute the [HaltGoal]
  */
-class SecurityHalt(ticksToHalt: Int): TimeoutGoal(ticksToHalt, HaltGoal, { element, _ ->
+data class SecurityHalt(private val ticksToHalt: Int): TimeoutGoal(ticksToHalt, HaltGoal(), { element, _ ->
     HaltGoal.cleanUp(element)
 })

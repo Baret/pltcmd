@@ -72,7 +72,7 @@ abstract class Goal(vararg subGoals: Goal) {
                 && subGoals.peek()
                         .isFinished(element)) {
             val popped = subGoals.pop()
-            log.debug("Popped sub-goal $popped")
+            log.debug("Popped sub-goal $popped from stack of $this")
         }
     }
 
@@ -81,7 +81,9 @@ abstract class Goal(vararg subGoals: Goal) {
      * onto the sub-goal-stack in reversed order)
      */
     protected fun addSubGoals(vararg additionalSubGoals: Goal) {
-        log.debug("Pushing ${additionalSubGoals.size} goals onto the stack of ${this::class.simpleName}")
+        if (additionalSubGoals.isNotEmpty()) {
+            log.debug("Pushing ${additionalSubGoals.size} goals onto the stack of $this")
+        }
         additionalSubGoals.reversed()
                 .forEach {
                     log.debug("\t-> $it")

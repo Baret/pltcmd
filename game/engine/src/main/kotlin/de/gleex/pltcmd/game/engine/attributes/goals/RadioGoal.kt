@@ -7,6 +7,9 @@ import de.gleex.pltcmd.model.radio.communication.Conversation
 import org.hexworks.amethyst.api.Command
 import org.hexworks.cobalt.datatypes.Maybe
 
+/**
+ * Starts the given conversation. This goal is finished after one step.
+ */
 class RadioGoal(private val conversationToStart: Conversation) : Goal() {
     private var conversationStarted = false
 
