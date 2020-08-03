@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.attributes.flags.Halted
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.game.engine.extensions.hasFacet
@@ -39,7 +38,7 @@ data class ReachDestination(private val destination: Coordinate) : Goal() {
     }
 
     private fun establishMovableState(element: ElementEntity) {
-        element.asMutableEntity().removeAttribute(Halted)
+        HaltGoal.cleanUp(element)
     }
 
 }

@@ -64,20 +64,27 @@ fun main() {
             val charlie = visibleSector.createFriendly(Elements.reconPlane.new()
                     .apply { callSign = CallSign("Charlie") }, game, gameWorld)
             listOf(alpha, bravo, charlie).forEach {
-                log.info("${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeedInKph} kph.")
+                log.debug("${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeedInKph} kph.")
             }
             add(alpha)
             add(bravo)
             add(charlie)
         }
-        val hq = visibleSector.createFriendly(Elements.riflePlatoon.new().apply { callSign = CallSign("HQ") }, game, gameWorld, visibleSector.origin.movedBy(
-                Sector.TILE_COUNT / 2,
-                Sector.TILE_COUNT / 2
-        ), Affiliation.Self)
+        val hq = visibleSector.createFriendly(
+                Elements.riflePlatoon.new()
+                        .apply { callSign = CallSign("HQ") },
+                game,
+                gameWorld,
+                visibleSector.origin.movedBy(
+                        Sector.TILE_COUNT / 2,
+                        Sector.TILE_COUNT / 2
+                ),
+                Affiliation.Self
+        )
         screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
         // Adding some elements to every sector
-        val elementsPerSector = 0
+        val elementsPerSector = 2
         generatedMap.sectors.forEach { sector ->
             repeat(elementsPerSector) {
                 game.addElementInSector(sector, Elements.rifleSquad.new(), affiliation = Affiliation.Hostile)

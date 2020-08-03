@@ -81,7 +81,7 @@ object EntityFactory {
 }
 
 /**
- * Turns this [CommandingElement] into an entity using [EntityFactory.newElement]
+ * Turns this [CommandingElement] into an entity using [EntityFactory.newElement].
  */
 fun CommandingElement.toEntity(elementPosition: Property<Coordinate>, affiliation: Affiliation, radioSender: RadioSender): ElementEntity {
     return EntityFactory.newElement(this, elementPosition, affiliation, radioSender)
