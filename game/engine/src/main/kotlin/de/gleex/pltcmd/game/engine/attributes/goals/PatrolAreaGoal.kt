@@ -2,41 +2,28 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import org.hexworks.amethyst.api.Command
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * This goal finds random destinations in the given area and moves there. This goal is an [EndlessGoal]!
  */
 class PatrolAreaGoal(private val patrolAt: CoordinateArea) : EndlessGoal() {
-    private var nextDestination: Coordinate? = null
-
-    companion object {
-        private val log = LoggerFactory.getLogger(PatrolAreaGoal::class)
-    }
-
-    init {
-        log.info("Created goal PATROL AREA: $patrolAt")
-    }
-
     override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
-        // TODO: add "and wait some turns" after moving
-        if (nextDestination == null) {
-            nextDestination = context.world.moveInside(patrolAt.toSet().random())
-            log.info("No destination. Found random destination $nextDestination")
+        if (hasSubGoals().not()) {
+            val randomDestination = context
+                    .world
+                    .moveInside(patrolAt.toSet()
+                            .random(context.random))
+            addSubGoals(
+                    ReachDestination(randomDestination),
+                    TakeElevatedPosition(randomDestination, context.world),
+                    // TODO: Go firm instead of making a security halt
+                    SecurityHalt(8)
+            )
         }
-        val reachDestinationGoal = ReachDestination(nextDestination!!)
-        return if (reachDestinationGoal.isFinished(element)) {
-            log.info("Destination $nextDestination reached. Resetting destination.")
-            nextDestination = null
-            Maybe.empty()
-        } else {
-            log.info("Stepping ReachDestination towards $nextDestination")
-            reachDestinationGoal.step(element, context)
-        }
+        return stepSubGoals(element, context)
     }
 
 }

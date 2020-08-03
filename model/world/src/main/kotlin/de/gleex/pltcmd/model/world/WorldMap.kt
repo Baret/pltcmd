@@ -19,6 +19,7 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
 
     /** the most south-west [Coordinate] of this world */
     val origin = originToSector.firstKey()!!
+
     /** the most north-east [Coordinate] of this world */
     val last = originToSector[originToSector.lastKey()!!]!!.tiles.last()!!.coordinate
 
@@ -34,7 +35,8 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
      * Returns all neighbors of the given coordinate that are inside this world.
      */
     fun neighborsOf(coordinate: Coordinate): List<Coordinate> {
-        return coordinate.neighbors().filter { contains(it) }
+        return coordinate.neighbors()
+                .filter { contains(it) }
     }
 
     fun contains(coordinate: Coordinate): Boolean {
@@ -52,7 +54,8 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
         while (origins.hasNext()) {
             val current = origins.next()
             require(current == previous.withRelativeEasting(Sector.TILE_COUNT) ||
-                    (current == previous.withEasting(first.eastingFromLeft).withRelativeNorthing(Sector.TILE_COUNT))) {
+                    (current == previous.withEasting(first.eastingFromLeft)
+                            .withRelativeNorthing(Sector.TILE_COUNT))) {
                 "Sector origins must be next to each other: $previous and $current"
             }
             previous = current
@@ -60,14 +63,15 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
     }
 
     /** @return the [Terrain] of the tile at the given location or throws an exception if the given coordinate does not belong to this world */
-    fun getTerrainAt(coordinate: Coordinate): Terrain {
+    operator fun get(coordinate: Coordinate): Terrain {
         val sector = originToSector[coordinate.toSectorOrigin()]!!
         return sector.getTerrainAt(coordinate) ?: throw IllegalStateException("no terrain for $coordinate in $sector")
     }
+
     /** @return the [Terrain] of this world at the given path */
-    fun getTerrainAt(path: CoordinatePath): List<Terrain> {
+    operator fun get(path: CoordinatePath): List<Terrain> {
         return path.filter { contains(it) }
-                .map { getTerrainAt(it) }
+                .map { get(it) }
     }
 
     /**
