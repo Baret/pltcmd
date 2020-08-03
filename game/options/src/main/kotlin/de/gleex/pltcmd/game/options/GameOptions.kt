@@ -24,7 +24,7 @@ object GameOptions {
      * The amount of time between each tick.
      */
     object tickRate {
-        val duration: Long = 2L
+        val duration: Long = 1L
         val timeUnit: TimeUnit = TimeUnit.SECONDS
     }
 

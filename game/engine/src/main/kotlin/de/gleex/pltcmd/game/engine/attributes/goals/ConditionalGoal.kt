@@ -10,8 +10,14 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * This goal consists of two sub-goals. It executes [whenFalse] until [condition] becomes true. Then [whenTrue] is
  * stepped until it finishes. Afterwards execution goes back to [whenFalse]. This goal is finished, when both
  * sub-goals are finished.
+ *
+ * @param whenFalse [Goal] to be executed by default
+ * @param whenTrue [Goal] that is executed as soon as [condition] becomes true. From this time on it stays
+ *                  active until it is finished.
+ * @param condition that triggers the switch to the other goal. It is invoked until it returns true. This means it
+ *                  is enough to return true once (i.e. on a specific tick), it does not need to stay true.
  */
-class ConditionalGoal(private val whenTrue: Goal, private val whenFalse: Goal, private val condition: () -> Boolean) : Goal(whenFalse) {
+data class ConditionalGoal(private val whenTrue: Goal, private val whenFalse: Goal, private val condition: () -> Boolean) : Goal(whenFalse) {
     private var conditionsWasTrue = false
 
     private val log = LoggerFactory.getLogger(ConditionalGoal::class)
@@ -20,8 +26,9 @@ class ConditionalGoal(private val whenTrue: Goal, private val whenFalse: Goal, p
             whenTrue.isFinished(element) && whenFalse.isFinished(element)
 
     override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
-        if(condition.invoke() && conditionsWasTrue.not()) {
+        if (conditionsWasTrue.not() && condition.invoke()) {
             log.debug(" - - - - - - - - -CONDITION WAS TRUE! SWITCHING GOAL - - - - - - - - -")
+            conditionsWasTrue = true
             addSubGoals(whenTrue)
         }
         return stepSubGoals(element, context)
