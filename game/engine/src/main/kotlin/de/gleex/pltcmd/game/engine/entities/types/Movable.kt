@@ -41,9 +41,15 @@ var MovableEntity.movementProgress: Double
         getAttribute(MovementProgress::class).progressInPercent = value
     }
 
+/**
+ * The base speed determined by the [MovementSpeed] attribute.
+ */
 val MovableEntity.baseSpeedInKph: Double
     get() = getAttribute(MovementSpeed::class).value
 
+/**
+ * The current speed calculated by taking the [baseSpeedInKph] and applying all [movementModifiers].
+ */
 val MovableEntity.currentSpeedInKph: Double
     get() = movementModifiers.fold(baseSpeedInKph) { speed: Double, modifier: MovementModifier -> modifier(speed) }
 

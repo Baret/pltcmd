@@ -17,7 +17,13 @@ import org.hexworks.amethyst.api.base.BaseBehavior
  *
  * Required attributes: [PositionAttribute], [MovementPath]
  */
+// TODO: use CommandersIntent and ReachDestination or even better PatrolArea instead?
 internal object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, MovementPath::class) {
+
+    /**
+     * The chance that a wandering entity decides to step onto the next field.
+     */
+    private const val MOVEMENT_PROBABILITY = 0.4
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         if (entity.type !is Movable) {
@@ -27,7 +33,7 @@ internal object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, M
     }
 
     private suspend fun moveToRandomDestination(movable: MovableEntity, context: GameContext): Boolean {
-        if (movable.hasNoDestination && context.random.nextDouble() >= 0.6) {
+        if (movable.hasNoDestination && context.random.nextDouble() < MOVEMENT_PROBABILITY) {
             val destination = context.world.neighborsOf(movable.currentPosition)
                     .random(context.random)
             val moveResponse = movable.executeCommand(MoveTo(destination, context, movable))

@@ -11,6 +11,11 @@ import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
+/**
+ * [CommunicatingEntity]s with this behavior need to stop when they are transmitting on the radio.
+ *
+ * This behavior adds the [Transmitting] flag while the entity [isTransmitting].
+ */
 object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class) {
     private val log = LoggerFactory.getLogger(StopsWhileTransmitting::class)
 

@@ -11,6 +11,8 @@ import kotlin.reflect.KClass
  * Gets the [Attribute] of given type or throws an [IllegalStateException] if no attribute of this type is present.
  *
  * Be sure the attribute exists when using.
+ *
+ * @see hasAttribute
  */
 internal fun <T : Attribute> AnyGameEntity.getAttribute(attribute: KClass<T>) =
         findAttribute(attribute).orElseThrow { IllegalStateException("Entity $this does not have an attribute of type $attribute") }
@@ -20,6 +22,12 @@ internal fun <T : Attribute> AnyGameEntity.getAttribute(attribute: KClass<T>) =
  */
 internal fun <T : Attribute> AnyGameEntity.hasAttribute(attribute: KClass<T>): Boolean =
         findAttribute(attribute).isPresent
+
+/**
+ * Checks if this entity has the given behavior (shorthand version for findBehavior).
+ */
+internal fun <T: Behavior<GameContext>> AnyGameEntity.hasBehavior(behavior: KClass<T>): Boolean =
+        findBehavior(behavior).isPresent
 
 /**
  * Checks if this entity has the given facet (shorthand version for findFacet).

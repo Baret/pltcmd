@@ -17,7 +17,7 @@ import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
- * When entering a new sector this facet plans a [SecurityHalt] after it has moved
+ * When entering a new sector this facet plans a [SecurityHalt] after some tiles.
  */
 object MakesSecurityHalts : BaseFacet<GameContext>() {
 

@@ -24,6 +24,7 @@ object PathFinding : BaseFacet<GameContext>() {
                 return@responseWhenCommandIs Consumed
             }
             val currentPosition = entity.position.value
+            // TODO: Use a PathFinder (new interface) here. It should be held by a mutable Attribute so depending on its state an element can use different PathFinders
             val pathStack = Stack<Coordinate>()
                     .apply {
                         addAll(

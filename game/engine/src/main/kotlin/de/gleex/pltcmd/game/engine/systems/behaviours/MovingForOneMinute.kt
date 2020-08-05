@@ -12,6 +12,11 @@ import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
+/**
+ * Advances the [MovementProgress] of a [MovableEntity] according to its [currentSpeedInKph].
+ *
+ * When the progress is > 1.0 the entity executes a [UpdatePosition] command.
+ */
 object MovingForOneMinute :
         BaseBehavior<GameContext>(
                 PositionAttribute::class,
@@ -36,9 +41,10 @@ object MovingForOneMinute :
             log.debug("${entity.callsign} travels $travelDistanceInTiles tiles/tick with a base speed of ${entity.baseSpeedInKph} and current speed of ${entity.currentSpeedInKph} km/h. New progress: ${entity.movementProgress}")
             while (entity.movementProgress >= 1.0 && entity.movementPath.isNotEmpty()) {
                 val oldPosition = entity.position.value
-                entity.executeCommand(UpdatePosition(oldPosition, entity.movementPath.pop(), context, entity))
+                val newPosition = entity.movementPath.pop()
+                entity.executeCommand(UpdatePosition(oldPosition, newPosition, context, entity))
                 if(oldPosition != entity.position.value) {
-                    log.debug("${entity.callsign} sucessfully moved from $oldPosition to ${entity.position}")
+                    log.debug("${entity.callsign} successfully moved from $oldPosition to ${entity.position}")
                     entity.movementProgress -= 1.0
                 } else {
                     log.debug("${entity.callsign} was stopped by something! Progress left: ${entity.movementProgress}")

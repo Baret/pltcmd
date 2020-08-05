@@ -134,7 +134,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
     private fun LogArea.logRadioCalls() {
         globalEventBus.subscribeToBroadcasts { event: BroadcastEvent ->
             val transmission = event.transmission
-            val message = "${Ticker.currentTick}: ${transmission.message}"
+            val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
             if (transmission.isOpening) {
                 addHeader(message, false)
             } else {
