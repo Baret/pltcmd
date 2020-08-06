@@ -53,7 +53,7 @@ fun main() {
         screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
         // Adding some elements to every sector
-        val elementsPerSector = 3
+        val elementsPerSector = 0
         generatedMap.sectors.forEach { sector ->
             repeat(elementsPerSector) {
                 game.addElementInSector(sector, affiliation = Affiliation.Hostile)?.

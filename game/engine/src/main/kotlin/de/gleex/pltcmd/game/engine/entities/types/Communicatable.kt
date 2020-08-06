@@ -30,5 +30,5 @@ val CommunicatableEntity.inConversationWith: ObservableValue<Maybe<CallSign>>
 
 internal fun CommunicatableEntity.startConversation(conversation: Conversation) {
     log.debug("${(this as ElementEntity).callsign} starting conversation $conversation")
-    communicator.queueConversation(conversation)
+    communicator.startConversation(conversation)
 }

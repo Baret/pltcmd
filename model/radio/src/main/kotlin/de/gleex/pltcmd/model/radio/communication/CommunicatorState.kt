@@ -12,8 +12,8 @@ internal data class CommunicatorState(
         private var waitForReply: Int = MAX_RESPONSE_DELAY
 ) {
     companion object {
-        /** The number of turns to wait for a response before canceling the running conversation */
-        private const val MAX_RESPONSE_DELAY = 1
+        /** The number of ticks to wait for a response before canceling the running conversation */
+        private const val MAX_RESPONSE_DELAY = 3
     }
 
     val inConversationWith: Maybe<CallSign>
