@@ -3,7 +3,10 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
-import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.ElementType
+import de.gleex.pltcmd.game.engine.entities.types.communicator
+import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.systems.facets.OrderCommand
 import de.gleex.pltcmd.model.radio.communication.Conversations
@@ -12,12 +15,9 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.context.Transmiss
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.base.BaseBehavior
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 
 internal object Communicating : BaseBehavior<GameContext>(ElementAttribute::class, RadioAttribute::class) {
-
-    private val log = LoggerFactory.getLogger(Communicating::class)
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         if (entity.type !is ElementType) {
@@ -26,7 +26,6 @@ internal object Communicating : BaseBehavior<GameContext>(ElementAttribute::clas
         val elementEntity = entity as ElementEntity
         val radioCommunicator = elementEntity.communicator
         radioCommunicator.radioContext = ElementRadioContext(elementEntity, context)
-        log.debug(" - - - ${elementEntity.callsign} proceeds with conversation!")
         radioCommunicator.proceedWithConversation()
         return true
     }

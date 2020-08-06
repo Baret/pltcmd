@@ -70,7 +70,7 @@ object Ticker {
     fun start() {
         executor.scheduleAtFixedRate({
             tick()
-        }, 1, 3, TimeUnit.SECONDS)
+        }, 1, 1, TimeUnit.SECONDS)
     }
 
     fun stop() {

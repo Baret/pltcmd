@@ -21,7 +21,7 @@ import java.util.*
 
 /**
  * A [RadioCommunicator] participates in radio communications. It sends with the given radio each time [proceedWithConversation]
- * is called and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [EventBus].
+ * is called and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [globalEventBus].
  */
 // technically this is a facade that delegates to RadioTransmitter and RadioReceiver which share the same state
 class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
