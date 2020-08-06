@@ -14,8 +14,8 @@ import org.hexworks.amethyst.api.entity.EntityType
  */
 object PositionChanging : BaseFacet<GameContext>(PositionAttribute::class) {
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
-            command.responseWhenCommandIs(UpdatePosition::class) { (_, newPosition, _, source) ->
-                source.currentPosition = newPosition
+            command.responseWhenCommandIs(UpdatePosition::class) { (_, newPosition, _, entity) ->
+                entity.currentPosition = newPosition
                 Consumed
             }
 }

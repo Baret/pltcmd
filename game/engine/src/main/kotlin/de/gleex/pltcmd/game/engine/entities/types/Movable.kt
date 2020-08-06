@@ -1,9 +1,9 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
-import de.gleex.pltcmd.game.engine.attributes.movement.MovementSpeed
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -42,10 +42,10 @@ var MovableEntity.movementProgress: Double
     }
 
 /**
- * The base speed determined by the [MovementSpeed] attribute.
+ * The base speed determined by the [MovementBaseSpeed] attribute.
  */
 val MovableEntity.baseSpeedInKph: Double
-    get() = getAttribute(MovementSpeed::class).value
+    get() = getAttribute(MovementBaseSpeed::class).value
 
 /**
  * The current speed calculated by taking the [baseSpeedInKph] and applying all [movementModifiers].

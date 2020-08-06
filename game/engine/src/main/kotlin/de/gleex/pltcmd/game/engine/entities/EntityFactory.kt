@@ -2,10 +2,10 @@ package de.gleex.pltcmd.game.engine.entities
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.*
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
-import de.gleex.pltcmd.game.engine.attributes.movement.MovementSpeed
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.extensions.addIfMissing
@@ -39,7 +39,7 @@ object EntityFactory {
                 CombatAttribute(),
 
                 MovementPath(),
-                MovementSpeed(element),
+                MovementBaseSpeed(element),
                 MovementProgress()
         )
         // TODO: Make systems comparable so we do not need to make sure this if/else madness has the correct order
