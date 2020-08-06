@@ -268,7 +268,7 @@ internal class SendingCommunicator internal constructor(callSign: CallSign, stat
      *
      * @see CommunicatorState.isInConversation
      */
-    fun queueConversation(conversation: Conversation) {
+    internal fun queueConversation(conversation: Conversation) {
         conversationQueue.offer(conversation)
     }
 
