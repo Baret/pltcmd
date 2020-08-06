@@ -18,5 +18,4 @@ object PositionChanging : BaseFacet<GameContext>(PositionAttribute::class) {
                 source.currentPosition = newPosition
                 Consumed
             }
-
 }

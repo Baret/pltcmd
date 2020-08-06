@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.engine.attributes.movement
 
-import de.gleex.pltcmd.game.engine.attributes.stats.ElementStats
+import de.gleex.pltcmd.game.engine.attributes.stats.ElementStat
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.UnitKind
@@ -9,7 +9,7 @@ import de.gleex.pltcmd.model.elements.units.Units
 /**
  * The base speed of an element depending on the speed of each [Unit].
  */
-class MovementSpeed(element: CommandingElement) : ElementStats(element) {
+class MovementSpeed(element: CommandingElement) : ElementStat(element) {
     override fun valueForUnit(unit: Unit): Double =
             // TODO: Find reasonable values and maybe determine them more fine grained
             when (unit.kind) {
