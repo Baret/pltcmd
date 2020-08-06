@@ -19,6 +19,7 @@ data class ConversationCommand(
 ) : Command<Communicatable, GameContext>
 
 internal object ConversationSender : BaseFacet<GameContext>(RadioAttribute::class) {
+
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
             command.responseWhenCommandIs(ConversationCommand::class) { (conversation, _, sender) ->
                 sender.startConversation(conversation)
