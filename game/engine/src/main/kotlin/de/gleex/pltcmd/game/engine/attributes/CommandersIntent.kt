@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.engine.attributes
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.goals.ConditionalGoal
-import de.gleex.pltcmd.game.engine.attributes.goals.EmptyGoal
+import de.gleex.pltcmd.game.engine.attributes.goals.DoNothingGoal
 import de.gleex.pltcmd.game.engine.attributes.goals.Goal
 import de.gleex.pltcmd.game.engine.attributes.goals.RootGoal
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
@@ -66,7 +66,7 @@ internal class CommandersIntent : Attribute {
     fun doWhen(goal: Goal, condition: () -> Boolean): CommandersIntent {
         val currentGoal = commandersIntent
                 .pop()
-                .orElse(EmptyGoal)
+                .orElse(DoNothingGoal)
         val conditionalGoal = ConditionalGoal(goal, currentGoal, condition)
         return butNow(conditionalGoal)
     }

@@ -18,7 +18,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  *                  is enough to return true once (i.e. on a specific tick), it does not need to stay true.
  */
 data class ConditionalGoal(private val whenTrue: Goal, private val whenFalse: Goal, private val condition: () -> Boolean) : Goal(whenFalse) {
-    private var conditionsWasTrue = false
+    private var conditionWasTrue = false
 
     private val log = LoggerFactory.getLogger(ConditionalGoal::class)
 
@@ -26,9 +26,9 @@ data class ConditionalGoal(private val whenTrue: Goal, private val whenFalse: Go
             whenTrue.isFinished(element) && whenFalse.isFinished(element)
 
     override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
-        if (conditionsWasTrue.not() && condition.invoke()) {
+        if (conditionWasTrue.not() && condition.invoke()) {
             log.debug(" - - - - - - - - -CONDITION WAS TRUE! SWITCHING GOAL - - - - - - - - -")
-            conditionsWasTrue = true
+            conditionWasTrue = true
             addSubGoals(whenTrue)
         }
         return stepSubGoals(element, context)

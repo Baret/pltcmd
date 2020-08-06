@@ -10,7 +10,7 @@ import java.util.*
 /**
  * An element may have a _goal_ that is an abstraction layer on top of the basic capabilities of "a bunch of soldiers".
  *
- * It gets [step]ped by a behavior until it [isFinished]. Goals may contain sub-goals so each goal can represent any
+ * It gets [step]ped until it [isFinished]. Goals may contain sub-goals so each goal can represent any
  * level of abstraction until it breaks down to a [Command] that needs to be executed by the entity at the lowest level.
  */
 abstract class Goal(vararg subGoals: Goal) {
