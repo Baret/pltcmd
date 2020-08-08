@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.ui
+package de.gleex.pltcmd.game.ui.views
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
@@ -35,41 +35,48 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
 
     companion object {
         private val log = LoggerFactory.getLogger(GameView::class)
+
+        private const val MAP_VIEW_WIDTH = 53
+        private const val MAP_VIEW_HEIGHT = 53
+        private const val INTERFACE_PANEL_HEIGHT = UiOptions.WINDOW_HEIGHT
+        private const val LOG_AREA_HEIGHT = UiOptions.WINDOW_HEIGHT - MAP_VIEW_HEIGHT
+        private const val LOG_AREA_WIDTH = UiOptions.WINDOW_WIDTH - UiOptions.SIDEBAR_WIDTH
     }
 
     override fun onDock() {
-        val sidebar = Components.vbox().
-                withSpacing(2).
-                withSize(UiOptions.INTERFACE_PANEL_WIDTH, UiOptions.INTERFACE_PANEL_HEIGHT).
-                withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT).
-                withDecorations(ComponentDecorations.halfBlock()).
-                build()
+        val sidebar = Components.vbox()
+                .withSpacing(2)
+                .withSize(UiOptions.SIDEBAR_WIDTH, INTERFACE_PANEL_HEIGHT)
+                .withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT)
+                .withDecorations(ComponentDecorations.halfBlock())
+                .build()
 
-        val mainPart = Components.panel().
-                withSize(UiOptions.MAP_VIEW_WDTH, UiOptions.MAP_VIEW_HEIGHT).
-                withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
-                withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld)).
-                build().apply {
+        val mainPart = Components.panel()
+                .withSize(MAP_VIEW_WIDTH, MAP_VIEW_HEIGHT)
+                .withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT)
+                .withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld))
+                .build()
+                .apply {
                     // redraw MapCoordinateDecorationRenderer
                     gameWorld.visibleOffsetValue.onChange { asInternalComponent().render() }
                 }
 
-        val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>().
-                withGameArea(gameWorld).
-                withSize(gameWorld.visibleSize.to2DSize()).
-                withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
-                build()
+        val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>()
+                .withGameArea(gameWorld)
+                .withSize(gameWorld.visibleSize.to2DSize())
+                .withAlignmentWithin(mainPart, ComponentAlignment.CENTER)
+                .build()
 
         mainPart.addComponent(map)
         // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
         map.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
 
-        val logArea = Components.logArea().
-                withSize(UiOptions.LOG_AREA_WIDTH, UiOptions.LOG_AREA_HEIGHT).
-                withAlignmentWithin(screen, ComponentAlignment.BOTTOM_RIGHT).
-                withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
-                build().
-                also {
+        val logArea = Components.logArea()
+                .withSize(LOG_AREA_WIDTH, LOG_AREA_HEIGHT)
+                .withAlignmentWithin(screen, ComponentAlignment.BOTTOM_RIGHT)
+                .withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log"))
+                .build()
+                .also {
                     it.logRadioCalls()
                 }
 

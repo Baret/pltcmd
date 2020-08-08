@@ -24,12 +24,7 @@ object UiOptions {
     const val WINDOW_WIDTH = 90
     const val WINDOW_HEIGHT = 63
 
-    const val MAP_VIEW_WDTH = 53
-    const val MAP_VIEW_HEIGHT = 53
-    const val INTERFACE_PANEL_WIDTH = WINDOW_WIDTH - MAP_VIEW_WDTH
-    const val INTERFACE_PANEL_HEIGHT = WINDOW_HEIGHT
-    const val LOG_AREA_HEIGHT = WINDOW_HEIGHT - MAP_VIEW_HEIGHT
-    const val LOG_AREA_WIDTH = WINDOW_WIDTH - INTERFACE_PANEL_WIDTH
+    const val SIDEBAR_WIDTH = 37
 
     const val SKIP_INTRO = false
 }

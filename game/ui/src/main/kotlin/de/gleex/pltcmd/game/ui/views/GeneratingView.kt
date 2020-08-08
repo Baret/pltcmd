@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.ui
+package de.gleex.pltcmd.game.ui.views
 
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.mapgeneration.IncompleteMapBlock
