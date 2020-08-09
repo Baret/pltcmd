@@ -7,9 +7,8 @@ import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
 import de.gleex.pltcmd.game.engine.commands.UpdatePosition
 import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import org.hexworks.amethyst.api.base.BaseBehavior
-import org.hexworks.amethyst.api.entity.Entity
-import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
@@ -28,7 +27,7 @@ object MovingForOneMinute :
     private val log = LoggerFactory.getLogger(MovingForOneMinute::class)
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
+    override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         entity as MovableEntity
         entity as ElementEntity
         if(entity.canMove.not()) {
