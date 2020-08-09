@@ -24,6 +24,9 @@ object UiOptions {
     const val WINDOW_WIDTH = 90
     const val WINDOW_HEIGHT = 63
 
+    /**
+     * The full width of the sidebars. The content size is probably this - 2.
+     */
     const val SIDEBAR_WIDTH = 37
 
     const val SKIP_INTRO = false

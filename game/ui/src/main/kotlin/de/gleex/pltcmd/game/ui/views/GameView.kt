@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.ui.components.InputSidebar
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.*
@@ -21,6 +22,7 @@ import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.component.LogArea
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
@@ -38,18 +40,13 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
 
         private const val MAP_VIEW_WIDTH = 53
         private const val MAP_VIEW_HEIGHT = 53
-        private const val INTERFACE_PANEL_HEIGHT = UiOptions.WINDOW_HEIGHT
+        private const val SIDEBAR_HEIGHT = UiOptions.WINDOW_HEIGHT
         private const val LOG_AREA_HEIGHT = UiOptions.WINDOW_HEIGHT - MAP_VIEW_HEIGHT
         private const val LOG_AREA_WIDTH = UiOptions.WINDOW_WIDTH - UiOptions.SIDEBAR_WIDTH
     }
 
     override fun onDock() {
-        val sidebar = Components.vbox()
-                .withSpacing(2)
-                .withSize(UiOptions.SIDEBAR_WIDTH, INTERFACE_PANEL_HEIGHT)
-                .withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT)
-                .withDecorations(ComponentDecorations.halfBlock())
-                .build()
+        val sidebar = InputSidebar(Position.create(0, 0), SIDEBAR_HEIGHT)
 
         val mainPart = Components.panel()
                 .withSize(MAP_VIEW_WIDTH, MAP_VIEW_HEIGHT)
