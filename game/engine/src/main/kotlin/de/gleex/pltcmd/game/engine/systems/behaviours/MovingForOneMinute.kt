@@ -29,7 +29,7 @@ object MovingForOneMinute :
     @Suppress("UNCHECKED_CAST")
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         entity as ElementEntity
-        if(entity.canMove.not()) {
+        if(entity.canNotMove) {
             log.debug("${entity.callsign} can not move currently! The current speed is even ${entity.currentSpeedInKph} km/h")
             return false
         }

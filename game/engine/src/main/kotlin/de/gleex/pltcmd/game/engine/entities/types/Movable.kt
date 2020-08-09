@@ -66,7 +66,17 @@ val MovableEntity.movementModifiers: Sequence<MovementModifier>
             .map { it as MovementModifier }
 
 /**
- * True if this entity is currently able to move because it has not [movementModifiers] of type [MovementModifier.Type.Prevention]
+ * True if this entity is currently able to move because it has no [movementModifiers] of type [de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier.Prevention].
+ *
+ * @see canNotMove
  */
 val MovableEntity.canMove: Boolean
     get() = movementModifiers.none { it is MovementModifier.Prevention }
+
+/**
+ * True if this entity is currently unable to move because it has [movementModifiers] of type [de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier.Prevention].
+ *
+ * @see canMove
+ */
+val MovableEntity.canNotMove: Boolean
+    get() = canMove.not()
