@@ -93,7 +93,7 @@ fun main() {
                         }
             }
         }
-        Ticker.start(GameOptions.tickRate.duration, GameOptions.tickRate.timeUnit)
+        Ticker.start(GameOptions.TickRate.duration, GameOptions.TickRate.timeUnit)
         // cleanup
         screen.onShutdown { Ticker.stop() }
     }
