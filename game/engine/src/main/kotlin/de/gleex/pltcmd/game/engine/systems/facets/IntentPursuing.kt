@@ -6,7 +6,6 @@ import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.commandersIntent
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.base.BaseBehavior
 
 /**
@@ -18,12 +17,9 @@ object IntentPursuing : BaseBehavior<GameContext>(CommandersIntent::class) {
         return if (entity.type == ElementType) {
             val element = entity as ElementEntity
             val commandToExecute = element.commandersIntent.proceed(element, context)
-            commandToExecute
-                    .ifPresent {
-                        runBlocking {
-                            element.executeCommand(it)
-                        }
-                    }
+            if (commandToExecute.isPresent) {
+                element.executeCommand(commandToExecute.get())
+            }
             commandToExecute.isPresent
         } else {
             false
