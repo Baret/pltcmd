@@ -8,6 +8,7 @@ import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
 import de.gleex.pltcmd.game.engine.commands.UpdatePosition
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
+import de.gleex.pltcmd.game.options.GameConstants
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -34,7 +35,7 @@ object MovingForOneMinute :
             return false
         }
         return if(entity.movementPath.isNotEmpty()) {
-            val travelDistanceInTiles = entity.currentSpeedInKph / 6.0
+            val travelDistanceInTiles = entity.currentSpeedInKph / GameConstants.Speed.speedForOneTileInOneTickInKph
             entity.movementProgress += travelDistanceInTiles
             log.debug("${entity.callsign} travels $travelDistanceInTiles tiles/tick with a base speed of ${entity.baseSpeedInKph} and current speed of ${entity.currentSpeedInKph} km/h. New progress: ${entity.movementProgress}")
             while (entity.movementProgress >= 1.0 && entity.movementPath.isNotEmpty()) {

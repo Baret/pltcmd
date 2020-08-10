@@ -8,6 +8,7 @@ import de.gleex.pltcmd.game.engine.entities.types.MovableEntity
 import de.gleex.pltcmd.game.engine.entities.types.baseSpeedInKph
 import de.gleex.pltcmd.game.engine.entities.types.currentSpeedInKph
 import de.gleex.pltcmd.game.engine.entities.types.movementPath
+import de.gleex.pltcmd.game.options.GameConstants
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.model.world.toSectorOrigin
 import org.hexworks.amethyst.api.Command
@@ -31,7 +32,7 @@ object MakesSecurityHalts : BaseFacet<GameContext>() {
                             .ifPresent { intent ->
                                 // Make a security halt when approximately 300m into the new sector
                                 val afterTiles = 3.0
-                                val ticksPerTile = 6.0 / if (entity.currentSpeedInKph > 0.0) entity.currentSpeedInKph else entity.baseSpeedInKph
+                                val ticksPerTile = GameConstants.Speed.speedForOneTileInOneTickInKph / if (entity.currentSpeedInKph > 0.0) entity.currentSpeedInKph else entity.baseSpeedInKph
                                 val inTurns = (afterTiles * ticksPerTile).toInt()
 
                                 if (entity.movementPath.size > afterTiles) {
