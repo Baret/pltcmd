@@ -32,7 +32,7 @@ import org.hexworks.zircon.api.screen.Screen
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-private val log = LoggerFactory.getLogger("de.gleex.pltcmd.game.application.main")
+private val log = LoggerFactory.getLogger(::main::class)
 private val random = Random(GameOptions.MAP_SEED)
 
 fun main() {
