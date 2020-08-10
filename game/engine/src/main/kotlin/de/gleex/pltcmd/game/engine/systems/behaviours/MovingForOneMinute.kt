@@ -35,16 +35,17 @@ object MovingForOneMinute :
             return false
         }
         return if(entity.movementPath.isNotEmpty()) {
+            // TODO: Might be more accurate by re-calculating currentSpeedInKph after each tile (we might be slower there)
             val travelDistanceInTiles = entity.currentSpeedInKph / GameConstants.Speed.speedForOneTileInOneTickInKph
             entity.movementProgress += travelDistanceInTiles
             log.debug("${entity.callsign} travels $travelDistanceInTiles tiles/tick with a base speed of ${entity.baseSpeedInKph} and current speed of ${entity.currentSpeedInKph} km/h. New progress: ${entity.movementProgress}")
-            while (entity.movementProgress >= 1.0 && entity.movementPath.isNotEmpty()) {
+            while (entity.movementProgress.hasTilesToAdvance() && entity.movementPath.isNotEmpty()) {
                 val oldPosition = entity.position.value
                 val newPosition = entity.movementPath.pop()
                 entity.executeCommand(UpdatePosition(oldPosition, newPosition, context, entity))
                 if(oldPosition != entity.position.value) {
                     log.debug("${entity.callsign} successfully moved from $oldPosition to ${entity.position}")
-                    entity.movementProgress -= 1.0
+                    entity.movementProgress.advance()
                 } else {
                     log.debug("${entity.callsign} was stopped by something! Progress left: ${entity.movementProgress}")
                     break

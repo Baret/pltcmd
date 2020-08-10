@@ -35,11 +35,8 @@ var MovableEntity.movementPath: Stack<Coordinate>
         getAttribute(MovementPath::class).path = value
     }
 
-var MovableEntity.movementProgress: Double
-    get() = getAttribute(MovementProgress::class).progressInPercent
-    internal set(value) {
-        getAttribute(MovementProgress::class).progressInPercent = value
-    }
+internal val MovableEntity.movementProgress: MovementProgress
+    get() = getAttribute(MovementProgress::class)
 
 /**
  * The base speed determined by the [MovementBaseSpeed] attribute.
