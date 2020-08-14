@@ -12,6 +12,4 @@
     <name>Events</name>
     <description>This artifact provides global access to the EventBus</description>
 
-    <!-- TODO: add zircon dependency -->
-
 </project>

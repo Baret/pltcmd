@@ -175,7 +175,7 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
             (transmission as TransmissionWithResponse).response
 
     private fun gatherInformationFrom(transmission: Transmission) {
-        // TODO: Learn stuff from transmissions and add it to the "knowledge" of this unit
+        // TODO: Learn stuff from transmissions and add it to the "knowledge" of this unit/element (#104)
         val contacts = transmission.contactLocations
         if (contacts.isNotEmpty()) {
             log.debug("${callSign}: learned about enemies at ${contacts.joinToString()}")

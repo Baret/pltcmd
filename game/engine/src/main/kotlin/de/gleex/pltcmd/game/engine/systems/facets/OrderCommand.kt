@@ -33,7 +33,7 @@ internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class) {
                         MoveTo        -> entity.executeCommand(MoveToCommand(orderedTo!!, context, entity))
                         // TODO just moving to the enemy might not be the best approach
                         EngageEnemyAt -> entity.executeCommand(MoveToCommand(orderedTo!!, context, entity))
-                        // TODO implement go firm
+                        // TODO implement go firm (#99)
                         GoFirm        -> TODO()
                     }
                 }

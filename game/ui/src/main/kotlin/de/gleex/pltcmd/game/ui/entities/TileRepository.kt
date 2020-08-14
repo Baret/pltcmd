@@ -30,7 +30,7 @@ object TileRepository {
                 buildCharacterTile()
 
         fun platoon(affiliation: Affiliation): Tile {
-            // TODO: cache the tiles, because they are immutable
+            // TODO: cache the tiles, because they are immutable (#101)
             val (foreground, background) = ColorRepository.forAffiliation(affiliation)
             return platoonTile(foreground, background)
         }

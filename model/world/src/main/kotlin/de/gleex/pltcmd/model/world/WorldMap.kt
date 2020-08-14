@@ -44,7 +44,7 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
     override fun toString() = "WorldMap[${originToSector.size} sectors, size = $width * $height tiles]"
 
     /** Checks if next sector is in the same row or starts the the first column */
-    // TODO check if all rows have the same length to ensure a rectangle
+    // TODO check if all rows have the same length to ensure a rectangle (#106)
     private fun checkFullyConnected() {
         val origins = originToSector.keys.iterator()
         val first = origins.next()
