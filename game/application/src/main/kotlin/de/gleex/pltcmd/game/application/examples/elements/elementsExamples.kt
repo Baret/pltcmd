@@ -72,7 +72,6 @@ fun main() {
     printCommandElement(company)
 
     spacer()
-    // TODO: Make a unittest out of this
     println("Lets test some impossible cases...")
     println("You cannot put a squad into a squad and subordinates need to have the same kind...")
     val sq1 = CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Squad, setOf(Officer.new()), emptySet())

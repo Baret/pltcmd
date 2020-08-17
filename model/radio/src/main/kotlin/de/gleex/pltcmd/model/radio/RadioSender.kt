@@ -65,7 +65,7 @@ class RadioSender(private val location: ObservableValue<Coordinate>, power: Doub
             // create bounding box (clamped to map borders)
             val bottomLeftCoordinate = map.moveInside(currentLocation.movedBy(-maxReachOverAir, -maxReachOverAir))
             val topRightCoordinate = map.moveInside(currentLocation.movedBy(maxReachOverAir, maxReachOverAir))
-            // TODO a circle is more appropriate
+            // TODO a circle is more appropriate (#105)
             return CoordinateRectangle(bottomLeftCoordinate, topRightCoordinate)
         } finally {
             val duration = System.currentTimeMillis() - start

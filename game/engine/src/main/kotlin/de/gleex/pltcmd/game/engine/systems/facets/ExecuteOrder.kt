@@ -41,7 +41,7 @@ internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, C
                                     RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))
                             Consumed
                         }
-                        // TODO implement go firm
+                        // TODO implement go firm (#99)
                         GoFirm        -> TODO()
                         Halt          -> {
                             entity.commandersIntent.butNow(HaltGoal())
