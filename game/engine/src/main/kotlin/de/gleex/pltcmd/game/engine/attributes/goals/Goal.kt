@@ -79,6 +79,8 @@ abstract class Goal(vararg subGoals: Goal) {
     /**
      * Adds the given goals to the list of sub-goals so that they are executed in the given order (they are pushed
      * onto the sub-goal-stack in reversed order).
+     *
+     * @see addSubGoalsLast
      */
     protected fun addSubGoals(vararg additionalSubGoals: Goal) {
         if (additionalSubGoals.isNotEmpty()) {
@@ -88,6 +90,23 @@ abstract class Goal(vararg subGoals: Goal) {
                 .forEach {
                     log.debug("\t-> $it")
                     subGoals.push(it)
+                }
+    }
+
+    /**
+     * Adds the given goals to the end of the list of sub-goals so that they are executed in the given order after
+     * all current goals have finished.
+     *
+     * @see addSubGoals
+     */
+    protected fun addSubGoalsLast(vararg additionalSubGoals: Goal) {
+        if (additionalSubGoals.isNotEmpty()) {
+            log.debug("Adding ${additionalSubGoals.size} goals to the end of the sub-goals of $this")
+        }
+        additionalSubGoals
+                .forEach {
+                    log.debug("\t-> $it")
+                    TODO()
                 }
     }
 

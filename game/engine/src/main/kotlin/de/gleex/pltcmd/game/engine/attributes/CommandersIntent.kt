@@ -32,7 +32,7 @@ internal class CommandersIntent : Attribute {
                 commandersIntent.clear()
                 goals.reversed()
                         .forEach {
-                            commandersIntent.push(it)
+                            commandersIntent.addNow(it)
                         }
             }
 
@@ -45,7 +45,7 @@ internal class CommandersIntent : Attribute {
     fun butNow(goalToPrepend: Goal) =
             this.also {
                 commandersIntent
-                        .push(goalToPrepend)
+                        .addNow(goalToPrepend)
             }
 
     /**

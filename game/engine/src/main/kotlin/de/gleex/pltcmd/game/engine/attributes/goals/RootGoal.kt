@@ -25,10 +25,21 @@ class RootGoal : EndlessGoal() {
      *
      * @return this [RootGoal] for chained calls.
      */
-    fun push(goal: Goal) =
+    fun addNow(goal: Goal) =
             this.also {
                 addSubGoals(goal)
             }
+
+    /**
+     * Adds the given goal to the end of the stack of sub-goals so it gets executed when all current goals are finished.
+     *
+     * @return this [RootGoal] for chained calls.
+     */
+    fun addLast(goal: Goal): RootGoal {
+        return this.also {
+
+        }
+    }
 
     /**
      * Pops the current sub-goal off the stack, if any is present.
@@ -38,10 +49,4 @@ class RootGoal : EndlessGoal() {
      */
     fun pop(): Maybe<Goal> =
             popSubGoal()
-
-    fun add(goal: Goal): RootGoal {
-        return this.also {
-
-        }
-    }
 }
