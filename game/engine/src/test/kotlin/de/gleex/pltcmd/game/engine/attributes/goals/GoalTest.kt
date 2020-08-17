@@ -1,35 +1,12 @@
 package de.gleex.pltcmd.game.engine.attributes.goals
 
-import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.attributes.goals.testimplementations.TestCommand
-import de.gleex.pltcmd.game.engine.attributes.goals.testimplementations.TestGoal
-import de.gleex.pltcmd.game.engine.attributes.goals.testimplementations.TestSubGoal
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.ElementType
-import de.gleex.pltcmd.game.ticks.TickId
-import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.game.engine.attributes.goals.testimplementations.*
 import de.gleex.pltcmd.util.tests.beEmptyMaybe
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNot
-import io.mockk.mockkClass
-import org.hexworks.amethyst.api.newEntityOfType
-import kotlin.random.Random
 
 class GoalTest : FreeSpec() {
-
-    private val testEntity: ElementEntity = newEntityOfType(ElementType) {
-        // no attributes etc. needed yet
-    }
-
-    private val testContext: GameContext = GameContext(
-            currentTick = TickId(12),
-            world = mockkClass(WorldMap::class),
-            allElements = setOf(),
-            random = Random
-    )
 
     init {
 
@@ -41,22 +18,19 @@ class GoalTest : FreeSpec() {
                 repeat(3) {
                     "Iteration $it:" - {
                         "The goal should not yet be finished" {
-                            testGoal.isFinished(testEntity) shouldBe false
+                            testGoal.isFinished(goalTestEntity) shouldBe false
                         }
-                        val commandMaybe = testGoal.step(testEntity, testContext)
+                        val commandMaybe = testGoal.step(goalTestEntity, testContext)
                         "The returned command should contain value $expectedValue" {
-                            commandMaybe shouldNot beEmptyMaybe()
-                            val command = commandMaybe.get()
-                            command should beInstanceOf<TestCommand>()
-                            (command as TestCommand).value shouldBe expectedValue
+                            commandMaybe should haveContainedValue(expectedValue)
                         }
                         expectedValue++
                     }
                 }
 
                 "It should be finished after 3 steps" {
-                    testGoal.isFinished(testEntity) shouldBe true
-                    testGoal.step(testEntity, testContext) should beEmptyMaybe()
+                    testGoal.isFinished(goalTestEntity) shouldBe true
+                    testGoal.step(goalTestEntity, testContext) should beEmptyMaybe()
                 }
             }
         }

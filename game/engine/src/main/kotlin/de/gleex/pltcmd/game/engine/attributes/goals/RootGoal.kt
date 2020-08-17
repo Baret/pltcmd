@@ -38,4 +38,10 @@ class RootGoal : EndlessGoal() {
      */
     fun pop(): Maybe<Goal> =
             popSubGoal()
+
+    fun add(goal: Goal): RootGoal {
+        return this.also {
+
+        }
+    }
 }
