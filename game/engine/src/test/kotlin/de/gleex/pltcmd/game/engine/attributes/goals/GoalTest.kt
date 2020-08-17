@@ -1,6 +1,9 @@
 package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
+import de.gleex.pltcmd.game.engine.attributes.goals.testimplementations.TestCommand
+import de.gleex.pltcmd.game.engine.attributes.goals.testimplementations.TestGoal
+import de.gleex.pltcmd.game.engine.attributes.goals.testimplementations.TestSubGoal
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.ticks.TickId
@@ -12,10 +15,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.mockk.mockkClass
-import org.hexworks.amethyst.api.Command
-import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.newEntityOfType
-import org.hexworks.cobalt.datatypes.Maybe
 import kotlin.random.Random
 
 class GoalTest : FreeSpec() {
@@ -62,30 +62,4 @@ class GoalTest : FreeSpec() {
         }
     }
 
-    /**
-     * Simply inherits from [Goal] and uses the default implementations.
-     */
-    private class TestGoal(vararg subGoals: Goal) : Goal(*subGoals)
-
-    /**
-     * A goal used as sub-goal that is finished after one invocation of [step]. This invocation returns a [TestCommand]
-     * containing [value].
-     *
-     * @param value to be put into the [TestCommand] returned by [step].
-     */
-    private data class TestSubGoal(val value: Int) : Goal() {
-        private var finished = false
-        override fun isFinished(element: ElementEntity) = finished
-
-        override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
-            finished = true
-            return Maybe.of(TestCommand(value, element, context))
-        }
-    }
-
-    private data class TestCommand(
-            val value: Int,
-            override val source: Entity<ElementType, GameContext>,
-            override val context: GameContext
-    ) : Command<ElementType, GameContext>
 }
