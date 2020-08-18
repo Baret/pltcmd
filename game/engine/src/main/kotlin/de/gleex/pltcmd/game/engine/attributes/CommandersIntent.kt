@@ -25,16 +25,28 @@ internal class CommandersIntent : Attribute {
     }
 
     /**
-     * Sets the given [Goal]s as the commander's intent to be executed in the given order. All previous goals are
-     * cleared and thus lost!
+     * Clears the current list of goals.
      */
-    fun set(vararg goals: Goal) =
+    // TODO: Maybe add "cancel" to the Goal-API so that the current goals have a chance to "finish quickly"/abort?
+    fun clear() =
             this.also {
                 commandersIntent.clear()
-                goals.reversed()
-                        .forEach {
-                            commandersIntent.addNow(it)
-                        }
+            }
+
+    /**
+     * Clears the current list of goals and sets [newGoal] to the current commander's intent.
+     */
+    fun setTo(newGoal: Goal) =
+            clear()
+                    .andThen(newGoal)
+
+    /**
+     * Adds the given goal to the end of the stack of goals. [nextGoal] will thus be executed after all current goals
+     * have finished.
+     */
+    fun andThen(nextGoal: Goal) =
+            this.also {
+                commandersIntent.addLast(nextGoal)
             }
 
     /**

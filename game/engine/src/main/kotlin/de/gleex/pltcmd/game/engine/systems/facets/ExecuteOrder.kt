@@ -29,22 +29,23 @@ internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, C
                     when (order) {
                         MoveTo        -> {
                             log.debug("Sending MoveTo command for destination $orderedTo")
-                            entity.commandersIntent.set(
-                                    ReachDestination(orderedTo!!),
-                                    RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))
+                            entity.commandersIntent
+                                    .setTo(ReachDestination(orderedTo!!))
+                                    .andThen(RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))
                             Consumed
                         }
                         EngageEnemyAt -> {
                             // TODO just moving to the enemy might not be the best approach
-                            entity.commandersIntent.set(
-                                    ReachDestination(orderedTo!!),
-                                    RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))
+                            entity.commandersIntent
+                                    .setTo(ReachDestination(orderedTo!!))
+                                    .andThen(RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))
                             Consumed
                         }
                         // TODO implement go firm (#99)
                         GoFirm        -> TODO()
                         Halt          -> {
-                            entity.commandersIntent.butNow(HaltGoal())
+                            entity.commandersIntent
+                                    .butNow(HaltGoal())
                             Consumed
                         }
                         Continue      -> {
@@ -52,10 +53,10 @@ internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, C
                             Consumed
                         }
                         PatrolAreaAt  -> {
-                            entity.commandersIntent.set(
-                                    ReachDestination(orderedTo!!),
-                                    RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)),
-                                    PatrolAreaGoal(CoordinateRectangle(orderedTo.movedBy(-5, -5), 10, 10)))
+                            entity.commandersIntent
+                                    .setTo(ReachDestination(orderedTo!!))
+                                    .andThen(RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))
+                                    .andThen(PatrolAreaGoal(CoordinateRectangle(orderedTo.movedBy(-5, -5), 10, 10)))
                             Consumed
                         }
                     }
