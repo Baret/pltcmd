@@ -6,7 +6,6 @@ import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.game.ui.fragments.CoordinateAtMousePosition
 import de.gleex.pltcmd.game.ui.fragments.ElementCommandFragment
 import de.gleex.pltcmd.game.ui.fragments.RadioSignalFragment
 import de.gleex.pltcmd.game.ui.fragments.TickFragment
@@ -34,14 +33,12 @@ class InputSidebar(
             Components.vbox()
                     .withSpacing(2)
                     .withSize(UiOptions.SIDEBAR_WIDTH, height)
-//                    .withPosition(position)
                     .withDecorations(ComponentDecorations.halfBlock())
                     .build()
 
     init {
         // playing around with stuff...
         val sidebarWidth = root.contentSize.width
-        root.addFragment(CoordinateAtMousePosition(sidebarWidth, map, gameWorld))
 
         val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, map.absolutePosition, game)
         root.addFragment(commandFragment)
