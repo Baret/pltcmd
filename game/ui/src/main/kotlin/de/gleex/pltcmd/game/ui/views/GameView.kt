@@ -4,13 +4,17 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.options.UiOptions.MAP_VIEW_HEIGHT
+import de.gleex.pltcmd.game.options.UiOptions.MAP_VIEW_WIDTH
+import de.gleex.pltcmd.game.options.UiOptions.WINDOW_HEIGHT
+import de.gleex.pltcmd.game.options.UiOptions.WINDOW_WIDTH
+import de.gleex.pltcmd.game.ui.components.CustomComponent
+import de.gleex.pltcmd.game.ui.components.InfoSidebar
 import de.gleex.pltcmd.game.ui.components.InputSidebar
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.game.ui.fragments.*
 import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
-import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
 import de.gleex.pltcmd.model.radio.BroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
@@ -38,19 +42,16 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
     companion object {
         private val log = LoggerFactory.getLogger(GameView::class)
 
-        private const val MAP_VIEW_WIDTH = 53
-        private const val MAP_VIEW_HEIGHT = 53
-        private const val SIDEBAR_HEIGHT = UiOptions.WINDOW_HEIGHT
-        private const val LOG_AREA_HEIGHT = UiOptions.WINDOW_HEIGHT - MAP_VIEW_HEIGHT
-        private const val LOG_AREA_WIDTH = UiOptions.WINDOW_WIDTH - UiOptions.SIDEBAR_WIDTH
+        private const val LOG_AREA_HEIGHT = WINDOW_HEIGHT - MAP_VIEW_HEIGHT
+        private const val LOG_AREA_WIDTH = WINDOW_WIDTH
+        private const val SIDEBAR_HEIGHT = WINDOW_HEIGHT - LOG_AREA_HEIGHT
     }
 
     override fun onDock() {
-        val sidebar = InputSidebar(Position.create(0, 0), SIDEBAR_HEIGHT)
 
         val mainPart = Components.panel()
                 .withSize(MAP_VIEW_WIDTH, MAP_VIEW_HEIGHT)
-                .withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT)
+                .withPosition(UiOptions.SIDEBAR_WIDTH, 0)
                 .withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld))
                 .build()
                 .apply {
@@ -65,6 +66,10 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                 .build()
 
         mainPart.addComponent(map)
+
+        val leftSidebar = InputSidebar(SIDEBAR_HEIGHT, game, commandingElement, elementsToCommand, map, gameWorld)
+
+        val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT)
         // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
         map.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
 
@@ -77,7 +82,11 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                     it.logRadioCalls()
                 }
 
-        screen.addComponents(sidebar, logArea, mainPart)
+        screen.addComponents(
+                CustomComponent(leftSidebar, Position.create(0, 0)),
+                logArea,
+                mainPart,
+                CustomComponent(rightSidebar, Position.topRightOf(mainPart)))
 
         log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
         log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
@@ -113,25 +122,6 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                 Pass
             }
         }
-
-        // playing around with stuff...
-        val sidebarWidth = sidebar.contentSize.width
-        sidebar.addFragment(CoordinateAtMousePosition(sidebarWidth, map, gameWorld))
-
-        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, map.absolutePosition, game)
-        sidebar.addFragment(commandFragment)
-        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
-
-        sidebar.addFragment(TickFragment(sidebarWidth))
-
-        if (GameOptions.displayRadioSignals.value) {
-            val radioSignalFragment = RadioSignalFragment(sidebarWidth)
-            map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer(gameWorld, radioSignalFragment.selectedStrength, radioSignalFragment.selectedRange, map.absolutePosition))
-            sidebar.addFragment(radioSignalFragment)
-        }
-
-        sidebar.addFragment(ThemeSelectorFragment(sidebarWidth, screen))
-        sidebar.addFragment(TilesetSelectorFragment(sidebarWidth, map, sidebar))
     }
 
     private fun LogArea.logRadioCalls() {

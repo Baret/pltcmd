@@ -21,13 +21,16 @@ object UiOptions {
     val DEFAULT_TILESET: TilesetResource = CP437TilesetResources.bisasam16x16()
     val MAP_TILESET: TilesetResource = CP437TilesetResources.guybrush16x16()
 
-    const val WINDOW_WIDTH = 90
-    const val WINDOW_HEIGHT = 63
-
     /**
      * The full width of the sidebars. The content size is probably this - 2.
      */
-    const val SIDEBAR_WIDTH = 37
+    const val SIDEBAR_WIDTH = 33
+
+    const val MAP_VIEW_WIDTH = 53
+    const val MAP_VIEW_HEIGHT = 53
+
+    const val WINDOW_WIDTH = MAP_VIEW_WIDTH + (2 * SIDEBAR_WIDTH)
+    const val WINDOW_HEIGHT = 64
 
     const val SKIP_INTRO = false
 }

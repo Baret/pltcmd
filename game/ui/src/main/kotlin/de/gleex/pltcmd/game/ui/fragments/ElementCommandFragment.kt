@@ -24,7 +24,14 @@ import org.hexworks.zircon.api.uievent.UIEventResponse
  * Currently they get a move command sent by the given `hq`. For now this fragment is just a debug/playaround
  * feature. But it may be used as the base for the UI element used to send radio commands to elements.
  */
-class ElementCommandFragment(override val width: Int, private val world: GameWorld, val hq: ElementEntity, elements: List<ElementEntity>, private val mapOffset: Position, private val game: Game) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
+class ElementCommandFragment(
+        override val width: Int,
+        private val world: GameWorld,
+        val hq: ElementEntity,
+        elements: List<ElementEntity>,
+        private val mapOffset: Position,
+        private val game: Game
+) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
 
     private var selectedElement: ElementEntity = elements.first()
     private val destinationProperty = createPropertyFrom(selectedElement.position.value)
@@ -64,7 +71,8 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
             }
 
     override fun invoke(event: MouseEvent, phase: UIEventPhase): UIEventResponse {
-        val coord = world.coordinateAtVisiblePosition(event.position.minus(mapOffset))
+        val coord = world.coordinateAtVisiblePosition(event.position - mapOffset)
+        log.debug("MOUSE CLICKED at ${event.position}! Offset is $mapOffset. Updating command fragment value to $coord")
         destinationProperty.updateValue(coord)
         return UIEventResponse.processed()
     }
