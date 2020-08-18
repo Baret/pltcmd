@@ -19,7 +19,7 @@ data class PatrolAreaGoal(private val patrolAt: CoordinateArea) : EndlessGoal() 
                     .world
                     .moveInside(patrolAt.toSet()
                             .random(context.random))
-            addSubGoals(
+            pushSubGoals(
                     ReachDestination(randomDestination),
                     TakeElevatedPosition(randomDestination, context.world),
                     // TODO: Go firm instead of making a security halt

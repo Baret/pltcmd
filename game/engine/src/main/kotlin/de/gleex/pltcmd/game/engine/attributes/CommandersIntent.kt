@@ -25,7 +25,8 @@ internal class CommandersIntent : Attribute {
     }
 
     /**
-     * Sets the given [Goal]s as the commander's intent to be executed in the given order.
+     * Sets the given [Goal]s as the commander's intent to be executed in the given order. All previous goals are
+     * cleared and thus lost!
      */
     fun set(vararg goals: Goal) =
             this.also {

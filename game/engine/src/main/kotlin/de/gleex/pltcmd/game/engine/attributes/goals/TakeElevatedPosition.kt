@@ -18,7 +18,7 @@ class TakeElevatedPosition(currentPosition: Coordinate, worldMap: WorldMap) : Go
                 .toPair()
 
         if(highestPosition.second > currentHeight) {
-            addSubGoals(ReachDestination(highestPosition.first))
+            pushSubGoals(ReachDestination(highestPosition.first))
         }
     }
 }

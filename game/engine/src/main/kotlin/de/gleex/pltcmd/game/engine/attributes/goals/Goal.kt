@@ -5,22 +5,26 @@ import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import org.hexworks.amethyst.api.Command
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import java.util.*
 
 /**
  * An element may have a _goal_ that is an abstraction layer on top of the basic capabilities of "a bunch of soldiers".
  *
  * It gets [step]ped until it [isFinished]. Goals may contain sub-goals so each goal can represent any
  * level of abstraction until it breaks down to a [Command] that needs to be executed by the entity at the lowest level.
+ *
+ * Sub-goals work like a stack. The top goal is the currently active and is popped off as soon as it is finished.
+ * But new sub-goals can be added to the top of the stack with [pushSubGoals] as well as to the bottom of the stack
+ * with [addSubGoalsLast].
  */
+@OptIn(ExperimentalStdlibApi::class)
 abstract class Goal(vararg subGoals: Goal) {
 
-    private val subGoals = Stack<Goal>()
+    private val subGoals = ArrayDeque<Goal>()
 
     private val log = LoggerFactory.getLogger(Goal::class)
 
     init {
-        addSubGoals(*subGoals)
+        pushSubGoals(*subGoals)
     }
 
     /**
@@ -46,50 +50,44 @@ abstract class Goal(vararg subGoals: Goal) {
      */
     protected fun stepSubGoals(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
         popFinishedSubGoals(element)
-        return if (hasSubGoals()) {
-            subGoals.peek()
-                    .step(element, context)
-        } else {
-            Maybe.empty()
-        }
+        return subGoals
+                .firstOrNull()
+                ?.step(element, context)
+                ?: Maybe.empty()
     }
 
     /**
      * Pops the current sub-goal off the stack if it is not empty.
      */
     protected fun popSubGoal(): Maybe<Goal> =
-            if (hasSubGoals()) {
-                Maybe.of(subGoals.pop())
-            } else {
-                Maybe.empty()
-            }
+            Maybe.ofNullable(subGoals.removeFirstOrNull())
 
     /**
-     * Pops all sub-goals off the that are already finished.
+     * Pops all sub-goals off the stack that are already finished.
      */
     protected fun popFinishedSubGoals(element: ElementEntity) {
         while (hasSubGoals()
-                && subGoals.peek()
+                && subGoals
+                        .first()
                         .isFinished(element)) {
-            val popped = subGoals.pop()
+            val popped = popSubGoal().get()
             log.debug("Popped sub-goal $popped from stack of $this")
         }
     }
 
     /**
-     * Adds the given goals to the list of sub-goals so that they are executed in the given order (they are pushed
-     * onto the sub-goal-stack in reversed order).
+     * Pushes the given goals onto the stack of sub-goals so that they are executed in the given order immediately.
      *
      * @see addSubGoalsLast
      */
-    protected fun addSubGoals(vararg additionalSubGoals: Goal) {
+    protected fun pushSubGoals(vararg additionalSubGoals: Goal) {
         if (additionalSubGoals.isNotEmpty()) {
             log.debug("Pushing ${additionalSubGoals.size} goals onto the stack of $this")
         }
         additionalSubGoals.reversed()
                 .forEach {
                     log.debug("\t-> $it")
-                    subGoals.push(it)
+                    subGoals.addFirst(it)
                 }
     }
 
@@ -97,7 +95,7 @@ abstract class Goal(vararg subGoals: Goal) {
      * Adds the given goals to the end of the list of sub-goals so that they are executed in the given order after
      * all current goals have finished.
      *
-     * @see addSubGoals
+     * @see pushSubGoals
      */
     protected fun addSubGoalsLast(vararg additionalSubGoals: Goal) {
         if (additionalSubGoals.isNotEmpty()) {
@@ -106,7 +104,7 @@ abstract class Goal(vararg subGoals: Goal) {
         additionalSubGoals
                 .forEach {
                     log.debug("\t-> $it")
-                    TODO()
+                    subGoals.addLast(it)
                 }
     }
 

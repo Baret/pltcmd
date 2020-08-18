@@ -27,7 +27,7 @@ class RootGoal : EndlessGoal() {
      */
     fun addNow(goal: Goal) =
             this.also {
-                addSubGoals(goal)
+                pushSubGoals(goal)
             }
 
     /**
@@ -37,7 +37,7 @@ class RootGoal : EndlessGoal() {
      */
     fun addLast(goal: Goal): RootGoal {
         return this.also {
-
+            addSubGoalsLast(goal)
         }
     }
 

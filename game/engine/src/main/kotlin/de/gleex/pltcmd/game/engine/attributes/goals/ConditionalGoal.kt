@@ -29,7 +29,7 @@ data class ConditionalGoal(private val whenTrue: Goal, private val whenFalse: Go
         if (conditionWasTrue.not() && condition.invoke()) {
             log.debug(" - - - - - - - - -CONDITION WAS TRUE! SWITCHING GOAL - - - - - - - - -")
             conditionWasTrue = true
-            addSubGoals(whenTrue)
+            pushSubGoals(whenTrue)
         }
         return stepSubGoals(element, context)
     }
