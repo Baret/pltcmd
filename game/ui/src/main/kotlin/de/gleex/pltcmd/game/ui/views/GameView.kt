@@ -24,7 +24,6 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
-import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.component.LogArea
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
@@ -49,9 +48,27 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
 
     override fun onDock() {
 
+        val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>()
+                .withGameArea(gameWorld)
+                .withSize(gameWorld.visibleSize.to2DSize())
+                .build()
+
+        val leftSidebar = InputSidebar(SIDEBAR_HEIGHT, game, commandingElement, elementsToCommand, map, gameWorld)
+
+        val logArea = Components.logArea()
+                .withSize(LOG_AREA_WIDTH, LOG_AREA_HEIGHT)
+                .withPosition(Position.create(0, 0))
+                .withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log"))
+                .build()
+                .also {
+                    it.logRadioCalls()
+                }
+
+        val leftSidebarComponent = CustomComponent(leftSidebar, Position.bottomLeftOf(logArea))
+
         val mainPart = Components.panel()
                 .withSize(MAP_VIEW_WIDTH, MAP_VIEW_HEIGHT)
-                .withPosition(UiOptions.SIDEBAR_WIDTH, 0)
+                .withPosition(Position.topRightOf(leftSidebarComponent))
                 .withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld))
                 .build()
                 .apply {
@@ -59,32 +76,14 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                     gameWorld.visibleOffsetValue.onChange { asInternalComponent().render() }
                 }
 
-        val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>()
-                .withGameArea(gameWorld)
-                .withSize(gameWorld.visibleSize.to2DSize())
-                .withAlignmentWithin(mainPart, ComponentAlignment.CENTER)
-                .build()
-
         mainPart.addComponent(map)
-
-        val leftSidebar = InputSidebar(SIDEBAR_HEIGHT, game, commandingElement, elementsToCommand, map, gameWorld)
 
         val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT, map, gameWorld)
         // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
         map.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
-
-        val logArea = Components.logArea()
-                .withSize(LOG_AREA_WIDTH, LOG_AREA_HEIGHT)
-                .withAlignmentWithin(screen, ComponentAlignment.BOTTOM_RIGHT)
-                .withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log"))
-                .build()
-                .also {
-                    it.logRadioCalls()
-                }
-
         screen.addComponents(
-                CustomComponent(leftSidebar, Position.create(0, 0)),
                 logArea,
+                leftSidebarComponent,
                 mainPart,
                 CustomComponent(rightSidebar, Position.topRightOf(mainPart)))
 
