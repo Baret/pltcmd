@@ -15,9 +15,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.Fragments
 import org.hexworks.zircon.api.data.Position
-import org.hexworks.zircon.api.uievent.MouseEvent
-import org.hexworks.zircon.api.uievent.UIEventPhase
-import org.hexworks.zircon.api.uievent.UIEventResponse
+import org.hexworks.zircon.api.uievent.*
 
 /**
  * Displays a list of entities and makes it possible to send them a command from `hq`.
@@ -35,47 +33,47 @@ class ElementCommandFragment(
 
     private var selectedElement: ElementEntity = elements.first()
     private val destinationProperty = createPropertyFrom(selectedElement.position.value)
-    private val elementSelect = Fragments.
-                                    multiSelect(width, elements).
-                                    withDefaultSelected(selectedElement).
-                                    withCallback{_, newElement -> selectedElement = newElement}.
-                                    withToStringMethod { it.callsign.toString() }.
-                                    build()
+    private val elementSelect = Fragments.multiSelect(width, elements)
+            .withDefaultSelected(selectedElement)
+            .withCallback { _, newElement -> selectedElement = newElement }
+            .withToStringMethod { it.callsign.toString() }
+            .build()
 
     companion object {
         private val log = LoggerFactory.getLogger(ElementCommandFragment::class)
     }
 
-    override val root = Components.vbox().
-            withSize(width, 3).
-            build().
-            apply {
+    override val root = Components.vbox()
+            .withSize(width, 3)
+            .build()
+            .apply {
                 addFragment(elementSelect)
-                addComponent(Components.
-                    label().
-                    withSize(width, 1).
-                    build().
-                    apply {
-                        textProperty.updateFrom(createPropertyFrom("Move to ") bindPlusWith destinationProperty.bindTransform { it.toString() }, true)
-                    })
-                addComponent(Components.
-                    button().
-                    withSize(width, 1).
-                    withText("Send command").
-                    build().
-                    apply {
-                        onActivated {
-                            sendMoveTo()
-                        }
-                    })
+                addComponent(Components.label()
+                        .withSize(width, 1)
+                        .build()
+                        .apply {
+                            textProperty.updateFrom(createPropertyFrom("Move to ") bindPlusWith destinationProperty.bindTransform { it.toString() }, true)
+                        })
+                addComponent(Components.button()
+                        .withSize(width, 1)
+                        .withText("Send command")
+                        .build()
+                        .apply {
+                            onActivated {
+                                sendMoveTo()
+                            }
+                        })
             }
 
-    override fun invoke(event: MouseEvent, phase: UIEventPhase): UIEventResponse {
-        val coord = world.coordinateAtVisiblePosition(event.position - mapOffset)
-        log.debug("MOUSE CLICKED at ${event.position}! Offset is $mapOffset. Updating command fragment value to $coord")
-        destinationProperty.updateValue(coord)
-        return UIEventResponse.processed()
-    }
+    override fun invoke(event: MouseEvent, phase: UIEventPhase): UIEventResponse =
+            if (phase == UIEventPhase.TARGET && event.button == 1) {
+                val coord = world.coordinateAtVisiblePosition(event.position - mapOffset)
+                log.debug("MOUSE CLICKED at ${event.position}! Offset is $mapOffset. Updating command fragment value to $coord")
+                destinationProperty.updateValue(coord)
+                Processed
+            } else {
+                Pass
+            }
 
     private fun sendMoveTo() {
         val conversation = MoveTo.create(hq.callsign, selectedElement.callsign, destinationProperty.value)
