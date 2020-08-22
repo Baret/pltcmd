@@ -22,21 +22,27 @@ internal class MovementProgress(private var tilesToAdvance: Double = 0.0) : Attr
      * Adds the given number of tiles that need to be moved along.
      */
     operator fun plusAssign(travelDistanceInTiles: Double) {
-        tilesToAdvance += travelDistanceInTiles
+        synchronized(this) {
+            tilesToAdvance += travelDistanceInTiles
+        }
     }
 
     /**
      * True when there are at least 1 full tile(s) that need to be [advance]d.
      */
     fun hasTilesToAdvance(): Boolean =
-            tilesToAdvance >= 1.0
+            synchronized(this) {
+                tilesToAdvance >= 1.0
+            }
 
     /**
      * Reduces the current progress by 1 tile if it [hasTilesToAdvance]
      */
     fun advance() {
-        if (hasTilesToAdvance()) {
-            tilesToAdvance -= 1.0
+        synchronized(this) {
+            if (hasTilesToAdvance()) {
+                tilesToAdvance -= 1.0
+            }
         }
     }
 }
