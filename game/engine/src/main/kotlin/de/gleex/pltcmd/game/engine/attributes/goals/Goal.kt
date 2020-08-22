@@ -12,9 +12,9 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * It gets [step]ped until it [isFinished]. Goals may contain sub-goals so each goal can represent any
  * level of abstraction until it breaks down to a [Command] that needs to be executed by the entity at the lowest level.
  *
- * Sub-goals work like a stack. The top goal is the currently active and is popped off as soon as it is finished.
- * But new sub-goals can be added to the top of the stack with [pushSubGoals] as well as to the bottom of the stack
- * with [addSubGoalsLast].
+ * Sub-goals work like an ordered queue. The head of the queue  is the currently active sub-goal and is removed as soon
+ * as it is finished. Then the next queued goal with [appendSubGoals] gets active (FIFO, first-in-first-out).
+ * But new sub-goals can be added to the front of the queue with [prependSubGoals] as well (last-in-first-out or stack).
  */
 @OptIn(ExperimentalStdlibApi::class)
 abstract class Goal(vararg subGoals: Goal) {
@@ -24,14 +24,14 @@ abstract class Goal(vararg subGoals: Goal) {
     private val log = LoggerFactory.getLogger(Goal::class)
 
     init {
-        pushSubGoals(*subGoals)
+        appendSubGoals(*subGoals)
     }
 
     /**
      * Returns true if this goal does not need any more steps.
      */
     open fun isFinished(element: ElementEntity): Boolean {
-        popFinishedSubGoals(element)
+        removeUpcomingSubGoalsThatAreFinished(element)
         return hasSubGoals().not()
     }
 
@@ -46,10 +46,10 @@ abstract class Goal(vararg subGoals: Goal) {
             stepSubGoals(element, context)
 
     /**
-     * Calls [step] on the next unfinished sub-goal. All finished goals are popped off the sub-goal-stack.
+     * Calls [step] on the next unfinished sub-goal. All finished sub-goals are removed first.
      */
     protected fun stepSubGoals(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
-        popFinishedSubGoals(element)
+        removeUpcomingSubGoalsThatAreFinished(element)
         return subGoals
                 .firstOrNull()
                 ?.step(element, context)
@@ -57,32 +57,33 @@ abstract class Goal(vararg subGoals: Goal) {
     }
 
     /**
-     * Pops the current sub-goal off the stack if it is not empty.
+     * Pops (removes and returns) the current sub-goal from the queue if it is not empty.
      */
-    protected fun popSubGoal(): Maybe<Goal> =
+    protected fun removeFirstSubGoal(): Maybe<Goal> =
             Maybe.ofNullable(subGoals.removeFirstOrNull())
 
     /**
-     * Pops all sub-goals off the stack that are already finished.
+     * Removes all sub-goals at the head of the queue that are already finished.
      */
-    protected fun popFinishedSubGoals(element: ElementEntity) {
+    protected fun removeUpcomingSubGoalsThatAreFinished(element: ElementEntity) {
         while (hasSubGoals()
                 && subGoals
                         .first()
                         .isFinished(element)) {
-            val popped = popSubGoal().get()
-            log.debug("Popped sub-goal $popped from stack of $this")
+            val popped = removeFirstSubGoal().get()
+            log.debug("Removed first sub-goal $popped from $this because it is  finished")
         }
     }
 
     /**
-     * Pushes the given goals onto the stack of sub-goals so that they are executed in the given order immediately.
+     * Adds the given goals to the front of the list of sub-goals so that they are executed in the given order immediately before
+     * all current goals.
      *
-     * @see addSubGoalsLast
+     * @see appendSubGoals
      */
-    protected fun pushSubGoals(vararg additionalSubGoals: Goal) {
+    protected fun prependSubGoals(vararg additionalSubGoals: Goal) {
         if (additionalSubGoals.isNotEmpty()) {
-            log.debug("Pushing ${additionalSubGoals.size} goals onto the stack of $this")
+            log.debug("Prepending ${additionalSubGoals.size} goals to the front of the sub-goals of $this")
         }
         additionalSubGoals.reversed()
                 .forEach {
@@ -95,11 +96,11 @@ abstract class Goal(vararg subGoals: Goal) {
      * Adds the given goals to the end of the list of sub-goals so that they are executed in the given order after
      * all current goals have finished.
      *
-     * @see pushSubGoals
+     * @see prependSubGoals
      */
-    protected fun addSubGoalsLast(vararg additionalSubGoals: Goal) {
+    protected fun appendSubGoals(vararg additionalSubGoals: Goal) {
         if (additionalSubGoals.isNotEmpty()) {
-            log.debug("Adding ${additionalSubGoals.size} goals to the end of the sub-goals of $this")
+            log.debug("Appending ${additionalSubGoals.size} goals to the end of the sub-goals of $this")
         }
         additionalSubGoals
                 .forEach {
@@ -115,7 +116,7 @@ abstract class Goal(vararg subGoals: Goal) {
             subGoals.isNotEmpty()
 
     /**
-     * Completely clears the sub-goal-stack.
+     * Completely clears the sub-goals.
      */
     protected fun clearSubGoals() = subGoals.clear()
 }

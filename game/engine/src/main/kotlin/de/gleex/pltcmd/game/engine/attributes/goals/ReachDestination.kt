@@ -25,11 +25,11 @@ data class ReachDestination(private val destination: Coordinate) : Goal() {
     private fun setSubGoals(element: ElementEntity) {
         if (hasSubGoals().not()) {
             if (element.hasFacet(MakesSecurityHalts::class)) {
-                pushSubGoals(
+                prependSubGoals(
                         TimeoutGoal(30, MoveToGoal(destination)),
                         SecurityHalt(5))
             } else {
-                pushSubGoals(
+                prependSubGoals(
                         MoveToGoal(destination)
                 )
             }

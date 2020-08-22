@@ -14,39 +14,35 @@ class RootGoal : EndlessGoal() {
      *
      * @return this [RootGoal] for chained calls.
      */
-    fun clear() =
-            this.also {
-                super.clearSubGoals()
-            }
+    fun clear() = this.also {
+        super.clearSubGoals()
+    }
 
     /**
-     * Pushes the given [Goal] onto the stack of sub-goals. This means the given goal will be executed immediately
+     * Prepends the given [Goal] to the queue of sub-goals. This means the given goal will be executed immediately
      * without losing previously active goals.
      *
      * @return this [RootGoal] for chained calls.
      */
-    fun addNow(goal: Goal) =
-            this.also {
-                pushSubGoals(goal)
-            }
-
-    /**
-     * Adds the given goal to the end of the stack of sub-goals so it gets executed when all current goals are finished.
-     *
-     * @return this [RootGoal] for chained calls.
-     */
-    fun addLast(goal: Goal): RootGoal {
-        return this.also {
-            addSubGoalsLast(goal)
-        }
+    fun addNow(goal: Goal) = this.also {
+        prependSubGoals(goal)
     }
 
     /**
-     * Pops the current sub-goal off the stack, if any is present.
+     * Adds the given goal to the end of the queue of sub-goals so it gets executed when all current goals are finished.
+     *
+     * @return this [RootGoal] for chained calls.
+     */
+    fun addLast(goal: Goal): RootGoal = this.also {
+        appendSubGoals(goal)
+    }
+
+    /**
+     * Removes the active sub-goal and returns it, if any is present.
      *
      * @return a [Maybe] containing the previously active goal that has been removed. Or an empty maybe if no
      *          sub-goals were present.
      */
-    fun pop(): Maybe<Goal> =
-            popSubGoal()
+    fun removeActiveSubGoal(): Maybe<Goal> =
+            removeFirstSubGoal()
 }

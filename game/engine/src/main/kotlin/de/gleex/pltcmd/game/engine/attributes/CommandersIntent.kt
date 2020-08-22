@@ -41,7 +41,7 @@ internal class CommandersIntent : Attribute {
                     .andThen(newGoal)
 
     /**
-     * Adds the given goal to the end of the stack of goals. [nextGoal] will thus be executed after all current goals
+     * Adds the given goal to the end of the queue of goals. [nextGoal] will thus be executed after all current goals
      * have finished.
      */
     fun andThen(nextGoal: Goal) =
@@ -52,7 +52,7 @@ internal class CommandersIntent : Attribute {
     /**
      * Sets the given [Goal] as the current goal without losing currently active goals.
      *
-     * @param goalToPrepend is being pushed onto the stack of goals, so it gets executed now. The previously active
+     * @param goalToPrepend is put in front of the queue of goals, so it gets executed now. The previously active
      *                  goals continues after goalToPrepend finishes.
      */
     fun butNow(goalToPrepend: Goal) =
@@ -72,13 +72,13 @@ internal class CommandersIntent : Attribute {
     /**
      * Executes the given [Goal] when [condition] is true.
      *
-     * This is done by pushing a [ConditionalGoal] onto the stack of goals.
+     * This is done by prepending a [ConditionalGoal] to the queue of goals.
      *
      * @see butNow
      */
     fun doWhen(goal: Goal, condition: () -> Boolean): CommandersIntent {
         val currentGoal = commandersIntent
-                .pop()
+                .removeActiveSubGoal()
                 .orElse(DoNothingGoal)
         val conditionalGoal = ConditionalGoal(goal, currentGoal, condition)
         return butNow(conditionalGoal)
