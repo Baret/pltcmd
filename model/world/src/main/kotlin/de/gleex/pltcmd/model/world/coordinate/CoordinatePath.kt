@@ -3,7 +3,7 @@ package de.gleex.pltcmd.model.world.coordinate
 import de.gleex.pltcmd.util.geometry.pointsOfLine
 
 /**
- * A line from one point to another that contains each points on that path.
+ * A line from one point to another that contains each point on that path.
  */
 class CoordinatePath(waypoints: Collection<Coordinate>) : List<Coordinate> by ArrayList(waypoints) {
     companion object {

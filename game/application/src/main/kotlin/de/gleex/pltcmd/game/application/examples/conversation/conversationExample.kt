@@ -1,11 +1,11 @@
 package de.gleex.pltcmd.game.application.examples.conversation
 
 import de.gleex.pltcmd.game.engine.Game
+import de.gleex.pltcmd.game.engine.commands.ConversationCommand
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.inConversationWith
-import de.gleex.pltcmd.game.engine.systems.facets.ConversationCommand
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -55,7 +55,7 @@ fun main() {
             toSortedSet()
     val sector = Sector(origin, tiles)
     val map = WorldMap.create(setOf(sector))
-    val game = Game(Engine.default(), map, Random(GameOptions.DEBUG_MAP_SEED))
+    val game = Game(Engine.default(), map, Random(GameOptions.MAP_SEED))
     val context = game.context()
 
     globalEventBus.subscribeToBroadcasts { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }

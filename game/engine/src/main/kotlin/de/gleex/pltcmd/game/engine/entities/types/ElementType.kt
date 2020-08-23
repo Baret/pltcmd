@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
+import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
@@ -9,10 +10,10 @@ import de.gleex.pltcmd.model.elements.CommandingElement
 import org.hexworks.amethyst.api.base.BaseEntityType
 
 /** Represents an element in an army. */
-object ElementType : BaseEntityType("element", "A movable and cummunicatable element."), Movable, Communicatable, Combatant
+object ElementType : BaseEntityType("element", "A movable and communicating element."), Movable, Communicating, Combatant
 typealias ElementEntity = GameEntity<ElementType>
 
-private val ElementEntity.element: CommandingElement
+val ElementEntity.element: CommandingElement
     get() = getAttribute(ElementAttribute::class).element.value
 
 val ElementEntity.callsign: CallSign
@@ -24,3 +25,6 @@ val ElementEntity.affiliation
     get() = findAttribute(ElementAttribute::class)
             .map { it.reportedAffiliation.value }
             .orElse(Affiliation.Unknown)
+
+internal val ElementEntity.commandersIntent
+    get() = getAttribute(CommandersIntent::class)

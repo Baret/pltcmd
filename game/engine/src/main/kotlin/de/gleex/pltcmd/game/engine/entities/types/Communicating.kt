@@ -16,19 +16,27 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  */
 
 /** Type marker for entities that have the [RadioAttribute] */
-interface Communicatable : EntityType
-typealias CommunicatableEntity = GameEntity<Communicatable>
+interface Communicating : EntityType
+typealias CommunicatingEntity = GameEntity<Communicating>
 
-private val log = LoggerFactory.getLogger(Communicatable::class)
+private val log = LoggerFactory.getLogger(Communicating::class)
 
-internal val CommunicatableEntity.communicator: RadioCommunicator
+internal val CommunicatingEntity.communicator: RadioCommunicator
     get() = getAttribute(RadioAttribute::class).communicator
 
 /** TODO is visible as a debug feature for the test UI, might be removed later */
-val CommunicatableEntity.inConversationWith: ObservableValue<Maybe<CallSign>>
+val CommunicatingEntity.inConversationWith: ObservableValue<Maybe<CallSign>>
     get() = communicator.inConversationWith
 
-internal fun CommunicatableEntity.startConversation(conversation: Conversation) {
+/** True if this entity is currently in a conversation */
+val CommunicatingEntity.isTransmitting
+    get() = communicator.inConversationWith.value.isPresent
+
+/**
+ * Queues the given conversation.
+ */
+// TODO: Instantly start the conversation if possible. Currently it takes 2 ticks until the conversation actually starts
+internal fun CommunicatingEntity.startConversation(conversation: Conversation) {
     log.debug("${(this as ElementEntity).callsign} starting conversation $conversation")
     communicator.startConversation(conversation)
 }

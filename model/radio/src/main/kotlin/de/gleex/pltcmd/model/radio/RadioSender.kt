@@ -103,7 +103,7 @@ data class Broadcast(
 
     private fun terrainTo(target: Coordinate): List<Terrain> {
         val path = CoordinatePath.line(senderLocation, target)
-        return map.getTerrainAt(path)
+        return map[path]
     }
 
 }
