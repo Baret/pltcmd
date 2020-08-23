@@ -42,12 +42,12 @@ class RootGoalTest : WordSpec() {
 
         "When clearing a root goal it" should {
             val rootGoal = RootGoal()
-                    .addNow(TestSubGoal(1))
-                    .addNow(TestSubGoal(2))
                     .addNow(TestSubGoal(3))
+                    .addNow(TestSubGoal(2))
+                    .addNow(TestSubGoal(1))
             "be empty" {
                 rootGoal
-                        .step(goalTestEntity, testContext) should haveContainedValue(3)
+                        .step(goalTestEntity, testContext) should haveContainedValue(1)
                 rootGoal
                         .clear()
                         .step(goalTestEntity, testContext) should beEmptyMaybe()
