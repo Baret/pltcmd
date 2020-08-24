@@ -12,16 +12,26 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
  */
 interface FrontendString<out T : Any> : ObservableValue<String> {
 
+    /**
+     * The [Length] restricting the space available for this string.
+     */
     val length: Length
+
+    /**
+     * Creates a new [FrontendString] with both strings combined. This acts like a bindPlusWith call. The resulting
+     * frontend string will have the shorter of both lengths. This means the resulting string will not be longer
+     * than any one of the two.
+     */
+    operator fun plus(other: FrontendString<Any>): FrontendString<*>
 
     /**
      * The maximum length of a [FrontendString].
      */
     enum class Length(val characters: Int) {
-        FULL(Int.MAX_VALUE),
-        SIDEBAR(UiOptions.INTERFACE_PANEL_WIDTH),
-        SHORT5(5),
+        ICON(1),
         SHORT3(3),
-        ICON(1)
+        SHORT5(5),
+        SIDEBAR(UiOptions.INTERFACE_PANEL_WIDTH),
+        FULL(Int.MAX_VALUE)
     }
 }

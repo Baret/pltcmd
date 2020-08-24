@@ -1,10 +1,11 @@
 package de.gleex.pltcmd.game.ui.fragments
 
 import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.game.ui.strings.FrontendString
+import de.gleex.pltcmd.game.ui.strings.extensions.plus
+import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
-import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.zircon.api.Components
@@ -29,7 +30,7 @@ class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComp
                         build().
                         apply {
                             // TODO: "Mouse pos: ".toFrontendString() + currentCoordinate
-                            withFrontendString(createPropertyFrom("Mouse pos: ") bindPlusWith currentCoordinate.bindTransform { it.toString() })
+                            withFrontendString("Mouse pos: ".toFrontendString(FrontendString.Length.SHORT5) + currentCoordinate)
                             //textProperty.updateFrom(createPropertyFrom("Mouse pos: ") bindPlusWith currentCoordinate.bindTransform { it.toString() }, true)
                             gameComponent.handleMouseEvents(MouseEventType.MOUSE_MOVED) { mouseEvent, _ ->
                                 val positionInGameComponent = mouseEvent.position - gameComponent.absolutePosition

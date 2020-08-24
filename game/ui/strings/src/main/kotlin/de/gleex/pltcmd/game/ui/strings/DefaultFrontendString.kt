@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.ui.strings
 
+import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
 import org.hexworks.cobalt.databinding.api.extension.toProperty
@@ -12,10 +13,10 @@ import org.hexworks.cobalt.events.api.Subscription
  */
 open class DefaultFrontendString<T : Any>(
         private val originalObject: ObservableValue<T>,
-        override val length: FrontendString.Length
+        override val length: FrontendString.Length = FrontendString.Length.FULL
 ) : FrontendString<T> {
 
-    constructor(originalObject: T, length: FrontendString.Length) : this(originalObject.toProperty(), length)
+    constructor(originalObject: T, length: FrontendString.Length = FrontendString.Length.FULL) : this(originalObject.toProperty(), length)
 
     private val internalBinding = originalObject.bindTransform { transform(it, length) }
 
@@ -47,4 +48,8 @@ open class DefaultFrontendString<T : Any>(
 
     override fun onChange(fn: (ObservableValueChanged<String>) -> Unit): Subscription =
             internalBinding.onChange(fn)
+
+    override fun plus(other: FrontendString<Any>): FrontendString<String> {
+        return DefaultFrontendString(internalBinding.bindPlusWith(other), de.gleex.pltcmd.game.ui.strings.extensions.minOf(length, other.length))
+    }
 }
