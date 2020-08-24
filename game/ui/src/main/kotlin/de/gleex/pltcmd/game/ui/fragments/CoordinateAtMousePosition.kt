@@ -29,9 +29,7 @@ class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComp
                         withSize(width, 1).
                         build().
                         apply {
-                            // TODO: "Mouse pos: ".toFrontendString() + currentCoordinate
-                            withFrontendString("Mouse pos: ".toFrontendString(FrontendString.Length.SHORT5) + currentCoordinate)
-                            //textProperty.updateFrom(createPropertyFrom("Mouse pos: ") bindPlusWith currentCoordinate.bindTransform { it.toString() }, true)
+                            withFrontendString("Mouse pos: ".toFrontendString(FrontendString.Length.SIDEBAR) + currentCoordinate)
                             gameComponent.handleMouseEvents(MouseEventType.MOUSE_MOVED) { mouseEvent, _ ->
                                 val positionInGameComponent = mouseEvent.position - gameComponent.absolutePosition
                                 currentCoordinate.updateValue(gameWorld.coordinateAtVisiblePosition(positionInGameComponent))
