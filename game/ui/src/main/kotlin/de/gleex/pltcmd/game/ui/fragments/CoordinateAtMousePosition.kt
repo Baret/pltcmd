@@ -1,9 +1,12 @@
 package de.gleex.pltcmd.game.ui.fragments
 
 import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
+import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.game.GameComponent
 import org.hexworks.zircon.api.uievent.MouseEventType
@@ -14,7 +17,7 @@ import org.hexworks.zircon.api.uievent.UIEventResponse
  */
 class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComponent<*, *>, gameWorld: GameWorld) : BaseFragment {
 
-    private val currentCoordinate = createPropertyFrom(gameWorld.visibleTopLeftCoordinate())
+    private val currentCoordinate: Property<Coordinate> = createPropertyFrom(gameWorld.visibleTopLeftCoordinate())
 
     override val root = Components.hbox().
             withSize(width, 1).
@@ -25,7 +28,9 @@ class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComp
                         withSize(width, 1).
                         build().
                         apply {
-                            textProperty.updateFrom(createPropertyFrom("Mouse pos: ") bindPlusWith currentCoordinate.bindTransform { it.toString() }, true)
+                            // TODO: "Mouse pos: ".toFrontendString() + currentCoordinate
+                            withFrontendString(createPropertyFrom("Mouse pos: ") bindPlusWith currentCoordinate.bindTransform { it.toString() })
+                            //textProperty.updateFrom(createPropertyFrom("Mouse pos: ") bindPlusWith currentCoordinate.bindTransform { it.toString() }, true)
                             gameComponent.handleMouseEvents(MouseEventType.MOUSE_MOVED) { mouseEvent, _ ->
                                 val positionInGameComponent = mouseEvent.position - gameComponent.absolutePosition
                                 currentCoordinate.updateValue(gameWorld.coordinateAtVisiblePosition(positionInGameComponent))

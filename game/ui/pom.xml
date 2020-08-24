@@ -19,6 +19,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>de.gleex.pltcmd.game.ui</groupId>
+            <artifactId>strings</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>engine</artifactId>
         </dependency>

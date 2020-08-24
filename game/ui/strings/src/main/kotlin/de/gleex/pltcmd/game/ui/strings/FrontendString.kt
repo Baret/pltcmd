@@ -1,6 +1,8 @@
 package de.gleex.pltcmd.game.ui.strings
 
+import de.gleex.pltcmd.game.options.UiOptions
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
+
 
 /**
  * A string representation of an object that can be used in the frontend.
@@ -8,16 +10,18 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
  * It provides means to trim the string down to various lengths so it will always fit into the currently available
  * space (i.e. a sidebar or a dialog) while always representing a human readable resemblance of the object.
  */
-interface FrontendString {
-    /**
-     * The original string, unchanged and untrimmed. Possibly not reliably usable in the frontend.
-     */
-    val original: ObservableValue<String>
+interface FrontendString<out T : Any> : ObservableValue<String> {
+
+    val length: Length
 
     /**
-     * This length fits into a sidebar.
-     *
-     * @see de.gleex.pltcmd.game.options.UiOptions.INTERFACE_PANEL_WIDTH
+     * The maximum length of a [FrontendString].
      */
-    val sidebar: String
+    enum class Length(val characters: Int) {
+        FULL(Int.MAX_VALUE),
+        SIDEBAR(UiOptions.INTERFACE_PANEL_WIDTH),
+        SHORT5(5),
+        SHORT3(3),
+        ICON(1)
+    }
 }
