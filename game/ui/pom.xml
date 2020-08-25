@@ -13,15 +13,10 @@
     <name>UI</name>
     <description>All the graphical stuff and user interaction.</description>
 
-    <modules>
-        <module>strings</module>
-    </modules>
-
     <dependencies>
         <dependency>
-            <groupId>de.gleex.pltcmd.game.ui</groupId>
+            <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>strings</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
