@@ -20,7 +20,7 @@
         <module>ticks</module>
         <module>ui</module>
         <module>engine</module>
-        <module>strings</module>
+        <module>ui-strings</module>
     </modules>
 
     <dependencies>
@@ -73,7 +73,7 @@
             </dependency>
             <dependency>
                 <groupId>de.gleex.pltcmd.game</groupId>
-                <artifactId>strings</artifactId>
+                <artifactId>ui-strings</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- other internal projects -->
