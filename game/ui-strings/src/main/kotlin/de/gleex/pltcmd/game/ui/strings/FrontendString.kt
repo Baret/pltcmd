@@ -13,9 +13,9 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 interface FrontendString<out T : Any> : ObservableValue<String> {
 
     /**
-     * The [Length] restricting the space available for this string.
+     * The [ObjectFormatter] restricting the space available for this string.
      */
-    val length: Length
+    val objectFormatter: ObjectFormatter
 
     /**
      * Creates a new [FrontendString] with both strings combined. This acts like a bindPlusWith call. The resulting
@@ -27,7 +27,7 @@ interface FrontendString<out T : Any> : ObservableValue<String> {
     /**
      * The maximum length of a [FrontendString].
      */
-    enum class Length(val characters: Int) {
+    enum class ObjectFormatter(val length: Int) {
         ICON(1),
         SHORT3(3),
         SHORT5(5),

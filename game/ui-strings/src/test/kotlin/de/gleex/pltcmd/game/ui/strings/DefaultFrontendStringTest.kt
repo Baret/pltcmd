@@ -8,16 +8,23 @@ class DefaultFrontendStringTest : WordSpec({
     val testString = "A very long string that needs to be truncated."
 
     "The default implementation of a frontendString" should {
-        FrontendString.Length.values()
+        truncateForLengths(
+            FrontendString.ObjectFormatter.FULL    to testString,
+            FrontendString.ObjectFormatter.SIDEBAR to "A very long string that needs to b...",
+            FrontendString.ObjectFormatter.SHORT5  to "A ver",
+            FrontendString.ObjectFormatter.SHORT3  to "A v",
+            FrontendString.ObjectFormatter.ICON    to "A"
+        )
+        FrontendString.ObjectFormatter.values()
                 .forEach { length ->
                     "truncate correctly for length $length" {
                         val actualValue = DefaultFrontendString(testString, length).value
                         when (length) {
-                            FrontendString.Length.FULL    -> actualValue shouldBe testString
-                            FrontendString.Length.SIDEBAR -> actualValue shouldBe "A very long string that needs to b..."
-                            FrontendString.Length.SHORT5  -> actualValue shouldBe "A ver"
-                            FrontendString.Length.SHORT3  -> actualValue shouldBe "A v"
-                            FrontendString.Length.ICON    -> actualValue shouldBe "A"
+                            FrontendString.ObjectFormatter.FULL    -> actualValue shouldBe testString
+                            FrontendString.ObjectFormatter.SIDEBAR -> actualValue shouldBe "A very long string that needs to b..."
+                            FrontendString.ObjectFormatter.SHORT5  -> actualValue shouldBe "A ver"
+                            FrontendString.ObjectFormatter.SHORT3  -> actualValue shouldBe "A v"
+                            FrontendString.ObjectFormatter.ICON    -> actualValue shouldBe "A"
                         }
                     }
                 }
@@ -45,7 +52,7 @@ class DefaultFrontendStringTest : WordSpec({
         "result in a full combination of both" {
             val a = "a "
             val b = "b"
-            val combined = DefaultFrontendString(a, FrontendString.Length.SHORT5) + DefaultFrontendString(b, FrontendString.Length.SHORT5)
+            val combined = DefaultFrontendString(a, FrontendString.ObjectFormatter.SHORT5) + DefaultFrontendString(b, FrontendString.ObjectFormatter.SHORT5)
             combined.value shouldBe "a b"
         }
     }
@@ -54,7 +61,7 @@ class DefaultFrontendStringTest : WordSpec({
         "result in a string with the shorter one" {
             val a = "one"
             val b = " two"
-            val combined = DefaultFrontendString(a, FrontendString.Length.SHORT5) + DefaultFrontendString(b, FrontendString.Length.SIDEBAR)
+            val combined = DefaultFrontendString(a, FrontendString.ObjectFormatter.SHORT5) + DefaultFrontendString(b, FrontendString.ObjectFormatter.SIDEBAR)
             combined.value shouldBe "one t"
         }
     }
