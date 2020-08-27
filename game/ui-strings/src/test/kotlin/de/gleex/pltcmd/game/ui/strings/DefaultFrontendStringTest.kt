@@ -22,7 +22,7 @@ class DefaultFrontendStringTest : WordSpec({
                     }
                 }
 
-        "be observale" {
+        "be observable" {
             val observableString = testString.toProperty()
             val frontendString = DefaultFrontendString(observableString)
             var observed = false
