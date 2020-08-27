@@ -14,21 +14,21 @@ import org.hexworks.cobalt.events.api.Subscription
  */
 open class DefaultFrontendString<T : Any>(
         private val originalObject: ObservableValue<T>,
-        override val objectFormatter: FrontendString.ObjectFormatter = FrontendString.ObjectFormatter.FULL
+        override val format: FrontendString.Format = FrontendString.Format.FULL
 ) : FrontendString<T> {
 
-    constructor(originalObject: T, objectFormatter: FrontendString.ObjectFormatter = FrontendString.ObjectFormatter.FULL) : this(originalObject.toProperty(), objectFormatter)
+    constructor(originalObject: T, objectFormatter: FrontendString.Format = FrontendString.Format.FULL) : this(originalObject.toProperty(), objectFormatter)
 
-    private val internalBinding = originalObject.bindTransform { objectFormatter(it) }
+    private val internalBinding = originalObject.bindTransform { format(it) }
 
     /**
-     * The underlying object formatted as string with [objectFormatter].
+     * The underlying object formatted as string with [format].
      */
     override val value: String
         get() {
             val transformedValue = internalBinding.value
-            require(transformedValue.length <= objectFormatter.length) {
-                "Invalid transformation to frontend string. Required maximum length ${objectFormatter.length} but transformation resulted in length ${transformedValue.length}. Transformed object: ${originalObject.value}"
+            require(transformedValue.length <= format.length) {
+                "Invalid transformation to frontend string. Required maximum length ${format.length} but transformation resulted in length ${transformedValue.length}. Transformed object: ${originalObject.value}"
             }
             return transformedValue
         }
@@ -36,16 +36,16 @@ open class DefaultFrontendString<T : Any>(
     /**
      * Transform the underlying object to a string of given length.
      */
-    protected open operator fun FrontendString.ObjectFormatter.invoke(objectToTransform: T): String {
+    protected open operator fun FrontendString.Format.invoke(objectToTransform: T): String {
         val string = objectToTransform.toString()
-        return if (string.length <= objectFormatter.length) {
+        return if (string.length <= format.length) {
             string
         } else {
-            if (objectFormatter.length >= 6) {
-                string.substring(0, objectFormatter.length - 3)
-                        .padEnd(objectFormatter.length, '.')
+            if (format.length >= 6) {
+                string.substring(0, format.length - 3)
+                        .padEnd(format.length, '.')
             } else {
-                string.substring(0, objectFormatter.length)
+                string.substring(0, format.length)
             }
         }
     }
@@ -54,6 +54,6 @@ open class DefaultFrontendString<T : Any>(
             internalBinding.onChange(fn)
 
     override fun plus(other: FrontendString<Any>): FrontendString<String> {
-        return DefaultFrontendString(internalBinding.bindPlusWith(other), minOf(objectFormatter, other.objectFormatter))
+        return DefaultFrontendString(internalBinding.bindPlusWith(other), minOf(format, other.format))
     }
 }

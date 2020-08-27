@@ -11,19 +11,19 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
  */
 class CoordinateFrontendString(
         originalObject: ObservableValue<Coordinate>,
-        objectFormatter: FrontendString.ObjectFormatter = FrontendString.ObjectFormatter.FULL
-) : DefaultFrontendString<Coordinate>(originalObject, objectFormatter) {
+        format: FrontendString.Format = FrontendString.Format.FULL
+) : DefaultFrontendString<Coordinate>(originalObject, format) {
     constructor(
             originalObject: Coordinate,
-            objectFormatter: FrontendString.ObjectFormatter = FrontendString.ObjectFormatter.FULL
-    ) : this(originalObject.toProperty(), objectFormatter)
+            format: FrontendString.Format = FrontendString.Format.FULL
+    ) : this(originalObject.toProperty(), format)
 
-    override fun FrontendString.ObjectFormatter.invoke(objectToTransform: Coordinate): String =
+    override fun FrontendString.Format.invoke(objectToTransform: Coordinate): String =
             when(this) {
-                FrontendString.ObjectFormatter.ICON    -> "|"
-                FrontendString.ObjectFormatter.SHORT3  -> objectToTransform.formattedMainCoordinate
-                FrontendString.ObjectFormatter.SHORT5  -> "(${objectToTransform.formattedMainCoordinate})"
-                FrontendString.ObjectFormatter.SIDEBAR, FrontendString.ObjectFormatter.FULL -> objectToTransform.toString()
+                FrontendString.Format.ICON                                -> "|"
+                FrontendString.Format.SHORT3                              -> objectToTransform.formattedMainCoordinate
+                FrontendString.Format.SHORT5                              -> "(${objectToTransform.formattedMainCoordinate})"
+                FrontendString.Format.SIDEBAR, FrontendString.Format.FULL -> objectToTransform.toString()
             }
 
     /**

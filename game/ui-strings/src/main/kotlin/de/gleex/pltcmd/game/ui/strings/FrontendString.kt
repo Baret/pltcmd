@@ -13,9 +13,9 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 interface FrontendString<out T : Any> : ObservableValue<String> {
 
     /**
-     * The [ObjectFormatter] restricting the space available for this string.
+     * The [Format] restricting the space available for this string.
      */
-    val objectFormatter: ObjectFormatter
+    val format: Format
 
     /**
      * Creates a new [FrontendString] with both strings combined. This acts like a bindPlusWith call. The resulting
@@ -25,13 +25,35 @@ interface FrontendString<out T : Any> : ObservableValue<String> {
     operator fun plus(other: FrontendString<Any>): FrontendString<*>
 
     /**
-     * The maximum length of a [FrontendString].
+     * The format of a [FrontendString] restricts its maximum [length].
+     *
+     * @param length the maximum length a [FrontendString] may use.
      */
-    enum class ObjectFormatter(val length: Int) {
+    enum class Format(val length: Int) {
+        /**
+         * The minimum length of 1. When space is really really sparse ;)
+         */
         ICON(1),
+
+        /**
+         * A very short string with length 3.
+         */
         SHORT3(3),
+
+        /**
+         * A short string with length 5.
+         */
         SHORT5(5),
+
+        /**
+         * A string that fits into a sidebar. The value is actually [UiOptions.INTERFACE_PANEL_WIDTH] - 2 to subtract
+         * the border and get its content size.
+         */
         SIDEBAR(UiOptions.INTERFACE_PANEL_WIDTH - 2),
+
+        /**
+         * With this format the string has no length restriction.
+         */
         FULL(Int.MAX_VALUE)
     }
 }
