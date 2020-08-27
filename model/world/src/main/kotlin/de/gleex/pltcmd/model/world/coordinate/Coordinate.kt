@@ -100,8 +100,16 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
 
     override fun toString() = "(${formattedEasting()}|${formattedNorthing()})"
 
+    /**
+     * Formats the easting of this coordinate so the resulting string has at least a length of 3 for positive
+     * and 4 for negative values.
+     */
     fun formattedEasting() = toCoordinateText(eastingFromLeft)
 
+    /**
+     * Formats the northing of this coordinate so the resulting string has at least a length of 3 for positive
+     * and 4 for negative values.
+     */
     fun formattedNorthing() = toCoordinateText(northingFromBottom)
 
     private fun toCoordinateText(coordinateValue: Int): String {

@@ -8,13 +8,6 @@ class DefaultFrontendStringTest : WordSpec({
     val testString = "A very long string that needs to be truncated."
 
     "The default implementation of a frontendString" should {
-        truncateForLengths(
-            FrontendString.ObjectFormatter.FULL    to testString,
-            FrontendString.ObjectFormatter.SIDEBAR to "A very long string that needs to b...",
-            FrontendString.ObjectFormatter.SHORT5  to "A ver",
-            FrontendString.ObjectFormatter.SHORT3  to "A v",
-            FrontendString.ObjectFormatter.ICON    to "A"
-        )
         FrontendString.ObjectFormatter.values()
                 .forEach { length ->
                     "truncate correctly for length $length" {
