@@ -14,7 +14,7 @@ class DefaultFrontendStringTest : WordSpec({
                         val actualValue = DefaultFrontendString(testString, length).value
                         when (length) {
                             FrontendString.ObjectFormatter.FULL    -> actualValue shouldBe testString
-                            FrontendString.ObjectFormatter.SIDEBAR -> actualValue shouldBe "A very long string that needs to b..."
+                            FrontendString.ObjectFormatter.SIDEBAR -> actualValue shouldBe "A very long string that needs to..."
                             FrontendString.ObjectFormatter.SHORT5  -> actualValue shouldBe "A ver"
                             FrontendString.ObjectFormatter.SHORT3  -> actualValue shouldBe "A v"
                             FrontendString.ObjectFormatter.ICON    -> actualValue shouldBe "A"
