@@ -31,7 +31,7 @@ interface FrontendString<out T : Any> : ObservableValue<String> {
         ICON(1),
         SHORT3(3),
         SHORT5(5),
-        SIDEBAR(UiOptions.INTERFACE_PANEL_WIDTH),
+        SIDEBAR(UiOptions.INTERFACE_PANEL_WIDTH - 2),
         FULL(Int.MAX_VALUE)
     }
 }

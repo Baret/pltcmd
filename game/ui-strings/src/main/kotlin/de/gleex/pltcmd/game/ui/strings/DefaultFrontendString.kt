@@ -10,7 +10,7 @@ import org.hexworks.cobalt.events.api.Subscription
 
 /**
  * Default implementation of a [FrontendString] that simply uses toString(), trims the original and appends "..."
- * if it is too long. For very short [FrontendString.ObjectFormatter]s the string is simply cut off.
+ * if it is too long. For very short lengths the string is simply cut off.
  */
 open class DefaultFrontendString<T : Any>(
         private val originalObject: ObservableValue<T>,
@@ -21,6 +21,9 @@ open class DefaultFrontendString<T : Any>(
 
     private val internalBinding = originalObject.bindTransform { objectFormatter(it) }
 
+    /**
+     * The underlying object formatted as string with [objectFormatter].
+     */
     override val value: String
         get() {
             val transformedValue = internalBinding.value
@@ -34,7 +37,7 @@ open class DefaultFrontendString<T : Any>(
      * Transform the underlying object to a string of given length.
      */
     protected open operator fun FrontendString.ObjectFormatter.invoke(objectToTransform: T): String {
-        val string = value.toString()
+        val string = objectToTransform.toString()
         return if (string.length <= objectFormatter.length) {
             string
         } else {
