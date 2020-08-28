@@ -8,6 +8,7 @@ import de.gleex.pltcmd.game.options.UiOptions.MAP_VIEW_HEIGHT
 import de.gleex.pltcmd.game.options.UiOptions.MAP_VIEW_WIDTH
 import de.gleex.pltcmd.game.options.UiOptions.WINDOW_HEIGHT
 import de.gleex.pltcmd.game.options.UiOptions.WINDOW_WIDTH
+import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.components.CustomComponent
 import de.gleex.pltcmd.game.ui.components.InfoSidebar
 import de.gleex.pltcmd.game.ui.components.InputSidebar
@@ -126,7 +127,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
     private fun LogArea.logRadioCalls() {
         globalEventBus.subscribeToBroadcasts { event: BroadcastEvent ->
             val transmission = event.transmission
-            val message = transmission.message
+            val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
             if (transmission.isOpening) {
                 addHeader(message, false)
             } else {

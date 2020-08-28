@@ -38,7 +38,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
     val mainCoordinates: Set<MainCoordinate>
         get() {
             val coords = mutableSetOf<MainCoordinate>()
-            // TODO: add `step(Sector.TILE_COUNT)` to not ask every single coordinate when you only need every sector
+            // TODO: add `step(Sector.TILE_COUNT)` to not ask every single coordinate when you only need every sector (#102)
             for(c in bottomLeftCoordinate..topRightCoordinate) {
                 coords.add(c.toMainCoordinate())
             }

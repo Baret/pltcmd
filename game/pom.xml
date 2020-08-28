@@ -20,12 +20,21 @@
         <module>ticks</module>
         <module>ui</module>
         <module>engine</module>
+        <module>ui-strings</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>org.hexworks.zircon</groupId>
             <artifactId>zircon.core-jvm</artifactId>
+        </dependency>
+        <!-- tests -->
+        <dependency>
+            <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>tests</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -62,6 +71,11 @@
                 <artifactId>ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.game</groupId>
+                <artifactId>ui-strings</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- other internal projects -->
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
@@ -87,14 +101,6 @@
                 <groupId>de.gleex.pltcmd.util</groupId>
                 <artifactId>events</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <!-- tests -->
-            <dependency>
-                <groupId>de.gleex.pltcmd.util</groupId>
-                <artifactId>tests</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

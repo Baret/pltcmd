@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>game</artifactId>
         <groupId>de.gleex.pltcmd.game</groupId>
@@ -13,6 +15,10 @@
     <description>All the graphical stuff and user interaction.</description>
 
     <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>ui-strings</artifactId>
+        </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>engine</artifactId>

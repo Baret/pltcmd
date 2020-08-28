@@ -32,5 +32,5 @@ object UiOptions {
     const val WINDOW_WIDTH = MAP_VIEW_WIDTH + (2 * SIDEBAR_WIDTH)
     const val WINDOW_HEIGHT = 64
 
-    const val SKIP_INTRO = false
+    const val SKIP_INTRO = true
 }

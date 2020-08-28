@@ -67,10 +67,10 @@ object Ticker {
         globalEventBus.publishTick(currentTick)
     }
 
-    fun start() {
+    fun start(tickRateDuration: Long, tickRateTimeunit: TimeUnit) {
         executor.scheduleAtFixedRate({
             tick()
-        }, 1, 1, TimeUnit.SECONDS)
+        }, 1, tickRateDuration, tickRateTimeunit)
     }
 
     fun stop() {

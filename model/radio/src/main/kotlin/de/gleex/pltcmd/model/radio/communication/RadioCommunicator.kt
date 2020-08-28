@@ -21,7 +21,7 @@ import java.util.*
 
 /**
  * A [RadioCommunicator] participates in radio communications. It sends with the given radio each time [proceedWithConversation]
- * is called and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [EventBus].
+ * is called and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [globalEventBus].
  */
 // technically this is a facade that delegates to RadioTransmitter and RadioReceiver which share the same state
 class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
@@ -57,7 +57,7 @@ class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
     fun proceedWithConversation() = sender.proceedWithConversation()
 
     /** Start the given conversation on the next free transmission slot. See [proceedWithConversation] */
-    fun queueConversation(conversation: Conversation) = sender.queueConversation(conversation)
+    fun startConversation(conversation: Conversation) = sender.startConversation(conversation)
 
 }
 
@@ -144,7 +144,7 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
     private fun sendResponseTo(transmission: Transmission) {
         when (transmission) {
             is OrderTransmission        -> executeOrderAndRespond(transmission)
-            is TransmissionWithResponse -> sender.send(transmission.response)
+            is TransmissionWithResponse -> sender.sendNext(transmission.response)
             is TerminatingTransmission  -> endConversation()
         }
     }
@@ -154,10 +154,10 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
         if (order.isPresent) {
             // delegate to the game entity's logic to execute actual commands
             val orderedTo = transmission.location
-            radioContext.executeOrder(order.get(), orderedTo)
-            sender.send(transmission.positiveAnswer)
+            radioContext.executeOrder(order.get(), transmission.sender, orderedTo)
+            sender.sendNext(transmission.positiveAnswer)
         } else {
-            sender.send(transmission.negativeAnswer)
+            sender.sendNext(transmission.negativeAnswer)
         }
     }
 
@@ -166,7 +166,7 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
             endConversation()
         } else {
             sender.queueConversation(Conversation(callSign, incomingTransmission.sender, nextTransmissionOf(incomingTransmission)))
-            sender.send(Conversations.Other.standBy(callSign, incomingTransmission.sender).firstTransmission)
+            sender.sendNext(Conversations.Other.standBy(callSign, incomingTransmission.sender).firstTransmission)
         }
     }
 
@@ -175,7 +175,7 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
             (transmission as TransmissionWithResponse).response
 
     private fun gatherInformationFrom(transmission: Transmission) {
-        // TODO: Learn stuff from transmissions and add it to the "knowledge" of this unit
+        // TODO: Learn stuff from transmissions and add it to the "knowledge" of this unit/element (#104)
         val contacts = transmission.contactLocations
         if (contacts.isNotEmpty()) {
             log.debug("${callSign}: learned about enemies at ${contacts.joinToString()}")
@@ -188,11 +188,37 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
 internal class SendingCommunicator internal constructor(callSign: CallSign, state: CommunicatorState, internal val radio: RadioSender)
     : CommonCommunicator(callSign, state) {
 
+    /**
+     * When this communicator shall start a [Conversation] but currently already is in one, the new conversation(s)
+     * are queued.
+     */
     private val conversationQueue: Queue<Conversation> = LinkedList()
+
+    /**
+     * The next transmission(s) to be sent.
+     */
     private val transmissionBuffer: Queue<Transmission> = LinkedList()
 
     /** Starts or continues [Conversation]s by sending [Transmission]s. May do nothing. */
     fun proceedWithConversation() {
+        transmitFromBuffer()
+
+        // if no conversation is going on, check if we should start a new one
+        if (!state.isInConversation()) {
+            conversationQueue.poll()
+                    ?.let {
+                        startConversation(it)
+                        proceedWithConversation()
+                    }
+        }
+    }
+
+    /**
+     * Polls the next [Transmission] from the [transmissionBuffer] and [transmit]s it.
+     *
+     * This method also handles the [CommunicatorState.isWaitingForReply] countdown.
+     */
+    private fun transmitFromBuffer() {
         var toSend: Transmission? = transmissionBuffer.poll()
         if (toSend == null && state.isInConversation()) {
             if (state.isWaitingForReply()) {
@@ -204,14 +230,11 @@ internal class SendingCommunicator internal constructor(callSign: CallSign, stat
             }
         }
         toSend?.let(::transmit)
-
-        // if no conversation is going on, check if we should start a new one
-        if (!state.isInConversation()) {
-            conversationQueue.poll()
-                    ?.let { startConversation(it) }
-        }
     }
 
+    /**
+     * Instantly transmits the given [Transmission] using the [RadioSender].
+     */
     private fun transmit(transmission: Transmission) {
         transmission.formatMessage(radioContext.newTransmissionContext())
         radio.transmit(transmission)
@@ -224,23 +247,35 @@ internal class SendingCommunicator internal constructor(callSign: CallSign, stat
     }
 
     /**
-     * Sends the firs transmission of the given [Conversation] when there is not a conversation going on. In that case it will be queued.
+     * Adds the given [Conversation] to the queue of conversations. If no conversation is going on the given
+     * conversation will be started the next time [proceedWithConversation] is invoked.
      */
-    private fun startConversation(conversation: Conversation) {
+    fun startConversation(conversation: Conversation) {
         if (state.isInConversation()) {
             // try again next tick
             queueConversation(conversation)
         } else {
             state.setInConversationWith(conversation.receiver)
-            send(conversation.firstTransmission)
+            sendNext(conversation.firstTransmission)
         }
     }
 
-    fun queueConversation(conversation: Conversation) {
+    /**
+     * Queues the given conversation so it is being started when the current conversation is over.
+     *
+     * When there is no conversation going on currently the queued conversation is polled on the
+     * next call of [proceedWithConversation].
+     *
+     * @see CommunicatorState.isInConversation
+     */
+    internal fun queueConversation(conversation: Conversation) {
         conversationQueue.offer(conversation)
     }
 
-    internal fun send(transmission: Transmission) {
+    /**
+     * Adds the given [Transmission] to the buffer so it is sent next when [proceedWithConversation] is called.
+     */
+    internal fun sendNext(transmission: Transmission) {
         transmissionBuffer.add(transmission)
         if (transmission is TerminatingTransmission) {
             endConversation()

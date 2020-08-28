@@ -22,7 +22,7 @@ internal class CallSignProvider(
     private var callSign: CallSign
 
     init {
-        // TODO: Pick name generator based on corps, kind and rung
+        // TODO: Pick name generator based on corps, kind and rung (#84)
         callSign = CallSign(
                 when(corps) {
                     Corps.Fighting  -> AlphabetPicker() // Cool names
