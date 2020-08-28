@@ -7,7 +7,7 @@ import org.hexworks.cobalt.databinding.api.extension.toProperty
 class DefaultFrontendStringTest : WordSpec({
     val testString = "A very long string that needs to be truncated."
 
-    "The default implementation of a frontendString" should {
+    "The default implementation of a frontend string" should {
         FrontendString.Format.values()
                 .forEach { length ->
                     "truncate correctly for length $length" {
@@ -25,19 +25,19 @@ class DefaultFrontendStringTest : WordSpec({
         "be observable" {
             val observableString = testString.toProperty()
             val frontendString = DefaultFrontendString(observableString)
-            var observed = false
+            var changed = false
 
             frontendString.onChange {
-                observed = true
+                changed = true
             }
 
             frontendString.value shouldBe testString
-            observed shouldBe false
+            changed shouldBe false
 
             observableString.updateValue("new Value")
 
             frontendString.value shouldBe "new Value"
-            observed shouldBe true
+            changed shouldBe true
         }
     }
 

@@ -31,8 +31,8 @@ class CoordinateFrontendString(
      * The result is a string of length 3.
      *
      * - When it has one digit, the digit
-     * - When it has more than one digit a start (*)
      * - When it is negative a minus (-)
+     * - When it has more than one digit a star (*)
      */
     private val Coordinate.formattedMainCoordinate: String
         get() {

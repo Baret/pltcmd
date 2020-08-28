@@ -9,16 +9,16 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 /**
  * Creates a [DefaultFrontendString] for any object that has no special [toFrontendString] method.
  */
-fun Any.toFrontendString(objectFormatter: FrontendString.Format = FrontendString.Format.FULL): FrontendString<Any> =
-        DefaultFrontendString(this, objectFormatter)
+fun Any.toFrontendString(format: FrontendString.Format = FrontendString.Format.FULL): FrontendString<Any> =
+        DefaultFrontendString(this, format)
 
 /**
  * Creates a [DefaultFrontendString] of this observable value. This method works for [Any] object when there is no
  * special override.
  */
-fun <T: Any> ObservableValue<T>.toFrontendString(objectFormatter: FrontendString.Format = FrontendString.Format.FULL): FrontendString<T> =
-        DefaultFrontendString(this, objectFormatter)
+fun <T: Any> ObservableValue<T>.toFrontendString(format: FrontendString.Format = FrontendString.Format.FULL): FrontendString<T> =
+        DefaultFrontendString(this, format)
 
 @JvmName("toFrontendStringCoordinate")
-fun ObservableValue<Coordinate>.toFrontendString(objectFormatter: FrontendString.Format = FrontendString.Format.FULL): FrontendString<Coordinate> =
-        CoordinateFrontendString(this, objectFormatter)
+fun ObservableValue<Coordinate>.toFrontendString(format: FrontendString.Format = FrontendString.Format.FULL): FrontendString<Coordinate> =
+        CoordinateFrontendString(this, format)

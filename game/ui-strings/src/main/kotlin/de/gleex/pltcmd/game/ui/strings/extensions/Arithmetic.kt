@@ -10,3 +10,13 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
  */
 operator fun FrontendString<Any>.plus(observable: ObservableValue<Any>) =
         this + observable.toFrontendString()
+
+/**
+ * Returns the shorter of both formats.
+ */
+fun minOf(first: FrontendString.Format, second: FrontendString.Format) =
+        if(first.length <= second.length) {
+            first
+        } else {
+            second
+        }

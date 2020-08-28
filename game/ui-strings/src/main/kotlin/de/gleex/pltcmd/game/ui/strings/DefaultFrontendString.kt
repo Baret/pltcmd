@@ -17,12 +17,12 @@ open class DefaultFrontendString<T : Any>(
         override val format: FrontendString.Format = FrontendString.Format.FULL
 ) : FrontendString<T> {
 
-    constructor(originalObject: T, objectFormatter: FrontendString.Format = FrontendString.Format.FULL) : this(originalObject.toProperty(), objectFormatter)
+    constructor(originalObject: T, format: FrontendString.Format = FrontendString.Format.FULL) : this(originalObject.toProperty(), format)
 
     private val internalBinding = originalObject.bindTransform { format(it) }
 
     /**
-     * The underlying object formatted as string with [format].
+     * The underlying object formatted as string with [FrontendString.format].
      */
     override val value: String
         get() {
@@ -47,7 +47,7 @@ open class DefaultFrontendString<T : Any>(
             } else {
                 string.substring(0, format.length)
             }
-        }
+        } 
     }
 
     override fun onChange(fn: (ObservableValueChanged<String>) -> Unit): Subscription =
