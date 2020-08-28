@@ -10,9 +10,9 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
  * A [FrontendString] for a [Coordinate].
  */
 class CoordinateFrontendString(
-        originalObject: ObservableValue<Coordinate>,
+        observableCoordinate: ObservableValue<Coordinate>,
         format: FrontendString.Format = FrontendString.Format.FULL
-) : DefaultFrontendString<Coordinate>(originalObject, format) {
+) : DefaultFrontendString<Coordinate>(observableCoordinate, format) {
     constructor(
             originalObject: Coordinate,
             format: FrontendString.Format = FrontendString.Format.FULL

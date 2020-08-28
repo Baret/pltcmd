@@ -3,7 +3,9 @@ package de.gleex.pltcmd.game.ui.strings.extensions
 import de.gleex.pltcmd.game.ui.strings.DefaultFrontendString
 import de.gleex.pltcmd.game.ui.strings.FrontendString
 import de.gleex.pltcmd.game.ui.strings.special.CoordinateFrontendString
+import de.gleex.pltcmd.game.ui.strings.special.TerrainFrontendString
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.terrain.Terrain
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 
 /**
@@ -22,3 +24,7 @@ fun <T: Any> ObservableValue<T>.toFrontendString(format: FrontendString.Format =
 @JvmName("toFrontendStringCoordinate")
 fun ObservableValue<Coordinate>.toFrontendString(format: FrontendString.Format = FrontendString.Format.FULL): FrontendString<Coordinate> =
         CoordinateFrontendString(this, format)
+
+@JvmName("toFrontendStringTerrain")
+fun ObservableValue<Terrain>.toFrontendString(format: FrontendString.Format = FrontendString.Format.FULL): FrontendString<Terrain> =
+        TerrainFrontendString(this, format)
