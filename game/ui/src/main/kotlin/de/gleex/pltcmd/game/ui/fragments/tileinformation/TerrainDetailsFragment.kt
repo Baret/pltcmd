@@ -40,7 +40,7 @@ class TerrainDetailsFragment(
                     }
 
     override fun updateInformation(newCoordinate: Coordinate) {
-        val terrainAt = world.getTerrainAt(newCoordinate)
+        val terrainAt = world[newCoordinate]
         heightProperty.updateValue(terrainAt.height)
         typeProperty.updateValue(terrainAt.type)
     }

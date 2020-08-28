@@ -46,10 +46,10 @@ interface FrontendString<out T : Any> : ObservableValue<String> {
         SHORT5(5),
 
         /**
-         * A string that fits into a sidebar. The value is actually [UiOptions.INTERFACE_PANEL_WIDTH] - 2 to subtract
+         * A string that fits into a sidebar. The value is actually [UiOptions.SIDEBAR_WIDTH] - 2 to subtract
          * the border and get its content size.
          */
-        SIDEBAR(UiOptions.INTERFACE_PANEL_WIDTH - 2),
+        SIDEBAR(UiOptions.SIDEBAR_WIDTH - 2),
 
         /**
          * With this format the string has no length restriction.
