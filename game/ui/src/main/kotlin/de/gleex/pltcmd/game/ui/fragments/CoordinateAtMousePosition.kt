@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.ui.fragments
 
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.game.ui.strings.FrontendString
+import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -30,7 +30,7 @@ class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComp
                         apply {
                             withFrontendString(
                                     "Mouse pos: ".toFrontendString()
-                                            + currentCoordinate.toFrontendString(FrontendString.Format.SIDEBAR)
+                                            + currentCoordinate.toFrontendString(Format.SIDEBAR)
                             )
                             gameComponent.handleMouseEvents(MouseEventType.MOUSE_MOVED) { mouseEvent, _ ->
                                 val positionInGameComponent = mouseEvent.position - gameComponent.absolutePosition

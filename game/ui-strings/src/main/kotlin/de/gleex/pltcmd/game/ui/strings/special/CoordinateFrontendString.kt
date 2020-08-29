@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.ui.strings.special
 
 import de.gleex.pltcmd.game.ui.strings.DefaultFrontendString
+import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.FrontendString
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.extension.toProperty
@@ -11,19 +12,19 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
  */
 class CoordinateFrontendString(
         originalObject: ObservableValue<Coordinate>,
-        format: FrontendString.Format = FrontendString.Format.FULL
+        format: Format = Format.FULL
 ) : DefaultFrontendString<Coordinate>(originalObject, format) {
     constructor(
             originalObject: Coordinate,
-            format: FrontendString.Format = FrontendString.Format.FULL
+            format: Format = Format.FULL
     ) : this(originalObject.toProperty(), format)
 
-    override fun FrontendString.Format.invoke(objectToTransform: Coordinate): String =
+    override fun Format.invoke(objectToTransform: Coordinate): String =
             when(this) {
-                FrontendString.Format.ICON                                -> "|"
-                FrontendString.Format.SHORT3                              -> objectToTransform.formattedMainCoordinate
-                FrontendString.Format.SHORT5                              -> "(${objectToTransform.formattedMainCoordinate})"
-                FrontendString.Format.SIDEBAR, FrontendString.Format.FULL -> objectToTransform.toString()
+                Format.ICON                 -> "|"
+                Format.SHORT3               -> objectToTransform.formattedMainCoordinate
+                Format.SHORT5               -> "(${objectToTransform.formattedMainCoordinate})"
+                Format.SIDEBAR, Format.FULL -> objectToTransform.toString()
             }
 
     /**

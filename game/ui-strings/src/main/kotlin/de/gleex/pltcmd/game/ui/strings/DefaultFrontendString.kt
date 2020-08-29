@@ -14,10 +14,10 @@ import org.hexworks.cobalt.events.api.Subscription
  */
 open class DefaultFrontendString<T : Any>(
         private val originalObject: ObservableValue<T>,
-        override val format: FrontendString.Format = FrontendString.Format.FULL
+        override val format: Format = Format.FULL
 ) : FrontendString<T> {
 
-    constructor(originalObject: T, format: FrontendString.Format = FrontendString.Format.FULL) : this(originalObject.toProperty(), format)
+    constructor(originalObject: T, format: Format = Format.FULL) : this(originalObject.toProperty(), format)
 
     private val internalBinding = originalObject.bindTransform { format(it) }
 
@@ -36,7 +36,7 @@ open class DefaultFrontendString<T : Any>(
     /**
      * Transform the underlying object to a string of given length.
      */
-    protected open operator fun FrontendString.Format.invoke(objectToTransform: T): String {
+    protected open operator fun Format.invoke(objectToTransform: T): String {
         val string = objectToTransform.toString()
         return if (string.length <= format.length) {
             string

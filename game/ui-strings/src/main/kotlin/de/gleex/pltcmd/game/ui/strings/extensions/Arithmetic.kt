@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.ui.strings.extensions
 
+import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.FrontendString
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 
@@ -14,7 +15,7 @@ operator fun FrontendString<Any>.plus(observable: ObservableValue<Any>) =
 /**
  * Returns the shorter of both formats.
  */
-fun minOf(first: FrontendString.Format, second: FrontendString.Format) =
+fun minOf(first: Format, second: Format) =
         if(first.length <= second.length) {
             first
         } else {
