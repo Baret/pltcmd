@@ -5,6 +5,7 @@ import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import kotlin.math.min
 import kotlin.random.Random
 
 /**
@@ -24,7 +25,8 @@ data class CombatStats(val weapons: ObservableValue<List<Weapon>>, val health: P
         if (target.isAlive) {
             val damagePerTick = weapons.value.map { it.fireShots(random) }
                     .sum()
-            target.health.transformValue { it - damagePerTick }
+            val receivedDamage = min(damagePerTick, target.health.value)
+            target.health.transformValue { it - receivedDamage }
             log.debug("attack with $damagePerTick damage resulted in target health of ${target.health.value}")
         }
     }
@@ -41,16 +43,16 @@ data class CombatStats(val weapons: ObservableValue<List<Weapon>>, val health: P
         }
     }
 
-}
-
-/** @return damage of hits per tick */
-private fun Weapon.fireShots(random: Random): Int {
-    val shotsPerTick = roundsPerMinute / 1 // TODO make GameConstants.Time.ticksPerMinute available
-    val hits = 0
-    repeat(shotsPerTick) {
-        if (random.nextDouble() <= shotAccuracy) {
-            hits.inc()
+    /** @return damage of hits per tick */
+    private fun Weapon.fireShots(random: Random): Int {
+        val shotsPerTick = roundsPerMinute / 1 // TODO make GameConstants.Time.ticksPerMinute available
+        var hits = 0
+        repeat(shotsPerTick) {
+            if (random.nextDouble() <= shotAccuracy) {
+                hits = hits.inc()
+            }
         }
+        log.trace("firing $shotsPerTick shots with $shotAccuracy each results in $hits hits")
+        return hits * 1 // dmg / shot
     }
-    return hits * 1 // dmg / shot
 }

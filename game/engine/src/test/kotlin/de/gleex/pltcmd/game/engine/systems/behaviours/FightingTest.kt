@@ -30,17 +30,13 @@ class FightingTest : StringSpec({
         val attackerPosition = Coordinate(123, 456)
         val (attacker, context) = setupCombat(attackerPosition, attackerStats, targetStats)
 
-        Fighting.attackNearbyEnemies(attacker, context)
-        assertCombatResult(attackerStats, targetStats, 80, true)
-
-        Fighting.attackNearbyEnemies(attacker, context)
-        assertCombatResult(attackerStats, targetStats, 60, true)
-
-        Fighting.attackNearbyEnemies(attacker, context)
-        assertCombatResult(attackerStats, targetStats, 40, true)
-
-        Fighting.attackNearbyEnemies(attacker, context)
-        assertCombatResult(attackerStats, targetStats, 20, true)
+        var expectedHealth = targetStats.health.value
+        listOf(7, 5, 7, 6, 4, 8, 3, 8, 7, 5, 8, 6, 6, 6, 8, 5).forEach { expectedDamage ->
+            Fighting.attackNearbyEnemies(attacker, context)
+            expectedHealth -= expectedDamage
+            assertCombatResult(attackerStats, targetStats, expectedHealth, true)
+        }
+        expectedHealth shouldBe 1
 
         Fighting.attackNearbyEnemies(attacker, context)
         assertCombatResult(attackerStats, targetStats, 0, false)
@@ -62,17 +58,17 @@ class FightingTest : StringSpec({
         assertCombatResult(attackerStats, target2Stats, 100, true)
         assertCombatResult(attackerStats, target3Stats, 100, true)
 
-        repeat(5) { Fighting.attackNearbyEnemies(attacker, context) }
+        repeat(17) { Fighting.attackNearbyEnemies(attacker, context) }
         assertCombatResult(attackerStats, target1Stats, 0, false)
         assertCombatResult(attackerStats, target2Stats, 100, true)
         assertCombatResult(attackerStats, target3Stats, 100, true)
 
-        repeat(5) { Fighting.attackNearbyEnemies(attacker, context) }
+        repeat(17) { Fighting.attackNearbyEnemies(attacker, context) }
         assertCombatResult(attackerStats, target1Stats, 0, false)
         assertCombatResult(attackerStats, target2Stats, 0, false)
         assertCombatResult(attackerStats, target3Stats, 100, true)
 
-        repeat(5) { Fighting.attackNearbyEnemies(attacker, context) }
+        repeat(18) { Fighting.attackNearbyEnemies(attacker, context) }
         assertCombatResult(attackerStats, target1Stats, 0, false)
         assertCombatResult(attackerStats, target2Stats, 0, false)
         assertCombatResult(attackerStats, target3Stats, 0, false)
