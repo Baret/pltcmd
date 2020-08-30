@@ -13,6 +13,12 @@ object GameConstants {
          * The amount of ingame time that passes in one tick.
          */
         const val secondsSimulatedPerTick = 60.0
+
+        /**
+         * The number of ticks needed to simulate one ingame minute.
+         * @see secondsSimulatedPerTick
+         */
+        const val ticksPerMinute: Double = 60.0 / secondsSimulatedPerTick
     }
 
     /**

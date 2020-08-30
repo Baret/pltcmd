@@ -5,6 +5,7 @@ import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.combat.CombatStats
+import de.gleex.pltcmd.model.elements.combat.Weapons
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
@@ -12,7 +13,9 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.datatypes.Maybe
+import kotlin.random.Random
 
 class FightingTest : StringSpec({
     // enable mocking of extensions
@@ -20,9 +23,10 @@ class FightingTest : StringSpec({
     mockkStatic("de.gleex.pltcmd.game.engine.entities.types.ElementTypeKt")
     mockkStatic("de.gleex.pltcmd.game.engine.entities.types.PositionableKt")
 
+    val singleRifle = listOf(Weapons.assaultRifle).toProperty()
     "attackNearbyEnemies with single enemy" {
-        val attackerStats = CombatStats()
-        val targetStats = CombatStats()
+        val attackerStats = CombatStats(singleRifle)
+        val targetStats = CombatStats(singleRifle)
         val attackerPosition = Coordinate(123, 456)
         val (attacker, context) = setupCombat(attackerPosition, attackerStats, targetStats)
 
@@ -48,10 +52,10 @@ class FightingTest : StringSpec({
 
 
     "attackNearbyEnemies with multiple enemies" {
-        val attackerStats = CombatStats()
-        val target1Stats = CombatStats()
-        val target2Stats = CombatStats()
-        val target3Stats = CombatStats()
+        val attackerStats = CombatStats(singleRifle)
+        val target1Stats = CombatStats(singleRifle)
+        val target2Stats = CombatStats(singleRifle)
+        val target3Stats = CombatStats(singleRifle)
         val attackerPosition = Coordinate(123, 456)
         val (attacker, context) = setupCombat(attackerPosition, attackerStats, target1Stats, target2Stats, target3Stats)
         assertCombatResult(attackerStats, target1Stats, 100, true)
@@ -78,6 +82,7 @@ class FightingTest : StringSpec({
 private fun setupCombat(attackerPosition: Coordinate, attackerStats: CombatStats, vararg targetStats: CombatStats): Pair<ElementEntity, GameContext> {
 
     val context = mockk<GameContext>()
+    every { context.random } returns Random(123L)
     every { context.findElementAt(any()) } returns Maybe.empty()
 
     val attacker = mockk<ElementEntity>()
