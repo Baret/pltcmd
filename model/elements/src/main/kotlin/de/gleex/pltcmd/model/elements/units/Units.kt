@@ -119,7 +119,7 @@ enum class Units(
      *
      * Like the [APC] it can load up soldiers but is designed to fight alongside them.
      */
-    IFV(ArmoredLight, personnel = 3, personnelMinimum = 2, weapon = Weapons.mmg),
+    IFV(ArmoredLight, personnel = 3, personnelMinimum = 2, weapon = Weapons.hmg),
     /**
      * Tank hunters are high caliber guns mounted onto chassis of [APC]s or [IFV]s. They are highly mobile
      * to engage enemy heavily armored targets.
@@ -190,7 +190,7 @@ enum class Units(
      * close air support (CAS) against infantry and unarmored vehicles. Its counterpart, the
      * [HelicopterAT] can deal with harder targets.
      */
-    HelicopterHMG(AerialLight, personnel = 2, personnelMinimum = 2, weapon = Weapons.mmg),
+    HelicopterHMG(AerialLight, personnel = 2, personnelMinimum = 2, weapon = Weapons.hmg),
     /**
      * A small and versatile chopper armed with two pods loaded with unguided air to ground anti tank (AT)
      * rockets. It can quickly move towards enemy armored elements and engage them. But it is not as useful
