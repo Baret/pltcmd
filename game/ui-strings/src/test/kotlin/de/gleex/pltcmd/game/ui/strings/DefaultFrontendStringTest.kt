@@ -48,6 +48,13 @@ class DefaultFrontendStringTest : WordSpec({
             val combined = DefaultFrontendString(a, Format.SHORT5) + DefaultFrontendString(b, Format.SHORT5)
             combined.value shouldBe "a b"
         }
+
+        "result in a truncated combination of both" {
+            val a = "abcd"
+            val b = "xyz!"
+            val combined = DefaultFrontendString(a, Format.SHORT5) + DefaultFrontendString(b, Format.SHORT5)
+            combined.value shouldBe "abcdx"
+        }
     }
 
     "Adding two strings with different length" should {
