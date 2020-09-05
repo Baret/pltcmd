@@ -9,6 +9,8 @@ import de.gleex.pltcmd.model.elements.combat.Weapons
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -31,7 +33,24 @@ class FightingTest : StringSpec({
         val (attacker, context) = setupCombat(attackerPosition, attackerStats, targetStats)
 
         var expectedHealth = targetStats.health.value
-        listOf(7, 5, 7, 6, 4, 8, 3, 8, 7, 5, 8, 6, 6, 6, 8, 5).forEach { expectedDamage ->
+        forAll( // shots random damage
+                row(7),
+                row(5),
+                row(7),
+                row(6),
+                row(4),
+                row(8),
+                row(3),
+                row(8),
+                row(7),
+                row(5),
+                row(8),
+                row(6),
+                row(6),
+                row(6),
+                row(8),
+                row(5)
+        ) { expectedDamage ->
             Fighting.attackNearbyEnemies(attacker, context)
             expectedHealth -= expectedDamage
             assertCombatResult(attackerStats, targetStats, expectedHealth, true)
