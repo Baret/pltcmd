@@ -24,8 +24,8 @@ class MainCoordinateTest: WordSpec({
         }
     }
 
-    "The string representation of a main coordinate in the form of (x|y)" should {
-        val regex = "\\(-?\\d+\\|-?\\d+\\)"
+    "The string representation of a main coordinate in the form of (x!y)" should {
+        val regex = "\\(-?\\d+\\!-?\\d+\\)"
         "always have a length of at least 5 and match '$regex'" {
             checkAll<Int, Int> { x, y ->
                 val coordinateString = MainCoordinate(x, y).toString()
@@ -36,8 +36,8 @@ class MainCoordinateTest: WordSpec({
             }
         }
 
-        "be (5|9) for $testCoordinate" {
-            testCoordinate.toString() shouldBe "(5|9)"
+        "be (5!9) for $testCoordinate" {
+            testCoordinate.toString() shouldBe "(5!9)"
         }
     }
 })

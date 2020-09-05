@@ -98,7 +98,7 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         return Coordinate(eastDiff, northDiff)
     }
 
-    override fun toString() = "(${formattedEasting()}|${formattedNorthing()})"
+    override fun toString() = "(${formattedEasting()}$SEPARATOR${formattedNorthing()})"
 
     /**
      * Formats the easting of this coordinate so the resulting string has at least a length of 3 for positive
@@ -130,9 +130,14 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         val minusOne = Coordinate(-1, -1)
 
         /**
+         * The separator used in the string representation.
+         */
+        const val SEPARATOR = "|"
+
+        /**
          * The string representation of a coordinate should match this regex.
          */
-        val REGEX_STRING = "\\((-?\\d{3,})\\|(-?\\d{3,})\\)"
+        const val REGEX_STRING = "\\((-?\\d{3,})\\$SEPARATOR(-?\\d{3,})\\)"
 
         private const val FORMAT_POSITIVE = "%03d"
         private const val FORMAT_NEGATIVE = "%04d"

@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.ui.strings.DefaultFrontendString
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.FrontendString
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.MainCoordinate
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 
@@ -21,7 +22,7 @@ class CoordinateFrontendString(
 
     override fun Format.invoke(objectToTransform: Coordinate): String =
             when(this) {
-                Format.ICON                 -> "|"
+                Format.ICON                 -> Coordinate.SEPARATOR
                 Format.SHORT3               -> objectToTransform.formattedMainCoordinate
                 Format.SHORT5               -> "(${objectToTransform.formattedMainCoordinate})"
                 Format.SIDEBAR, Format.FULL -> objectToTransform.toString()
@@ -40,13 +41,13 @@ class CoordinateFrontendString(
             val mainCoordinate = toMainCoordinate()
             val easting = mainCoordinate.eastingFromLeft.toString()
             val northing = mainCoordinate.northingFromBottom.toString()
-            return "${easting.toSingleDigit()}|${northing.toSingleDigit()}"
+            return "${easting.toSingleDigit()}${MainCoordinate.SEPARATOR}${northing.toSingleDigit()}"
         }
 
     private fun String.toSingleDigit() =
         when {
-            startsWith('-') -> "-"
-            length > 1           -> "*"
-            else                 -> this
+            startsWith('-')     -> "-"
+            length > 1          -> "*"
+            else                -> this
         }
 }
