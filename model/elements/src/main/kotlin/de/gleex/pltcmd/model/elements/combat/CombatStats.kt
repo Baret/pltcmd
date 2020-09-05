@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.elements.combat
 
+import de.gleex.pltcmd.model.constants.GameConstants
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
@@ -45,9 +46,11 @@ data class CombatStats(val weapons: ObservableValue<List<Weapon>>, val health: P
 
     /** @return damage of hits per tick */
     private fun Weapon.fireShots(random: Random): Int {
-        val shotsPerTick = roundsPerMinute / 1 // TODO make GameConstants.Time.ticksPerMinute available
+        val shotsPerTick = roundsPerMinute / GameConstants.Time.ticksPerMinute
         var hits = 0
-        repeat(shotsPerTick) {
+        // rounding down loses a partial shot every tick.
+        // TODO enable shot frequencies with less than one shot per tick (like 0.2 for a mortar that fires every 5 minutes or a tick rate of 60 per minute where only weapons that fire every second are simulated). Needs state to accumulate "half shots".
+        repeat(shotsPerTick.toInt()) {
             if (random.nextDouble() <= shotAccuracy) {
                 hits = hits.inc()
             }
