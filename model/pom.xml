@@ -15,7 +15,6 @@
     <description>The underlying model of the simulation.</description>
 
     <modules>
-        <module>constants</module>
         <module>elements</module>
         <module>mapgeneration</module>
         <module>radio</module>
@@ -25,11 +24,6 @@
     <dependencyManagement>
         <dependencies>
             <!-- modules -->
-            <dependency>
-                <groupId>de.gleex.pltcmd.model</groupId>
-                <artifactId>constants</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
                 <artifactId>elements</artifactId>
