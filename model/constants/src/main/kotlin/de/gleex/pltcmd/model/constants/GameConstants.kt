@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.options
+package de.gleex.pltcmd.model.constants
 
 /**
  * This object holds constant values that are otherwise "just assumed". When doing calculations regarding "fixed" values

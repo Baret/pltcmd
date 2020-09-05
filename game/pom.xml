@@ -73,6 +73,11 @@
             <!-- other internal projects -->
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>constants</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
                 <artifactId>elements</artifactId>
                 <version>${project.version}</version>
             </dependency>

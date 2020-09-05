@@ -8,7 +8,7 @@ import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
 import de.gleex.pltcmd.game.engine.commands.UpdatePosition
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import de.gleex.pltcmd.game.options.GameConstants
+import de.gleex.pltcmd.model.constants.GameConstants
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -30,11 +30,11 @@ object MovingForOneMinute :
     @Suppress("UNCHECKED_CAST")
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         entity as ElementEntity
-        if(entity.canNotMove) {
+        if (entity.canNotMove) {
             log.debug("${entity.callsign} can not move currently! The current speed is even ${entity.currentSpeedInKph} km/h")
             return false
         }
-        return if(entity.movementPath.isNotEmpty()) {
+        return if (entity.movementPath.isNotEmpty()) {
             // TODO: Might be more accurate by re-calculating currentSpeedInKph after each tile (we might be slower there)
             val travelDistanceInTiles = entity.currentSpeedInKph / GameConstants.Speed.speedForOneTileInOneTickInKph
             entity.movementProgress += travelDistanceInTiles
@@ -43,7 +43,7 @@ object MovingForOneMinute :
                 val oldPosition = entity.position.value
                 val newPosition = entity.movementPath.pop()
                 entity.executeCommand(UpdatePosition(oldPosition, newPosition, context, entity))
-                if(oldPosition != entity.position.value) {
+                if (oldPosition != entity.position.value) {
                     log.debug("${entity.callsign} successfully moved from $oldPosition to ${entity.position}")
                     entity.movementProgress.advance()
                 } else {
