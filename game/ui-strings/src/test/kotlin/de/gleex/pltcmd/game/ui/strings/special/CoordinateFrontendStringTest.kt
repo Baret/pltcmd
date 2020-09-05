@@ -14,8 +14,8 @@ class CoordinateFrontendStringTest : WordSpec({
                         val actual = CoordinateFrontendString(normalCoordinate, length).value
                         when (length) {
                             Format.ICON    -> actual shouldBe "|"
-                            Format.SHORT3  -> actual shouldBe "1|4"
-                            Format.SHORT5  -> actual shouldBe "(1|4)"
+                            Format.SHORT3  -> actual shouldBe "1!4"
+                            Format.SHORT5  -> actual shouldBe "(1!4)"
                             Format.SIDEBAR -> actual shouldBe "(123|456)"
                             Format.FULL    -> actual shouldBe "(123|456)"
                         }
@@ -31,8 +31,8 @@ class CoordinateFrontendStringTest : WordSpec({
                         val actual = CoordinateFrontendString(longEasting, length).value
                         when (length) {
                             Format.ICON    -> actual shouldBe "|"
-                            Format.SHORT3  -> actual shouldBe "*|5"
-                            Format.SHORT5  -> actual shouldBe "(*|5)"
+                            Format.SHORT3  -> actual shouldBe "*!5"
+                            Format.SHORT5  -> actual shouldBe "(*!5)"
                             Format.SIDEBAR -> actual shouldBe "(1234|567)"
                             Format.FULL    -> actual shouldBe "(1234|567)"
                         }
@@ -46,8 +46,8 @@ class CoordinateFrontendStringTest : WordSpec({
                         val actual = CoordinateFrontendString(longNorthing, length).value
                         when (length) {
                             Format.ICON    -> actual shouldBe "|"
-                            Format.SHORT3  -> actual shouldBe "1|*"
-                            Format.SHORT5  -> actual shouldBe "(1|*)"
+                            Format.SHORT3  -> actual shouldBe "1!*"
+                            Format.SHORT5  -> actual shouldBe "(1!*)"
                             Format.SIDEBAR -> actual shouldBe "(123|4567)"
                             Format.FULL    -> actual shouldBe "(123|4567)"
                         }
@@ -61,8 +61,8 @@ class CoordinateFrontendStringTest : WordSpec({
                         val actual = CoordinateFrontendString(longCoordinate, length).value
                         when (length) {
                             Format.ICON    -> actual shouldBe "|"
-                            Format.SHORT3  -> actual shouldBe "*|*"
-                            Format.SHORT5  -> actual shouldBe "(*|*)"
+                            Format.SHORT3  -> actual shouldBe "*!*"
+                            Format.SHORT5  -> actual shouldBe "(*!*)"
                             Format.SIDEBAR -> actual shouldBe "(12345|67890)"
                             Format.FULL    -> actual shouldBe "(12345|67890)"
                         }
@@ -78,8 +78,8 @@ class CoordinateFrontendStringTest : WordSpec({
                         val actual = CoordinateFrontendString(negativeEasting, length).value
                         when (length) {
                             Format.ICON    -> actual shouldBe "|"
-                            Format.SHORT3  -> actual shouldBe "-|5"
-                            Format.SHORT5  -> actual shouldBe "(-|5)"
+                            Format.SHORT3  -> actual shouldBe "-!5"
+                            Format.SHORT5  -> actual shouldBe "(-!5)"
                             Format.SIDEBAR -> actual shouldBe "(-1234|567)"
                             Format.FULL    -> actual shouldBe "(-1234|567)"
                         }
@@ -93,8 +93,8 @@ class CoordinateFrontendStringTest : WordSpec({
                         val actual = CoordinateFrontendString(negativeNorthing, length).value
                         when (length) {
                             Format.ICON    -> actual shouldBe "|"
-                            Format.SHORT3  -> actual shouldBe "1|-"
-                            Format.SHORT5  -> actual shouldBe "(1|-)"
+                            Format.SHORT3  -> actual shouldBe "1!-"
+                            Format.SHORT5  -> actual shouldBe "(1!-)"
                             Format.SIDEBAR -> actual shouldBe "(123|-456)"
                             Format.FULL    -> actual shouldBe "(123|-456)"
                         }
@@ -108,8 +108,8 @@ class CoordinateFrontendStringTest : WordSpec({
                         val actual = CoordinateFrontendString(negative, length).value
                         when (length) {
                             Format.ICON    -> actual shouldBe "|"
-                            Format.SHORT3  -> actual shouldBe "-|-"
-                            Format.SHORT5  -> actual shouldBe "(-|-)"
+                            Format.SHORT3  -> actual shouldBe "-!-"
+                            Format.SHORT5  -> actual shouldBe "(-!-)"
                             Format.SIDEBAR -> actual shouldBe "(-123|-345)"
                             Format.FULL    -> actual shouldBe "(-123|-345)"
                         }
@@ -123,8 +123,8 @@ class CoordinateFrontendStringTest : WordSpec({
                         val actual = CoordinateFrontendString(negativeAndLong, length).value
                         when (length) {
                             Format.ICON    -> actual shouldBe "|"
-                            Format.SHORT3  -> actual shouldBe "-|*"
-                            Format.SHORT5  -> actual shouldBe "(-|*)"
+                            Format.SHORT3  -> actual shouldBe "-!*"
+                            Format.SHORT5  -> actual shouldBe "(-!*)"
                             Format.SIDEBAR -> actual shouldBe "(-123|45678)"
                             Format.FULL    -> actual shouldBe "(-123|45678)"
                         }
