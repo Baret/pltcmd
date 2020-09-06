@@ -72,6 +72,6 @@ internal class Shooter(private val weapon: Weapon) {
             }
         }
         CombatStats.log.info("firing $shotsPerDuration shots in $attackDuration with accuracy ${weapon.shotAccuracy} results in $hits hits")
-        return hits * 1 // dmg / shot
+        return hits * 1 // dmg / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
     }
 }
