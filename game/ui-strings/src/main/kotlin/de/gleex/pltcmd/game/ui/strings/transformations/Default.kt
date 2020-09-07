@@ -2,12 +2,13 @@ package de.gleex.pltcmd.game.ui.strings.transformations
 
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.FrontendString
+import de.gleex.pltcmd.game.ui.strings.Transformation
 
 /**
  * Default transformation for [FrontendString]s that simply uses toString(), trims the original and appends "..."
  * if it is too long. For very short lengths the string is simply cut off.
  */
-internal val defaultTransformation: Any.(Format) -> String = { format: Format ->
+internal val defaultTransformation: Transformation<Any> = { format: Format ->
     val string = toString()
     if (string.length <= format.length) {
         string

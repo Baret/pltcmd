@@ -4,6 +4,9 @@ import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.FrontendString
 import de.gleex.pltcmd.game.ui.strings.transformations.coordinateTransformation
 import de.gleex.pltcmd.game.ui.strings.transformations.defaultTransformation
+import de.gleex.pltcmd.game.ui.strings.transformations.unitTransformation
+import de.gleex.pltcmd.model.elements.units.Unit
+import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
@@ -34,3 +37,14 @@ fun Coordinate.toFrontendString(format: Format = Format.FULL): FrontendString<Co
 fun ObservableValue<Coordinate>.toFrontendString(format: Format = Format.FULL) =
         FrontendString(this, format, coordinateTransformation)
 
+/**
+ * Creates a [FrontendString] of this unit blueprint.
+ */
+fun Units.toFrontendString(format: Format = Format.FULL): FrontendString<Unit> =
+        FrontendString(this.new().toProperty(), format, unitTransformation)
+
+/**
+ * Creates a [FrontendString] of this unit.
+ */
+fun Unit.toFrontendString(format: Format = Format.FULL): FrontendString<Unit> =
+        FrontendString(this.toProperty(), format, unitTransformation)

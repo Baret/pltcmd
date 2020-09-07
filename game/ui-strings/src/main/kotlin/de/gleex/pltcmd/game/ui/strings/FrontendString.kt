@@ -11,15 +11,15 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.zircon.api.Components
 
 /**
- * A frontend string is a string representation of any object (i.e. model objects) that is observable and
- * thus can be bound to UI elements.
+ * A frontend string is a human readable string representation of any object (i.e. model objects)
+ * that is observable and thus can be bound to UI elements.
  *
  * @sample example
  */
 class FrontendString<T : Any>(
         private val originalObject: ObservableValue<T>,
         val format: Format,
-        transform: T.(Format) -> String
+        transform: Transformation<T>
 ) : ObservableValue<String> {
 
     private val internalBinding: Binding<String> = originalObject.bindTransform { it.transform(format) }

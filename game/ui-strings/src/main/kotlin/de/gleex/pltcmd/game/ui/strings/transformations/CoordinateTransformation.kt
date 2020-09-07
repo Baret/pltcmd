@@ -1,13 +1,14 @@
 package de.gleex.pltcmd.game.ui.strings.transformations
 
 import de.gleex.pltcmd.game.ui.strings.Format
+import de.gleex.pltcmd.game.ui.strings.Transformation
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.MainCoordinate
 
 /**
  * Transformation used to display [Coordinate]s.
  */
-internal val coordinateTransformation: Coordinate.(Format) -> String = { format: Format ->
+internal val coordinateTransformation: Transformation<Coordinate> = { format: Format ->
     when (format) {
         Format.ICON -> Coordinate.SEPARATOR
         Format.SHORT3 -> formattedMainCoordinate
