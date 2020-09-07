@@ -34,3 +34,13 @@ enum class Format(val length: Int) {
      */
     FULL(Int.MAX_VALUE)
 }
+
+/**
+ * Returns the shorter of both formats.
+ */
+fun minOf(first: Format, second: Format) =
+        if (first.length <= second.length) {
+            first
+        } else {
+            second
+        }
