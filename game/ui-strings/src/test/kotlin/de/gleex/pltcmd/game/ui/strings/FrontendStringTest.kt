@@ -1,11 +1,12 @@
 package de.gleex.pltcmd.game.ui.strings
 
 import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 
-class FrontendStringTest: WordSpec( {
+class FrontendStringTest : WordSpec({
     "A frontend string" should {
         "be observable" {
             val observableString = "some string".toProperty()
@@ -48,6 +49,18 @@ class FrontendStringTest: WordSpec( {
             val b = " two"
             val combined = a.toFrontendString(Format.SHORT5) + b.toFrontendString(Format.SIDEBAR)
             combined.value shouldBe "one t"
+        }
+    }
+
+    "A transformation" should {
+        "not result in a string not fitting the format" {
+            val frontendStringWithIllegalTransformation =
+                    FrontendString("foo".toProperty(), Format.SHORT5) {
+                        "123456"
+                    }
+            shouldThrow<IllegalArgumentException> {
+                frontendStringWithIllegalTransformation.value
+            }
         }
     }
 })
