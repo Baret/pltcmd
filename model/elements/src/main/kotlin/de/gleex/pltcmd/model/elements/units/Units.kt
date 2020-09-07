@@ -23,7 +23,7 @@ enum class Units(
 ) : Blueprint<Unit> {
     // Infantry
     /**
-     * A rifleman is the "default soldier" without special equipment, capable
+     * A rifleman is the "default soldier" without transformations equipment, capable
      * of fighting in any force.
      */
     Rifleman,
