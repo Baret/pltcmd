@@ -8,6 +8,7 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.beUnique
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.beUpperCase
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 class UnitTransformationTest : WordSpec() {
@@ -45,11 +46,17 @@ class UnitTransformationTest : WordSpec() {
         }
 
         "The 3 digit frontend string of all units" should {
+            val short3Strings = Units.values()
+                    .map { it.toFrontendString(Format.SHORT3).value }
             "be unique" {
-                val short3Strings = Units.values()
-                        .map { it.toFrontendString(Format.SHORT3).value }
                 short3Strings.logDuplicates(Format.SHORT3)
                 short3Strings should beUnique()
+            }
+
+            "be upper case" {
+                short3Strings.forAll {
+                    it should beUpperCase()
+                }
             }
         }
     }

@@ -19,7 +19,7 @@ fun <T: Any> T.toFrontendString(format: Format = Format.FULL): FrontendString<T>
 
 /**
  * Creates a [FrontendString] of this observable value. This method works for [Any] object when there is no
- * transformations override.
+ * special override.
  */
 fun <T: Any> ObservableValue<T>.toFrontendString(format: Format = Format.FULL): FrontendString<T> =
         FrontendString(this, format, defaultTransformation)

@@ -21,9 +21,9 @@ internal val unitTransformation: Transformation<Unit> = { format ->
         Units.MortarTeam          -> format.forUnit("Mortar team", "I", "MOR", "Mort.")
 
         Units.TransportTruck      -> format.forUnit("Transport truck", "T", "TT", "Truck")
-        Units.RadioTruck          -> format.forUnit("Radio truck", "R", "RaT", "RadTr")
-        Units.RadioJeep           -> format.forUnit("Radop jeep", "S", "RaJ", "RadJe")
-        Units.RocketTruck         -> format.forUnit("Rocket truck", "X", "Roc", "RocTr")
+        Units.RadioTruck          -> format.forUnit("Radio truck", "R", "RAT", "RadTr")
+        Units.RadioJeep           -> format.forUnit("Radop jeep", "S", "RAJ", "RadJe")
+        Units.RocketTruck         -> format.forUnit("Rocket truck", "X", "ROT", "RocTr")
 
         Units.APC                 -> format.forUnit("Armored personnel carrier", "A", "APC", "APC")
         Units.IFV                 -> format.forUnit("Infantry fighting vehicle", "I", "IFV", "IFV")
