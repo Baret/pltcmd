@@ -52,7 +52,7 @@ class CombatStats(weapons: ObservableList<Weapon>, val health: Property<Int> = 1
     }
 }
 
-/** A single shooter with a weapon that can shot at a target. Holds the state of partial shots between mutliple calls. */
+/** A single shooter with a weapon that can shoot at a target. Holds the state of partial shots between multiple calls. */
 internal class Shooter(private val weapon: Weapon) {
 
     // remember "half shots" for if a shot is done after a longer time period than given in a single call
