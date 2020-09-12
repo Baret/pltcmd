@@ -54,12 +54,10 @@ class FrontendStringTest : WordSpec({
 
     "A transformation" should {
         "not result in a string not fitting the format" {
-            val frontendStringWithIllegalTransformation =
-                    FrontendString("foo".toProperty(), Format.SHORT5) {
-                        "123456"
-                    }
             shouldThrow<IllegalArgumentException> {
-                frontendStringWithIllegalTransformation.value
+                FrontendString("foo".toProperty(), Format.SHORT5) {
+                    "123456"
+                }
             }
         }
     }
