@@ -5,14 +5,23 @@ import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.model.elements.units.Units
 
 fun main() {
-    val lineFormat = "| %3d " + Format.values()
+    val formatsFormat = Format.values()
             .joinToString("", "", "|") { it.asFormatString() }
-    val headerLine = "| Idx " + Format.values()
-            .joinToString(" | ", "| ", " |") { it.toFrontendString(it).value }
+    val headerFormat = "| %3s " + formatsFormat
+    val lineFormat = "| %3d " + formatsFormat
+
+    val headerValues: MutableList<String> = Format.values()
+            .map {
+                it.toFrontendString(it).value
+            }
+            .toMutableList()
+    headerValues.add(0, "Idx")
+    val headerLine = headerFormat.format(*headerValues.toTypedArray())
     println(headerLine)
     repeat(headerLine.length) {
         print("=")
     }
+
     println()
     var i = 1
     Units.values()
