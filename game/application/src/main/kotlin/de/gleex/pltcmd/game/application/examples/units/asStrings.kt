@@ -7,8 +7,8 @@ import de.gleex.pltcmd.model.elements.units.Units
 fun main() {
     val formatsFormat = Format.values()
             .joinToString("", "", "|") { it.asFormatString() }
-    val headerFormat = "| %3s " + formatsFormat
-    val lineFormat = "| %3d " + formatsFormat
+    val headerFormat = "| %3s $formatsFormat"
+    val lineFormat = "| %3d $formatsFormat"
 
     val headerValues: MutableList<String> = Format.values()
             .map {
