@@ -10,7 +10,7 @@ import kotlin.time.ExperimentalTime
 
 /** The offensive part of the given element. */
 internal class ShootersAttribute(weapons: Iterable<Weapon>) : Attribute {
-    constructor(element: Element) : this(element.units.map { it.blueprint.weapon })
+    constructor(element: Element) : this(element.allUnits.map { it.blueprint.weapon })
 
     internal val shooters: List<Shooter> = weapons.map { Shooter(it) }
 }
