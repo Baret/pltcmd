@@ -71,9 +71,9 @@ fun Weapon.fireShots(partialShot: PartialShot, attackDuration: Duration, random:
     var hits = 0
     repeat(fullShots) {
         if (random.nextDouble() <= shotAccuracy) {
-            hits = hits.inc()
+            hits++
         }
     }
-    log.info("firing $shotsPerDuration shots in $attackDuration with accuracy ${shotAccuracy} results in $hits hits")
+    log.debug("firing $shotsPerDuration shots in $attackDuration with accuracy ${shotAccuracy} results in $hits hits")
     return hits * 1 // dmg / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
 }
