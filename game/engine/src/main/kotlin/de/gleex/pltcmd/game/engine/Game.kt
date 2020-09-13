@@ -5,7 +5,7 @@ import de.gleex.pltcmd.game.engine.entities.toEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.callsign
-import de.gleex.pltcmd.game.engine.entities.types.combatStats
+import de.gleex.pltcmd.game.engine.entities.types.onDeath
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -55,7 +55,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     }
 
     private fun removeOnDeath(element: ElementEntity) {
-        element.combatStats onDeath { removeElement(element) }
+        element onDeath { removeElement(element) }
     }
 
     private fun removeElement(element: ElementEntity) {

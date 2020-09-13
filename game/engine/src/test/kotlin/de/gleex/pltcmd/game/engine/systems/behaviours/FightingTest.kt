@@ -1,11 +1,13 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
+import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
+import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
+import de.gleex.pltcmd.game.engine.attributes.combat.HealthAttribute
+import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
-import de.gleex.pltcmd.model.elements.Affiliation
-import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.elements.combat.CombatStats
-import de.gleex.pltcmd.model.elements.combat.Weapons
+import de.gleex.pltcmd.model.elements.*
+import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
@@ -15,6 +17,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import org.hexworks.amethyst.api.newEntityOfType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.datatypes.Maybe
 import kotlin.random.Random
@@ -25,14 +28,13 @@ class FightingTest : StringSpec({
     mockkStatic("de.gleex.pltcmd.game.engine.entities.types.ElementTypeKt")
     mockkStatic("de.gleex.pltcmd.game.engine.entities.types.PositionableKt")
 
-    val singleRifle = listOf(Weapons.assaultRifle).toProperty()
     "attackNearbyEnemies with single enemy" {
-        val attackerStats = CombatStats(singleRifle)
-        val targetStats = CombatStats(singleRifle)
         val attackerPosition = Coordinate(123, 456)
-        val (attacker, context) = setupCombat(attackerPosition, attackerStats, targetStats)
+        val attacker = createCombatant(attackerPosition, Affiliation.Friendly)
+        val context = createContext()
+        val target = createTarget(attackerPosition, context, Affiliation.Hostile)
 
-        var expectedHealth = targetStats.health.value
+        var expectedHealth = target.health.value
         forAll( // shots random damage
                 row(7),
                 row(5),
@@ -53,71 +55,86 @@ class FightingTest : StringSpec({
         ) { expectedDamage ->
             Fighting.attackNearbyEnemies(attacker, context)
             expectedHealth -= expectedDamage
-            assertCombatResult(attackerStats, targetStats, expectedHealth, true)
+            assertCombatResult(attacker, target, expectedHealth, true)
         }
         expectedHealth shouldBe 1
 
         Fighting.attackNearbyEnemies(attacker, context)
-        assertCombatResult(attackerStats, targetStats, 0, false)
+        assertCombatResult(attacker, target, 0, false)
 
         // no more damage on already dead combatants
         Fighting.attackNearbyEnemies(attacker, context)
-        assertCombatResult(attackerStats, targetStats, 0, false)
+        assertCombatResult(attacker, target, 0, false)
     }
 
 
     "attackNearbyEnemies with multiple enemies" {
-        val attackerStats = CombatStats(singleRifle)
-        val target1Stats = CombatStats(singleRifle)
-        val target2Stats = CombatStats(singleRifle)
-        val target3Stats = CombatStats(singleRifle)
         val attackerPosition = Coordinate(123, 456)
-        val (attacker, context) = setupCombat(attackerPosition, attackerStats, target1Stats, target2Stats, target3Stats)
-        assertCombatResult(attackerStats, target1Stats, 100, true)
-        assertCombatResult(attackerStats, target2Stats, 100, true)
-        assertCombatResult(attackerStats, target3Stats, 100, true)
+        val attacker = createCombatant(attackerPosition, Affiliation.Friendly)
+        val context = createContext()
+        val (target1, target2, target3) = createTargets(attackerPosition, context, Affiliation.Hostile, Affiliation.Hostile, Affiliation.Hostile)
+        assertCombatResult(attacker, target1, 100, true)
+        assertCombatResult(attacker, target2, 100, true)
+        assertCombatResult(attacker, target3, 100, true)
 
         repeat(17) { Fighting.attackNearbyEnemies(attacker, context) }
-        assertCombatResult(attackerStats, target1Stats, 0, false)
-        assertCombatResult(attackerStats, target2Stats, 100, true)
-        assertCombatResult(attackerStats, target3Stats, 100, true)
+        assertCombatResult(attacker, target1, 0, false)
+        assertCombatResult(attacker, target2, 100, true)
+        assertCombatResult(attacker, target3, 100, true)
 
         repeat(17) { Fighting.attackNearbyEnemies(attacker, context) }
-        assertCombatResult(attackerStats, target1Stats, 0, false)
-        assertCombatResult(attackerStats, target2Stats, 0, false)
-        assertCombatResult(attackerStats, target3Stats, 100, true)
+        assertCombatResult(attacker, target1, 0, false)
+        assertCombatResult(attacker, target2, 0, false)
+        assertCombatResult(attacker, target3, 100, true)
 
         repeat(18) { Fighting.attackNearbyEnemies(attacker, context) }
-        assertCombatResult(attackerStats, target1Stats, 0, false)
-        assertCombatResult(attackerStats, target2Stats, 0, false)
-        assertCombatResult(attackerStats, target3Stats, 0, false)
+        assertCombatResult(attacker, target1, 0, false)
+        assertCombatResult(attacker, target2, 0, false)
+        assertCombatResult(attacker, target3, 0, false)
     }
 })
 
-private fun setupCombat(attackerPosition: Coordinate, attackerStats: CombatStats, vararg targetStats: CombatStats): Pair<ElementEntity, GameContext> {
+private fun createContext(): GameContext {
 
     val context = mockk<GameContext>()
     every { context.random } returns Random(123L)
     every { context.findElementAt(any()) } returns Maybe.empty()
 
-    val attacker = mockk<ElementEntity>()
-    every { attacker.combatStats } returns attackerStats
-    every { attacker.currentPosition } returns attackerPosition
-    every { attacker.callsign } returns CallSign("attacker")
-
-    val neighbors = attackerPosition.neighbors()
-    targetStats.forEachIndexed { index, targetStat ->
-        val target = mockk<ElementEntity>()
-        every { target.combatStats } returns targetStat
-        every { target.affiliation } returns Affiliation.Hostile
-        every { target.callsign } returns CallSign("target$index")
-        val targetPosition = neighbors[index]
-        every { context.findElementAt(targetPosition) } returns Maybe.of(target)
-    }
-    return Pair(attacker, context)
+    return context
 }
 
-private fun assertCombatResult(attackerStats: CombatStats, targetStats: CombatStats, expectedHealth: Int, expectedAlive: Boolean = true) {
+fun createTarget(attackerPosition: Coordinate, context: GameContext, affiliation: Affiliation): ElementEntity =
+        createTargets(attackerPosition, context, affiliation).first()
+
+fun createTargets(attackerPosition: Coordinate, context: GameContext, vararg affiliations: Affiliation): List<ElementEntity> {
+    val neighbors = attackerPosition.neighbors()
+    return affiliations.mapIndexed { index, affiliation ->
+        val targetPosition = neighbors[index]
+        val target = createCombatant(targetPosition, affiliation)
+        every { context.findElementAt(targetPosition) } returns Maybe.of(target)
+        return@mapIndexed target
+    }
+}
+
+
+fun createCombatant(position: Coordinate, affiliation: Affiliation): ElementEntity {
+    val element = createRiflemanElement()
+    return newEntityOfType(ElementType) {
+        attributes(
+                ElementAttribute(element, affiliation),
+                PositionAttribute(position.toProperty()),
+                HealthAttribute(),
+                ShootersAttribute(element)
+        )
+        behaviors(Fighting)
+        facets()
+    }
+}
+
+private fun createRiflemanElement() =
+        CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, setOf(Units.Rifleman.new()))
+
+private fun assertCombatResult(attackerStats: CombatantEntity, targetStats: CombatantEntity, expectedHealth: Int, expectedAlive: Boolean = true) {
     assertSoftly {
         attackerStats.health.value shouldBe 100
         targetStats.health.value shouldBe expectedHealth

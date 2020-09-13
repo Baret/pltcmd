@@ -1,9 +1,10 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.attributes.CombatAttribute
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
+import de.gleex.pltcmd.game.engine.attributes.combat.HealthAttribute
+import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.model.elements.Affiliation
@@ -12,7 +13,7 @@ import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /** Attacks nearby enemies. */
-internal object Fighting : BaseBehavior<GameContext>(CombatAttribute::class, PositionAttribute::class, ElementAttribute::class) {
+internal object Fighting : BaseBehavior<GameContext>(HealthAttribute::class, ShootersAttribute::class, PositionAttribute::class, ElementAttribute::class) {
 
     private val log = LoggerFactory.getLogger(Fighting::class)
 
@@ -38,6 +39,6 @@ internal object Fighting : BaseBehavior<GameContext>(CombatAttribute::class, Pos
     }
 
     private fun Maybe<ElementEntity>.isEnemy(): Boolean =
-            filter { entity -> entity.affiliation == Affiliation.Hostile && entity.combatStats.isAlive }.isPresent
+            filter { entity -> entity.affiliation == Affiliation.Hostile && entity.isAlive }.isPresent
 
 }
