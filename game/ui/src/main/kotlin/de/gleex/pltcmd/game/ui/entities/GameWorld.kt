@@ -65,7 +65,7 @@ class GameWorld(private val worldMap: WorldMap) :
             it.oldValue.hideUnit()
             element.showOnMap()
         }
-        element.combatStats onDeath { element.hide() }
+        element onDeath { element.hide() }
     }
 
     private fun ElementEntity.showOnMap() {
