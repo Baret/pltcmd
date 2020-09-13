@@ -58,25 +58,16 @@ class CommandingElement(
      * of its subordinates and their subordinates.
      */
     override val allUnits: Set<Unit>
-        get() = units + subordinates.flatMap {
-            if (it is CommandingElement) {
-                it.allUnits
-            } else {
-                it.units
-            }
-        }
+        get() = super.allUnits + subordinates.flatMap(Element::allUnits)
+
+    /** only the units of this commanding element without subordinates */
+    val commandUnits = super.allUnits
 
     /**
      * The total number of [Unit]s in this element and all its subordinates.
      */
     val totalUnits: Int
         get() = allUnits.size
-
-    /**
-     * The total numbers of soldiers in this element and all its subordinates.
-     */
-    override val totalSoldiers: Int
-        get() = allUnits.sumBy { it.personnel }
 
     /**
      * Adds the given element to the [subordinates] and sets this element as the given element's [superordinate].

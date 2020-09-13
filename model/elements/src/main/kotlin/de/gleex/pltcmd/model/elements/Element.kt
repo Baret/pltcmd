@@ -37,20 +37,16 @@ open class Element(
     private val _units: MutableSet<Unit> = mutableSetOf()
 
     /**
-     * All [Unit]s forming this element.
-     */
-    val units: Set<Unit> = _units
-
-    /**
      * All [Unit]s belonging to this element.
      */
-    open val allUnits: Set<Unit> = units
+    open val allUnits: Set<Unit>
+        get() = _units
 
     /**
      * The total number of soldiers making up this element (all [Unit.personnel] summed up).
      */
     open val totalSoldiers
-            get() = units.sumBy { it.personnel }
+            get() = allUnits.sumBy { it.personnel }
 
     private var _superordinate: Property<Maybe<CommandingElement>> =
             initialSuperOrdinate.toProperty { newValue ->
@@ -110,7 +106,7 @@ open class Element(
      */
     fun removeUnit(unit: Unit): Boolean = _units.remove(unit)
 
-    override fun toString() = "${description} [id=$id, ${units.size} units${superordinate.map { ",superordinate=$it" }
+    override fun toString() = "$description [id=$id, ${_units.size} units${superordinate.map { ",superordinate=$it" }
             .orElse("")}]"
 
     override fun equals(other: Any?): Boolean {

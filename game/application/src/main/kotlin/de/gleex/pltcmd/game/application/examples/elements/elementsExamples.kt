@@ -107,7 +107,7 @@ fun printCommandElement(element: CommandingElement, depth: Int = 0) {
     element.superordinate.fold({println()}) {
         println(", commanded by ${it.callSign}")
     }
-    println("${tabs}\tCommand: ${element.units.joinToString(", ") { it.name }}")
+    println("${tabs}\tCommand: ${element.commandUnits.joinToString(", ") { it.name }}")
     element.subordinates.forEach {
         if(it is CommandingElement) {
             printCommandElement(it, depth + 1)
@@ -120,7 +120,7 @@ fun printCommandElement(element: CommandingElement, depth: Int = 0) {
 
 fun printElement(element: Element, depth: Int) {
     val tabs = "\t".repeat(depth)
-    println("${tabs}${element.description}: ${element.units.joinToString(", ") { it.name }}")
+    println("${tabs}${element.description}: ${element.allUnits.joinToString(", ") { it.name }}")
 }
 
 fun firePowerFor(unit: Unit): Double? = firePowerFor(unit.blueprint)
