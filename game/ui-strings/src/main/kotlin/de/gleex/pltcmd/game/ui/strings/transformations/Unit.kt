@@ -10,7 +10,7 @@ internal val unitTransformation: Transformation<Unit> = { format ->
         Units.Rifleman            -> format.forUnit("Rifleman", "R", "RIF", "RifMa")
         Units.Grenadier           -> format.forUnit("Grenadier", "G", "GRE")
         Units.Officer             -> format.forUnit("Officer", "O", "OFF", "Off.")
-        Units.Radioman            -> format.forUnit("Radioman (RTO)", "P", "RAD")
+        Units.Radioman            -> format.forUnit("Radioman (RTO)", "P", "RTO", "RTO")
         Units.Medic               -> format.forUnit("Medic", "M", "MED")
         Units.CombatEngineer      -> format.forUnit("Combat engineer", "E", "ENG", "Engi.")
         Units.HMGTeam             -> format.forUnit("Heavy machine gun team (HMG)", "H", "HMG", "HMG")
