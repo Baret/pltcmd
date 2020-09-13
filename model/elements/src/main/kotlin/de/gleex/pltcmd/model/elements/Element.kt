@@ -42,6 +42,11 @@ open class Element(
     val units: Set<Unit> = _units
 
     /**
+     * All [Unit]s belonging to this element.
+     */
+    open val allUnits: Set<Unit> = units
+
+    /**
      * The total number of soldiers making up this element (all [Unit.personnel] summed up).
      */
     open val totalSoldiers

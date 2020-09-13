@@ -57,7 +57,7 @@ class CommandingElement(
      * The set of all units in this element. It contains the units of this commanding element itself,
      * of its subordinates and their subordinates.
      */
-    val allUnits: Set<Unit>
+    override val allUnits: Set<Unit>
         get() = units + subordinates.flatMap {
             if (it is CommandingElement) {
                 it.allUnits
