@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
+import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
@@ -28,10 +29,8 @@ class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComp
                         withSize(width, 1).
                         build().
                         apply {
-                            withFrontendString(
-                                    "Mouse pos: ".toFrontendString()
-                                            + currentCoordinate.toFrontendString(Format.SIDEBAR)
-                            )
+                            withFrontendString(Format.SIDEBAR,
+                                    "Mouse pos: ".toFrontendString(), currentCoordinate, " - ", Units.CombatEngineer, " :)")
                             gameComponent.handleMouseEvents(MouseEventType.MOUSE_MOVED) { mouseEvent, _ ->
                                 val positionInGameComponent = mouseEvent.position - gameComponent.absolutePosition
                                 currentCoordinate.updateValue(gameWorld.coordinateAtVisiblePosition(positionInGameComponent))

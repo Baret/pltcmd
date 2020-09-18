@@ -5,8 +5,18 @@ import de.gleex.pltcmd.game.ui.strings.Transformation
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
 
+/**
+ * Transformation for a [Unit] (instance of a blueprint).
+ */
 internal val unitTransformation: Transformation<Unit> = { format ->
-    when(blueprint) {
+    blueprint.unitsTransformation(format)
+}
+
+/**
+ * Transformation for a unit blueprint [Units].
+ */
+internal val unitsTransformation: Transformation<Units> = { format ->
+    when(this) {
         Units.Rifleman            -> format.forUnit("Rifleman", "R", "RIF", "RifMa")
         Units.Grenadier           -> format.forUnit("Grenadier", "G", "GRE")
         Units.Officer             -> format.forUnit("Officer", "O", "OFF", "Off.")

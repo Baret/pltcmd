@@ -35,6 +35,10 @@ class FrontendString<T : Any>(
         return bindPlusWith(other)
                 .toFrontendString(minOf(format, other.format))
     }
+
+    override fun toString(): String {
+        return "FrontendString(originalObject=$originalObject, format=$format, value=$value)"
+    }
 }
 
 private fun example() {
