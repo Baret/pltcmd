@@ -7,6 +7,11 @@ import de.gleex.pltcmd.model.elements.units.Units
 
 /**
  * Transformation for a [Unit] (instance of a blueprint).
+ *
+ * This transformation currently simply uses the blueprint, so the string representation of a [Unit] and a [Units] is
+ * the same.
+ *
+ * @see unitsTransformation
  */
 internal val unitTransformation: Transformation<Unit> = { format ->
     blueprint.unitsTransformation(format)
@@ -20,36 +25,36 @@ internal val unitsTransformation: Transformation<Units> = { format ->
         Units.Rifleman            -> format.forUnit("Rifleman", "R", "RIF", "RifMa")
         Units.Grenadier           -> format.forUnit("Grenadier", "G", "GRE")
         Units.Officer             -> format.forUnit("Officer", "O", "OFF", "Off.")
-        Units.Radioman            -> format.forUnit("Radioman (RTO)", "P", "RTO", "RTO")
+        Units.Radioman            -> format.forUnit("Radioman (RTO)", "C", "RTO", "RTO")
         Units.Medic               -> format.forUnit("Medic", "M", "MED")
         Units.CombatEngineer      -> format.forUnit("Combat engineer", "E", "ENG", "Engi.")
         Units.HMGTeam             -> format.forUnit("Heavy machine gun team (HMG)", "H", "HMG", "HMG")
-        Units.AntiTankTeam        -> format.forUnit("Anti-tank team", "T", "AT", "ATInf")
-        Units.AntiAirTeam         -> format.forUnit("Anti-air team", "A", "AA", "AAInf")
-        Units.Scout               -> format.forUnit("Infantry scout", "S", "SCI", "Scout")
+        Units.AntiTankTeam        -> format.forUnit("Anti-tank infantry", "T", "IAT", "ATInf")
+        Units.AntiAirTeam         -> format.forUnit("Anti-air infantry", "A", "IAA", "AAInf")
+        Units.Scout               -> format.forUnit("Scout infantry", "S", "ISC", "ScoIn")
         Units.SniperTeam          -> format.forUnit("Sniper team", "X", "SNI", "Snip.")
         Units.MortarTeam          -> format.forUnit("Mortar team", "I", "MOR", "Mort.")
 
-        Units.TransportTruck      -> format.forUnit("Transport truck", "T", "TT", "Truck")
-        Units.RadioTruck          -> format.forUnit("Radio truck", "R", "RAT", "RadTr")
-        Units.RadioJeep           -> format.forUnit("Radop jeep", "S", "RAJ", "RadJe")
-        Units.RocketTruck         -> format.forUnit("Rocket truck", "X", "ROT", "RocTr")
+        Units.TransportTruck      -> format.forUnit("Transport truck", "T", "TTR", "Truck")
+        Units.RadioTruck          -> format.forUnit("Radio truck", "C", "TRA", "TrRad")
+        Units.RadioJeep           -> format.forUnit("Radio jeep", "J", "JRA", "JeRad")
+        Units.RocketTruck         -> format.forUnit("Rocket truck", "I", "TRO", "TrRoc")
 
-        Units.APC                 -> format.forUnit("Armored personnel carrier", "A", "APC", "APC")
-        Units.IFV                 -> format.forUnit("Infantry fighting vehicle", "I", "IFV", "IFV")
-        Units.TankHunter          -> format.forUnit("Tank hunter", "T", "TH", "THunt")
-        Units.ScoutCar            -> format.forUnit("Scout car", "S", "SCC", "ScoCa")
-        Units.MineLayer           -> format.forUnit("Mine layer", "M", "MIN", "MiLay")
-        Units.ARRVLight           -> format.forUnit("Light armored repair and recover vehicle", "E", "LEV", "LARRV", "Light ARRV")
+        Units.APC                 -> format.forUnit("Armored personnel carrier", "T", "APC", "APC")
+        Units.IFV                 -> format.forUnit("Infantry fighting vehicle", "F", "IFV", "IFV")
+        Units.TankHunter          -> format.forUnit("Tank hunter", "H", "HUN", "THunt")
+        Units.ScoutCar            -> format.forUnit("Scout car", "S", "MSC", "ScoCa")
+        Units.MineLayer           -> format.forUnit("Mine layer", "L", "MIN", "MiLay")
+        Units.ARRVLight           -> format.forUnit("Light armored repair and recover vehicle", "E", "EVL", "LARRV", "Light ARRV")
 
-        Units.ARRVHeavy           -> format.forUnit("Heavy armored repair and recover vehicle", "E", "HEV", "HARRV", "Heavy ARRV")
+        Units.ARRVHeavy           -> format.forUnit("Heavy armored repair and recover vehicle", "E", "EVH", "HARRV", "Heavy ARRV")
         Units.AVLB                -> format.forUnit("Armoured vehicle-launched bridge", "B", "VLB", "AVLB")
-        Units.LightTank           -> format.forUnit("Light tank", "L", "LTK", "LTank")
-        Units.MainBattleTank      -> format.forUnit("Main battle tank", "T", "MBT", "MBT")
-        Units.MineClearingTank    -> format.forUnit("Mine clearing tank", "M", "MCT", "MCT")
-        Units.Artillery           -> format.forUnit("Self propelled artillery", "A", "ART", "Arti.")
+        Units.LightTank           -> format.forUnit("Light tank", "L", "LIT", "LTank")
+        Units.MainBattleTank      -> format.forUnit("Main battle tank", "H", "MBT", "MBT")
+        Units.MineClearingTank    -> format.forUnit("Mine clearing tank", "O", "MCT", "MCT")
+        Units.Artillery           -> format.forUnit("Self propelled artillery", "I", "ART", "Arti.")
 
-        Units.ScoutPlane          -> format.forUnit("Scout plane", "S", "SCP", "ScoPl")
+        Units.ScoutPlane          -> format.forUnit("Scout plane", "S", "PSC", "ScoPl")
         Units.HelicopterTransport -> format.forUnit("Transport helicopter", "T", "HTR", "H-Trn")
         Units.HelicopterHMG       -> format.forUnit("Helicopter with heavy machine gun (HMG)", "H", "MGH", "H-HMG")
         Units.HelicopterAT        -> format.forUnit("Anti-tank helicopter", "A", "HAT", "H-AT")
