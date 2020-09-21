@@ -29,13 +29,8 @@ fun <T: Any> ObservableValue<T>.toFrontendString(format: Format = Format.FULL): 
  *
  * @see ObservableValue.toFrontendString
  */
-fun <T : Any> T.toFrontendString(format: Format = Format.FULL): FrontendString<T> {
-    return FrontendString(
-            this.toProperty(),
-            format,
-            transformationFor(this)
-    )
-}
+fun <T : Any> T.toFrontendString(format: Format = Format.FULL): FrontendString<T> =
+        this.toProperty().toFrontendString(format)
 
 @Suppress("UNCHECKED_CAST")
 private fun transformationFor(value: Any): Transformation<Any> {
