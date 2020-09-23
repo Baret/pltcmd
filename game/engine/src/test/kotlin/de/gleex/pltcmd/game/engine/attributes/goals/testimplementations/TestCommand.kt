@@ -8,5 +8,5 @@ import org.hexworks.amethyst.api.entity.Entity
 data class TestCommand(
         val value: Int,
         override val source: Entity<ElementType, GameContext> = goalTestEntity,
-        override val context: GameContext = testContext
+        override val context: GameContext = testGameContext
 ) : Command<ElementType, GameContext>
