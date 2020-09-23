@@ -21,14 +21,14 @@ class DijkstraMapOfCoordinates(private val map: Map<Coordinate, Int>) {
 
     private val log = LoggerFactory.getLogger(this::class)
 
-    private val lowestValue = map.values.min() ?: 0
+    private val lowestValue = map.values.minOrNull() ?: 0
 
     /**
      * The highest distance to the lowest value ("target") in this map.
      *
      * This means the longest path is this + 1
      */
-    val maxDistance: Int = map.values.max()?.minus(lowestValue) ?: 0
+    val maxDistance: Int = map.values.maxOrNull()?.minus(lowestValue) ?: 0
 
     /**
      * Targets are all fields with the lowest value in the map (not necessarily 0, negative values are possible).
@@ -94,7 +94,7 @@ class DijkstraMapOfCoordinates(private val map: Map<Coordinate, Int>) {
     private fun Collection<Coordinate>.lowest(targetValue: Int): Coordinate? {
         val lowestEntry = map.entries.
                 filter { it.key in this }
-                .minBy { it.value }
+                .minByOrNull { it.value }
         return if(lowestEntry?.value != null && lowestEntry.value >= targetValue) {
                 lowestEntry.key
             } else {
@@ -105,7 +105,7 @@ class DijkstraMapOfCoordinates(private val map: Map<Coordinate, Int>) {
     private fun Collection<Coordinate>.highest(targetValue: Int): Coordinate? {
         val highestEntry = map.entries.
                 filter { it.key in this }
-                .maxBy { it.value }
+                .maxByOrNull { it.value }
         return if(highestEntry?.value != null && highestEntry.value <= targetValue) {
             highestEntry.key
         } else {
