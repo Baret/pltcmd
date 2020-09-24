@@ -74,11 +74,28 @@ class HealthAttributeTest : StringSpec({
 
         underTest.minus(100)
 
+        underTest.isAlive shouldBe false
         isDead shouldBe true
 
         // do not trigger again when already dead
         isDead = false
         underTest.minus(1)
+        underTest.isAlive shouldBe false
         isDead shouldBe false
+    }
+
+    "onDeath should trigger multiple callbacks" {
+        val underTest = HealthAttribute()
+        var isDead = arrayOf(false, false, false)
+        underTest.onDeath { isDead[0] = true }
+        underTest.onDeath { isDead[1] = true }
+        underTest.onDeath { isDead[2] = true }
+
+        underTest.minus(100)
+
+        underTest.isAlive shouldBe false
+        isDead[0] shouldBe true
+        isDead[1] shouldBe true
+        isDead[2] shouldBe true
     }
 })
