@@ -49,7 +49,7 @@ object GameOptions {
     /**
      * The origin of the map. In other words the world map's bottom left corner is this coordinate.
      */
-    val MAP_ORIGIN: Coordinate = Coordinate(150, 300)
+    val MAP_ORIGIN: Coordinate = Coordinate(850, 800)
 
     /**
      * Horizontal number of sectors in the world.
