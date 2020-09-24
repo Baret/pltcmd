@@ -41,7 +41,7 @@ class CombatMain : Main() {
         val worldMap = game.world
         val position = getBattlefield(worldMap).movedBy(1, 0)
         addHostile(position, worldMap)
-                .let {
+                .also {
                     it.element.callSign = CallSign("Enemy rifle squad")
                     game.addEntity(it)
                     gameWorld.trackUnit(it)
