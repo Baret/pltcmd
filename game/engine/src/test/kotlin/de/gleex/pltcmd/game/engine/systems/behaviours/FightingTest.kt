@@ -7,6 +7,7 @@ import de.gleex.pltcmd.game.engine.attributes.combat.HealthAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.*
+import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
@@ -92,6 +93,19 @@ class FightingTest : StringSpec({
         assertCombatResult(attacker, target2, 0, false)
         assertCombatResult(attacker, target3, 0, false)
     }
+
+    "attackNearbyEnemies with multiple shooters" {
+        val attackerPosition = Coordinate(123, 456)
+        val attacker = createCombatant(attackerPosition, Affiliation.Friendly, Elements.rifleSquad.new())
+        val context = createContext()
+        val target = createTarget(attackerPosition, context, Affiliation.Hostile)
+
+        Fighting.attackNearbyEnemies(attacker, context) // 49 dmg
+        assertCombatResult(attacker, target, 51, true)
+
+        Fighting.attackNearbyEnemies(attacker, context) // 53 dmg
+        assertCombatResult(attacker, target, 0, false)
+    }
 })
 
 private fun createContext(): GameContext {
@@ -117,8 +131,7 @@ fun createTargets(attackerPosition: Coordinate, context: GameContext, vararg aff
 }
 
 
-fun createCombatant(position: Coordinate, affiliation: Affiliation): ElementEntity {
-    val element = createRiflemanElement()
+fun createCombatant(position: Coordinate, affiliation: Affiliation, element: CommandingElement = createRiflemanElement()): ElementEntity {
     return newEntityOfType(ElementType) {
         attributes(
                 ElementAttribute(element, affiliation),
@@ -131,8 +144,8 @@ fun createCombatant(position: Coordinate, affiliation: Affiliation): ElementEnti
     }
 }
 
-private fun createRiflemanElement() =
-        CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, setOf(Units.Rifleman.new()))
+private fun createRiflemanElement(units: Set<Unit> = setOf(Units.Rifleman.new())) =
+        CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, units)
 
 private fun assertCombatResult(attackerStats: CombatantEntity, targetStats: CombatantEntity, expectedHealth: Int, expectedAlive: Boolean = true) {
     assertSoftly {

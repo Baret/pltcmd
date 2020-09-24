@@ -49,7 +49,7 @@ infix fun CombatantEntity.onDeath(callback: () -> Unit) {
 internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
     val attackDurationPerTick = secondsSimulatedPerTick.toDuration(DurationUnit.SECONDS)
     if (target.isAlive) {
-        val damagePerTick = shootersAtt.shooters.map { it.key.fireShots(it.value, attackDurationPerTick, random) }
+        val damagePerTick = shootersAtt.shooters.map { it.first.fireShots(it.second, attackDurationPerTick, random) }
                 .sum()
         val receivedDamage = min(damagePerTick, target.health.value)
         target.healthAtt - receivedDamage
@@ -74,6 +74,6 @@ fun Weapon.fireShots(partialShot: PartialShot, attackDuration: Duration, random:
             hits++
         }
     }
-    log.debug("$this firing $shotsPerDuration shots in $attackDuration with accuracy ${shotAccuracy} results in $hits hits")
+    log.trace("$this firing $shotsPerDuration shots in $attackDuration with accuracy ${shotAccuracy} results in $hits hits")
     return hits * 1 // dmg / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
 }

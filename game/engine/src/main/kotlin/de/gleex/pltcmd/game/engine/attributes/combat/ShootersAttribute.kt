@@ -9,7 +9,8 @@ internal class ShootersAttribute(weapons: Iterable<Weapon>) : Attribute {
     constructor(element: Element) : this(element.allUnits.map { it.blueprint.weapon })
 
     // remember "half shots" for if a shot is done after a longer time period than given in a single call
-    internal val shooters: Map<Weapon, PartialShot> = weapons.associateWith { PartialShot(0.0) }
+    // Note: Do not use a Map as the same Weapon object will be used multiple times!
+    internal val shooters: List<Pair<Weapon, PartialShot>> = weapons.map { Pair(it, PartialShot(0.0)) }
 }
 
 class PartialShot(var value: Double)
