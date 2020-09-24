@@ -16,7 +16,6 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * as it is finished. Then the next queued goal with [appendSubGoals] gets active (FIFO, first-in-first-out).
  * But new sub-goals can be added to the front of the queue with [prependSubGoals] as well (last-in-first-out or stack).
  */
-@OptIn(ExperimentalStdlibApi::class)
 abstract class Goal(vararg subGoals: Goal) {
 
     private val subGoals = ArrayDeque<Goal>()

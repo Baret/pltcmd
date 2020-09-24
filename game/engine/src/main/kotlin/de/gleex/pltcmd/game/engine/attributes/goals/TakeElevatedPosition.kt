@@ -14,7 +14,7 @@ class TakeElevatedPosition(currentPosition: Coordinate, worldMap: WorldMap) : Go
         val highestPosition: Pair<Coordinate, TerrainHeight> = worldMap
                 .neighborsOf(currentPosition)
                 .associateWith { worldMap[it].height }
-                .maxBy { it.value }!!
+                .maxByOrNull { it.value }!!
                 .toPair()
 
         if(highestPosition.second > currentHeight) {

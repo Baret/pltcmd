@@ -13,7 +13,7 @@ val goalTestEntity: ElementEntity = newEntityOfType(ElementType) {
     // no attributes etc. needed yet
 }
 
-val testContext: GameContext = GameContext(
+val testGameContext: GameContext = GameContext(
         currentTick = TickId(12),
         world = mockkClass(WorldMap::class),
         allElements = setOf(),
