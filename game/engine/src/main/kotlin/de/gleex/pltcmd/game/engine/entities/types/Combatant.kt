@@ -41,7 +41,7 @@ val CombatantEntity.health: ObservableValue<Int>
     get() = healthAtt.health
 
 infix fun CombatantEntity.onDeath(callback: () -> Unit) {
-    healthAtt.onDeath { callback }
+    healthAtt.onDeath(callback)
 }
 
 /** This combatant attacks the given [target] for a full tick */
