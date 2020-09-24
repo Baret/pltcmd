@@ -36,25 +36,52 @@ private val log = LoggerFactory.getLogger(::main::class)
 private val random = Random(GameOptions.MAP_SEED)
 
 fun main() {
+    Main().run()
+}
 
-    val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
+open class Main {
 
-    val tileGrid = application.tileGrid
-    val screen = tileGrid.toScreen()
+    open fun run() {
+        val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
 
-    showTitle(screen, tileGrid)
+        val tileGrid = application.tileGrid
+        val screen = tileGrid.toScreen()
 
-    generateMap(screen, tileGrid) { generatedMap ->
+        showTitle(screen, tileGrid)
+
+        generateMap(screen, tileGrid) { generatedMap ->
+            runGame(generatedMap, screen, tileGrid)
+        }
+    }
+
+    protected fun runGame(generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
         // ui
         val gameWorld = GameWorld(generatedMap)
         // model
         val game = Game(Engine.default(), generatedMap, random)
 
-        val elementsToCommand = mutableListOf<ElementEntity>()
-        val visibleSector = generatedMap.sectors.first {
+        val (elementsToCommand, hq) = prepareGame(game, gameWorld)
+
+        screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
+
+        Ticker.start(GameOptions.TickRate.duration, GameOptions.TickRate.timeUnit)
+        // cleanup
+        screen.onShutdown { Ticker.stop() }
+    }
+
+    open protected fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, ElementEntity> {
+        val visibleSector = game.world.sectors.first {
             it.origin == gameWorld.visibleTopLeftCoordinate()
                     .toSectorOrigin()
         }
+        val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
+        val hq = createHq(visibleSector, game, gameWorld)
+        addHostiles(game, gameWorld)
+        return Pair(elementsToCommand, hq)
+    }
+
+    open protected fun createElementsToCommand(visibleSector: Sector, game: Game, gameWorld: GameWorld): List<ElementEntity> {
+        val elementsToCommand = mutableListOf<ElementEntity>()
         elementsToCommand.run {
 
             val alpha = visibleSector.createFriendly(Elements.transportHelicopterPlatoon.new()
@@ -70,6 +97,10 @@ fun main() {
             add(bravo)
             add(charlie)
         }
+        return elementsToCommand
+    }
+
+    open protected fun createHq(visibleSector: Sector, game: Game, gameWorld: GameWorld): ElementEntity {
         val hq = visibleSector.createFriendly(
                 Elements.riflePlatoon.new()
                         .apply { callSign = CallSign("HQ") },
@@ -81,11 +112,13 @@ fun main() {
                 ),
                 Affiliation.Self
         )
-        screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
+        return hq
+    }
 
+    open protected fun addHostiles(game: Game, gameWorld: GameWorld) {
         // Adding some elements to every sector
         val elementsPerSector = 2
-        generatedMap.sectors.forEach { sector ->
+        game.world.sectors.forEach { sector ->
             repeat(elementsPerSector) {
                 game.addElementInSector(sector, Elements.rifleSquad.new(), affiliation = Affiliation.Hostile)
                         .let {
@@ -93,42 +126,39 @@ fun main() {
                         }
             }
         }
-        Ticker.start(GameOptions.TickRate.duration, GameOptions.TickRate.timeUnit)
-        // cleanup
-        screen.onShutdown { Ticker.stop() }
     }
-}
 
-private fun Sector.createFriendly(element: CommandingElement, game: Game, gameWorld: GameWorld, position: Coordinate = this.randomCoordinate(random), affiliation: Affiliation = Affiliation.Friendly): ElementEntity {
-    return game.addElementInSector(this, element, position, affiliation)
-            .also(gameWorld::trackUnit)
-}
-
-private fun showTitle(screen: Screen, tileGrid: TileGrid) {
-    if (UiOptions.SKIP_INTRO.not()) {
-        screen.dock(TitleView(tileGrid))
-        TimeUnit.MILLISECONDS.sleep(4000)
+    protected fun Sector.createFriendly(element: CommandingElement, game: Game, gameWorld: GameWorld, position: Coordinate = this.randomCoordinate(random), affiliation: Affiliation = Affiliation.Friendly): ElementEntity {
+        return game.addElementInSector(this, element, position, affiliation)
+                .also(gameWorld::trackUnit)
     }
-}
 
-private fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {
-    val worldWidthInTiles = GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT
-    val worldHeightInTiles = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
+    open protected fun showTitle(screen: Screen, tileGrid: TileGrid) {
+        if (UiOptions.SKIP_INTRO.not()) {
+            screen.dock(TitleView(tileGrid))
+            TimeUnit.MILLISECONDS.sleep(4000)
+        }
+    }
 
-    val generatingView = GeneratingView(tileGrid, Size.create(worldWidthInTiles, worldHeightInTiles))
-    screen.dock(generatingView)
+    open protected fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {
+        val worldWidthInTiles = GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT
+        val worldHeightInTiles = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
 
-    val mapGenerator = WorldMapGenerator(
-            GameOptions.MAP_SEED,
-            worldWidthInTiles,
-            worldHeightInTiles
-    )
-    MapGenerationProgressController(mapGenerator, generatingView)
+        val generatingView = GeneratingView(tileGrid, Size.create(worldWidthInTiles, worldHeightInTiles))
+        screen.dock(generatingView)
 
-    val origin = GameOptions.MAP_ORIGIN
-    val worldMap = mapGenerator.generateWorld(origin)
+        val mapGenerator = WorldMapGenerator(
+                GameOptions.MAP_SEED,
+                worldWidthInTiles,
+                worldHeightInTiles
+        )
+        MapGenerationProgressController(mapGenerator, generatingView)
 
-    generatingView.onConfirmation {
-        doneCallback(worldMap)
+        val origin = GameOptions.MAP_ORIGIN
+        val worldMap = mapGenerator.generateWorld(origin)
+
+        generatingView.onConfirmation {
+            doneCallback(worldMap)
+        }
     }
 }
