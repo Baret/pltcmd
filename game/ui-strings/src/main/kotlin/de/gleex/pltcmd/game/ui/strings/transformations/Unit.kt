@@ -19,6 +19,31 @@ internal val unitTransformation: Transformation<Unit> = { format ->
 
 /**
  * Transformation for a unit blueprint [Units].
+ *
+ * There are some basic rules of thumb when abbreviating unit names, which may lead to counter intuitive 1-char
+ * or 3-char versions. They are only relevant for the formats [Format.ICON] and [Format.SHORT3]. [Format.SHORT5]
+ * should have enough space to create more or less readable short versions of unit names.
+ *
+ * - [Format.ICON] and [Format.SHORT3] abbreviations are always all-caps letters
+ * - For [Format.ICON]:
+ *     - The abbreviation is unique among a [de.gleex.pltcmd.model.elements.units.UnitKind]
+ *     - Functional properties that occur in different unit kinds take precedence over the specific unit name
+ *         - This means a unit may get a different letter when it would intuitively get one that is already reserved
+ *           for a function
+ *         - Functional abbreviations are as follows:
+ *         - M - medical
+ *         - C - radio comms
+ *         - S - scouting
+ *         - I - indirect fire
+ *         - T - transport
+ *         - E - Engineering
+ * - [Format.SHORT3]
+ *     - The abbreviation is unique among all units
+ *     - When there are other units with similar properties, a prefix letter for the category/unit kind should be used
+ *         - These categories are as follows:
+ *         - I - Infantry
+ *         - T - Truck
+ *         - H - Helicopter
  */
 internal val unitsTransformation: Transformation<Units> = { format ->
     when(this) {
@@ -56,7 +81,7 @@ internal val unitsTransformation: Transformation<Units> = { format ->
 
         Units.ScoutPlane          -> format.forUnit("Scout plane", "S", "PSC", "ScoPl")
         Units.HelicopterTransport -> format.forUnit("Transport helicopter", "T", "HTR", "H-Trn")
-        Units.HelicopterHMG       -> format.forUnit("Helicopter with heavy machine gun (HMG)", "H", "MGH", "H-HMG")
+        Units.HelicopterHMG       -> format.forUnit("HMG helicopter", "H", "MGH", "H-HMG")
         Units.HelicopterAT        -> format.forUnit("Anti-tank helicopter", "A", "HAT", "H-AT")
         Units.HelicopterHeavyLift -> format.forUnit("Heavy lift helicopter", "L", "HLH", "H-Lif")
         Units.HelicopterGunship   -> format.forUnit("Gunship", "G", "GUN", "GunSh")
