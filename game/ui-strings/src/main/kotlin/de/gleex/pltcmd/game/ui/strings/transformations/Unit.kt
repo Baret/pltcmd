@@ -24,7 +24,7 @@ internal val unitTransformation: Transformation<Unit> = { format ->
  * or 3-char versions. They are only relevant for the formats [Format.ICON] and [Format.SHORT3]. [Format.SHORT5]
  * should have enough space to create more or less readable short versions of unit names.
  *
- * - [Format.ICON] and [Format.SHORT3] abbreviations are always all-caps letters
+ * - [Format.ICON] and [Format.SHORT3] abbreviations use capital letters only
  * - For [Format.ICON]:
  *     - The abbreviation is unique among a [de.gleex.pltcmd.model.elements.units.UnitKind]
  *     - Functional properties that occur in different unit kinds take precedence over the specific unit name
