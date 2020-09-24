@@ -1,30 +1,42 @@
 package de.gleex.pltcmd.game.ui.strings.extensions
 
-import de.gleex.pltcmd.game.ui.strings.DefaultFrontendString
+import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.FrontendString
-import de.gleex.pltcmd.game.ui.strings.special.CoordinateFrontendString
-import de.gleex.pltcmd.game.ui.strings.special.TerrainFrontendString
+import de.gleex.pltcmd.game.ui.strings.Transformation
+import de.gleex.pltcmd.game.ui.strings.transformations.coordinateTransformation
+import de.gleex.pltcmd.game.ui.strings.transformations.defaultTransformation
+import de.gleex.pltcmd.game.ui.strings.transformations.unitTransformation
+import de.gleex.pltcmd.game.ui.strings.transformations.unitsTransformation
+import de.gleex.pltcmd.model.elements.units.Unit
+import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.terrain.Terrain
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 
 /**
- * Creates a [DefaultFrontendString] for any object that has no special [toFrontendString] method.
+ * Creates a [FrontendString] of this observable value.
  */
-fun Any.toFrontendString(format: FrontendString.Format = FrontendString.Format.FULL): FrontendString<Any> =
-        DefaultFrontendString(this, format)
+fun <T: Any> ObservableValue<T>.toFrontendString(format: Format = Format.FULL): FrontendString<T> {
+    return FrontendString(
+            this,
+            format,
+            transformationFor(value)
+    )
+}
 
 /**
- * Creates a [DefaultFrontendString] of this observable value. This method works for [Any] object when there is no
- * special override.
+ * Creates a [FrontendString] for any object not wrapped into an [ObservableValue].
+ *
+ * @see ObservableValue.toFrontendString
  */
-fun <T: Any> ObservableValue<T>.toFrontendString(format: FrontendString.Format = FrontendString.Format.FULL): FrontendString<T> =
-        DefaultFrontendString(this, format)
+fun <T : Any> T.toFrontendString(format: Format = Format.FULL): FrontendString<T> =
+        this.toProperty().toFrontendString(format)
 
-@JvmName("toFrontendStringCoordinate")
-fun ObservableValue<Coordinate>.toFrontendString(format: FrontendString.Format = FrontendString.Format.FULL): FrontendString<Coordinate> =
-        CoordinateFrontendString(this, format)
-
-@JvmName("toFrontendStringTerrain")
-fun ObservableValue<Terrain>.toFrontendString(format: FrontendString.Format = FrontendString.Format.FULL): FrontendString<Terrain> =
-        TerrainFrontendString(this, format)
+private fun <T> transformationFor(value: T): Transformation<T> {
+    return when (value) {
+        is Coordinate -> coordinateTransformation as Transformation<T>
+        is Units      -> unitsTransformation as Transformation<T>
+        is Unit       -> unitTransformation as Transformation<T>
+        else          -> defaultTransformation as Transformation<T>
+    }
+}

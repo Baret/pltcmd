@@ -7,15 +7,16 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.inspectors.forAll
-import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.collections.shouldBeSorted
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeBetween
 import io.kotest.matchers.nulls.beNull
+import io.kotest.matchers.or
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.beEmpty
+import io.kotest.matchers.types.beInstanceOf
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredMemberProperties
@@ -47,8 +48,9 @@ class ReasonableDefaultElementsTest : WordSpec() {
                                     log.info("\t\t├ ${Elements.nameOf(sub)}")
                                 }
                             }
-                            blueprint should beInstanceOf<CommandingElementBlueprint>().or(beInstanceOf<ElementBlueprint>())
-                            blueprint.new() should beInstanceOf<Element>()
+                            blueprint should beInstanceOf(CommandingElementBlueprint::class)
+                                    .or(beInstanceOf(ElementBlueprint::class))
+                            blueprint.new() should beInstanceOf(Element::class)
                         }
             }
         }

@@ -20,7 +20,7 @@ class GoalTest : FreeSpec() {
                         "The goal should not yet be finished" {
                             testGoal.isFinished(goalTestEntity) shouldBe false
                         }
-                        val commandMaybe = testGoal.step(goalTestEntity, testContext)
+                        val commandMaybe = testGoal.step(goalTestEntity, testGameContext)
                         "The returned command should contain value $expectedValue" {
                             commandMaybe should haveContainedValue(expectedValue)
                         }
@@ -30,7 +30,7 @@ class GoalTest : FreeSpec() {
 
                 "It should be finished after 3 steps" {
                     testGoal.isFinished(goalTestEntity) shouldBe true
-                    testGoal.step(goalTestEntity, testContext) should beEmptyMaybe()
+                    testGoal.step(goalTestEntity, testGameContext) should beEmptyMaybe()
                 }
             }
         }

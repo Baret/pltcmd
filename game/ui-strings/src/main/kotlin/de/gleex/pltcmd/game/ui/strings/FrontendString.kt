@@ -1,59 +1,51 @@
 package de.gleex.pltcmd.game.ui.strings
 
-import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
+import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
+import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
+import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-
+import org.hexworks.zircon.api.Components
 
 /**
- * A string representation of an object that can be used in the frontend.
+ * A frontend string is a human readable string representation of any object (i.e. model objects)
+ * that is observable and thus can be bound to UI elements.
  *
- * It provides means to trim the string down to various lengths so it will always fit into the currently available
- * space (i.e. a sidebar or a dialog) while always representing a human readable resemblance of the object.
+ * @sample example
  */
-interface FrontendString<out T : Any> : ObservableValue<String> {
-
-    /**
-     * The [Format] restricting the space available for this string.
-     */
-    val format: Format
+class FrontendString<T : Any>(
+        private val originalObject: ObservableValue<T>,
+        val format: Format,
+        transform: Transformation<T>
+) : ObservableValue<String> by originalObject.bindTransform({
+    it.transform(format).also { transformed ->
+            require(transformed.length <= format.length) {
+                "Invalid transformation to frontend string. Required maximum length ${format.length} but transformation resulted in length ${transformed.length}. Transformed object: ${originalObject.value}"
+            }
+        }
+}) {
 
     /**
      * Creates a new [FrontendString] with both strings combined. This acts like a bindPlusWith call. The resulting
      * frontend string will have the shorter of both lengths. This means the resulting string will not be longer
      * than any one of the two.
      */
-    operator fun plus(other: FrontendString<Any>): FrontendString<*>
-
-    /**
-     * The format of a [FrontendString] restricts its maximum [length].
-     *
-     * @param length the maximum length a [FrontendString] may use.
-     */
-    enum class Format(val length: Int) {
-        /**
-         * The minimum length of 1. When space is really really sparse ;)
-         */
-        ICON(1),
-
-        /**
-         * A very short string with length 3.
-         */
-        SHORT3(3),
-
-        /**
-         * A short string with length 5.
-         */
-        SHORT5(5),
-
-        /**
-         * A string that fits into a sidebar. The value is actually [UiOptions.SIDEBAR_WIDTH] - 2 to subtract
-         * the border and get its content size.
-         */
-        SIDEBAR(UiOptions.SIDEBAR_WIDTH - 2),
-
-        /**
-         * With this format the string has no length restriction.
-         */
-        FULL(Int.MAX_VALUE)
+    operator fun plus(other: FrontendString<*>): FrontendString<*> {
+        return bindPlusWith(other)
+                .toFrontendString(minOf(format, other.format))
     }
+
+    override fun toString(): String {
+        return "FrontendString(originalObject=$originalObject, format=$format, value=$value)"
+    }
+}
+
+private fun example() {
+    Components.label()
+            // ...
+            .build()
+            .withFrontendString(
+                    Coordinate(100, 100)
+                            .toFrontendString(Format.SHORT5))
 }

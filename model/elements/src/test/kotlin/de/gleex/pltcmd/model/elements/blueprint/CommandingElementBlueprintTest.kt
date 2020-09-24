@@ -4,8 +4,8 @@ import de.gleex.pltcmd.model.elements.Element
 import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
-import io.kotest.core.spec.style.ContextScope
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.core.spec.style.scopes.ShouldSpecContextScope
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forNone
 import io.kotest.matchers.beInstanceOf
@@ -56,7 +56,7 @@ class CommandingElementBlueprintTest : ShouldSpec() {
         }
     }
 
-    private suspend fun ContextScope.assertUnits(commandingElementBlueprint: AbstractElementBlueprint<*>) {
+    private suspend fun ShouldSpecContextScope.assertUnits(commandingElementBlueprint: AbstractElementBlueprint<*>) {
         should("should only contain unit blueprints, no units") {
             commandingElementBlueprint.units.forAll {
                 it should beInstanceOf<Units>()

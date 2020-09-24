@@ -28,9 +28,9 @@ abstract class ElementStat(element: CommandingElement) : Attribute {
     protected val average: Double
         get() = unitStats.values.average()
     protected val minimum: Double
-        get() = unitStats.values.min() ?: 0.0
+        get() = unitStats.values.minOrNull() ?: 0.0
     protected val maximum: Double
-        get() = unitStats.values.max() ?: 0.0
+        get() = unitStats.values.maxOrNull() ?: 0.0
 
     /**
      * The value for the whole element calculated from the values stored for all units.

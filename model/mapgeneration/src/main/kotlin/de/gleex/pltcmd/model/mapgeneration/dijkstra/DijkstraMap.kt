@@ -22,7 +22,7 @@ class DijkstraMap<T>(vararg initialTargets: T) {
 
     val maxDistance: Int
         get() {
-            return downstreamMap.map { it.value.second }.max() ?: 0
+            return downstreamMap.map { it.value.second }.maxOrNull() ?: 0
         }
 
     fun addTarget(target: T) {

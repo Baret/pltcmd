@@ -73,10 +73,10 @@ private class PeekResult(
                 map { currentHeight.value - it.value }
         // check if the difference to a neighbor is too big -> we MUST go up/down!
         when {
-            heightDifferences.min()?:0 <= -3 -> {
+            heightDifferences.minOrNull()?:0 <= -3 -> {
                 mutableWorld[toGenerate] = currentHeight + 1
             }
-            heightDifferences.max()?:0 >= 3  -> {
+            heightDifferences.maxOrNull()?:0 >= 3  -> {
                 mutableWorld[toGenerate] = currentHeight - 1
             }
             else                             -> {
