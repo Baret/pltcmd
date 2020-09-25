@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.ui.fragments.tileinformation
 
-import de.gleex.pltcmd.game.ui.strings.FrontendString
-import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
+import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -29,7 +28,7 @@ class TerrainDetailsFragment(
                     .withSize(width, 1)
                     .build()
                     .apply {
-                        withFrontendString(terrainProperty.toFrontendString(FrontendString.Format.SIDEBAR))
+                        withFrontendString(Format.SIDEBAR, "Terrain: ", terrainProperty)
 //                        textProperty.updateFrom(
 //                                "Terrain: ".toProperty()
 //                                        .bindPlusWith(
