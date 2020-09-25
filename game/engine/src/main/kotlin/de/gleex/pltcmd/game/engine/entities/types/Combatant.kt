@@ -49,7 +49,9 @@ infix fun CombatantEntity.onDeath(callback: () -> Unit) {
 internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
     val attackDurationPerTick = secondsSimulatedPerTick.toDuration(DurationUnit.SECONDS)
     if (target.isAlive) {
-        val damagePerTick = shootersAtt.shooters.map { it.first.fireShots(it.second, attackDurationPerTick, random) }
+        val damagePerTick = shootersAtt.shooters.map { (weapon, partialShot) ->
+            weapon.fireShots(partialShot, attackDurationPerTick, random)
+        }
                 .sum()
         val receivedDamage = min(damagePerTick, target.health.value)
         target.healthAtt - receivedDamage
