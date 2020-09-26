@@ -6,7 +6,7 @@ import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.game.options.GameConstants.Time.secondsSimulatedPerTick
-import de.gleex.pltcmd.model.combat.attack.Weapon
+import de.gleex.pltcmd.model.combat.attack.WeaponStats
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -64,7 +64,7 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
  * @return damage of all hits in the given time.
  **/
 @ExperimentalTime
-fun Weapon.fireShots(partialShot: PartialShot, attackDuration: Duration, random: Random): Int {
+fun WeaponStats.fireShots(partialShot: PartialShot, attackDuration: Duration, random: Random): Int {
     val shotsPerDuration = roundsPerMinute * attackDuration.inMinutes + partialShot.value
     // rounding down loses a partial shot that is remember for the next call.
     val fullShots: Int = shotsPerDuration.toInt()

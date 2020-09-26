@@ -4,7 +4,7 @@ import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.Units.*
 
 /** The type of weapon a unit from this blueprint normally carries. **/
-val Units.weapon: Weapon
+val Units.weapon: WeaponStats
     get() = when(this) {
         Rifleman            -> Weapons.assaultRifle
         Grenadier           -> Weapons.assaultRifle
