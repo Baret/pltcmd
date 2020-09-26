@@ -9,6 +9,7 @@ import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
+import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
@@ -27,14 +28,11 @@ class FightingTest : StringSpec({
     mockkStatic("de.gleex.pltcmd.game.engine.entities.types.ElementTypeKt")
     mockkStatic("de.gleex.pltcmd.game.engine.entities.types.PositionableKt")
 
-    "attackNearbyEnemies with single enemy" {
+    "attackNearbyEnemies with single attacker against single enemy" {
         val attackerPosition = Coordinate(123, 456)
         val attacker = createCombatant(attackerPosition, Affiliation.Friendly)
         val context = createContext()
-        val target = createTarget(attackerPosition, context, Affiliation.Hostile)
-
-        Fighting.attackNearbyEnemies(attacker, context)
-        assertCombatResult(attacker, target, 1, true)
+        val target = createTarget(attackerPosition, context)
 
         Fighting.attackNearbyEnemies(attacker, context)
         assertCombatResult(attacker, target, 0, false)
@@ -45,36 +43,36 @@ class FightingTest : StringSpec({
     }
 
 
-    "attackNearbyEnemies with multiple enemies" {
+    "attackNearbyEnemies with single attacker against multiple single enemy soldiers" {
         val attackerPosition = Coordinate(123, 456)
         val attacker = createCombatant(attackerPosition, Affiliation.Friendly)
         val context = createContext()
-        val (target1, target2, target3) = createTargets(attackerPosition, context, Affiliation.Hostile, Affiliation.Hostile, Affiliation.Hostile)
-        assertCombatResult(attacker, target1, 100, true)
-        assertCombatResult(attacker, target2, 100, true)
-        assertCombatResult(attacker, target3, 100, true)
+        val (target1, target2, target3) = createTargets(attackerPosition, context, createInfantryElement(), createInfantryElement(), createInfantryElement())
+        assertCombatResult(attacker, target1, 1, true)
+        assertCombatResult(attacker, target2, 1, true)
+        assertCombatResult(attacker, target3, 1, true)
 
-        repeat(17) { Fighting.attackNearbyEnemies(attacker, context) }
+        Fighting.attackNearbyEnemies(attacker, context)
         assertCombatResult(attacker, target1, 0, false)
-        assertCombatResult(attacker, target2, 100, true)
-        assertCombatResult(attacker, target3, 100, true)
+        assertCombatResult(attacker, target2, 1, true)
+        assertCombatResult(attacker, target3, 1, true)
 
-        repeat(17) { Fighting.attackNearbyEnemies(attacker, context) }
+        Fighting.attackNearbyEnemies(attacker, context)
         assertCombatResult(attacker, target1, 0, false)
         assertCombatResult(attacker, target2, 0, false)
-        assertCombatResult(attacker, target3, 100, true)
+        assertCombatResult(attacker, target3, 1, true)
 
-        repeat(18) { Fighting.attackNearbyEnemies(attacker, context) }
+        Fighting.attackNearbyEnemies(attacker, context)
         assertCombatResult(attacker, target1, 0, false)
         assertCombatResult(attacker, target2, 0, false)
         assertCombatResult(attacker, target3, 0, false)
     }
 
-    "attackNearbyEnemies with multiple shooters" {
+    "attackNearbyEnemies with multiple shooters and single enemy with multiple soldiers" {
         val attackerPosition = Coordinate(123, 456)
         val attacker = createCombatant(attackerPosition, Affiliation.Friendly, Elements.rifleSquad.new())
         val context = createContext()
-        val target = createTarget(attackerPosition, context, Affiliation.Hostile)
+        val target = createTarget(attackerPosition, context, createInfantryElement((Units.Rifleman * 100).new()))
 
         Fighting.attackNearbyEnemies(attacker, context) // 49 dmg
         assertCombatResult(attacker, target, 51, true)
@@ -93,21 +91,21 @@ private fun createContext(): GameContext {
     return context
 }
 
-fun createTarget(attackerPosition: Coordinate, context: GameContext, affiliation: Affiliation): ElementEntity =
-        createTargets(attackerPosition, context, affiliation).first()
+fun createTarget(attackerPosition: Coordinate, context: GameContext, element: CommandingElement = createInfantryElement()): ElementEntity =
+        createTargets(attackerPosition, context, element).first()
 
-fun createTargets(attackerPosition: Coordinate, context: GameContext, vararg affiliations: Affiliation): List<ElementEntity> {
+fun createTargets(attackerPosition: Coordinate, context: GameContext, vararg elements: CommandingElement): List<ElementEntity> {
     val neighbors = attackerPosition.neighbors()
-    return affiliations.mapIndexed { index, affiliation ->
+    return elements.mapIndexed { index, element ->
         val targetPosition = neighbors[index]
-        val target = createCombatant(targetPosition, affiliation)
+        val target = createCombatant(targetPosition, Affiliation.Hostile, element)
         every { context.findElementAt(targetPosition) } returns Maybe.of(target)
         return@mapIndexed target
     }
 }
 
 
-fun createCombatant(position: Coordinate, affiliation: Affiliation, element: CommandingElement = createRiflemanElement()): ElementEntity {
+fun createCombatant(position: Coordinate, affiliation: Affiliation, element: CommandingElement = createInfantryElement()): ElementEntity {
     return newEntityOfType(ElementType) {
         attributes(
                 ElementAttribute(element, affiliation),
@@ -120,15 +118,10 @@ fun createCombatant(position: Coordinate, affiliation: Affiliation, element: Com
     }
 }
 
-private fun createRiflemanElement(units: Set<Unit> = setOf(Units.Rifleman.new())) =
+private fun createInfantryElement(units: Set<Unit> = setOf(Units.Rifleman.new())) =
         CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, units)
 
-private fun assertCombatResult(
-        attackerStats: ElementEntity,
-        targetStats: CombatantEntity,
-        expectedHealth: Int,
-        expectedAlive: Boolean = true,
-) {
+private fun assertCombatResult(attackerStats: ElementEntity, targetStats: CombatantEntity, expectedHealth: Int, expectedAlive: Boolean = true) {
     assertSoftly {
         attackerStats.health shouldBe attackerStats.element.totalUnits
         targetStats.health shouldBe expectedHealth
