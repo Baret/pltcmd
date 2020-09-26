@@ -32,11 +32,12 @@ fun <T: Any> ObservableValue<T>.toFrontendString(format: Format = Format.FULL): 
 fun <T : Any> T.toFrontendString(format: Format = Format.FULL): FrontendString<T> =
         this.toProperty().toFrontendString(format)
 
+@Suppress("UNCHECKED_CAST")
 private fun <T> transformationFor(value: T): Transformation<T> {
     return when (value) {
-        is Coordinate -> coordinateTransformation as Transformation<T>
-        is Units      -> unitsTransformation as Transformation<T>
-        is Unit       -> unitTransformation as Transformation<T>
-        else          -> defaultTransformation as Transformation<T>
-    }
+        is Coordinate -> coordinateTransformation
+        is Units      -> unitsTransformation
+        is Unit       -> unitTransformation
+        else          -> defaultTransformation
+    } as Transformation<T>
 }

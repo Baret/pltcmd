@@ -21,6 +21,7 @@ internal object Fighting : BaseBehavior<GameContext>(HealthAttribute::class, Sho
         if (entity.type !is ElementType) {
             return false
         }
+        @Suppress("UNCHECKED_CAST")
         attackNearbyEnemies(entity as ElementEntity, context)
         return true
     }

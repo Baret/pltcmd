@@ -48,6 +48,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     fun <T : EntityType> addEntity(entity: GameEntity<T>) = entity.also {
         engine.addEntity(it)
         if (it.type is ElementType) {
+            @Suppress("UNCHECKED_CAST")
             val element = it as ElementEntity
             allElements.add(element)
             removeOnDeath(element)

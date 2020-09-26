@@ -24,6 +24,7 @@ internal object Communicating : BaseBehavior<GameContext>(ElementAttribute::clas
         if (entity.type !is ElementType) {
             return false
         }
+        @Suppress("UNCHECKED_CAST")
         val elementEntity = entity as ElementEntity
         val radioCommunicator = elementEntity.communicator
         radioCommunicator.radioContext = ElementRadioContext(elementEntity, context)
