@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.combat
+package de.gleex.pltcmd.model.combat.attack
 
 /**
  * Data that describes what a type of weapon is able to do.

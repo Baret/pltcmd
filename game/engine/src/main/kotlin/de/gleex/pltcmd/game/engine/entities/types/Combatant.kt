@@ -6,7 +6,7 @@ import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.game.options.GameConstants.Time.secondsSimulatedPerTick
-import de.gleex.pltcmd.model.elements.combat.Weapon
+import de.gleex.pltcmd.model.combat.attack.Weapon
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.logging.api.LoggerFactory

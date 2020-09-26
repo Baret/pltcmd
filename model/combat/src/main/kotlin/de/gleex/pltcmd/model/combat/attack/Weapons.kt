@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.combat
+package de.gleex.pltcmd.model.combat.attack
 
 // some real data:
 // - [Historical Probability of Hit (PHit) and Probability of Kill (PKill) Percentages](https://www.alternatewars.com/BBOW/Weapons/Historical_Phits_Pkills.htm)

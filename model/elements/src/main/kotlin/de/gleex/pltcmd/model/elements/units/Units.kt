@@ -1,8 +1,6 @@
 package de.gleex.pltcmd.model.elements.units
 
 import de.gleex.pltcmd.model.elements.Blueprint
-import de.gleex.pltcmd.model.elements.combat.Weapon
-import de.gleex.pltcmd.model.elements.combat.Weapons
 import de.gleex.pltcmd.model.elements.units.UnitKind.*
 
 /**
@@ -21,24 +19,23 @@ import de.gleex.pltcmd.model.elements.units.UnitKind.*
 enum class Units(
         val kind: UnitKind = Infantry,
         val personnel: Int = 1,
-        val personnelMinimum: Int = 1,
-        val weapon: Weapon = Weapons.none
+        val personnelMinimum: Int = 1
 ) : Blueprint<Unit> {
     // Infantry
     /**
      * A rifleman is the "default soldier" without special equipment, capable
      * of fighting in any force.
      */
-    Rifleman(weapon = Weapons.assaultRifle),
+    Rifleman,
     /**
      * Grenadiers give elements a little more punch against infantry and unarmored
      * targets.
      */
-    Grenadier(weapon = Weapons.assaultRifle),
+    Grenadier(),
     /**
      * Officers are key units as they command elements.
      */
-    Officer(weapon = Weapons.pistol),
+    Officer(),
     /**
      * Radiomen or "radiotelephone operators" (RTO) support [Officer]s by extending their radio range.
      * They carry a manpack radio with more power than the standard radio issued to officers.
@@ -62,27 +59,27 @@ enum class Units(
      * An HMG mainly provides suppressive fire against enemy infantry but can also inflict damage
      * to light vehicles.
      */
-    HMGTeam(personnel = 3, personnelMinimum = 2, weapon = Weapons.mmg),
+    HMGTeam(personnel = 3, personnelMinimum = 2),
     /**
      * The two soldiers that form an AT-Team (anti tank) carry a rocket launcher and ammunition to engage even
      * heavily armored ground targets.
      */
-    AntiTankTeam(personnel = 2, weapon = Weapons.rpg),
+    AntiTankTeam(personnel = 2),
     /**
      * One of the two soldiers carries the ammunition, the other one uses a MANPADS (Man-Portable Air-Defense System)
      * capable of damaging enemy aerial units.
      */
-    AntiAirTeam(personnel = 2, weapon = Weapons.rpg),
+    AntiAirTeam(personnel = 2),
     /**
      * Scouts are specialized in moving through unknown terrain to explore it. They are slower than
      * aerial reconnaissance ([ScoutPlane] for example), but they are much more sneaky.
      */
-    Scout(weapon = Weapons.pistol),
+    Scout(),
     /**
      * A sniper and his spotter primarily provide over watch and may also take out infantry targets
      * to suppress complete elements.
      */
-    SniperTeam(personnel = 2, personnelMinimum = 2, weapon = Weapons.sniperRifle),
+    SniperTeam(personnel = 2, personnelMinimum = 2),
     /**
      * A team of soldiers carrying a mortar tube that can be deployed anywhere to provide indirect fire support.
      */
@@ -106,30 +103,30 @@ enum class Units(
     /**
      * An unarmored truck that has mounted a multi rocket launcher to bring devastation into a distant area.
      */
-    RocketTruck(Unarmored, personnel = 3, personnelMinimum = 2, weapon = Weapons.rpg),
+    RocketTruck(Unarmored, personnel = 3, personnelMinimum = 2),
 
     /**
      * The APC (armored personnel carrier) is the "big brother" of the [TransportTruck]. It is capable of
      * carrying a squad of soldiers and defending itself with light armament.
      */
-    APC(ArmoredLight, personnel = 3, personnelMinimum = 2, weapon = Weapons.mmg),
+    APC(ArmoredLight, personnel = 3, personnelMinimum = 2),
     /**
      * An IFV (infantry fighting vehicle) is the typical attachment for mechanized infantry. It has light
      * armor and weaponry to provide direct fire support for the infantry against even lightly armored enemies.
      *
      * Like the [APC] it can load up soldiers but is designed to fight alongside them.
      */
-    IFV(ArmoredLight, personnel = 3, personnelMinimum = 2, weapon = Weapons.hmg),
+    IFV(ArmoredLight, personnel = 3, personnelMinimum = 2),
     /**
      * Tank hunters are high caliber guns mounted onto chassis of [APC]s or [IFV]s. They are highly mobile
      * to engage enemy heavily armored targets.
      */
-    TankHunter(ArmoredLight, personnel = 4, personnelMinimum = 3, weapon = Weapons.tankGun),
+    TankHunter(ArmoredLight, personnel = 4, personnelMinimum = 3),
     /**
      * Scout cars are relatively small and fast vehicles fitted with a medium gun for self defence. Their
      * main purpose, as the name suggests, is to scout unknown territory and enemy movement.
      */
-    ScoutCar(ArmoredLight, personnel = 3, personnelMinimum = 3, weapon = Weapons.mmg),
+    ScoutCar(ArmoredLight, personnel = 3, personnelMinimum = 3),
     /**
      * This unit provides denial of area by laying out minefields. It may place AP (anti personnel)
      * or AT (anti tank) mines.
@@ -157,13 +154,13 @@ enum class Units(
      * The light tank has a smaller weapon as the [MainBattleTank] but has higher mobility. Its purpose
      * is to support other elements with its high firepower.
      */
-    LightTank(ArmoredHeavy, personnel = 3, personnelMinimum = 2, weapon = Weapons.tankGun),
+    LightTank(ArmoredHeavy, personnel = 3, personnelMinimum = 2),
     /**
      * The main battle tank (MBT) has the highest firepower on the ground. It can attack any ground
      * target and has great protection. MBTs usually fight alongside other elements to dominate large
      * areas of the battlefield.
      */
-    MainBattleTank(ArmoredHeavy, personnel = 4, personnelMinimum = 3, weapon = Weapons.tankGun),
+    MainBattleTank(ArmoredHeavy, personnel = 4, personnelMinimum = 3),
     /**
      * This unit is used to remove enemy minefields.
      */
@@ -190,13 +187,13 @@ enum class Units(
      * close air support (CAS) against infantry and unarmored vehicles. Its counterpart, the
      * [HelicopterAT] can deal with harder targets.
      */
-    HelicopterHMG(AerialLight, personnel = 2, personnelMinimum = 2, weapon = Weapons.hmg),
+    HelicopterHMG(AerialLight, personnel = 2, personnelMinimum = 2),
     /**
      * A small and versatile chopper armed with two pods loaded with unguided air to ground anti tank (AT)
      * rockets. It can quickly move towards enemy armored elements and engage them. But it is not as useful
      * against infantry. This is rather the job of [HelicopterHMG].
      */
-    HelicopterAT(AerialLight, personnel = 2, personnelMinimum = 2, weapon = Weapons.rpg),
+    HelicopterAT(AerialLight, personnel = 2, personnelMinimum = 2),
 
     /**
      * A heavy lifting chopper can transport large amounts of supplies and even carry a large vehicle like a tank.
@@ -207,7 +204,7 @@ enum class Units(
      * The "death from above" dominates the sky. A gunship is mobile and heavily armed so it can provide CAS
      * (close air support) for ground elements no matter what enemy they face.
      */
-    HelicopterGunship(AerialHeavy, personnel = 2, personnelMinimum = 2, weapon = Weapons.tankGun);
+    HelicopterGunship(AerialHeavy, personnel = 2, personnelMinimum = 2);
 
     init {
         require(personnel > 0) {
