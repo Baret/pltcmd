@@ -1,12 +1,11 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
 import de.gleex.pltcmd.game.engine.attributes.combat.HealthAttribute
-import de.gleex.pltcmd.game.engine.attributes.combat.PartialShot
+import de.gleex.pltcmd.game.engine.attributes.combat.Shooter
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.game.options.GameConstants.Time.secondsSimulatedPerTick
-import de.gleex.pltcmd.model.combat.attack.WeaponStats
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -49,9 +48,7 @@ infix fun CombatantEntity.onDeath(callback: () -> Unit) {
 internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
     val attackDurationPerTick = secondsSimulatedPerTick.toDuration(DurationUnit.SECONDS)
     if (target.isAlive) {
-        val damagePerTick = shootersAtt.shooters.map { (weapon, partialShot) ->
-            weapon.fireShots(partialShot, attackDurationPerTick, random)
-        }
+        val damagePerTick = shootersAtt.shooters.map { it.fireShots(attackDurationPerTick, random) }
                 .sum()
         val receivedDamage = min(damagePerTick, target.health.value)
         target.healthAtt - receivedDamage
@@ -64,18 +61,18 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
  * @return damage of all hits in the given time.
  **/
 @ExperimentalTime
-fun WeaponStats.fireShots(partialShot: PartialShot, attackDuration: Duration, random: Random): Int {
-    val shotsPerDuration = roundsPerMinute * attackDuration.inMinutes + partialShot.value
+internal fun Shooter.fireShots(attackDuration: Duration, random: Random): Int {
+    val shotsPerDuration = weapon.roundsPerMinute * attackDuration.inMinutes + partialShot
     // rounding down loses a partial shot that is remember for the next call.
     val fullShots: Int = shotsPerDuration.toInt()
-    partialShot.value = shotsPerDuration % 1
+    partialShot = shotsPerDuration % 1
 
     var hits = 0
     repeat(fullShots) {
-        if (random.nextDouble() <= shotAccuracy) {
+        if (random.nextDouble() <= weapon.shotAccuracy) {
             hits++
         }
     }
-    log.trace("$this firing $shotsPerDuration shots in $attackDuration with accuracy ${shotAccuracy} results in $hits hits")
+    log.trace("$this firing $shotsPerDuration shots in $attackDuration with accuracy ${weapon.shotAccuracy} results in $hits hits")
     return hits * 1 // dmg / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
 }
