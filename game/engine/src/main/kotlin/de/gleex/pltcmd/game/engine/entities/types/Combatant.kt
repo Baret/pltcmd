@@ -46,17 +46,17 @@ infix fun CombatantEntity.onDeath(callback: () -> Unit) {
 internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
     val attackDurationPerTick = secondsSimulatedPerTick.toDuration(DurationUnit.SECONDS)
     if (target.isAlive) {
-        val damagePerTick = shootersAtt.shooters.map { it.fireShots(attackDurationPerTick, random) }
+        val hitsPerTick = shootersAtt.shooters.map { it.fireShots(attackDurationPerTick, random) }
                 .sum()
-        val receivedDamage = damagePerTick
-        target.healthAtt.wound(receivedDamage)
-        log.debug("attack with $damagePerTick damage resulted in target health of ${target.healthAtt.healthy}")
+        val wounded = hitsPerTick  * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
+        target.healthAtt.wound(wounded)
+        log.debug("attack with $hitsPerTick hits resulted in ${target.healthAtt.healthy} healthy units of the target")
     }
 }
 
 /**
  * side effect: Updates the partial shot that is already done after firing.
- * @return damage of all hits in the given time.
+ * @return number of all hits in the given time.
  **/
 @ExperimentalTime
 internal fun Shooter.fireShots(attackDuration: Duration, random: Random): Int {
@@ -72,5 +72,5 @@ internal fun Shooter.fireShots(attackDuration: Duration, random: Random): Int {
         }
     }
     log.trace("$this firing $shotsPerDuration shots in $attackDuration with accuracy ${weapon.shotAccuracy} results in $hits hits")
-    return hits * 1 // dmg / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
+    return hits
 }

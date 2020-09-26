@@ -9,12 +9,9 @@ import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
-import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -36,30 +33,8 @@ class FightingTest : StringSpec({
         val context = createContext()
         val target = createTarget(attackerPosition, context, Affiliation.Hostile)
 
-        var expectedHealth = target.health
-        forAll( // shots random damage
-                row(7),
-                row(5),
-                row(7),
-                row(6),
-                row(4),
-                row(8),
-                row(3),
-                row(8),
-                row(7),
-                row(5),
-                row(8),
-                row(6),
-                row(6),
-                row(6),
-                row(8),
-                row(5)
-        ) { expectedDamage ->
-            Fighting.attackNearbyEnemies(attacker, context)
-            expectedHealth -= expectedDamage
-            assertCombatResult(attacker, target, expectedHealth, true)
-        }
-        expectedHealth shouldBe 1
+        Fighting.attackNearbyEnemies(attacker, context)
+        assertCombatResult(attacker, target, 1, true)
 
         Fighting.attackNearbyEnemies(attacker, context)
         assertCombatResult(attacker, target, 0, false)
@@ -102,10 +77,10 @@ class FightingTest : StringSpec({
         val target = createTarget(attackerPosition, context, Affiliation.Hostile)
 
         Fighting.attackNearbyEnemies(attacker, context) // 49 dmg
-        assertCombatResult(attacker, target, 51, true, 1000)
+        assertCombatResult(attacker, target, 51, true)
 
         Fighting.attackNearbyEnemies(attacker, context) // 53 dmg
-        assertCombatResult(attacker, target, 0, false, 1000)
+        assertCombatResult(attacker, target, 0, false)
     }
 })
 
@@ -137,8 +112,7 @@ fun createCombatant(position: Coordinate, affiliation: Affiliation, element: Com
         attributes(
                 ElementAttribute(element, affiliation),
                 PositionAttribute(position.toProperty()),
-                // FIXME using mutliple targets instead of a single soldier for keeping old values
-                HealthAttribute(element.allUnits.flatMap { it.blueprint * 100}.new()),
+                HealthAttribute(element),
                 ShootersAttribute(element)
         )
         behaviors(Fighting)
@@ -150,14 +124,13 @@ private fun createRiflemanElement(units: Set<Unit> = setOf(Units.Rifleman.new())
         CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, units)
 
 private fun assertCombatResult(
-        attackerStats: CombatantEntity,
+        attackerStats: ElementEntity,
         targetStats: CombatantEntity,
         expectedHealth: Int,
         expectedAlive: Boolean = true,
-        expectedAttackerHealth: Int = 100
 ) {
     assertSoftly {
-        attackerStats.health shouldBe expectedAttackerHealth
+        attackerStats.health shouldBe attackerStats.element.totalUnits
         targetStats.health shouldBe expectedHealth
         targetStats.isAlive shouldBe expectedAlive
     }
