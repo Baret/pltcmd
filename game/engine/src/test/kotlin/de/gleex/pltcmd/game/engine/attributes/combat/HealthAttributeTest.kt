@@ -1,101 +1,114 @@
 package de.gleex.pltcmd.game.engine.attributes.combat
 
+import de.gleex.pltcmd.model.elements.units.Units
+import de.gleex.pltcmd.model.elements.units.new
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
 class HealthAttributeTest : StringSpec({
 
-    "minus must reduce the health" {
-        val underTest = HealthAttribute()
-        underTest.minus(3)
-        underTest.health.value shouldBe 97
+    "wound must reduce the healthy units" {
+        val underTest = createUnderTest()
+        underTest.wound(3)
+        underTest.healthy shouldBe 97
 
-        underTest.minus(0)
-        underTest.health.value shouldBe 97
+        underTest.wound(0)
+        underTest.healthy shouldBe 97
 
-        underTest.minus(-5)
-        underTest.health.value shouldBe 102
+        underTest.wound(-5)
+        underTest.healthy shouldBe 97
 
-        underTest.minus(105)
-        underTest.health.value shouldBe -3
+        underTest.wound(105)
+        underTest.healthy shouldBe 0
     }
 
-    "plus must increase the health" {
-        val underTest = HealthAttribute()
-        underTest.plus(3)
-        underTest.health.value shouldBe 103
+    "treatWounded must restore wounded units" {
+        val underTest = createUnderTest()
+        underTest.wound(60)
+        underTest.healthy shouldBe 40
 
-        underTest.plus(0)
-        underTest.health.value shouldBe 103
+        underTest.treatWounded(3)
+        underTest.healthy shouldBe 43
 
-        underTest.plus(-8)
-        underTest.health.value shouldBe 95
+        underTest.treatWounded(0)
+        underTest.healthy shouldBe 43
 
-        underTest.plus(99999905)
-        underTest.health.value shouldBe 100000000
+        underTest.treatWounded(-8)
+        underTest.healthy shouldBe 43
+
+        underTest.treatWounded(77)
+        underTest.healthy shouldBe 100
     }
 
     "onDeath must trigger on exact 0 hp" {
-        val underTest = HealthAttribute()
+        val underTest = createUnderTest()
         var isDead = false
         underTest.onDeath { isDead = true }
 
-        underTest.minus(99)
+        underTest.wound(99)
         underTest.isAlive shouldBe true
         isDead shouldBe false
 
-        underTest.minus(1)
+        underTest.wound(1)
         underTest.isAlive shouldBe false
         isDead shouldBe true
 
     }
 
     "onDeath must trigger on overdamage" {
-        val underTest = HealthAttribute()
+        val underTest = createUnderTest()
         var isDead = false
         underTest.onDeath { isDead = true }
 
-        underTest.minus(200)
+        underTest.wound(200)
 
         underTest.isAlive shouldBe false
         isDead shouldBe true
 
         // do not trigger again when already dead
         isDead = false
-        underTest.minus(1)
+        underTest.wound(1)
         underTest.isAlive shouldBe false
         isDead shouldBe false
     }
 
     "onDeath should not trigger again when already dead" {
-        val underTest = HealthAttribute()
+        val underTest = createUnderTest()
         var isDead = false
         underTest.onDeath { isDead = true }
 
-        underTest.minus(100)
+        underTest.wound(100)
 
         underTest.isAlive shouldBe false
         isDead shouldBe true
 
         // do not trigger again when already dead
         isDead = false
-        underTest.minus(1)
+        underTest.wound(1)
         underTest.isAlive shouldBe false
         isDead shouldBe false
     }
 
     "onDeath should trigger multiple callbacks" {
-        val underTest = HealthAttribute()
-        var isDead = arrayOf(false, false, false)
+        val underTest = createUnderTest()
+        val isDead = arrayOf(false, false, false)
         underTest.onDeath { isDead[0] = true }
         underTest.onDeath { isDead[1] = true }
         underTest.onDeath { isDead[2] = true }
 
-        underTest.minus(100)
+        underTest.wound(100)
 
         underTest.isAlive shouldBe false
         isDead[0] shouldBe true
         isDead[1] shouldBe true
         isDead[2] shouldBe true
     }
+
 })
+
+private fun createUnderTest(): HealthAttribute {
+    val units = (Units.Rifleman * 100).new()
+    println("created for test: $units")
+    return HealthAttribute(units)
+}
+

@@ -42,7 +42,7 @@ object EntityFactory {
                 PositionAttribute(initialPosition),
                 // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
                 RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
-                HealthAttribute(),
+                HealthAttribute(element),
                 ShootersAttribute(element),
 
                 MovementPath(),

@@ -7,9 +7,7 @@ import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.game.options.GameConstants.Time.secondsSimulatedPerTick
 import org.hexworks.amethyst.api.entity.EntityType
-import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import kotlin.math.min
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -36,8 +34,8 @@ val CombatantEntity.isAlive: Boolean
     get() = healthAtt.isAlive
 
 /** current hit points of this entity */
-val CombatantEntity.health: ObservableValue<Int>
-    get() = healthAtt.health
+val CombatantEntity.health: Int
+    get() = healthAtt.healthy
 
 infix fun CombatantEntity.onDeath(callback: () -> Unit) {
     healthAtt.onDeath(callback)
@@ -50,9 +48,9 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
     if (target.isAlive) {
         val damagePerTick = shootersAtt.shooters.map { it.fireShots(attackDurationPerTick, random) }
                 .sum()
-        val receivedDamage = min(damagePerTick, target.health.value)
-        target.healthAtt - receivedDamage
-        log.debug("attack with $damagePerTick damage resulted in target health of ${target.health.value}")
+        val receivedDamage = damagePerTick
+        target.healthAtt.wound(receivedDamage)
+        log.debug("attack with $damagePerTick damage resulted in target health of ${target.healthAtt.healthy}")
     }
 }
 

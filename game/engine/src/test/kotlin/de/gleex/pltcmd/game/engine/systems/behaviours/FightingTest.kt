@@ -9,6 +9,7 @@ import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
+import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
@@ -35,7 +36,7 @@ class FightingTest : StringSpec({
         val context = createContext()
         val target = createTarget(attackerPosition, context, Affiliation.Hostile)
 
-        var expectedHealth = target.health.value
+        var expectedHealth = target.health
         forAll( // shots random damage
                 row(7),
                 row(5),
@@ -101,10 +102,10 @@ class FightingTest : StringSpec({
         val target = createTarget(attackerPosition, context, Affiliation.Hostile)
 
         Fighting.attackNearbyEnemies(attacker, context) // 49 dmg
-        assertCombatResult(attacker, target, 51, true)
+        assertCombatResult(attacker, target, 51, true, 1000)
 
         Fighting.attackNearbyEnemies(attacker, context) // 53 dmg
-        assertCombatResult(attacker, target, 0, false)
+        assertCombatResult(attacker, target, 0, false, 1000)
     }
 })
 
@@ -136,7 +137,8 @@ fun createCombatant(position: Coordinate, affiliation: Affiliation, element: Com
         attributes(
                 ElementAttribute(element, affiliation),
                 PositionAttribute(position.toProperty()),
-                HealthAttribute(),
+                // FIXME using mutliple targets instead of a single soldier for keeping old values
+                HealthAttribute(element.allUnits.flatMap { it.blueprint * 100}.new()),
                 ShootersAttribute(element)
         )
         behaviors(Fighting)
@@ -147,10 +149,16 @@ fun createCombatant(position: Coordinate, affiliation: Affiliation, element: Com
 private fun createRiflemanElement(units: Set<Unit> = setOf(Units.Rifleman.new())) =
         CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, units)
 
-private fun assertCombatResult(attackerStats: CombatantEntity, targetStats: CombatantEntity, expectedHealth: Int, expectedAlive: Boolean = true) {
+private fun assertCombatResult(
+        attackerStats: CombatantEntity,
+        targetStats: CombatantEntity,
+        expectedHealth: Int,
+        expectedAlive: Boolean = true,
+        expectedAttackerHealth: Int = 100
+) {
     assertSoftly {
-        attackerStats.health.value shouldBe 100
-        targetStats.health.value shouldBe expectedHealth
+        attackerStats.health shouldBe expectedAttackerHealth
+        targetStats.health shouldBe expectedHealth
         targetStats.isAlive shouldBe expectedAlive
     }
 }
