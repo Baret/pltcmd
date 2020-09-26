@@ -8,8 +8,8 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.spec.style.scopes.ShouldSpecContextScope
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forNone
-import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.should
+import io.kotest.matchers.types.beInstanceOf
 
 class CommandingElementBlueprintTest : ShouldSpec() {
     init {
