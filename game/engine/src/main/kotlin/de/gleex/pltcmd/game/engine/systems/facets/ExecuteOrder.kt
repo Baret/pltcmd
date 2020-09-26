@@ -24,7 +24,7 @@ internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, C
     private val log = LoggerFactory.getLogger(ExecuteOrder::class)
 
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
-            command.responseWhenCommandIs(OrderCommand::class) { (order, orderedBy, orderedTo, context, entity) ->
+            command.responseWhenCommandIs(OrderCommand::class) { (order, orderedBy, orderedTo, _, entity) ->
                 runBlocking {
                     when (order) {
                         MoveTo        -> {
