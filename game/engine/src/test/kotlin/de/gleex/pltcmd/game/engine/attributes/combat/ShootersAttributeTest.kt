@@ -1,11 +1,10 @@
 package de.gleex.pltcmd.game.engine.attributes.combat
 
-import de.gleex.pltcmd.model.elements.units.Units
-import de.gleex.pltcmd.model.elements.units.new
+import de.gleex.pltcmd.model.combat.attack.Weapons
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
-class HealthAttributeTest : StringSpec({
+class ShootersAttributeTest : StringSpec({
 
     "wound must reduce the combat-ready units" {
         val underTest = createUnderTest()
@@ -106,9 +105,8 @@ class HealthAttributeTest : StringSpec({
 
 })
 
-private fun createUnderTest(): HealthAttribute {
-    val units = (Units.Rifleman * 100).new()
-    println("created for test: $units")
-    return HealthAttribute(units)
+private fun createUnderTest(): ShootersAttribute {
+    val weapons = List(100) { Weapons.assaultRifle }
+    return ShootersAttribute(weapons)
 }
 

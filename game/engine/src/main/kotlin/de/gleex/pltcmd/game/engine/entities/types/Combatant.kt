@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
-import de.gleex.pltcmd.game.engine.attributes.combat.HealthAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.Shooter
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
@@ -15,30 +14,26 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 /**
- * This file contains code for entities that have the [ShootersAttribute] and [HealthAttribute].
+ * This file contains code for entities that have the [ShootersAttribute].
  */
 private val log = LoggerFactory.getLogger("de.gleex.pltcmd.game.engine.entities.types.Combatant")
 
 interface Combatant : EntityType
 typealias CombatantEntity = GameEntity<Combatant>
 
-/** Access to [HealthAttribute] */
-private val CombatantEntity.healthAtt: HealthAttribute
-    get() = getAttribute(HealthAttribute::class)
-
-/** Access to [HealthAttribute] */
+/** Access to [ShootersAttribute] */
 private val CombatantEntity.shootersAtt: ShootersAttribute
     get() = getAttribute(ShootersAttribute::class)
 
 val CombatantEntity.isAbleToFight: Boolean
-    get() = healthAtt.isAbleToFight
+    get() = shootersAtt.isAbleToFight
 
 /** current number of units in this entity that are able to fight */
 val CombatantEntity.combatReady: Int
-    get() = healthAtt.combatReady
+    get() = shootersAtt.combatReady
 
 infix fun CombatantEntity.onDefeat(callback: () -> Unit) {
-    healthAtt.onDefeat(callback)
+    shootersAtt.onDefeat(callback)
 }
 
 /** This combatant attacks the given [target] for a full tick */
@@ -49,8 +44,8 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
         val hitsPerTick = shootersAtt.shooters.map { it.fireShots(attackDurationPerTick, random) }
                 .sum()
         val wounded = hitsPerTick  * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
-        target.healthAtt.wound(wounded)
-        log.debug("attack with $hitsPerTick hits resulted in ${target.healthAtt.combatReady} combat-ready units of the target")
+        target.shootersAtt.wound(wounded)
+        log.debug("attack with $hitsPerTick hits resulted in ${target.shootersAtt.combatReady} combat-ready units of the target")
     }
 }
 

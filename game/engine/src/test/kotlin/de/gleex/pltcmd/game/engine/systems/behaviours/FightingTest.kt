@@ -3,7 +3,6 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.attributes.combat.HealthAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.*
@@ -110,7 +109,6 @@ fun createCombatant(position: Coordinate, affiliation: Affiliation, element: Com
         attributes(
                 ElementAttribute(element, affiliation),
                 PositionAttribute(position.toProperty()),
-                HealthAttribute(element),
                 ShootersAttribute(element)
         )
         behaviors(Fighting)
