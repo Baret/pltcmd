@@ -54,8 +54,8 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld) :
             }
         }
 
-        root.addFragment(CoordinateAtMousePosition(root.contentSize.width, map, gameWorld))
         root.addFragment(TickFragment(root.contentSize.width))
+        root.addFragment(CoordinateAtMousePosition(root.contentSize.width, map, gameWorld))
         root.addFragment(terrainDetails)
     }
 }

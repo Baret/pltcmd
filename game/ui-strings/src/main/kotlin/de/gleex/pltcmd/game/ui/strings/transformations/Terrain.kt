@@ -10,9 +10,9 @@ import org.hexworks.zircon.api.graphics.Symbols
 internal val terrainTransformation: Transformation<Terrain> = { format ->
     when(format) {
         Format.ICON    -> type.terrainTypeTransformation(format)
-        Format.SHORT3  -> "${height.terrainHeightTransformation(format)},${type.terrainTypeTransformation(format)}"
+        Format.SHORT3  -> "${height.terrainHeightTransformation(Format.ICON)},${type.terrainTypeTransformation(Format.ICON)}"
         Format.SHORT5  -> "${height.terrainHeightTransformation(Format.ICON)},${type.terrainTypeTransformation(Format.SHORT3)}"
-        Format.SIDEBAR -> "${height.terrainHeightTransformation(Format.SHORT3)}, ${type.terrainTypeTransformation(Format.SIDEBAR)}"
+        Format.SIDEBAR -> "${"%3s".format(height.terrainHeightTransformation(Format.SHORT3))}, ${type.terrainTypeTransformation(Format.SIDEBAR)}"
         Format.FULL    -> "Terrain height: ${height.terrainHeightTransformation(format)}, type: ${type.terrainTypeTransformation(format)}"
     }
 }
@@ -57,8 +57,8 @@ internal val terrainTypeTransformation: Transformation<TerrainType> = { format -
 internal val terrainHeightTransformation: Transformation<TerrainHeight> = { format ->
     when(format) {
         Format.ICON    -> when {
-            value < 1 -> Symbols.ARROW_UP.toString()
-            value > 9 -> Symbols.ARROW_DOWN.toString()
+            value < 1 -> Symbols.ARROW_DOWN.toString()
+            value > 9 -> Symbols.ARROW_UP.toString()
             else      -> "$value"
         }
         Format.SHORT3  -> "$value"
