@@ -36,7 +36,9 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld) :
 
     init {
         val observedTile: Property<Coordinate> = gameWorld.visibleTopLeftCoordinate().toProperty()
-        val terrainDetails = TerrainDetailsFragment(root.contentSize.width, observedTile, gameWorld.worldMap)
+        val fragmentWidth = root.contentSize.width
+        val terrainDetails = TerrainDetailsFragment(fragmentWidth, observedTile, gameWorld.worldMap)
+        val coordinateFragment = CoordinateAtMousePosition(fragmentWidth, observedTile)
 
         map.handleMouseEvents(MouseEventType.MOUSE_MOVED) { event, phase ->
             if(phase == UIEventPhase.TARGET) {
@@ -46,16 +48,17 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld) :
         }
         map.handleMouseEvents(MouseEventType.MOUSE_CLICKED) {event, phase ->
             if(phase == UIEventPhase.TARGET && event.button == 3) {
-                log.debug("RIGHT MOUSE BUTTON CLICKED!")
+                log.debug("Toggling lock on information sidebar")
                 terrainDetails.toggleLock()
+                coordinateFragment.toggleLock()
                 Processed
             } else {
                 Pass
             }
         }
 
-        root.addFragment(TickFragment(root.contentSize.width))
-        root.addFragment(CoordinateAtMousePosition(root.contentSize.width, map, gameWorld))
+        root.addFragment(TickFragment(fragmentWidth))
+        root.addFragment(coordinateFragment)
         root.addFragment(terrainDetails)
     }
 }

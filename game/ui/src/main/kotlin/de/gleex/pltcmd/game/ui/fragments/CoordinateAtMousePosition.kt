@@ -1,22 +1,20 @@
 package de.gleex.pltcmd.game.ui.fragments
 
-import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.game.ui.fragments.tileinformation.TileInformationFragment
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
+import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.game.GameComponent
-import org.hexworks.zircon.api.uievent.MouseEventType
-import org.hexworks.zircon.api.uievent.UIEventResponse
 
 /**
  * Displays the coordiante at mouse position
  */
-class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComponent<*, *>, gameWorld: GameWorld) : BaseFragment {
+class CoordinateAtMousePosition(width: Int, currentTile: ObservableValue<Coordinate>) : TileInformationFragment(width, currentTile) {
 
-    private val currentCoordinate: Property<Coordinate> = createPropertyFrom(gameWorld.visibleTopLeftCoordinate())
+    private val currentCoordinate: Property<Coordinate> = Coordinate.zero.toProperty()
 
     override val root = Components.hbox().
             withSize(width, 1).
@@ -29,11 +27,10 @@ class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComp
                         apply {
                             withFrontendString(Format.SIDEBAR,
                                     "Coordinate: ", currentCoordinate)
-                            gameComponent.handleMouseEvents(MouseEventType.MOUSE_MOVED) { mouseEvent, _ ->
-                                val positionInGameComponent = mouseEvent.position - gameComponent.absolutePosition
-                                currentCoordinate.updateValue(gameWorld.coordinateAtVisiblePosition(positionInGameComponent))
-                                UIEventResponse.pass()
-                            }
                         })
             }
+
+    override fun updateInformation(newCoordinate: Coordinate) {
+        currentCoordinate.updateValue(newCoordinate)
+    }
 }

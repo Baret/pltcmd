@@ -18,8 +18,8 @@ import org.hexworks.zircon.api.Components
 class TerrainDetailsFragment(
         width: Int,
         currentTile: ObservableValue<Coordinate>,
-        world: WorldMap
-) : TileInformationFragment(width, currentTile, world) {
+        private val world: WorldMap
+) : TileInformationFragment(width, currentTile) {
 
     private val terrainProperty: Property<Terrain> = Terrain.of(TerrainType.GRASSLAND, TerrainHeight.MIN).toProperty()
 

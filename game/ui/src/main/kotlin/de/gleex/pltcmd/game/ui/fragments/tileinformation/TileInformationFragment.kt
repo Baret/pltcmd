@@ -1,10 +1,8 @@
 package de.gleex.pltcmd.game.ui.fragments.tileinformation
 
 import de.gleex.pltcmd.game.ui.fragments.BaseFragment
-import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.internal.behavior.Observable
 
 /**
@@ -14,13 +12,8 @@ import org.hexworks.zircon.internal.behavior.Observable
  */
 abstract class TileInformationFragment(
         override val width: Int,
-        currentTile: ObservableValue<Coordinate>,
-        protected val world: WorldMap
+        currentTile: ObservableValue<Coordinate>
 ) : BaseFragment {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(TileInformationFragment::class)
-    }
 
     init {
         currentTile.onChange {
@@ -38,7 +31,6 @@ abstract class TileInformationFragment(
      */
     fun toggleLock() {
         locked = !locked
-        log.debug("Fragment ${this::class} is now ${if (locked) "locked" else "unlocked"}")
     }
 
     /**
