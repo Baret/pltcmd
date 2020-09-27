@@ -121,10 +121,10 @@ fun createCombatant(position: Coordinate, affiliation: Affiliation, element: Com
 private fun createInfantryElement(units: Set<Unit> = setOf(Units.Rifleman.new())) =
         CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, units)
 
-private fun assertCombatResult(attackerStats: ElementEntity, targetStats: CombatantEntity, expectedHealth: Int, expectedAlive: Boolean = true) {
+private fun assertCombatResult(attackerStats: ElementEntity, targetStats: CombatantEntity, expectedCombatReady: Int, expectedAlive: Boolean = true) {
     assertSoftly {
-        attackerStats.health shouldBe attackerStats.element.totalUnits
-        targetStats.health shouldBe expectedHealth
-        targetStats.isAlive shouldBe expectedAlive
+        attackerStats.combatReady shouldBe attackerStats.element.totalUnits
+        targetStats.combatReady shouldBe expectedCombatReady
+        targetStats.isAbleToFight shouldBe expectedAlive
     }
 }

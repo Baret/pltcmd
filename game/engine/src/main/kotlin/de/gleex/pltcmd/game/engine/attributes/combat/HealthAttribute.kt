@@ -22,16 +22,16 @@ internal class HealthAttribute(units: Iterable<Unit>) : Attribute {
     private val defenders = units.map { Defender() }
 
     /** The number of combat-ready units. */
-    val healthy: Int
+    val combatReady: Int
         get() = defenders.filter { it.isAbleToFight }
                 .count()
 
     /** used for keeping listeners for onDeath */
-    private val alive: Property<Boolean> = true.toProperty()
+    private val defeated: Property<Boolean> = false.toProperty()
 
-    /** @return false if the health reaches 0 */
-    val isAlive: Boolean
-        get() = healthy > 0
+    /** @return false if nobody is able to fight */
+    val isAbleToFight: Boolean
+        get() = combatReady > 0
 
     /** Wounds the given number of units out of the combat-ready ones. */
     fun wound(hitUnits: Int) {
@@ -39,17 +39,17 @@ internal class HealthAttribute(units: Iterable<Unit>) : Attribute {
     }
 
     /** Kills the given number of units out of the combat-ready ones. */
-    fun kill(receivedDamage: Int) {
-        toCasualty(receivedDamage, UnitFightingState.KIA)
+    fun kill(hitUnits: Int) {
+        toCasualty(hitUnits, UnitFightingState.KIA)
     }
 
     /** Makes the given number of units combat-ready out of the wounded. */
-    fun treatWounded(receivedHealing: Int) {
-        updateFightingState(receivedHealing, { UnitFightingState.WIA == it.state.value }, UnitFightingState.IOR)
+    fun treatWounded(treatedUnits: Int) {
+        updateFightingState(treatedUnits, { UnitFightingState.WIA == it.state.value }, UnitFightingState.IOR)
     }
 
-    private fun toCasualty(receivedDamage: Int, newState: UnitFightingState) {
-        updateFightingState(receivedDamage, { it.isAbleToFight }, newState)
+    private fun toCasualty(hitUnits: Int, newState: UnitFightingState) {
+        updateFightingState(hitUnits, { it.isAbleToFight }, newState)
     }
 
     private fun updateFightingState(defenderCount: Int, affected: (Defender) -> Boolean, newState: UnitFightingState) {
@@ -59,13 +59,13 @@ internal class HealthAttribute(units: Iterable<Unit>) : Attribute {
                 .filter(affected)
                 .limit(maxAffectedUnits)
                 .forEach { it.state.updateValue(newState) }
-        alive.updateValue(isAlive)
-        log.trace("set $defenderCount of ${defenders.size} to $newState. health afterwards: $healthy isAlive? $isAlive")
+        defeated.updateValue(!isAbleToFight)
+        log.trace("set $defenderCount of ${defenders.size} to $newState. combat-ready afterwards: $combatReady isAbleToFight? $isAbleToFight")
     }
 
-    infix fun onDeath(callback: () -> kotlin.Unit) {
-        require(isAlive)
-        alive.onChange { changed ->
+    infix fun onDefeat(callback: () -> kotlin.Unit) {
+        require(isAbleToFight)
+        defeated.onChange { changed ->
             require(!changed.newValue)
             callback.invoke()
         }

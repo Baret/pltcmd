@@ -30,27 +30,27 @@ private val CombatantEntity.healthAtt: HealthAttribute
 private val CombatantEntity.shootersAtt: ShootersAttribute
     get() = getAttribute(ShootersAttribute::class)
 
-val CombatantEntity.isAlive: Boolean
-    get() = healthAtt.isAlive
+val CombatantEntity.isAbleToFight: Boolean
+    get() = healthAtt.isAbleToFight
 
-/** current hit points of this entity */
-val CombatantEntity.health: Int
-    get() = healthAtt.healthy
+/** current number of units in this entity that are able to fight */
+val CombatantEntity.combatReady: Int
+    get() = healthAtt.combatReady
 
-infix fun CombatantEntity.onDeath(callback: () -> Unit) {
-    healthAtt.onDeath(callback)
+infix fun CombatantEntity.onDefeat(callback: () -> Unit) {
+    healthAtt.onDefeat(callback)
 }
 
 /** This combatant attacks the given [target] for a full tick */
 @OptIn(ExperimentalTime::class)
 internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
     val attackDurationPerTick = secondsSimulatedPerTick.toDuration(DurationUnit.SECONDS)
-    if (target.isAlive) {
+    if (target.isAbleToFight) {
         val hitsPerTick = shootersAtt.shooters.map { it.fireShots(attackDurationPerTick, random) }
                 .sum()
         val wounded = hitsPerTick  * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
         target.healthAtt.wound(wounded)
-        log.debug("attack with $hitsPerTick hits resulted in ${target.healthAtt.healthy} healthy units of the target")
+        log.debug("attack with $hitsPerTick hits resulted in ${target.healthAtt.combatReady} combat-ready units of the target")
     }
 }
 
