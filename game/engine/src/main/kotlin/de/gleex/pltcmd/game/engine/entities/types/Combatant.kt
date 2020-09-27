@@ -22,18 +22,22 @@ interface Combatant : EntityType
 typealias CombatantEntity = GameEntity<Combatant>
 
 /** Access to [ShootersAttribute] */
-private val CombatantEntity.shootersAtt: ShootersAttribute
+private val CombatantEntity.shooters: ShootersAttribute
     get() = getAttribute(ShootersAttribute::class)
 
 val CombatantEntity.isAbleToFight: Boolean
-    get() = shootersAtt.isAbleToFight
+    get() = shooters.isAbleToFight
 
 /** current number of units in this entity that are able to fight */
-val CombatantEntity.combatReady: Int
-    get() = shootersAtt.combatReady
+val CombatantEntity.combatReadyCount: Int
+    get() = shooters.combatReadyCount
+
+/** current number of units in this entity that are wounded in action */
+val CombatantEntity.woundedCount: Int
+    get() = shooters.woundedCount
 
 infix fun CombatantEntity.onDefeat(callback: () -> Unit) {
-    shootersAtt.onDefeat(callback)
+    shooters.onDefeat(callback)
 }
 
 /** This combatant attacks the given [target] for a full tick */
@@ -41,11 +45,12 @@ infix fun CombatantEntity.onDefeat(callback: () -> Unit) {
 internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
     val attackDurationPerTick = secondsSimulatedPerTick.toDuration(DurationUnit.SECONDS)
     if (target.isAbleToFight) {
-        val hitsPerTick = shootersAtt.shooters.map { it.fireShots(attackDurationPerTick, random) }
+        val hitsPerTick = shooters.combatReady
+                .map { it.fireShots(attackDurationPerTick, random) }
                 .sum()
-        val wounded = hitsPerTick  * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
-        target.shootersAtt.wound(wounded)
-        log.debug("attack with $hitsPerTick hits resulted in ${target.shootersAtt.combatReady} combat-ready units of the target")
+        val wounded = hitsPerTick * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
+        target.shooters.wound(wounded)
+        log.debug("attack with $hitsPerTick hits resulted in ${target.shooters.combatReadyCount} combat-ready units of the target")
     }
 }
 

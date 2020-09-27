@@ -15,21 +15,28 @@ internal class ShootersAttribute(weapons: Iterable<WeaponStats>) : Attribute {
 
     companion object {
         private val log = LoggerFactory.getLogger(ShootersAttribute::class)
+        private val filterCombatReady: (Shooter) -> Boolean = { it.isAbleToFight }
+        private val filterWounded: (Shooter) -> Boolean = { UnitFightingState.WIA == it.state.value }
     }
 
-    internal val shooters: List<Shooter> = weapons.map { Shooter(it) }
+    private val shooters: List<Shooter> = weapons.map { Shooter(it) }
+
+    val combatReady: List<Shooter>
+        get() = shooters.filter(filterCombatReady)
 
     /** The number of combat-ready units. */
-    val combatReady: Int
-        get() = shooters.filter { it.isAbleToFight }
-                .count()
+    val combatReadyCount: Int
+        get() = combatReady.count()
+
+    val woundedCount: Int
+        get() = shooters.filter(filterWounded).size
 
     /** used for keeping listeners for onDeath */
     private val defeated: Property<Boolean> = false.toProperty()
 
     /** @return false if nobody is able to fight */
     val isAbleToFight: Boolean
-        get() = combatReady > 0
+        get() = combatReadyCount > 0
 
     /** Wounds the given number of units out of the combat-ready ones. */
     fun wound(hitUnits: Int) {
@@ -43,11 +50,11 @@ internal class ShootersAttribute(weapons: Iterable<WeaponStats>) : Attribute {
 
     /** Makes the given number of units combat-ready out of the wounded. */
     fun treatWounded(treatedUnits: Int) {
-        updateFightingState(treatedUnits, { UnitFightingState.WIA == it.state.value }, UnitFightingState.IOR)
+        updateFightingState(treatedUnits, filterWounded, UnitFightingState.IOR)
     }
 
     private fun toCasualty(hitUnits: Int, newState: UnitFightingState) {
-        updateFightingState(hitUnits, { it.isAbleToFight }, newState)
+        updateFightingState(hitUnits, filterCombatReady, newState)
     }
 
     private fun updateFightingState(defenderCount: Int, affected: (Shooter) -> Boolean, newState: UnitFightingState) {
@@ -58,7 +65,7 @@ internal class ShootersAttribute(weapons: Iterable<WeaponStats>) : Attribute {
                 .limit(maxAffectedUnits)
                 .forEach { it.state.updateValue(newState) }
         defeated.updateValue(!isAbleToFight)
-        log.trace("set $defenderCount of ${shooters.size} to $newState. combat-ready afterwards: $combatReady isAbleToFight? $isAbleToFight")
+        log.trace("set $defenderCount of ${shooters.size} to $newState. combat-ready afterwards: $combatReadyCount isAbleToFight? $isAbleToFight")
     }
 
     infix fun onDefeat(callback: () -> kotlin.Unit) {

@@ -12,6 +12,8 @@ import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -79,6 +81,35 @@ class FightingTest : StringSpec({
         Fighting.attackNearbyEnemies(attacker, context) // 53 dmg
         assertCombatResult(attacker, target, 0, false)
     }
+
+    "attackNearbyEnemies with multiple wounded shooters and single enemy with multiple soldiers" {
+        val attackerPosition = Coordinate(123, 456)
+        val attacker = createCombatant(attackerPosition, Affiliation.Friendly, Elements.rifleSquad.new())
+        val context = createContext()
+        val target = createTarget(attackerPosition, context, createInfantryElement((Units.Rifleman * 100).new()))
+        val singleRifleman = createCombatant(attackerPosition, Affiliation.Hostile)
+        singleRifleman.attack(attacker, context.random)
+        val attacksAbleToFight = 3
+        attacker.combatReadyCount shouldBe attacksAbleToFight
+        attacker.woundedCount shouldBe 7
+
+        var expectedTargetCombatReady = target.combatReadyCount
+        forAll( // shots random hits
+                row(18),
+                row(15),
+                row(20),
+                row(20),
+                row(19)
+        ) { expectedDamage ->
+            Fighting.attackNearbyEnemies(attacker, context)
+            expectedTargetCombatReady -= expectedDamage
+            assertCombatResult(attacker, target, expectedTargetCombatReady, true, attacksAbleToFight)
+        }
+        expectedTargetCombatReady shouldBe 8
+
+        Fighting.attackNearbyEnemies(attacker, context) // 20 dmg
+        assertCombatResult(attacker, target, 0, false, attacksAbleToFight)
+    }
 })
 
 private fun createContext(): GameContext {
@@ -119,10 +150,10 @@ fun createCombatant(position: Coordinate, affiliation: Affiliation, element: Com
 private fun createInfantryElement(units: Set<Unit> = setOf(Units.Rifleman.new())) =
         CommandingElement(Corps.Fighting, ElementKind.Infantry, Rung.Fireteam, units)
 
-private fun assertCombatResult(attackerStats: ElementEntity, targetStats: CombatantEntity, expectedCombatReady: Int, expectedAlive: Boolean = true) {
+private fun assertCombatResult(attackerStats: ElementEntity, targetStats: CombatantEntity, expectedCombatReady: Int, expectedAlive: Boolean = true, expectedAttackerCombatReady: Int = attackerStats.element.totalUnits) {
     assertSoftly {
-        attackerStats.combatReady shouldBe attackerStats.element.totalUnits
-        targetStats.combatReady shouldBe expectedCombatReady
+        attackerStats.combatReadyCount shouldBe expectedAttackerCombatReady
+        targetStats.combatReadyCount shouldBe expectedCombatReady
         targetStats.isAbleToFight shouldBe expectedAlive
     }
 }

@@ -9,34 +9,34 @@ class ShootersAttributeTest : StringSpec({
     "wound must reduce the combat-ready units" {
         val underTest = createUnderTest()
         underTest.wound(3)
-        underTest.combatReady shouldBe 97
+        underTest.combatReadyCount shouldBe 97
 
         underTest.wound(0)
-        underTest.combatReady shouldBe 97
+        underTest.combatReadyCount shouldBe 97
 
         underTest.wound(-5)
-        underTest.combatReady shouldBe 97
+        underTest.combatReadyCount shouldBe 97
 
         underTest.wound(105)
-        underTest.combatReady shouldBe 0
+        underTest.combatReadyCount shouldBe 0
     }
 
     "treatWounded must restore wounded units" {
         val underTest = createUnderTest()
         underTest.wound(60)
-        underTest.combatReady shouldBe 40
+        underTest.combatReadyCount shouldBe 40
 
         underTest.treatWounded(3)
-        underTest.combatReady shouldBe 43
+        underTest.combatReadyCount shouldBe 43
 
         underTest.treatWounded(0)
-        underTest.combatReady shouldBe 43
+        underTest.combatReadyCount shouldBe 43
 
         underTest.treatWounded(-8)
-        underTest.combatReady shouldBe 43
+        underTest.combatReadyCount shouldBe 43
 
         underTest.treatWounded(77)
-        underTest.combatReady shouldBe 100
+        underTest.combatReadyCount shouldBe 100
     }
 
     "onDefeat must trigger on exact 0 combat-ready" {
