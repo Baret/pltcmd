@@ -3,13 +3,13 @@ package de.gleex.pltcmd.game.ui.strings.extensions
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.FrontendString
 import de.gleex.pltcmd.game.ui.strings.Transformation
-import de.gleex.pltcmd.game.ui.strings.transformations.coordinateTransformation
-import de.gleex.pltcmd.game.ui.strings.transformations.defaultTransformation
-import de.gleex.pltcmd.game.ui.strings.transformations.unitTransformation
-import de.gleex.pltcmd.game.ui.strings.transformations.unitsTransformation
+import de.gleex.pltcmd.game.ui.strings.transformations.*
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.terrain.Terrain
+import de.gleex.pltcmd.model.world.terrain.TerrainHeight
+import de.gleex.pltcmd.model.world.terrain.TerrainType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 
@@ -37,6 +37,9 @@ private fun <T> transformationFor(value: T): Transformation<T> {
         is Coordinate -> coordinateTransformation as Transformation<T>
         is Units      -> unitsTransformation as Transformation<T>
         is Unit       -> unitTransformation as Transformation<T>
+        is TerrainHeight -> terrainHeightTransformation as Transformation<T>
+        is TerrainType -> terrainTypeTransformation as Transformation<T>
+        is Terrain    -> terrainTransformation as Transformation<T>
         else          -> defaultTransformation as Transformation<T>
     }
 }

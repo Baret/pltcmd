@@ -29,14 +29,6 @@ class TerrainDetailsFragment(
                     .build()
                     .apply {
                         withFrontendString(Format.SIDEBAR, "Terrain: ", terrainProperty)
-//                        textProperty.updateFrom(
-//                                "Terrain: ".toProperty()
-//                                        .bindPlusWith(
-//                                                heightProperty.bindTransform { it.value.toString() }
-//                                                        .bindPlusWith(", ".toProperty())
-//                                                        .bindPlusWith(typeProperty.bindTransform { it.name })
-//                                        )
-//                        )
                     }
 
     override fun updateInformation(newCoordinate: Coordinate) {
