@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.combat.defense
 
 /** Describes in what condition a unit is in respect of fighting. It determines how well it is able to fight enemies. **/
-enum class UnitFightingState(val isAbleToFight: Boolean) {
+enum class UnitFightingState(val availableForCombat: Boolean) {
     /** immediate operational readiness **/
     IOR(true),
     /** wounded in action **/

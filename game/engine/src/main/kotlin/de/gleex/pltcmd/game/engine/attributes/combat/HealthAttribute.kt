@@ -23,7 +23,7 @@ internal class HealthAttribute(units: Iterable<Unit>) : Attribute {
 
     /** The number of combat-ready units. */
     val healthy: Int
-        get() = defenders.filter { it.availableForCombat }
+        get() = defenders.filter { it.isAbleToFight }
                 .count()
 
     /** used for keeping listeners for onDeath */
@@ -49,7 +49,7 @@ internal class HealthAttribute(units: Iterable<Unit>) : Attribute {
     }
 
     private fun toCasualty(receivedDamage: Int, newState: UnitFightingState) {
-        updateFightingState(receivedDamage, { it.availableForCombat }, newState)
+        updateFightingState(receivedDamage, { it.isAbleToFight }, newState)
     }
 
     private fun updateFightingState(defenderCount: Int, affected: (Defender) -> Boolean, newState: UnitFightingState) {
