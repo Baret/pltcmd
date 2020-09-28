@@ -33,10 +33,10 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
     /**
      * Initializes a conversation and adds the two messages as order and expected readback response.
      */
-    fun genericOrder(orderMessage: String, readback: String) {
+    fun genericOrder(orderMessage: String, readback: String, vararg placeholderValueProviders: TransmissionContext.() -> Any?) {
         establishComms {
-            order(orderMessage) {
-                readback(readback)
+            order(orderMessage, *placeholderValueProviders) {
+                readback(readback, *placeholderValueProviders)
             }
         }
     }
@@ -55,10 +55,29 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
         }
     }
 
-    fun request(message: String, responseSupplier: () -> Transmission): TransmissionWithResponse {
-        return transmissionWithResponse(message, responseSupplier)
+    /**
+     * A request is a transmission from the sender to the receiver expecting a response.
+     *
+     * Answers of the receivers may be created with [response].
+     *
+     * @return a [TransmissionWithResponse]
+     */
+    fun request(message: String, vararg placeholderValueProviders: TransmissionContext.() -> Any?, responseSupplier: () -> Transmission): TransmissionWithResponse {
+        return transmissionWithResponse(
+                message = message,
+                responseSupplier = responseSupplier,
+                toReceiver = true,
+                placeholderValueProviders = *placeholderValueProviders
+        )
     }
 
+    /**
+     * A response is an answer of the receiver back to the sender expecting another message.
+     *
+     * Basically this is a [request] but in the other direction.
+     *
+     * @return a [TransmissionWithResponse]
+     */
     fun response(message: String, nextTransmission: () -> Transmission): TransmissionWithResponse {
         return transmissionWithResponse(message, nextTransmission, false)
     }
@@ -66,10 +85,10 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
     fun terminatingResponse(message: String, vararg placeholderValueProviders: TransmissionContext.() -> Any?) =
             TerminatingTransmission(message.asTransmission(toReceiver = false, terminating = true), placeholderValueProviders.asList())
 
-    fun order(message: String, readbackSupplier: () -> TerminatingTransmission): OrderTransmission {
+    fun order(message: String, vararg placeholderValueProviders: TransmissionContext.() -> Any?, readbackSupplier: () -> TerminatingTransmission): OrderTransmission {
         val readback = readbackSupplier.invoke()
-        // TODO: negative() needs to be some kind of "transmission with wildcard" that can be filled with the reason, when it is being sent
-        return OrderTransmission(message.asTransmission(), readback, negative())
+        // TODO: negative() needs to be some kind of "transmission with wildcard" that can be filled with the reason, when it is being sent (#103)
+        return OrderTransmission(message.asTransmission(), readback, negative(), placeholderValueProviders.asList())
     }
 
     /**
@@ -83,9 +102,9 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
 
     private fun negative() = terminatingResponse("negative")
 
-    private fun transmissionWithResponse(message: String, responseSupplier: () -> Transmission, toReceiver: Boolean = true): TransmissionWithResponse {
+    private fun transmissionWithResponse(message: String, responseSupplier: () -> Transmission, toReceiver: Boolean = true, vararg placeholderValueProviders: TransmissionContext.() -> Any?): TransmissionWithResponse {
         val response = responseSupplier.invoke()
-        return TransmissionWithResponse(message.asTransmission(toReceiver), response)
+        return TransmissionWithResponse(message.asTransmission(toReceiver), response, placeholderValueProviders.asList())
     }
 
     /**

@@ -11,7 +11,12 @@ data class MainCoordinate(val eastingFromLeft: Int, val northingFromBottom: Int)
 
     companion object {
         /** Number of [Coordinate]s a main coordinate spans in one direction. */
-        val TILE_COUNT = 100
+        const val TILE_COUNT = 100
+
+        /**
+         * The separator used in the string representation.
+         */
+        const val SEPARATOR = "!"
     }
 
     /**
@@ -19,5 +24,5 @@ data class MainCoordinate(val eastingFromLeft: Int, val northingFromBottom: Int)
      */
     fun toCoordinate() = Coordinate(eastingFromLeft * TILE_COUNT, northingFromBottom * TILE_COUNT)
 
-    override fun toString() = "($eastingFromLeft|$northingFromBottom)"
+    override fun toString() = "($eastingFromLeft$SEPARATOR$northingFromBottom)"
 }

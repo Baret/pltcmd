@@ -1,22 +1,27 @@
 package de.gleex.pltcmd.game.ui
 
-import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.entities.types.ElementType
+import de.gleex.pltcmd.game.engine.Game
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.*
 import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
+import de.gleex.pltcmd.model.radio.BroadcastEvent
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
+import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.world.Sector
-import org.hexworks.amethyst.api.entity.Entity
+import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
+import org.hexworks.zircon.api.component.LogArea
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
@@ -26,7 +31,9 @@ import org.hexworks.zircon.api.view.base.BaseView
 /**
  * The view to display the map, radio log and interaction panel
  */
-class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val elementsToCommand: List<Entity<ElementType, GameContext>>) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
+class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val game: Game, val commandingElement: ElementEntity, val elementsToCommand: List<ElementEntity>) :
+        BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
+
     companion object {
         private val log = LoggerFactory.getLogger(GameView::class)
     }
@@ -60,9 +67,12 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val element
 
         val logArea = Components.logArea().
                 withSize(UiOptions.LOG_AREA_WIDTH, UiOptions.LOG_AREA_HEIGHT).
-                withAlignmentWithin(screen, ComponentAlignment.BOTTOM_RIGHT).
+                withAlignmentWithin(screen, ComponentAlignment.BOTTOM_LEFT).
                 withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
-                build()
+                build().
+                also {
+                    it.logRadioCalls()
+                }
 
         screen.addComponents(sidebar, logArea, mainPart)
 
@@ -71,9 +81,9 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val element
 
         log.debug("Adding keyboard listener to screen")
         screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, phase ->
-            if(phase == UIEventPhase.TARGET) {
+            if (phase == UIEventPhase.TARGET) {
                 when (event.code) {
-                    KeyCode.KEY_A  -> {
+                    KeyCode.KEY_A -> {
                         gameWorld.scrollLeftBy(Sector.TILE_COUNT)
                         Processed
                     }
@@ -81,17 +91,17 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val element
                         gameWorld.scrollRightBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.KEY_S  -> {
+                    KeyCode.KEY_S -> {
                         gameWorld.scrollForwardBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.KEY_W  -> {
+                    KeyCode.KEY_W -> {
                         gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.KEY_Q  -> {
+                    KeyCode.KEY_Q -> {
                         GameOptions.displayRadioSignals.value = GameOptions.displayRadioSignals.value.not()
-                        log.debug("Toggled radio signal display to ${if(GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
+                        log.debug("Toggled radio signal display to ${if (GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
                         Processed
                     }
                     else          -> Pass
@@ -105,13 +115,13 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val element
         val sidebarWidth = sidebar.contentSize.width
         sidebar.addFragment(CoordinateAtMousePosition(sidebarWidth, map, gameWorld))
 
-        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, elementsToCommand, map.absolutePosition)
+        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, map.absolutePosition, game)
         sidebar.addFragment(commandFragment)
         map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
 
         sidebar.addFragment(TickFragment(sidebarWidth))
 
-        if(GameOptions.displayRadioSignals.value) {
+        if (GameOptions.displayRadioSignals.value) {
             val radioSignalFragment = RadioSignalFragment(sidebarWidth)
             map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer(gameWorld, radioSignalFragment.selectedStrength, radioSignalFragment.selectedRange, map.absolutePosition))
             sidebar.addFragment(radioSignalFragment)
@@ -119,6 +129,18 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, val element
 
         sidebar.addFragment(ThemeSelectorFragment(sidebarWidth, screen))
         sidebar.addFragment(TilesetSelectorFragment(sidebarWidth, map, sidebar))
+    }
+
+    private fun LogArea.logRadioCalls() {
+        globalEventBus.subscribeToBroadcasts { event: BroadcastEvent ->
+            val transmission = event.transmission
+            val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
+            if (transmission.isOpening) {
+                addHeader(message, false)
+            } else {
+                addParagraph(message, false, 5)
+            }
+        }
     }
 }
 

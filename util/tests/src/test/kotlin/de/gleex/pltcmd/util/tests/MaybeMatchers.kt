@@ -17,7 +17,7 @@ fun <T> containValue(expectedValue: T) = object: Matcher<Maybe<T>> {
     }
 }
 
-fun beEmpty() = object: Matcher<Maybe<out Any>> {
+fun beEmptyMaybe() = object: Matcher<Maybe<out Any>> {
     override fun test(value: Maybe<out Any>): MatcherResult {
         return MatcherResult.Companion.invoke(
                 value.isEmpty(),

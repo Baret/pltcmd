@@ -2,8 +2,11 @@ package de.gleex.pltcmd.model.radio.communication
 
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.building.conversation
+import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.orderTemplate
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * This object contains all possible conversations in the game.
@@ -13,23 +16,42 @@ object Conversations {
     /**
      * All orders. An order typically initializes comms, sends an order and expects a positive _readback_ or a negative answer
      */
-    object Orders {
-        fun moveTo(sender: CallSign, receiver: CallSign, targetLocation: Coordinate) =
-                orderConversation(sender, receiver, "move to $targetLocation", "moving to $targetLocation")
+    enum class Orders(private val messageTemplate: String, private val readback: String, vararg contextParameters: TransmissionContext.() -> Any?) {
 
-        fun goFirm(sender: CallSign, receiver: CallSign) =
-                orderConversation(sender, receiver, "go fim", "going firm")
+        MoveTo("move to %s", "moving to %s"),
+        Halt("hold your position", "halting. We are at %s"),
+        // TODO: For a good readback we would need to know the previous order here
+        Continue("continue with your order", "continuing"),
+        GoFirm("go firm", "going firm"),
+        PatrolAreaAt("patrol area at %s", "moving to %s for a patrol"),
+        EngageEnemyAt("engage enemy at %s", "engaging enemy at %s"),
+        ;
 
-        fun engageEnemyAt(sender: CallSign, receiver: CallSign, enemyLocation: Coordinate) =
-                orderConversation(sender, receiver, "engage enemy at $enemyLocation", "engaging enemy at $enemyLocation")
+        private val orderParameters = contextParameters
 
-        private fun orderConversation(sender: CallSign, receiver: CallSign, order: String, readback: String) =
+        fun created(transmission: OrderTransmission): Boolean {
+            return messageTemplate == transmission.orderTemplate
+        }
+
+        /**
+         * Creates a [Conversation] from this order.
+         *
+         * @param sender the initiator of the conversation is the one giving the order
+         * @param receiver receives the order
+         * @param orderLocation optional location to be injected into the conversation (usually the destination of the order)
+         */
+        fun create(sender: CallSign, receiver: CallSign, orderLocation: Coordinate? = null): Conversation =
                 conversation(sender, receiver) {
                     genericOrder(
-                            orderMessage = order,
-                            readback = readback
+                            messageTemplate,
+                            readback,
+                            { orderLocation ?: senderPosition }
                     )
                 }
+
+        companion object {
+            fun getOrder(transmission: OrderTransmission): Maybe<Orders> = Maybe.ofNullable(values().find { it.created(transmission) })
+        }
     }
 
     /**
@@ -40,7 +62,7 @@ object Conversations {
                 conversation(sender, receiver) {
                     establishComms {
                         request("report position") {
-                            terminatingResponse("we are at %s", TransmissionContext::position)
+                            terminatingResponse("we are at %s", { senderPosition })
                         }
                     }
                 }
@@ -54,9 +76,20 @@ object Conversations {
                     establishComms {
                         request("send a SITREP") {
                             terminatingResponse("we have %d soldiers ready to fight! %d wounded, %d killed",
-                                    TransmissionContext::fightingReady,
-                                    TransmissionContext::woundedCount,
-                                    TransmissionContext::killedCount)
+                                    { fightingReady },
+                                    { woundedCount },
+                                    { killedCount })
+                        }
+                    }
+                }
+    }
+
+    object Messages {
+        fun destinationReached(sender: CallSign, receiver: CallSign) =
+                conversation(sender, receiver) {
+                    establishComms {
+                        request("we have reached our destination. We are at %s", { senderPosition }) {
+                            terminatingResponse("copy that")
                         }
                     }
                 }
@@ -73,6 +106,15 @@ object Conversations {
                 // tricky: as we use terminatingRESPONSE we need to flip sender and receiver
                 conversation(receiver, sender) {
                     openingTransmission = terminatingResponse("stand by")
+                }
+
+        /**
+         * To be used when no reply is received from the receiver.
+         */
+        fun nothingHeard(sender: CallSign, receiver: CallSign) =
+                // tricky: as we use terminatingRESPONSE we need to flip sender and receiver
+                conversation(receiver, sender) {
+                    openingTransmission = terminatingResponse("nothing heard")
                 }
     }
 }

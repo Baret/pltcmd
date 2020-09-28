@@ -40,6 +40,6 @@ class SizedEmptyRectangleAreaFinderTest : StringSpec({
         val everyCoordinateAsRectangle = emptyWorld.findEmpty()
                 .map { CoordinateRectangle(it, it) }
                 .toSet()
-        minimumSizeTest.findAll(emptyWorld) shouldBe everyCoordinateAsRectangle
+        (minimumSizeTest.findAll(emptyWorld) == everyCoordinateAsRectangle) shouldBe true
     }
 })

@@ -44,7 +44,7 @@ object TileRepository {
 //                buildGraphicalTile()
 
         fun platoon(affiliation: Affiliation): Tile {
-            // TODO: cache the tiles, because they are immutable
+            // TODO: cache the tiles, because they are immutable (#101)
             val (foreground, background) = ColorRepository.forAffiliation(affiliation)
             val affiliationTag = affiliation.name.toLowerCase()
             log.info("Getting tile with affiliation $affiliationTag")
