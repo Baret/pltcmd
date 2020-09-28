@@ -12,7 +12,7 @@ import org.hexworks.zircon.api.uievent.MouseEventType
 import org.hexworks.zircon.api.uievent.UIEventResponse
 
 /**
- * Displays the coordiante at mouse position
+ * Displays the coordinate at mouse position
  */
 class CoordinateAtMousePosition(override val width: Int, gameComponent: GameComponent<*, *>, gameWorld: GameWorld) : BaseFragment {
 

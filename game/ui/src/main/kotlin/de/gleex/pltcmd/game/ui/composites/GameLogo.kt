@@ -1,9 +1,8 @@
 package de.gleex.pltcmd.game.ui.composites
 
 import de.gleex.pltcmd.game.options.UiOptions
-import javafx.scene.image.Image
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import org.hexworks.zircon.api.ImageDictionaryTilesetResources
+import org.hexworks.zircon.api.CharacterTileStrings
 import org.hexworks.zircon.api.Modifiers
 import org.hexworks.zircon.api.builder.graphics.LayerBuilder
 import org.hexworks.zircon.api.color.ANSITileColor
@@ -15,7 +14,6 @@ import org.hexworks.zircon.api.graphics.StyleSet
 import org.hexworks.zircon.api.graphics.Symbols
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.shape.LineFactory
-import java.io.File
 import kotlin.math.roundToInt
 
 /**
@@ -39,6 +37,7 @@ object GameLogo {
                 .withSize(parent.size)
                 .build()
 
+        /*
         parent.addLayer(mainLayer)
         val path = "./artwork/logos/"
         val tilesetResource = ImageDictionaryTilesetResources.loadTilesetFromFilesystem(path)
@@ -61,7 +60,8 @@ object GameLogo {
                 .build()
         imageLayer.draw(tile, imageLayer.position)
         parent.addLayer(imageLayer)
-/*
+         */
+
         val logoCenterX = logoSize.width / 2
         val logoCenterY = logoSize.height / 2
 
@@ -87,7 +87,6 @@ object GameLogo {
                         .withText("c m d")
                         .build(),
                 Position.create(logoCenterX + 3, logoCenterY).withRelative(logoOffset))
- */
     }
 
     private fun Layer.drawMainLine(topLeftCorner: Position, lowerPoint: Position, upperPoint: Position, bottomRightCorner: Position) {

@@ -68,3 +68,4 @@ files:                                    # A list of the files in this tileset
       - name: Infantry friendly
       - name: Infantry hostile
       - name: Infantry unknown
+      - name: Infantry self
