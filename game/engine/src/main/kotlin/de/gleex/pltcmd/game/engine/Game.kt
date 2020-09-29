@@ -2,10 +2,7 @@ package de.gleex.pltcmd.game.engine
 
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.toEntity
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.ElementType
-import de.gleex.pltcmd.game.engine.entities.types.callsign
-import de.gleex.pltcmd.game.engine.entities.types.combatStats
+import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -22,6 +19,8 @@ import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random: Random) {
 
@@ -82,6 +81,15 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
         }
         log.debug("Adding ${element.description} with callsign ${element.callSign} to engine at position $positionInSector")
         return addEntity(elementEntity)
+    }
+
+    @ExperimentalTime
+    fun elementsAt(coordinate: Coordinate): Collection<ElementEntity> {
+        val (elements, duration) = measureTimedValue {
+            allElements.filter { it.currentPosition == coordinate }
+        }
+        log.trace("Finding ${elements.size} of ${allElements.size} elements at $coordinate took ${duration.inMilliseconds} ms")
+        return elements
     }
 
 }

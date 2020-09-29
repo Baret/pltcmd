@@ -16,10 +16,10 @@ import org.hexworks.zircon.api.Components
  * Simply shows what terrain is present at that tile.
  */
 class TerrainDetailsFragment(
-        width: Int,
+        override val width: Int,
         currentTile: ObservableValue<Coordinate>,
         private val world: WorldMap
-) : TileInformationFragment(width, currentTile) {
+) : TileInformationFragment(currentTile) {
 
     private val terrainProperty: Property<Terrain> = Terrain.of(TerrainType.GRASSLAND, TerrainHeight.MIN).toProperty()
 

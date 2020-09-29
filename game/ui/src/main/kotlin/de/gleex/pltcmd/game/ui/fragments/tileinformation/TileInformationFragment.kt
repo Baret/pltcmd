@@ -11,7 +11,6 @@ import org.hexworks.zircon.internal.behavior.Observable
  * when the observed tile changes.
  */
 abstract class TileInformationFragment(
-        override val width: Int,
         currentTile: ObservableValue<Coordinate>
 ) : BaseFragment {
 

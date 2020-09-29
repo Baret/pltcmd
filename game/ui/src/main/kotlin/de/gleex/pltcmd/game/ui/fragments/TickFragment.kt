@@ -9,7 +9,7 @@ import org.hexworks.zircon.api.Components
 class TickFragment(override val width: Int) : BaseFragment {
     override val root = Components.
                             vbox().
-                            withSize(width, 3).
+                            withSize(width, 2).
                             build().
                             apply {
                                 addComponent(Components.header().withText("Current Tick"))

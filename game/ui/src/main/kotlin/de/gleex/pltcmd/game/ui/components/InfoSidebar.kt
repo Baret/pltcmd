@@ -1,9 +1,11 @@
 package de.gleex.pltcmd.game.ui.components
 
+import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.game.ui.fragments.CoordinateAtMousePosition
 import de.gleex.pltcmd.game.ui.fragments.TickFragment
+import de.gleex.pltcmd.game.ui.fragments.tileinformation.CurrentCoordinateFragment
+import de.gleex.pltcmd.game.ui.fragments.tileinformation.ElementInfoFragment
 import de.gleex.pltcmd.game.ui.fragments.tileinformation.TerrainDetailsFragment
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
@@ -25,7 +27,7 @@ import org.hexworks.zircon.api.uievent.UIEventPhase
 /**
  * The info sidebar displays contextual information for the player like "what is on that tile?".
  */
-class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld) : Fragment {
+class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, game: Game) : Fragment {
 
     companion object {
         private val log = LoggerFactory.getLogger(InfoSidebar::class)
@@ -50,16 +52,17 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld) :
     init {
         val fragmentWidth = root.contentSize.width
 
-        val observedTile: Property<Coordinate> = gameWorld.visibleTopLeftCoordinate().toProperty()
+        val observedTile: Property<Coordinate> = gameWorld.visibleTopLeftCoordinate()
+                .toProperty()
         val terrainDetails = TerrainDetailsFragment(fragmentWidth, observedTile, gameWorld.worldMap)
-        val coordinateFragment = CoordinateAtMousePosition(fragmentWidth, observedTile)
+        val coordinateFragment = CurrentCoordinateFragment(fragmentWidth, observedTile)
 
         val lockedState: Property<Boolean> = false.toProperty()
         lockedState.onChange { valueChanged: ObservableValueChanged<Boolean> ->
             log.debug("Toggling lock on information sidebar")
             terrainDetails.toggleLock()
             coordinateFragment.toggleLock()
-            if(valueChanged.newValue) {
+            if (valueChanged.newValue) {
                 root.themeProperty.updateValue(themeLocked)
             } else {
                 root.themeProperty.updateValue(themeUnlocked)
@@ -72,6 +75,7 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld) :
         root.addFragment(TickFragment(fragmentWidth))
         root.addFragment(coordinateFragment)
         root.addFragment(terrainDetails)
+        root.addFragment(ElementInfoFragment(fragmentWidth, observedTile, game))
     }
 
     /**
@@ -79,7 +83,7 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld) :
      */
     private fun GameComponent<*, *>.updateObservedTile(observedTile: Property<Coordinate>, gameWorld: GameWorld) {
         handleMouseEvents(MouseEventType.MOUSE_MOVED) { event, phase ->
-            if(phase == UIEventPhase.TARGET) {
+            if (phase == UIEventPhase.TARGET) {
                 observedTile.updateValue(gameWorld.coordinateAtVisiblePosition(event.position - absolutePosition))
             }
             Processed
@@ -90,8 +94,8 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld) :
      * Adds a mouse listener to this [GameComponent] that toggles [lockedState] on right click.
      */
     private fun GameComponent<*, *>.toggleLockedState(lockedState: Property<Boolean>) {
-        handleMouseEvents(MouseEventType.MOUSE_CLICKED) {event, phase ->
-            if(phase == UIEventPhase.TARGET && event.button == 3) {
+        handleMouseEvents(MouseEventType.MOUSE_CLICKED) { event, phase ->
+            if (phase == UIEventPhase.TARGET && event.button == 3) {
                 lockedState.updateValue(!lockedState.value)
                 Processed
             } else {

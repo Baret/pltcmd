@@ -79,7 +79,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
 
         mainPart.addComponent(map)
 
-        val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT, map, gameWorld)
+        val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT, map, gameWorld, game)
         // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
         map.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
         screen.addComponents(
