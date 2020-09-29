@@ -8,7 +8,7 @@ class PrecisionTest : StringSpec({
 
     var underTest = Precision(10)
     beforeTest {
-        underTest = Precision(10)
+        underTest = Precision(10) // 1 mrad
     }
 
     "offsetAt" {
