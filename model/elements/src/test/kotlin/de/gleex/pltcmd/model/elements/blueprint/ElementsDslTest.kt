@@ -11,9 +11,9 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.inspectors.forAll
-import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.beInstanceOf
 
 class ElementsDslTest : StringSpec({
     "Building an element with the DSL should result in the correct element blueprint" {

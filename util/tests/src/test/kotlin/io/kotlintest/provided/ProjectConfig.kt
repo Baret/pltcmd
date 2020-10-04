@@ -15,7 +15,7 @@ class ProjectConfig: AbstractProjectConfig() {
     val executionTimes = mutableListOf<Long>()
     val heapSizes = mutableListOf<Long>()
 
-    override fun parallelism() = 1
+    override val parallelism: Int? = 1
 
     override fun beforeAll() {
         log.info("Starting tests, measuring time")
@@ -28,7 +28,7 @@ class ProjectConfig: AbstractProjectConfig() {
         log.info("Tests complete! Execution took $executionTime ms")
         log.info("Average test execution time: ${executionTimes.average()} ms")
         logMemoryUsage()
-        log.info("Maximum memory usage was ${heapSizes.max()} MB")
+        log.info("Maximum memory usage was ${heapSizes.maxOrNull()} MB")
     }
 
     override fun listeners(): List<TestListener> =
@@ -50,7 +50,7 @@ class ProjectConfig: AbstractProjectConfig() {
 
             override suspend fun afterTest(testCase: TestCase, result: TestResult) {
                 if (testCase.type == TestType.Container) {
-                    return;
+                    return
                 }
                 val executionTime = System.currentTimeMillis() - testStartedAt
                 log.info("Execution of '${testCase.description.names().drop(1).joinToString(" ")}' took $executionTime ms")

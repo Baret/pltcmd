@@ -16,18 +16,18 @@ class ElementTest : WordSpec({
     val simpleElement = Element(Corps.Reconnaissance, ElementKind.MotorizedInfantry, Rung.Fireteam, setOf(officer, rifleman))
     "A simple element $simpleElement" should {
         "contain 2 units" {
-            simpleElement.units shouldContainExactlyInAnyOrder setOf(officer, rifleman)
+            simpleElement.allUnits shouldContainExactlyInAnyOrder setOf(officer, rifleman)
         }
         val newUnit = Units.RadioJeep.new()
         "have 3 units when adding a $newUnit" {
             simpleElement.addUnit(newUnit)
-            simpleElement.units shouldHaveSize 3
-            simpleElement.units shouldContain newUnit
+            simpleElement.allUnits shouldHaveSize 3
+            simpleElement.allUnits shouldContain newUnit
         }
         "have 2 units again when removing the $newUnit" {
             simpleElement.removeUnit(newUnit)
-            simpleElement.units shouldHaveSize 2
-            simpleElement.units shouldNotContain newUnit
+            simpleElement.allUnits shouldHaveSize 2
+            simpleElement.allUnits shouldNotContain newUnit
         }
     }
 

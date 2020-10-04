@@ -99,11 +99,7 @@ class ReasonableDefaultElementsTest : WordSpec() {
             "Unit count: The default ${Elements.nameOf(elementBlueprint)}" should {
                 "have between $min and $max units" {
                     val newElement = elementBlueprint.new()
-                    val unitCount = if (newElement is CommandingElement) {
-                        newElement.totalUnits
-                    } else {
-                        newElement.units.size
-                    }
+                    val unitCount = newElement.allUnits.size
                     unitCount.shouldBeBetween(min, max)
                 }
             }
