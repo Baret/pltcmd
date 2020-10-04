@@ -63,12 +63,6 @@ class ShootersAttributeTest : StringSpec({
 
         underTest.isAbleToFight shouldBe false
         isDefeated shouldBe true
-
-        // do not trigger again when already dead
-        isDefeated = false
-        underTest.wound(1)
-        underTest.isAbleToFight shouldBe false
-        isDefeated shouldBe false
     }
 
     "onDefeat should not trigger again when already defeated" {
