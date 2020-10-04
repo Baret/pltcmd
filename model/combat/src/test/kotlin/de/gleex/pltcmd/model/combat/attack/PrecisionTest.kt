@@ -28,12 +28,12 @@ class PrecisionTest : StringSpec({
     }
 
     "chanceToHitAreaAt" {
-        underTest.chanceToHitAreaAt(0.1,100.0) shouldBe 1.0
-        underTest.chanceToHitAreaAt(0.1,500.0) shouldBe 0.5092958178940651
-        underTest.chanceToHitAreaAt(0.1,900.0) shouldBe 0.15719006725125464
-        underTest.chanceToHitAreaAt(0.01,100.0) shouldBe 1.0
-        underTest.chanceToHitAreaAt(0.01,500.0) shouldBe 0.050929581789406514
-        underTest.chanceToHitAreaAt(0.005,100.0) shouldBe 0.6366197723675813
-        underTest.chanceToHitAreaAt(0.0001,100.0) shouldBe 0.012732395447351627
+        underTest.chanceToHitAreaAt(0.1, 100.0) shouldBe 1.0
+        underTest.chanceToHitAreaAt(0.1, 500.0) shouldBe 0.5092958178940651
+        underTest.chanceToHitAreaAt(0.1, 900.0) shouldBe 0.15719006725125464
+        underTest.chanceToHitAreaAt(0.01, 100.0) shouldBe 1.0
+        underTest.chanceToHitAreaAt(0.01, 500.0) shouldBe 0.050929581789406514
+        underTest.chanceToHitAreaAt(0.005, 100.0) shouldBe 0.6366197723675813
+        underTest.chanceToHitAreaAt(0.0001, 100.0) shouldBe 0.012732395447351627
     }
 })
