@@ -39,8 +39,14 @@ fun main() {
     Main().run()
 }
 
+/**
+ * Setups, starts and runs the game.
+ */
 open class Main {
 
+    /**
+     * Creates a window and a map and runs the game.
+     */
     open fun run() {
         val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
 
@@ -54,7 +60,11 @@ open class Main {
         }
     }
 
-    protected fun runGame(generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
+    /**
+     * Creates a [Game] with the given map. Initializes that game and creates a [GameView] on the given [Screen].
+     * Then the [Ticker] runs the game.
+     */
+    protected open fun runGame(generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
         // ui
         val gameWorld = GameWorld(generatedMap)
         // model
@@ -69,7 +79,14 @@ open class Main {
         screen.onShutdown { Ticker.stop() }
     }
 
-    open protected fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, ElementEntity> {
+    /**
+     * The plain world can be extended or some game state can be set prior to running the [Game].
+     * This implementation adds some elements in the visible [Sector] including a headquarter. Hostiles will be placed
+     * all over the map.
+     *
+     * @return the elements to command in the UI and the HQ entity for sending commands from the UI.
+     */
+    protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, ElementEntity> {
         val visibleSector = game.world.sectors.first {
             it.origin == gameWorld.visibleTopLeftCoordinate()
                     .toSectorOrigin()
@@ -80,7 +97,10 @@ open class Main {
         return Pair(elementsToCommand, hq)
     }
 
-    open protected fun createElementsToCommand(visibleSector: Sector, game: Game, gameWorld: GameWorld): List<ElementEntity> {
+    /**
+     * @return the elements that should be controllable by the UI
+     */
+    protected open fun createElementsToCommand(visibleSector: Sector, game: Game, gameWorld: GameWorld): List<ElementEntity> {
         val elementsToCommand = mutableListOf<ElementEntity>()
         elementsToCommand.run {
 
@@ -100,7 +120,11 @@ open class Main {
         return elementsToCommand
     }
 
-    open protected fun createHq(visibleSector: Sector, game: Game, gameWorld: GameWorld): ElementEntity {
+    /**
+     * @return the element that sends out the commands to the controlled elements.
+     * @see createElementsToCommand
+     */
+    protected open fun createHq(visibleSector: Sector, game: Game, gameWorld: GameWorld): ElementEntity {
         val hq = visibleSector.createFriendly(
                 Elements.riflePlatoon.new()
                         .apply { callSign = CallSign("HQ") },
@@ -115,7 +139,10 @@ open class Main {
         return hq
     }
 
-    open protected fun addHostiles(game: Game, gameWorld: GameWorld) {
+    /**
+     * Add elements to the game that are not controlled by the player. This implementation adds 2 rifle squads per [Sector].
+     */
+    protected open fun addHostiles(game: Game, gameWorld: GameWorld) {
         // Adding some elements to every sector
         val elementsPerSector = 2
         game.world.sectors.forEach { sector ->
@@ -126,19 +153,32 @@ open class Main {
         }
     }
 
+    /**
+     * Creates and adds an entity for the given element to the [Game]. It will be displayed on the [GameWorld].
+     * The position is random by default and the [Affiliation] is friendly. For other affiliations a wandering entity
+     * will be added.
+     */
     protected fun Sector.createFriendly(element: CommandingElement, game: Game, gameWorld: GameWorld, position: Coordinate = this.randomCoordinate(random), affiliation: Affiliation = Affiliation.Friendly): ElementEntity {
         return game.addElementInSector(this, element, position, affiliation)
                 .also(gameWorld::trackUnit)
     }
 
-    open protected fun showTitle(screen: Screen, tileGrid: TileGrid) {
+    /**
+     * Displays the title screen for a short period of time if not skipped in the [UiOptions].
+     * @see UiOptions.SKIP_INTRO
+     */
+    protected open fun showTitle(screen: Screen, tileGrid: TileGrid) {
         if (UiOptions.SKIP_INTRO.not()) {
             screen.dock(TitleView(tileGrid))
             TimeUnit.MILLISECONDS.sleep(4000)
         }
     }
 
-    open protected fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {
+    /**
+     * Create the [WorldMap] for the game. This implementation uses a [WorldMapGenerator] and shows the progress on screen.
+     * The created map must be provided to the given [doneCallback].
+     */
+    protected open fun generateMap(screen: Screen, tileGrid: TileGrid, doneCallback: (WorldMap) -> Unit) {
         val worldWidthInTiles = GameOptions.SECTORS_COUNT_H * Sector.TILE_COUNT
         val worldHeightInTiles = GameOptions.SECTORS_COUNT_V * Sector.TILE_COUNT
 
