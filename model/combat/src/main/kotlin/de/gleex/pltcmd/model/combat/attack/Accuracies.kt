@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.combat
+package de.gleex.pltcmd.model.combat.attack
 
 /**
  * Holding [Precision] values for common use cases. The values are not only that of the weapon and ammunition alone but

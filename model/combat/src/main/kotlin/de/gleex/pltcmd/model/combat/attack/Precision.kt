@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.combat
+package de.gleex.pltcmd.model.combat.attack
 
 import kotlin.math.PI
 import kotlin.math.atan

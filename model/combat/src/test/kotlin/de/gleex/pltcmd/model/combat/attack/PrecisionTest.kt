@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.elements.combat
+package de.gleex.pltcmd.model.combat.attack
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.doubles.plusOrMinus
