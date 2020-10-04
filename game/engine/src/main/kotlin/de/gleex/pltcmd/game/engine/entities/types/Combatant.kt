@@ -67,7 +67,8 @@ internal fun Shooter.fireShots(attackDuration: Duration, random: Random): Int {
 
     var hits = 0
     repeat(fullShots) {
-        if (random.nextDouble() <= weapon.shotAccuracy) {
+        val chanceToHitMan = weapon.shotAccuracy.chanceToHitAreaAt(1.0, 270.0) // m
+        if (random.nextDouble() <= chanceToHitMan) {
             hits++
         }
     }

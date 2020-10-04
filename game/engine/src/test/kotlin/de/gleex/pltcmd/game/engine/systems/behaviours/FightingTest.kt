@@ -75,10 +75,13 @@ class FightingTest : StringSpec({
         val context = createContext()
         val target = createTarget(attackerPosition, context, createInfantryElement((Units.Rifleman * 100).new()))
 
-        Fighting.attackNearbyEnemies(attacker, context) // 49 dmg
-        assertCombatResult(attacker, target, 51, true)
+        Fighting.attackNearbyEnemies(attacker, context) // 47 dmg
+        assertCombatResult(attacker, target, 53, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 53 dmg
+        Fighting.attackNearbyEnemies(attacker, context) // 51 dmg
+        assertCombatResult(attacker, target, 2, true)
+
+        Fighting.attackNearbyEnemies(attacker, context) // 51 dmg
         assertCombatResult(attacker, target, 0, false)
     }
 
@@ -95,7 +98,7 @@ class FightingTest : StringSpec({
 
         var expectedTargetCombatReady = target.combatReadyCount
         forAll( // shots random hits
-                row(18),
+                row(17),
                 row(15),
                 row(20),
                 row(20),
@@ -105,7 +108,7 @@ class FightingTest : StringSpec({
             expectedTargetCombatReady -= expectedDamage
             assertCombatResult(attacker, target, expectedTargetCombatReady, true, attacksAbleToFight)
         }
-        expectedTargetCombatReady shouldBe 8
+        expectedTargetCombatReady shouldBe 9
 
         Fighting.attackNearbyEnemies(attacker, context) // 20 dmg
         assertCombatResult(attacker, target, 0, false, attacksAbleToFight)

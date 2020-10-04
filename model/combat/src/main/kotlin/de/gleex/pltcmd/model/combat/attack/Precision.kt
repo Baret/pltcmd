@@ -10,16 +10,28 @@ import kotlin.math.tan
  * (http://ballistipedia.com/index.php?title=Describing_Precision @2020-09-29)
  * This is an angle for such a cone. It is measured in [milliradian](https://en.wikipedia.org/wiki/Milliradian)
  * (mrad, a thousandth of a radian). A mrad is ≈ 0.057296 degrees.
- *
- * @param cmOffAt100m the diameter of the cone at 100 meter distance.
  */
-class Precision(cmOffAt100m: Int) {
+class Precision(private val mrad: Double) {
 
     companion object {
         const val mradsPerCircle = 2000.0
-    }
 
-    private val mrad = mradsPerCircle * atan(cmOffAt100m / (2.0 * 10000.0)) /// 10000 cm = 100 m range
+        /** @param cmOffAt100m the diameter of the cone at 100 meter distance. */
+        fun at100m(cmOffAt100m: Int): Precision {
+            return offAt(cmOffAt100m, 100)
+        }
+
+        /** @param cmOffAt500m the diameter of the cone at 500 meter distance. */
+        fun at500m(cmOffAt500m: Int): Precision {
+            return offAt(cmOffAt500m, 500)
+        }
+
+        /** @param cmOff the diameter of the cone at [rangeInM] distance. */
+        fun offAt(cmOff: Int, rangeInM: Int): Precision {
+            val mrad = mradsPerCircle * atan(cmOff / (2.0 * rangeInM * 100.0)) /// 1 m = 100 cm range
+            return Precision(mrad)
+        }
+    }
 
     /**
      * @return the absolute size in same unit as range
