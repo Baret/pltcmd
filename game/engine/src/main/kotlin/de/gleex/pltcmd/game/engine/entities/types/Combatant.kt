@@ -4,8 +4,8 @@ import de.gleex.pltcmd.game.engine.attributes.combat.Shooter
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
+import de.gleex.pltcmd.game.options.GameConstants
 import de.gleex.pltcmd.game.options.GameConstants.Time.secondsSimulatedPerTick
-import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 import kotlin.time.Duration
@@ -18,7 +18,7 @@ import kotlin.time.toDuration
  */
 private val log = LoggerFactory.getLogger("de.gleex.pltcmd.game.engine.entities.types.Combatant")
 
-interface Combatant : EntityType
+interface Combatant : Positionable
 typealias CombatantEntity = GameEntity<Combatant>
 
 /** Access to [ShootersAttribute] */
@@ -45,8 +45,9 @@ infix fun CombatantEntity.onDefeat(callback: () -> Unit) {
 internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
     val attackDurationPerTick = secondsSimulatedPerTick.toDuration(DurationUnit.SECONDS)
     if (target.isAbleToFight) {
+        val range = (currentPosition distanceTo target.currentPosition) * GameConstants.World.tileSizeInMeters
         val hitsPerTick = shooters.combatReady
-                .map { it.fireShots(attackDurationPerTick, random) }
+                .map { it.fireShots(range, attackDurationPerTick, random) }
                 .sum()
         val wounded = hitsPerTick * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
         target.shooters.wound(wounded)
@@ -56,10 +57,11 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
 
 /**
  * side effect: Updates the partial shot that is already done after firing.
+ * @param range in meters
  * @return number of all hits in the given time.
  **/
 @ExperimentalTime
-internal fun Shooter.fireShots(attackDuration: Duration, random: Random): Int {
+internal fun Shooter.fireShots(range: Double, attackDuration: Duration, random: Random): Int {
     val shotsPerDuration = weapon.roundsPerMinute * attackDuration.inMinutes + partialShot
     // rounding down loses a partial shot that is remember for the next call.
     val fullShots: Int = shotsPerDuration.toInt()
@@ -67,7 +69,7 @@ internal fun Shooter.fireShots(attackDuration: Duration, random: Random): Int {
 
     var hits = 0
     repeat(fullShots) {
-        val chanceToHitMan = weapon.shotAccuracy.chanceToHitAreaAt(1.0, 270.0) // m
+        val chanceToHitMan = weapon.shotAccuracy.chanceToHitAreaAt(1.0, range) // 1.0 = 2 m tall * 0.5 m wide
         if (random.nextDouble() <= chanceToHitMan) {
             hits++
         }

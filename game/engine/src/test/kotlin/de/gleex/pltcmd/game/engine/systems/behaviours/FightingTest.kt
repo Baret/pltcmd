@@ -75,13 +75,13 @@ class FightingTest : StringSpec({
         val context = createContext()
         val target = createTarget(attackerPosition, context, createInfantryElement((Units.Rifleman * 100).new()))
 
-        Fighting.attackNearbyEnemies(attacker, context) // 47 dmg
-        assertCombatResult(attacker, target, 53, true)
+        Fighting.attackNearbyEnemies(attacker, context) // 38 dmg
+        assertCombatResult(attacker, target, 62, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 51 dmg
-        assertCombatResult(attacker, target, 2, true)
+        Fighting.attackNearbyEnemies(attacker, context) // 40 dmg
+        assertCombatResult(attacker, target, 22, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 51 dmg
+        Fighting.attackNearbyEnemies(attacker, context) // 45 dmg
         assertCombatResult(attacker, target, 0, false)
     }
 
@@ -90,27 +90,27 @@ class FightingTest : StringSpec({
         val attacker = createCombatant(attackerPosition, Affiliation.Friendly, Elements.rifleSquad.new())
         val context = createContext()
         val target = createTarget(attackerPosition, context, createInfantryElement((Units.Rifleman * 100).new()))
-        val singleRifleman = createCombatant(attackerPosition, Affiliation.Hostile)
+        val singleRifleman = createCombatant(attackerPosition.movedBy(2,2), Affiliation.Hostile)
         singleRifleman.attack(attacker, context.random)
-        val attacksAbleToFight = 3
+        val attacksAbleToFight = 4
         attacker.combatReadyCount shouldBe attacksAbleToFight
-        attacker.woundedCount shouldBe 7
+        attacker.woundedCount shouldBe 6
 
         var expectedTargetCombatReady = target.combatReadyCount
         forAll( // shots random hits
-                row(17),
-                row(15),
-                row(20),
-                row(20),
+                row(21),
+                row(18),
+                row(16),
+                row(24),
                 row(19)
         ) { expectedDamage ->
             Fighting.attackNearbyEnemies(attacker, context)
             expectedTargetCombatReady -= expectedDamage
             assertCombatResult(attacker, target, expectedTargetCombatReady, true, attacksAbleToFight)
         }
-        expectedTargetCombatReady shouldBe 9
+        expectedTargetCombatReady shouldBe 2
 
-        Fighting.attackNearbyEnemies(attacker, context) // 20 dmg
+        Fighting.attackNearbyEnemies(attacker, context) // 24 dmg
         assertCombatResult(attacker, target, 0, false, attacksAbleToFight)
     }
 })
@@ -130,13 +130,15 @@ fun createTarget(attackerPosition: Coordinate, context: GameContext, element: Co
 fun createTargets(attackerPosition: Coordinate, context: GameContext, vararg elements: CommandingElement): List<ElementEntity> {
     val neighbors = attackerPosition.neighbors()
     return elements.mapIndexed { index, element ->
-        val targetPosition = neighbors[index]
+        val neighborPosition = neighbors[index]
+        // position further away for ranged combat at 300 m
+        val offsetFromAttacker = (neighborPosition - attackerPosition)
+        val targetPosition = neighborPosition.movedBy(offsetFromAttacker.eastingFromLeft * 2, offsetFromAttacker.northingFromBottom * 2)
         val target = createCombatant(targetPosition, Affiliation.Hostile, element)
-        every { context.findElementAt(targetPosition) } returns Maybe.of(target)
+        every { context.findElementAt(neighborPosition) } returns Maybe.of(target)
         return@mapIndexed target
     }
 }
-
 
 fun createCombatant(position: Coordinate, affiliation: Affiliation, element: CommandingElement = createInfantryElement()): ElementEntity {
     return newEntityOfType(ElementType) {
