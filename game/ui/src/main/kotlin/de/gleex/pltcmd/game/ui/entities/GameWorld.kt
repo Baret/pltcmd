@@ -70,8 +70,7 @@ class GameWorld(private val worldMap: WorldMap) :
 
     private fun ElementEntity.showOnMap() {
         val affiliation = affiliation
-        // TODO: Create markers for every element(kind)
-        val elementTile = TileRepository.Elements.platoon(affiliation)
+        val elementTile = TileRepository.Elements.marker(element, affiliation)
         currentPosition.setUnit(elementTile)
     }
 
