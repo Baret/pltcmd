@@ -1,6 +1,9 @@
 package de.gleex.pltcmd.game.ui.entities
 
+import de.gleex.pltcmd.game.ui.strings.Format
+import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
@@ -21,18 +24,28 @@ object TileRepository {
      * All tiles used to display elements (aka units) on the map.
      */
     object Elements {
-        private fun platoonTile(colorForeground: TileColor, colorBackground: TileColor) =
+        private val CommandingElement.character: Char
+            get() {
+                val mostUnits = allUnits
+                        .groupBy { it.blueprint }
+                        .maxByOrNull { it.value.size }!!
+                        .key
+                return mostUnits.toFrontendString(Format.ICON).value[0]
+            }
+
+        private fun platoonTile(representation: Char, colorForeground: TileColor, colorBackground: TileColor) =
                 Tile.newBuilder().
                 withForegroundColor(colorForeground).
                 withBackgroundColor(colorBackground).
-                withCharacter('X').
+                withCharacter(representation).
                 withModifiers(BorderBuilder.newBuilder().withBorderColor(colorBackground).build()).
                 buildCharacterTile()
 
-        fun platoon(affiliation: Affiliation): Tile {
+        fun marker(element: CommandingElement, affiliation: Affiliation): Tile {
             // TODO: cache the tiles, because they are immutable (#101)
             val (foreground, background) = ColorRepository.forAffiliation(affiliation)
-            return platoonTile(foreground, background)
+            // TODO: use element.rung instead of fixed platoon
+            return platoonTile(element.character, foreground, background)
         }
     }
 
