@@ -84,6 +84,11 @@
             </dependency>
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>combat</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
                 <artifactId>radio</artifactId>
                 <version>${project.version}</version>
             </dependency>

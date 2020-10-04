@@ -29,6 +29,7 @@ internal object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, M
         if (entity.type !is Movable) {
             return false
         }
+        @Suppress("UNCHECKED_CAST")
         return moveToRandomDestination(entity as MovableEntity, context)
     }
 

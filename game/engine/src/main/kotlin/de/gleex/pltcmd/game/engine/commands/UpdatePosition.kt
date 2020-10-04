@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.game.engine.commands
 
 import de.gleex.pltcmd.game.engine.GameContext
+import de.gleex.pltcmd.game.engine.entities.types.MovableEntity
 import de.gleex.pltcmd.game.engine.entities.types.Positionable
-import de.gleex.pltcmd.game.engine.entities.types.PositionableEntity
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Command
 
@@ -11,5 +11,5 @@ data class UpdatePosition(
         val oldPosition: Coordinate,
         val newPosition: Coordinate,
         override val context: GameContext,
-        override val source: PositionableEntity
+        override val source: MovableEntity
 ) : Command<Positionable, GameContext>

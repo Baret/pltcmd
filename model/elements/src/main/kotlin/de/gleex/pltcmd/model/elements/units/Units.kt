@@ -31,11 +31,11 @@ enum class Units(
      * Grenadiers give elements a little more punch against infantry and unarmored
      * targets.
      */
-    Grenadier,
+    Grenadier(),
     /**
      * Officers are key units as they command elements.
      */
-    Officer,
+    Officer(),
     /**
      * Radiomen or "radiotelephone operators" (RTO) support [Officer]s by extending their radio range.
      * They carry a manpack radio with more power than the standard radio issued to officers.
@@ -74,7 +74,7 @@ enum class Units(
      * Scouts are specialized in moving through unknown terrain to explore it. They are slower than
      * aerial reconnaissance ([ScoutPlane] for example), but they are much more sneaky.
      */
-    Scout,
+    Scout(),
     /**
      * A sniper and his spotter primarily provide over watch and may also take out infantry targets
      * to suppress complete elements.

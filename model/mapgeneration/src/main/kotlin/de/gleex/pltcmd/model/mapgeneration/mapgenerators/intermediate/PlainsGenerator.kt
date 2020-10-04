@@ -56,7 +56,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
                 .shuffled(rand)
                 .takeWhile { sum += it.size; sum < totalPlainsTiles }
                 .toSet()
-        log.warn("found a total of $sum tiles: $result")
+        log.debug("found a total of $sum tiles: $result")
         return result
     }
 

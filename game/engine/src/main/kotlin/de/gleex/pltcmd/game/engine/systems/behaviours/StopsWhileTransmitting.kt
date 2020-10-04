@@ -21,6 +21,7 @@ object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class)
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         var updated = false
         if (entity.type is Communicating) {
+            @Suppress("UNCHECKED_CAST")
             entity as CommunicatingEntity
             entity.findAttribute(Transmitting::class)
                     .fold(whenEmpty = {

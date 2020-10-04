@@ -10,7 +10,7 @@
     <logger name="org.hexworks.cobalt" level="WARN"/>
 <!--    <logger name="org.hexworks.amethyst.api.entity.Entity" level="DEBUG"/>-->
 
-    <logger name="de.gleex.pltcmd" level="DEBUG"/>
+    <logger name="de.gleex.pltcmd.game.application" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

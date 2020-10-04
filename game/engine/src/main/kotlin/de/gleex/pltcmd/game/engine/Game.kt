@@ -5,7 +5,7 @@ import de.gleex.pltcmd.game.engine.entities.toEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.callsign
-import de.gleex.pltcmd.game.engine.entities.types.combatStats
+import de.gleex.pltcmd.game.engine.entities.types.onDefeat
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -48,14 +48,15 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     fun <T : EntityType> addEntity(entity: GameEntity<T>) = entity.also {
         engine.addEntity(it)
         if (it.type is ElementType) {
+            @Suppress("UNCHECKED_CAST")
             val element = it as ElementEntity
             allElements.add(element)
-            removeOnDeath(element)
+            removeOnDefeat(element)
         }
     }
 
-    private fun removeOnDeath(element: ElementEntity) {
-        element.combatStats onDeath { removeElement(element) }
+    private fun removeOnDefeat(element: ElementEntity) {
+        element onDefeat { removeElement(element) }
     }
 
     private fun removeElement(element: ElementEntity) {

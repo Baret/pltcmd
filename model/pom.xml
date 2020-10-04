@@ -19,11 +19,17 @@
         <module>mapgeneration</module>
         <module>radio</module>
         <module>world</module>
+        <module>combat</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <!-- modules -->
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>combat</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
                 <artifactId>elements</artifactId>

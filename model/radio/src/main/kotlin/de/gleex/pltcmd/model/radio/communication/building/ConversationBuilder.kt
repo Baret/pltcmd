@@ -67,7 +67,7 @@ class ConversationBuilder(private val sender: CallSign, private val receiver: Ca
                 message = message,
                 responseSupplier = responseSupplier,
                 toReceiver = true,
-                placeholderValueProviders = *placeholderValueProviders
+                placeholderValueProviders = placeholderValueProviders
         )
     }
 
