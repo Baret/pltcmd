@@ -28,6 +28,7 @@ class Precision(private val mrad: Double) {
 
         /** @param cmOff the diameter of the cone at [rangeInM] distance. */
         fun offAt(cmOff: Int, rangeInM: Int): Precision {
+            // formula from http://shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/#tab-4574-2 / http://ballistipedia.com/index.php?title=Angular_Size
             val mrad = mradsPerCircle * atan(cmOff / (2.0 * rangeInM * 100.0)) /// 1 m = 100 cm range
             return Precision(mrad)
         }
