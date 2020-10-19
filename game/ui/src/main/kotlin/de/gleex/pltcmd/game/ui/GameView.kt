@@ -11,11 +11,15 @@ import de.gleex.pltcmd.game.ui.fragments.*
 import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
+import de.gleex.pltcmd.game.ui.sound.Speaker
 import de.gleex.pltcmd.model.radio.BroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.util.events.globalEventBus
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import marytts.server.Mary
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -39,6 +43,13 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
     }
 
     override fun onDock() {
+
+        if(Mary.currentState() != Mary.STATE_RUNNING) {
+            log.debug("Starting Mary...")
+            Mary.startup()
+            log.debug("Startup finished.")
+        }
+
         val sidebar = Components.vbox().
                 withSpacing(2).
                 withSize(UiOptions.INTERFACE_PANEL_WIDTH, UiOptions.INTERFACE_PANEL_HEIGHT).
@@ -133,12 +144,17 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
 
     private fun LogArea.logRadioCalls() {
         globalEventBus.subscribeToBroadcasts { event: BroadcastEvent ->
-            val transmission = event.transmission
-            val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
-            if (transmission.isOpening) {
-                addHeader(message, false)
-            } else {
-                addParagraph(message, false, 5)
+            runBlocking {
+                val transmission = event.transmission
+                val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
+                launch {
+                    Speaker.say(transmission.message)
+                }
+                if (transmission.isOpening) {
+                    addHeader(message, false)
+                } else {
+                    addParagraph(message, false, 5)
+                }
             }
         }
     }

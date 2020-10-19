@@ -35,6 +35,12 @@
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>world</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>de.dfki.mary</groupId>
+            <artifactId>voice-cmu-slt-hsmm</artifactId>
+            <version>5.2</version>
+        </dependency>
     </dependencies>
 
 </project>
