@@ -14,6 +14,10 @@
     <name>UI</name>
     <description>All the graphical stuff and user interaction.</description>
 
+    <properties>
+            <marytts.version>5.2</marytts.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
@@ -38,8 +42,13 @@
 
         <dependency>
             <groupId>de.dfki.mary</groupId>
-            <artifactId>voice-cmu-slt-hsmm</artifactId>
-            <version>5.2</version>
+            <artifactId>voice-cmu-rms-hsmm</artifactId>
+            <version>${marytts.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.dfki.mary</groupId>
+            <artifactId>marytts-runtime</artifactId>
+            <version>${marytts.version}</version>
         </dependency>
     </dependencies>
 

@@ -4,9 +4,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import marytts.LocalMaryInterface
+import marytts.modules.synthesis.Voice
 import marytts.util.data.audio.MaryAudioUtils
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.io.File
+import java.util.*
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.DataLine
 import javax.sound.sampled.SourceDataLine
@@ -20,6 +22,10 @@ object Speaker {
 
     init {
         log.info("Available voices: ${mary.availableVoices}")
+        val defaultVoice = Voice.getDefaultVoice(Locale.US)
+        log.info("Default US voice: ${defaultVoice.name}")
+
+
         GlobalScope.launch {
             log.debug("Launching play loop")
             for (fileToPlay in filenames) {
