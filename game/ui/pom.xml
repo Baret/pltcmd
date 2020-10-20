@@ -15,7 +15,7 @@
     <description>All the graphical stuff and user interaction.</description>
 
     <properties>
-            <marytts.version>5.2</marytts.version>
+            <marytts.version>5.2-beta3</marytts.version>
     </properties>
 
     <dependencies>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>de.dfki.mary</groupId>
             <artifactId>voice-cmu-rms-hsmm</artifactId>
-            <version>${marytts.version}</version>
+            <version>5.2</version>
         </dependency>
         <dependency>
             <groupId>de.dfki.mary</groupId>
