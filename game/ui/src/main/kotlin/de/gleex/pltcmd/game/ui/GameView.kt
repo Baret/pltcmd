@@ -44,7 +44,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
 
     override fun onDock() {
 
-        if(Mary.currentState() != Mary.STATE_RUNNING) {
+        if(Mary.currentState() != Mary.STATE_RUNNING && GameOptions.enableSound) {
             log.debug("Starting Mary...")
             Mary.startup()
             log.debug("Startup finished.")

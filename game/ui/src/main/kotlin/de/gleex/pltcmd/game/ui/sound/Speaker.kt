@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.ui.sound
 
+import de.gleex.pltcmd.game.options.GameOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -57,23 +58,30 @@ object Speaker {
         }
 
     init {
-        effects = "JetPilot+Rate(durScale:0.65)"
-        log.info("Available voices: ${mary.availableVoices}")
-        val defaultVoice = Voice.getDefaultVoice(Locale.US)
-        log.info("Default US voice: ${defaultVoice.name}")
+        if (GameOptions.enableSound) {
+            effects = "JetPilot+Rate(durScale:0.65)"
+            log.info("Available voices: ${mary.availableVoices}")
+            val defaultVoice = Voice.getDefaultVoice(Locale.US)
+            log.info("Default US voice: ${defaultVoice.name}")
 
 
-        GlobalScope.launch {
-            log.debug("Launching play loop")
-            for (fileToPlay in filenames) {
-                log.debug("Received file to play: $fileToPlay")
-                play(fileToPlay)
+            GlobalScope.launch {
+                log.debug("Launching play loop")
+                for (fileToPlay in filenames) {
+                    log.debug("Received file to play: $fileToPlay")
+                    play(fileToPlay)
+                }
+                log.debug("Stopped play loop")
             }
-            log.debug("Stopped play loop")
+        } else {
+            log.info("Sound disabled, Speaker will do nothing.")
         }
     }
 
     suspend fun say(text: String) {
+        if(GameOptions.enableSound.not()) {
+            return
+        }
         if (IGNORED_PHRASES.any {
                     text.contains(it, true)
                 }) {
@@ -102,32 +110,39 @@ object Speaker {
 
     private fun play(filename: String) {
         val soundFile = File(filename)
-        val audioStream = AudioSystem.getAudioInputStream(soundFile)
-        val audioFormat = audioStream!!.format
-        val info = DataLine.Info(SourceDataLine::class.java, audioFormat)
-        val sourceDataLine = AudioSystem.getLine(info) as SourceDataLine
-        try {
-            playingSound.set(true)
-            sourceDataLine.use {
-                it.open(audioFormat)
-                it.start()
+        if(soundFile.exists()) {
+            val audioStream = AudioSystem.getAudioInputStream(soundFile)
+            val audioFormat = audioStream!!.format
+            val info = DataLine.Info(SourceDataLine::class.java, audioFormat)
+            val sourceDataLine = AudioSystem.getLine(info) as SourceDataLine
+            try {
+                playingSound.set(true)
+                sourceDataLine.use {
+                    it.open(audioFormat)
+                    it.start()
 
-                var count = 0
-                val buffer = ByteArray(4096)
-                while (count != -1) {
-                    count = audioStream.read(buffer, 0, buffer.size)
-                    if (count >= 0) {
-                        it.write(buffer, 0, count)
+                    var count = 0
+                    val buffer = ByteArray(4096)
+                    while (count != -1) {
+                        count = audioStream.read(buffer, 0, buffer.size)
+                        if (count >= 0) {
+                            it.write(buffer, 0, count)
+                        }
                     }
-                }
 
-                it.drain()
+                    it.drain()
+                }
+            } finally {
+                playingSound.set(false)
             }
-        } finally {
-            playingSound.set(false)
+        } else {
+            log.warn("Speech file $filename does not exist! Can not play it.")
         }
     }
 
+    /**
+     * Waits until the current queue of sounds has been played and all playback is finished.
+     */
     @ExperimentalCoroutinesApi
     suspend fun waitForQueueToEmpty() {
         delay(100)

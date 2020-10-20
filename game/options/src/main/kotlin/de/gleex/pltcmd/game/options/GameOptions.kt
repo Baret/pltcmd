@@ -60,4 +60,6 @@ object GameOptions {
      * Vertical number of sectors in the world.
      */
     const val SECTORS_COUNT_V: Int = 10
+
+    const val enableSound = false
 }
