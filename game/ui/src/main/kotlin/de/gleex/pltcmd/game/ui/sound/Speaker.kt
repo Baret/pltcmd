@@ -19,6 +19,10 @@ import javax.sound.sampled.SourceDataLine
 object Speaker {
 
     private const val FOLDER_SPEECH_FILES = "./speech"
+    private val IGNORED_PHRASES = listOf(
+            "come in",
+            "send it"
+    )
 
     private val mary: LocalMaryInterface = LocalMaryInterface()
 
@@ -28,12 +32,32 @@ object Speaker {
 
     private val playingSound = AtomicBoolean(false)
 
-    var effects: String = "JetPilot+Rate(durScale:0.7)"
+    /**
+     * Used to set the effects used by MaryTTS. The next call of [say] will use the given value.
+     *
+     * This magic string must be in the form of "Effect(parameter:value)+OtherEffect(parameter:value;parameter2:value2)"
+     *
+     * The list of available effects can be found here: http://marytts.phonetik.uni-muenchen.de:59125/audioeffects
+     * It is:
+     * - Volume amount:2.0;
+     * - TractScaler amount:1.5;
+     * - F0Scale f0Scale:2.0;
+     * - F0Add f0Add:50.0;
+     * - Rate durScale:1.5;
+     * - Robot amount:100.0;
+     * - Whisper amount:100.0;
+     * - Stadium amount:100.0
+     * - Chorus delay1:466;amp1:0.54;delay2:600;amp2:-0.10;delay3:250;amp3:0.30
+     * - FIRFilter type:3;fc1:500.0;fc2:2000.0
+     * - JetPilot
+     */
+    var effects: String = ""
         set(value) {
             mary.audioEffects = value
         }
 
     init {
+        effects = "JetPilot+Rate(durScale:0.65)"
         log.info("Available voices: ${mary.availableVoices}")
         val defaultVoice = Voice.getDefaultVoice(Locale.US)
         log.info("Default US voice: ${defaultVoice.name}")
@@ -50,6 +74,12 @@ object Speaker {
     }
 
     suspend fun say(text: String) {
+        if (IGNORED_PHRASES.any {
+                    text.contains(it, true)
+                }) {
+            log.debug("Ignored phrase detected, not saying '$text'")
+            return
+        }
         val speechDirectory = File(FOLDER_SPEECH_FILES)
         if (!speechDirectory.exists()) {
             speechDirectory.mkdir()
