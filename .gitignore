@@ -1,5 +1,9 @@
 target/
 
+log/
+logs/
+speech/
+
 # IntelliJ
 .DS_Store
 .idea
