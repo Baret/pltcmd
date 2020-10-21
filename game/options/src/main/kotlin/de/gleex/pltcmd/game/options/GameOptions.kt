@@ -61,5 +61,5 @@ object GameOptions {
      */
     const val SECTORS_COUNT_V: Int = 10
 
-    const val enableSound = false
+    const val enableSound = true
 }

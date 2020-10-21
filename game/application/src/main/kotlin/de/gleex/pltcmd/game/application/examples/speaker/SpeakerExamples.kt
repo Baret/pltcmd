@@ -14,13 +14,7 @@ private val texts = listOf(
         "Bravo, engage enemy at (1 1 5| 2 2 4), out."
 )
 
-private val effects = listOf(
-        "",
-//        "JetPilot",
-        "JetPilot+Rate(durScale:0.2)",
-        "JetPilot+Rate(durScale:0.5)",
-        "JetPilot+Rate(durScale:0.8)"
-)
+private val effect = "JetPilot+Rate(durScale:0.8)"
 
 @ExperimentalCoroutinesApi
 fun main() {
@@ -49,19 +43,17 @@ fun main() {
     log.info("Starting mary...")
     Mary.startup()
 
-    for (effect in effects) {
-        Speaker.effects = effect
-        for (text in texts) {
-            log.info("Saying '$text' with effect $effect")
-            runBlocking {
-                Speaker.say(text)
-                delay(100)
-                Speaker.waitForQueueToEmpty()
-            }
-            log.info("")
-            log.info(" - - -")
-            log.info("")
+    Speaker.effects = effect
+    for (text in texts) {
+        log.info("Saying '$text' with effect $effect")
+        runBlocking {
+            Speaker.say(text)
+            delay(100)
+            Speaker.waitForQueueToEmpty()
         }
+        log.info("")
+        log.info(" - - -")
+        log.info("")
     }
 
     runBlocking {

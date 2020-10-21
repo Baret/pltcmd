@@ -44,6 +44,20 @@
             <groupId>de.dfki.mary</groupId>
             <artifactId>voice-cmu-rms-hsmm</artifactId>
             <version>5.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>de.dfki.mary</groupId>
+                    <artifactId>marytts-runtime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.dfki.mary</groupId>
+                    <artifactId>marytts-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.dfki.mary</groupId>
+                    <artifactId>marytts-signalproc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>de.dfki.mary</groupId>
