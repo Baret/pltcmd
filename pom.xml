@@ -82,6 +82,12 @@
 			<artifactId>kotest-runner-junit5-jvm</artifactId>
 			<version>${kotest.version}</version>
 			<scope>test</scope>
+ 			<exclusions>
+				<exclusion>
+					<groupId>commons-io</groupId>
+					<artifactId>commons-io</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.kotest</groupId>

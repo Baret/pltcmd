@@ -93,7 +93,8 @@ object Speaker {
             speechDirectory.mkdir()
         }
 
-        val path = "${speechDirectory.absolutePath}/${text.hashCode()}_${System.currentTimeMillis()}.wav"
+        // reuse existing texts
+        val path = "${speechDirectory.absolutePath}/${text.hashCode()}.wav"
 
         val soundFile = File(path)
         if (!soundFile.exists()) {
