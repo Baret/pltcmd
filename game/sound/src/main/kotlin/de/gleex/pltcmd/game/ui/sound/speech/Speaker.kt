@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.ui.sound.speech
 
 import de.gleex.pltcmd.game.options.GameOptions
+import de.gleex.pltcmd.game.ui.sound.speech.effects.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import marytts.LocalMaryInterface
@@ -70,6 +71,22 @@ object Speaker {
             }
 
             effects = "JetPilot+Rate(durScale:0.65)"
+
+            log.debug("Current effects: ${mary.audioEffects}")
+            val effectList = EffectList(
+                    listOf(
+                            Effect("JetPilot"),
+                            Effect("Rate", EffectParameterList(
+                                    listOf(EffectParameter("durScale", 0.65))
+                            ))
+                    )
+            )
+            log.debug("Manual  effect : $effectList")
+            val withEffects = EffectList.of(
+                    Effects.jetPilot(),
+                    Effects.rate(0.65)
+            )
+            log.debug("With Effects   : $withEffects")
 
             log.debug("Available voices: ${mary.availableVoices}")
             val defaultVoice = Voice.getDefaultVoice(Locale.US)
