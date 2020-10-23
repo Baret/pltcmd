@@ -1,11 +1,8 @@
 package de.gleex.pltcmd.game.ui.sound.speech
 
 import de.gleex.pltcmd.game.options.GameOptions
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import marytts.LocalMaryInterface
 import marytts.modules.synthesis.Voice
 import marytts.server.Mary
@@ -18,14 +15,7 @@ import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.DataLine
 import javax.sound.sampled.SourceDataLine
 
-private fun initSpeaker() = Speaker.run {
-    if(Mary.currentState() != Mary.STATE_RUNNING && GameOptions.enableSound) {
-        log.debug("Starting Mary...")
-        Mary.startup()
-        log.debug("Startup finished.")
-    }
-}
-
+@ExperimentalCoroutinesApi
 object Speaker {
 
     private const val FOLDER_SPEECH_FILES = "./speech"
@@ -34,13 +24,18 @@ object Speaker {
             "send it"
     )
 
-    private val mary: LocalMaryInterface = LocalMaryInterface()
+    private lateinit var mary: LocalMaryInterface
 
+    /**
+     * The filenames to play. All entries in this channel are being played one after another.
+     */
     private val filenames: Channel<String> = Channel()
 
-    internal val log = LoggerFactory.getLogger(Speaker::class)
-
     private val playingSound = AtomicBoolean(false)
+
+    private var playLoop: Job? = null
+
+    private val log = LoggerFactory.getLogger(Speaker::class)
 
     /**
      * Used to set the effects used by MaryTTS. The next call of [say] will use the given value.
@@ -68,15 +63,23 @@ object Speaker {
 
     init {
         if (GameOptions.enableSound) {
+            log.debug("Starting MaryTTS engine...")
+            mary = LocalMaryInterface()
+            if(Mary.currentState() == Mary.STATE_RUNNING) {
+                log.debug("MaryTTS started.")
+            }
+
             effects = "JetPilot+Rate(durScale:0.65)"
-            log.info("Available voices: ${mary.availableVoices}")
+
+            log.debug("Available voices: ${mary.availableVoices}")
             val defaultVoice = Voice.getDefaultVoice(Locale.US)
-            log.info("Default US voice: ${defaultVoice.name}")
+            log.debug("Default US voice: ${defaultVoice.name}")
 
 
-            GlobalScope.launch {
+            playLoop = GlobalScope.launch {
                 log.debug("Launching play loop")
-                for (fileToPlay in filenames) {
+                while (isActive) {
+                    val fileToPlay = filenames.receive()
                     log.debug("Received file to play: $fileToPlay")
                     play(fileToPlay)
                 }
@@ -85,10 +88,45 @@ object Speaker {
         } else {
             log.info("Sound disabled, Speaker will do nothing.")
         }
+        Runtime.getRuntime()
+                .addShutdownHook(Thread {
+                    shutdown()
+                })
+    }
+
+    /**
+     * Explicitly starts the TTS engine. You don't need to call this method, as the engine is also initialized
+     * at the first call to [say]. But as it may take a little time it is most probably better to call this
+     * method early.
+     */
+    fun startup() {
+        // This simply triggers the init block which handles all the initialization
+        log.info("Speaker initialized.")
+    }
+
+    /**
+     *  Stops the underlying TTS engine after waiting for the current replay queue to be empty (current playback
+     *  may finish first, too).
+     */
+    fun shutdown() {
+        log.info("Shutting down Speaker...")
+        runBlocking {
+            if (playLoop != null) {
+                log.debug("Waiting for speaker queue to empty...")
+                waitForQueueToEmpty()
+                log.debug("Stopping replay loop...")
+                playLoop?.cancelAndJoin()
+            }
+            if (Mary.currentState() == Mary.STATE_RUNNING) {
+                log.debug("Shutting down MaryTTS...")
+                Mary.shutdown()
+            }
+            log.info("Speaker shutdown complete!")
+        }
     }
 
     suspend fun say(text: String) {
-        if(GameOptions.enableSound.not()) {
+        if (GameOptions.enableSound.not()) {
             return
         }
         if (IGNORED_PHRASES.any {
@@ -120,7 +158,7 @@ object Speaker {
 
     private fun play(filename: String) {
         val soundFile = File(filename)
-        if(soundFile.exists()) {
+        if (soundFile.exists()) {
             val audioStream = AudioSystem.getAudioInputStream(soundFile)
             val audioFormat = audioStream!!.format
             val info = DataLine.Info(SourceDataLine::class.java, audioFormat)
@@ -153,7 +191,6 @@ object Speaker {
     /**
      * Waits until the current queue of sounds has been played and all playback is finished.
      */
-    @ExperimentalCoroutinesApi
     suspend fun waitForQueueToEmpty() {
         delay(100)
         while (filenames.isEmpty.not() || playingSound.get()) {
