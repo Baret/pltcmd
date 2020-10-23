@@ -21,6 +21,7 @@
         <module>ui</module>
         <module>engine</module>
         <module>ui-strings</module>
+        <module>sound</module>
     </modules>
 
     <dependencies>
@@ -74,6 +75,11 @@
             <dependency>
                 <groupId>de.gleex.pltcmd.game</groupId>
                 <artifactId>ui-strings</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.game</groupId>
+                <artifactId>sound</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- other internal projects -->

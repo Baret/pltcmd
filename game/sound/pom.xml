@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>game</artifactId>
+        <groupId>de.gleex.pltcmd.game</groupId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>sound</artifactId>
+    <description>Everything related to sound output.</description>
+
+    <properties>
+        <marytts.version>5.2</marytts.version>
+        <marytts.version.beta>${marytts.version}-beta3</marytts.version.beta>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>options</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>de.dfki.mary</groupId>
+            <artifactId>voice-cmu-rms-hsmm</artifactId>
+            <version>${marytts.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>de.dfki.mary</groupId>
+                    <artifactId>marytts-runtime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.dfki.mary</groupId>
+                    <artifactId>marytts-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.dfki.mary</groupId>
+                    <artifactId>marytts-signalproc</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- We need the beta version of the runtime as the Rate-Effect does not work in 5.2 -->
+        <dependency>
+            <groupId>de.dfki.mary</groupId>
+            <artifactId>marytts-runtime</artifactId>
+            <version>${marytts.version.beta}</version>
+        </dependency>
+    </dependencies>
+</project>

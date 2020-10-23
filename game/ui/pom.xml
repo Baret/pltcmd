@@ -14,10 +14,6 @@
     <name>UI</name>
     <description>All the graphical stuff and user interaction.</description>
 
-    <properties>
-            <marytts.version>5.2-beta3</marytts.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
@@ -32,37 +28,16 @@
             <artifactId>options</artifactId>
         </dependency>
         <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>sound</artifactId>
+        </dependency>
+        <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>mapgeneration</artifactId>
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>world</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>de.dfki.mary</groupId>
-            <artifactId>voice-cmu-rms-hsmm</artifactId>
-            <version>5.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>de.dfki.mary</groupId>
-                    <artifactId>marytts-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.dfki.mary</groupId>
-                    <artifactId>marytts-common</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.dfki.mary</groupId>
-                    <artifactId>marytts-signalproc</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>de.dfki.mary</groupId>
-            <artifactId>marytts-runtime</artifactId>
-            <version>${marytts.version}</version>
         </dependency>
     </dependencies>
 

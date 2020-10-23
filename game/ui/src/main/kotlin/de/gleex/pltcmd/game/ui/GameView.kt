@@ -11,7 +11,7 @@ import de.gleex.pltcmd.game.ui.fragments.*
 import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
-import de.gleex.pltcmd.game.ui.sound.Speaker
+import de.gleex.pltcmd.game.ui.sound.speech.Speaker
 import de.gleex.pltcmd.model.radio.BroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
@@ -19,7 +19,6 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.util.events.globalEventBus
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import marytts.server.Mary
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -43,13 +42,6 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
     }
 
     override fun onDock() {
-
-        if(Mary.currentState() != Mary.STATE_RUNNING && GameOptions.enableSound) {
-            log.debug("Starting Mary...")
-            Mary.startup()
-            log.debug("Startup finished.")
-        }
-
         val sidebar = Components.vbox().
                 withSpacing(2).
                 withSize(UiOptions.INTERFACE_PANEL_WIDTH, UiOptions.INTERFACE_PANEL_HEIGHT).

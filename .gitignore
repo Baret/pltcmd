@@ -2,7 +2,7 @@ target/
 
 log/
 logs/
-speech/
+*.wav
 
 # IntelliJ
 .DS_Store

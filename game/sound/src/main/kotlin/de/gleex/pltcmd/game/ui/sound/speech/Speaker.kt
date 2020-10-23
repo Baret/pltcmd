@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.ui.sound
+package de.gleex.pltcmd.game.ui.sound.speech
 
 import de.gleex.pltcmd.game.options.GameOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -8,6 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import marytts.LocalMaryInterface
 import marytts.modules.synthesis.Voice
+import marytts.server.Mary
 import marytts.util.data.audio.MaryAudioUtils
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.io.File
@@ -16,6 +17,14 @@ import java.util.concurrent.atomic.AtomicBoolean
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.DataLine
 import javax.sound.sampled.SourceDataLine
+
+private fun initSpeaker() = Speaker.run {
+    if(Mary.currentState() != Mary.STATE_RUNNING && GameOptions.enableSound) {
+        log.debug("Starting Mary...")
+        Mary.startup()
+        log.debug("Startup finished.")
+    }
+}
 
 object Speaker {
 
@@ -29,7 +38,7 @@ object Speaker {
 
     private val filenames: Channel<String> = Channel()
 
-    private val log = LoggerFactory.getLogger(Speaker::class)
+    internal val log = LoggerFactory.getLogger(Speaker::class)
 
     private val playingSound = AtomicBoolean(false)
 
