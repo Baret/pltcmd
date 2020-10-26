@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.application.examples.speaker
 
-import de.gleex.pltcmd.game.ui.sound.speech.Speaker
+import de.gleex.pltcmd.game.sound.speech.Speaker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking

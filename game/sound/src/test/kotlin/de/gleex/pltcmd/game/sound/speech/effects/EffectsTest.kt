@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.ui.sound.speech.effects
+package de.gleex.pltcmd.game.sound.speech.effects
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll

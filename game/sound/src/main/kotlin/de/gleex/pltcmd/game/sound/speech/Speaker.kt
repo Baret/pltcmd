@@ -1,10 +1,10 @@
-package de.gleex.pltcmd.game.ui.sound.speech
+package de.gleex.pltcmd.game.sound.speech
 
 import de.gleex.pltcmd.game.options.GameOptions
-import de.gleex.pltcmd.game.ui.sound.speech.Speaker.say
-import de.gleex.pltcmd.game.ui.sound.speech.Speaker.startup
-import de.gleex.pltcmd.game.ui.sound.speech.effects.EffectList
-import de.gleex.pltcmd.game.ui.sound.speech.effects.Effects
+import de.gleex.pltcmd.game.sound.speech.Speaker.say
+import de.gleex.pltcmd.game.sound.speech.Speaker.startup
+import de.gleex.pltcmd.game.sound.speech.effects.EffectList
+import de.gleex.pltcmd.game.sound.speech.effects.Effects
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import marytts.LocalMaryInterface

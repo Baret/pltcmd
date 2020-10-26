@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.ui.sound.speech.effects
+package de.gleex.pltcmd.game.sound.speech.effects
 
 /**
  * This is a simple model class to create the String representation of an [marytts.signalproc.effects.AudioEffect].

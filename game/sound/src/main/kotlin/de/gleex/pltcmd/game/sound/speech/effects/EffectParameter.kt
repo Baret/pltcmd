@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.ui.sound.speech.effects
+package de.gleex.pltcmd.game.sound.speech.effects
 
 /**
  * A key-value pair representing a parameter of an [Effect].

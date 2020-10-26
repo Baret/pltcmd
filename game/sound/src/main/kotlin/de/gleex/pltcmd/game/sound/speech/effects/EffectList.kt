@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.ui.sound.speech.effects
+package de.gleex.pltcmd.game.sound.speech.effects
 
 /**
  * A list of [Effect]s. This model class actually creates the string needed by [marytts.LocalMaryInterface.effects]
@@ -12,7 +12,7 @@ internal data class EffectList(
     override fun toString() = effects.joinToString("+")
 
     companion object {
-        val none = EffectList.of()
+        val none = of()
 
         fun of(vararg effects: Effect) =
                 EffectList(effects.toList())
