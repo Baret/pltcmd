@@ -11,7 +11,9 @@ import kotlin.reflect.KProperty
  */
 internal class CallSignProvider(
         corps: Corps,
+        @Suppress("UNUSED_PARAMETER")
         kind: ElementKind,
+        @Suppress("UNUSED_PARAMETER")
         rung: Rung
 ) {
 

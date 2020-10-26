@@ -27,6 +27,10 @@
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>combat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>radio</artifactId>
         </dependency>
         <dependency>

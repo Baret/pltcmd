@@ -45,7 +45,7 @@ import kotlin.random.Random
 /**
  * This little bit of code is used to play around with radio conversations. It creates a GUI where you can
  * manually advance the game ticks to see step by step how the conversations evolve. It currently has
- * 3 [RadioCommunicator]s and the conversations are built before the UI starts. Later it might be possible
+ * 3 [RadioSender]s and the conversations are built before the UI starts. Later it might be possible
  * to dynamically build conversations in the UI.
  */
 fun main() {
@@ -141,9 +141,9 @@ fun buildUI(hqSender: ElementEntity, bravoSender: ElementEntity, charlieSender: 
 
     screen.themeProperty.value = UiOptions.THEME
 
-    val LOG_AREA_HEIGHT = 20
+    val logAreaHeight = 20
     val logArea = Components.logArea().
-    withSize(UiOptions.WINDOW_WIDTH, LOG_AREA_HEIGHT).
+    withSize(UiOptions.WINDOW_WIDTH, logAreaHeight).
     withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER).
     withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
     build().
@@ -155,9 +155,10 @@ fun buildUI(hqSender: ElementEntity, bravoSender: ElementEntity, charlieSender: 
 
     val mainPanel = Components.hbox().
             withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER).
-            withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - LOG_AREA_HEIGHT).
+            withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - logAreaHeight).
             build().
             apply {
+                val hBox = this
                 val sideBarWidth = 18
                 // sidebar
                 addComponent(Components.vbox().
@@ -167,7 +168,7 @@ fun buildUI(hqSender: ElementEntity, bravoSender: ElementEntity, charlieSender: 
                     apply {
                             addFragment(TickFragment(sideBarWidth))
                             // TESTING
-                            addFragment(TilesetSelectorFragment(sideBarWidth, this@apply, logArea))
+                            addFragment(TilesetSelectorFragment(sideBarWidth, hBox, logArea))
                         })
 
                 // RadioCommunicator panels

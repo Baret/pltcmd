@@ -32,7 +32,7 @@
     <logger name="org.hexworks.cobalt" level="WARN"/>
     <!--    <logger name="org.hexworks.amethyst.api.entity.Entity" level="DEBUG"/>-->
 
-    <logger name="de.gleex.pltcmd" level="DEBUG"/>
+    <logger name="de.gleex.pltcmd.game.application" level="DEBUG"/>
     <logger name="de.gleex.pltcmd.game.engine.systems" level="INFO"/>
 
     <logger name="de.gleex.pltcmd.game.engine.Game" level="TRACE">

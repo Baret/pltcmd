@@ -27,7 +27,7 @@ object MakesSecurityHalts : BaseFacet<GameContext>() {
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
             command.responseWhenCommandIs(UpdatePosition::class) {
                 if (it.oldPosition.toSectorOrigin() != it.newPosition.toSectorOrigin()) {
-                    val entity: MovableEntity = it.source as MovableEntity
+                    val entity: MovableEntity = it.source
                     entity.findAttribute(CommandersIntent::class)
                             .ifPresent { intent ->
                                 // Make a security halt when approximately 300m into the new sector
