@@ -4,7 +4,6 @@ import de.gleex.pltcmd.game.ui.sound.speech.Speaker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import marytts.server.Mary
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 private val log = LoggerFactory.getLogger("SpeakerExample")
@@ -13,8 +12,6 @@ private val texts = listOf(
         "Hello World!",
         "Bravo, engage enemy at (1 1 5| 2 2 4), out."
 )
-
-private val effect = "JetPilot+Rate(durScale:0.8)"
 
 @ExperimentalCoroutinesApi
 fun main() {
@@ -40,12 +37,11 @@ fun main() {
         http://marytts.phonetik.uni-muenchen.de:59125/audioeffect-help?effect=TractScaler
      */
 
-    log.info("Starting mary...")
-    Mary.startup()
+    log.info("Starting Speaker...")
+    Speaker.startup()
 
-    Speaker.effects = effect
     for (text in texts) {
-        log.info("Saying '$text' with effect $effect")
+        log.info("Saying '$text'...")
         runBlocking {
             Speaker.say(text)
             delay(100)

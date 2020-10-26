@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sound</artifactId>
+    <name>Sound</name>
     <description>Everything related to sound output.</description>
 
     <properties>

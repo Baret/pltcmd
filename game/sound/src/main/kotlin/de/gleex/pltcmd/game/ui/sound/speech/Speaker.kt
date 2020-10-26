@@ -1,7 +1,10 @@
 package de.gleex.pltcmd.game.ui.sound.speech
 
 import de.gleex.pltcmd.game.options.GameOptions
-import de.gleex.pltcmd.game.ui.sound.speech.effects.*
+import de.gleex.pltcmd.game.ui.sound.speech.Speaker.say
+import de.gleex.pltcmd.game.ui.sound.speech.Speaker.startup
+import de.gleex.pltcmd.game.ui.sound.speech.effects.EffectList
+import de.gleex.pltcmd.game.ui.sound.speech.effects.Effects
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import marytts.LocalMaryInterface
@@ -16,6 +19,17 @@ import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.DataLine
 import javax.sound.sampled.SourceDataLine
 
+/**
+ * Use this object for text-to-speech. All strings given to [say] wll be read aloud one after another. This means
+ * that further texts coming in will be queued when a sound is currently being played.
+ *
+ * The underlying TTS-engine will implicitly be started at the first call of [say] if necessary but it is
+ * advisable to call [startup] earlier as it might take some time and thus delay the output of the first text.
+ *
+ * How this object works in detail: [say] creates an audio file from the given text and saves it locally and then
+ * queues this file for replay. The file names are generated from the hashcode of the given text so the same
+ * text does not need to be written to a file again.
+ */
 @ExperimentalCoroutinesApi
 object Speaker {
 
@@ -57,10 +71,7 @@ object Speaker {
      * - FIRFilter type:3;fc1:500.0;fc2:2000.0
      * - JetPilot
      */
-    var effects: String = ""
-        set(value) {
-            mary.audioEffects = value
-        }
+    internal var effects = EffectList.none
 
     init {
         if (GameOptions.enableSound) {
@@ -70,23 +81,10 @@ object Speaker {
                 log.debug("MaryTTS started.")
             }
 
-            effects = "JetPilot+Rate(durScale:0.65)"
-
-            log.debug("Current effects: ${mary.audioEffects}")
-            val effectList = EffectList(
-                    listOf(
-                            Effect("JetPilot"),
-                            Effect("Rate", EffectParameterList(
-                                    listOf(EffectParameter("durScale", 0.65))
-                            ))
-                    )
-            )
-            log.debug("Manual  effect : $effectList")
-            val withEffects = EffectList.of(
+            effects = EffectList.of(
                     Effects.jetPilot(),
                     Effects.rate(0.65)
             )
-            log.debug("With Effects   : $withEffects")
 
             log.debug("Available voices: ${mary.availableVoices}")
             val defaultVoice = Voice.getDefaultVoice(Locale.US)
@@ -142,6 +140,10 @@ object Speaker {
         }
     }
 
+    /**
+     * Generates text-to-speech audio from the given text, writes it to a file (when the same text has not yet
+     * been written to a file) and queues it for replay.
+     */
     suspend fun say(text: String) {
         if (GameOptions.enableSound.not()) {
             return
@@ -157,14 +159,15 @@ object Speaker {
             speechDirectory.mkdir()
         }
 
-        // reuse existing texts
-        val path = "${speechDirectory.absolutePath}/${text.hashCode()}.wav"
+        // reuse existing texts if they had the same effects
+        mary.audioEffects = effects.toString()
+        val path = "${speechDirectory.absolutePath}/${text.hashCode()}_${mary.audioEffects.hashCode()}.wav"
 
         val soundFile = File(path)
         if (!soundFile.exists()) {
             log.debug("Creating new sound file $path")
             val audio = mary.generateAudio(text)
-            log.debug("Genereated audio with effects: ${mary.audioEffects}\nProperties of audio format: ${audio.format.properties()}")
+            log.debug("Generated speech audio with effects: ${mary.audioEffects}")
             val samples = MaryAudioUtils.getSamplesAsDoubleArray(audio!!)
             MaryAudioUtils.writeWavFile(samples, path, audio.format)
         }
