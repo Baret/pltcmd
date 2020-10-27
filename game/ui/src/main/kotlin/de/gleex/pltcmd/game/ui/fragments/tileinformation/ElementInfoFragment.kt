@@ -2,7 +2,10 @@ package de.gleex.pltcmd.game.ui.fragments.tileinformation
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.callsign
+import de.gleex.pltcmd.game.engine.entities.types.element
 import de.gleex.pltcmd.game.ui.strings.Format
+import de.gleex.pltcmd.game.ui.strings.FrontendString
 import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -21,6 +24,10 @@ class ElementInfoFragment(
 
     private val currentElement: Property<Maybe<ElementEntity>> = Maybe.empty<ElementEntity>().toProperty()
 
+    private val callSign: FrontendString<String> = whenElementPresent { it.callsign.toString() }
+
+    private val description: FrontendString<String> = whenElementPresent { "  ${it.element.description}" }
+
     override val root = Components.vbox()
             .withSize(width, 2)
             .build()
@@ -30,10 +37,14 @@ class ElementInfoFragment(
                                 .withSize(width, 1)
                                 .build()
                                 .apply {
-                                    val elementString = currentElement.toFrontendString(Format.SIDEBAR)
-                                            .bindTransform { if (currentElement.value.isPresent) it else "none" }
-                                    withFrontendString(Format.SIDEBAR, "Element: ", elementString)
+                                    withFrontendString(Format.SIDEBAR, "Element: ", callSign.bindTransform { cs -> if(cs.isBlank()) { "none" } else { cs } })
                                 })
+                addComponent(Components.label()
+                        .withSize(width, 1)
+                        .build()
+                        .apply {
+                            withFrontendString(description)
+                        })
             }
 
     @ExperimentalTime
@@ -41,5 +52,15 @@ class ElementInfoFragment(
         currentElement.updateValue(
                 Maybe.ofNullable(
                         game.elementsAt(newCoordinate).firstOrNull()))
+    }
+
+    private fun whenElementPresent(transformation: (ElementEntity) -> String): FrontendString<String> {
+        return currentElement.bindTransform {
+            if(it.isPresent) {
+                transformation(it.get())
+            } else {
+                ""
+            }
+        }.toFrontendString(Format.SIDEBAR)
     }
 }
