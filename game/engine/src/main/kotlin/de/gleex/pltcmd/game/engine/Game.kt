@@ -84,6 +84,9 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
         return addEntity(elementEntity)
     }
 
+    /**
+     * Gets all [ElementEntity]s at the given coordinate.
+     */
     @ExperimentalTime
     fun elementsAt(coordinate: Coordinate): Collection<ElementEntity> {
         val (elements, duration) = measureTimedValue {

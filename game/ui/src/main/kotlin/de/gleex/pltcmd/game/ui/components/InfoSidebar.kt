@@ -7,6 +7,7 @@ import de.gleex.pltcmd.game.ui.fragments.TickFragment
 import de.gleex.pltcmd.game.ui.fragments.tileinformation.CurrentCoordinateFragment
 import de.gleex.pltcmd.game.ui.fragments.tileinformation.ElementInfoFragment
 import de.gleex.pltcmd.game.ui.fragments.tileinformation.TerrainDetailsFragment
+import de.gleex.pltcmd.game.ui.fragments.tileinformation.TileInformationFragment
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
 import org.hexworks.cobalt.databinding.api.extension.toProperty
@@ -33,12 +34,24 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, g
         private val log = LoggerFactory.getLogger(InfoSidebar::class)
     }
 
+    private val timePanel = Components.panel()
+            .withSize(UiOptions.SIDEBAR_WIDTH, TickFragment.FRAGMENT_HEIGHT + 2)
+            .withDecorations(ComponentDecorations.box(BoxType.LEFT_RIGHT_DOUBLE))
+            .build()
+
+    private val intelPanel = Components.vbox()
+            .withSize(UiOptions.SIDEBAR_WIDTH, height - timePanel.height)
+            .withSpacing(1)
+            .withDecorations(ComponentDecorations.box(BoxType.DOUBLE, "Intel"))
+            .build()
+
     override val root =
             Components.vbox()
                     .withSize(UiOptions.SIDEBAR_WIDTH, height)
-                    .withSpacing(1)
-                    .withDecorations(ComponentDecorations.box(BoxType.DOUBLE, "Intel"))
                     .build()
+                    .apply {
+                        addComponents(timePanel, intelPanel)
+                    }
 
     private val themeUnlocked: ColorTheme = UiOptions.THEME
     private val themeLocked: ColorTheme = ColorThemeBuilder.newBuilder()
@@ -50,32 +63,33 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, g
             .build()
 
     init {
-        val fragmentWidth = root.contentSize.width
-
         val observedTile: Property<Coordinate> = gameWorld.visibleTopLeftCoordinate()
                 .toProperty()
-        val terrainDetails = TerrainDetailsFragment(fragmentWidth, observedTile, gameWorld.worldMap)
-        val coordinateFragment = CurrentCoordinateFragment(fragmentWidth, observedTile)
+
+        val fragmentWidth = intelPanel.contentSize.width
+
+        val fragments: List<TileInformationFragment> = listOf(
+                TerrainDetailsFragment(fragmentWidth, observedTile, gameWorld.worldMap),
+                CurrentCoordinateFragment(fragmentWidth, observedTile),
+                ElementInfoFragment(fragmentWidth, observedTile, game)
+        )
 
         val lockedState: Property<Boolean> = false.toProperty()
         lockedState.onChange { valueChanged: ObservableValueChanged<Boolean> ->
             log.debug("Toggling lock on information sidebar")
-            terrainDetails.toggleLock()
-            coordinateFragment.toggleLock()
+            fragments.forEach { it.toggleLock() }
             if (valueChanged.newValue) {
-                root.themeProperty.updateValue(themeLocked)
+                intelPanel.themeProperty.updateValue(themeLocked)
             } else {
-                root.themeProperty.updateValue(themeUnlocked)
+                intelPanel.themeProperty.updateValue(themeUnlocked)
             }
         }
 
         map.updateObservedTile(observedTile, gameWorld)
         map.toggleLockedState(lockedState)
 
-        root.addFragment(TickFragment(fragmentWidth))
-        root.addFragment(coordinateFragment)
-        root.addFragment(terrainDetails)
-        root.addFragment(ElementInfoFragment(fragmentWidth, observedTile, game))
+        timePanel.addFragment(TickFragment(timePanel.contentSize.width))
+        fragments.forEach { intelPanel.addFragment(it) }
     }
 
     /**

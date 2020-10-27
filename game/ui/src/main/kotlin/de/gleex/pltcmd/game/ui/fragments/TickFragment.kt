@@ -6,10 +6,17 @@ import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.zircon.api.Components
 
+/**
+ * Displays the current game time.
+ */
 class TickFragment(override val width: Int) : BaseFragment {
+    companion object {
+        const val FRAGMENT_HEIGHT = 2
+    }
+
     override val root = Components.
                             vbox().
-                            withSize(width, 2).
+                            withSize(width, FRAGMENT_HEIGHT).
                             build().
                             apply {
                                 addComponent(Components.header().withText("Current Tick"))
@@ -23,12 +30,5 @@ class TickFragment(override val width: Int) : BaseFragment {
                                                         bindPlusWith createPropertyFrom(": ")
                                                         bindPlusWith Ticker.currentTimeString)
                                     })
-//                                addComponent(Components.
-//                                    button().
-//                                    withText("TICK!").
-//                                    build().
-//                                    apply {
-//                                        processComponentEvents(ComponentEventType.ACTIVATED) { Ticker.tick() }
-//                                    })
                             }
 }
