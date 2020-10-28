@@ -12,7 +12,6 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.builder.component.ColorThemeBuilder
@@ -29,10 +28,6 @@ import org.hexworks.zircon.api.uievent.UIEventPhase
  * The info sidebar displays contextual information for the player like "what is on that tile?".
  */
 class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, game: Game) : Fragment {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(InfoSidebar::class)
-    }
 
     private val timePanel = Components.panel()
             .withSize(UiOptions.SIDEBAR_WIDTH, TickFragment.FRAGMENT_HEIGHT + 2)
@@ -76,7 +71,6 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, g
 
         val lockedState: Property<Boolean> = false.toProperty()
         lockedState.onChange { valueChanged: ObservableValueChanged<Boolean> ->
-            log.debug("Toggling lock on information sidebar")
             fragments.forEach { it.toggleLock() }
             if (valueChanged.newValue) {
                 intelPanel.themeProperty.updateValue(themeLocked)

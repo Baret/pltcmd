@@ -16,6 +16,12 @@ import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.zircon.api.Components
 import kotlin.time.ExperimentalTime
 
+/**
+ * This fragment displays information about element(s) on a specific tile.
+ *
+ * Note: This fragment is still WIP and may be improved at any time. When there is more/other information
+ * needed or expected or the layout can be improved, go ahead and do so.
+ */
 class ElementInfoFragment(
         override val width: Int,
         observedTile: Property<Coordinate>,
@@ -37,7 +43,9 @@ class ElementInfoFragment(
                                 .withSize(width, 1)
                                 .build()
                                 .apply {
-                                    withFrontendString(Format.SIDEBAR, "Element: ", callSign.bindTransform { cs -> if(cs.isBlank()) { "none" } else { cs } })
+                                    withFrontendString(Format.SIDEBAR,
+                                            "Element: ",
+                                            callSign.bindTransform { cs -> if(cs.isBlank()) { "none" } else { cs } })
                                 })
                 addComponent(Components.label()
                         .withSize(width, 1)

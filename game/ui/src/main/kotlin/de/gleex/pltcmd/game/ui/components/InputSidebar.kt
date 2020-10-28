@@ -37,7 +37,6 @@ class InputSidebar(
                     .build()
 
     init {
-        // playing around with stuff...
         val sidebarWidth = root.contentSize.width
 
         val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, map.absolutePosition, game)
