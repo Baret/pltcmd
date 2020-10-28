@@ -74,7 +74,7 @@ object Speaker {
     internal var effects = EffectList.none
 
     init {
-        if (GameOptions.enableSound) {
+        if (GameOptions.SOUND_ENABLED) {
             log.debug("Starting MaryTTS engine...")
             mary = LocalMaryInterface()
             if(Mary.currentState() == Mary.STATE_RUNNING) {
@@ -145,7 +145,7 @@ object Speaker {
      * been written to a file) and queues it for replay.
      */
     suspend fun say(text: String) {
-        if (GameOptions.enableSound.not()) {
+        if (GameOptions.SOUND_ENABLED.not()) {
             return
         }
         if (IGNORED_PHRASES.any {
