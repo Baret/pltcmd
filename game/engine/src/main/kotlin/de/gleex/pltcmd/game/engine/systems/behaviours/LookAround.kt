@@ -7,9 +7,6 @@ import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
@@ -24,6 +21,7 @@ object LookAround :
         ) {
 
     private val log = LoggerFactory.getLogger(LookAround::class)
+    private const val MAX_RANGE = 30
 
     // implements only type checking
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
@@ -48,23 +46,23 @@ object LookAround :
         return true
     }
 
-    private suspend fun lookAround(from: Coordinate, world: WorldMap): CoordinateArea {
+    private fun lookAround(from: Coordinate, world: WorldMap): CoordinateArea {
         val visible = TreeSet<Coordinate>()
         visible.add(from)
-        runBlocking {
-            addVisibleNeighbors(from, world).collect { visible.add(it) }
+        val storeVisible: (Coordinate) -> Boolean = { element: Coordinate ->
+            visible.add(element) && from.distanceTo(element) <= MAX_RANGE
         }
+        addVisibleNeighbors(from, world, storeVisible)
         return CoordinateArea(visible)
     }
 
-    private fun addVisibleNeighbors(current: Coordinate, world: WorldMap) = flow {
+    private fun addVisibleNeighbors(current: Coordinate, world: WorldMap, storeVisible: (Coordinate) -> Boolean) {
         world.neighborsOf(current)
                 .forEach { neighbor ->
                     val isVisible = isVisible(neighbor, current, world)
                     log.trace("$neighbor is visible from $current? $isVisible")
-                    if (isVisible) {
-                        // FIXME recursively add visible neighbors to Flow
-                        emit(neighbor)
+                    if (isVisible && storeVisible(neighbor)) {
+                        addVisibleNeighbors(neighbor, world, storeVisible)
                     }
                 }
     }
