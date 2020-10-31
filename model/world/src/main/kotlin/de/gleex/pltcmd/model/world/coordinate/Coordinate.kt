@@ -1,6 +1,9 @@
 package de.gleex.pltcmd.model.world.coordinate
 
 import java.util.*
+import kotlin.math.absoluteValue
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * A location on the map. The map is a rectangle and each coordinate describes the distance (in hundreds of
@@ -56,6 +59,15 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
     /** Checks if the given coordinate is the direct predecessor in the horizontal coordinate */
     fun isSouthNeighborOf(above: Coordinate): Boolean {
         return above.eastingFromLeft == eastingFromLeft && northingFromBottom + 1 == above.northingFromBottom
+    }
+
+    /** @return the euclidean distance */
+    infix fun distanceTo(other: Coordinate): Double {
+        val eastingDistanceSquared = (eastingFromLeft - other.eastingFromLeft).absoluteValue.toDouble()
+                .pow(2.0)
+        val northingDistanceSquared = (northingFromBottom - other.northingFromBottom).absoluteValue.toDouble()
+                .pow(2.0)
+        return sqrt(eastingDistanceSquared + northingDistanceSquared)
     }
 
     /**
