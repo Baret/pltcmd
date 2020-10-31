@@ -34,17 +34,20 @@ object LookAround :
         return updateVisibleArea(entity as SeeingEntity, context)
     }
 
+    /**
+     * Calculates and stores the visible area of the entity if necessary.
+     */
     suspend fun updateVisibleArea(entity: SeeingEntity, context: GameContext): Boolean {
         val currentPosition = entity.currentPosition
         if (currentPosition != entity.lookingFrom) {
             // position changed
-            entity.lookingFrom = currentPosition
-            entity.visibleTiles = lookAround(currentPosition, context.world)
+            val visibleTiles = lookAround(currentPosition, context.world)
+            entity.updateVision(currentPosition, visibleTiles)
         }
         return true
     }
 
-    suspend fun lookAround(from: Coordinate, world: WorldMap): CoordinateArea {
+    private suspend fun lookAround(from: Coordinate, world: WorldMap): CoordinateArea {
         val visible = TreeSet<Coordinate>()
         visible.add(from)
         runBlocking {
@@ -56,7 +59,7 @@ object LookAround :
     private fun addVisibleNeighbors(current: Coordinate, world: WorldMap) = flow {
         world.neighborsOf(current)
                 .forEach { neighbor ->
-                    if (isVisible(neighbor, current)) {
+                    if (isVisible(neighbor, current, world)) {
                         emit(neighbor)
                     }
                 }
