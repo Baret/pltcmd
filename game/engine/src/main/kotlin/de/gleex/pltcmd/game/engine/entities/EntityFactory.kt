@@ -1,10 +1,7 @@
 package de.gleex.pltcmd.game.engine.entities
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
-import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
-import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
+import de.gleex.pltcmd.game.engine.attributes.*
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
@@ -21,6 +18,7 @@ import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.newEntityOfType
 import org.hexworks.amethyst.api.system.Behavior
@@ -39,6 +37,7 @@ object EntityFactory {
                 CommandersIntent(),
                 ElementAttribute(element, affiliation),
                 PositionAttribute(initialPosition),
+                VisibleAreaAttribute(initialPosition.value, CoordinateArea.empty),
                 // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
                 RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
                 ShootersAttribute(element),
@@ -55,6 +54,7 @@ object EntityFactory {
 
         val behaviors: MutableList<Behavior<GameContext>> = mutableListOf(
                 IntentPursuing,
+                LookAround,
                 MovingForOneMinute,
                 Communicating,
                 Fighting

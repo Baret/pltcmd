@@ -11,6 +11,9 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
     val size
         get() = coordinates.size
 
+    val isEmpty: Boolean
+        get() = coordinates.isEmpty()
+
     /**
      * Checks if this area contains the given [Coordinate].
      */
@@ -40,6 +43,10 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
 
     override fun hashCode(): Int {
         return coordinates.hashCode()
+    }
+
+    companion object {
+        val empty = CoordinateArea(TreeSet())
     }
 
 }

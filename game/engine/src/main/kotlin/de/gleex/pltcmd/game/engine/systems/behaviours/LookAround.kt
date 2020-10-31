@@ -39,9 +39,10 @@ object LookAround :
      */
     suspend fun updateVisibleArea(entity: SeeingEntity, context: GameContext): Boolean {
         val currentPosition = entity.currentPosition
-        if (currentPosition != entity.lookingFrom) {
-            // position changed
+        if (currentPosition != entity.lookingFrom || entity.visibleTiles.isEmpty) {
+            // position changed or view was reset
             val visibleTiles = lookAround(currentPosition, context.world)
+            log.debug("Updating vision of ${(entity as ElementEntity).callsign} to $visibleTiles")
             entity.updateVision(currentPosition, visibleTiles)
         }
         return true
@@ -59,7 +60,9 @@ object LookAround :
     private fun addVisibleNeighbors(current: Coordinate, world: WorldMap) = flow {
         world.neighborsOf(current)
                 .forEach { neighbor ->
-                    if (isVisible(neighbor, current, world)) {
+                    val isVisible = isVisible(neighbor, current, world)
+                    log.trace("$neighbor is visible from $current? $isVisible")
+                    if (isVisible) {
                         emit(neighbor)
                     }
                 }
