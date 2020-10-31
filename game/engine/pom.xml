@@ -41,10 +41,6 @@
             <groupId>org.hexworks.amethyst</groupId>
             <artifactId>amethyst.core-jvm</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlinx-coroutines-core</artifactId>
-        </dependency>
     </dependencies>
 
 </project>
