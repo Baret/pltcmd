@@ -63,6 +63,7 @@ object LookAround :
                     val isVisible = isVisible(neighbor, current, world)
                     log.trace("$neighbor is visible from $current? $isVisible")
                     if (isVisible) {
+                        // FIXME recursively add visible neighbors to Flow
                         emit(neighbor)
                     }
                 }
