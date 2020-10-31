@@ -15,9 +15,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.sound.sampled.AudioSystem
-import javax.sound.sampled.DataLine
-import javax.sound.sampled.SourceDataLine
+import javax.sound.sampled.*
 
 /**
  * Use this object for text-to-speech. All strings given to [say] wll be read aloud one after another. This means
@@ -186,19 +184,7 @@ object Speaker {
             try {
                 playingSound.set(true)
                 sourceDataLine.use {
-                    it.open(audioFormat)
-                    it.start()
-
-                    var count = 0
-                    val buffer = ByteArray(4096)
-                    while (count != -1) {
-                        count = audioStream.read(buffer, 0, buffer.size)
-                        if (count >= 0) {
-                            it.write(buffer, 0, count)
-                        }
-                    }
-
-                    it.drain()
+                    play(audioStream, it, audioFormat)
                 }
             } finally {
                 playingSound.set(false)
@@ -206,6 +192,22 @@ object Speaker {
         } else {
             log.warn("Speech file $filename does not exist! Can not play it.")
         }
+    }
+
+    private fun play(audioStream: AudioInputStream, line: SourceDataLine, audioFormat: AudioFormat?) {
+        line.open(audioFormat)
+        line.start()
+
+        var count = 0
+        val buffer = ByteArray(4096)
+        while (count != -1) {
+            count = audioStream.read(buffer, 0, buffer.size)
+            if (count >= 0) {
+                line.write(buffer, 0, count)
+            }
+        }
+
+        line.drain()
     }
 
     /**
