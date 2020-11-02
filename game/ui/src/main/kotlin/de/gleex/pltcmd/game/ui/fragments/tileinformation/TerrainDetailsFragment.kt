@@ -3,7 +3,6 @@ package de.gleex.pltcmd.game.ui.fragments.tileinformation
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.game.ui.strings.Format
-import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -46,7 +45,6 @@ class TerrainDetailsFragment(
             .build()
 
     private val terrainDesciption: Label = Components.label()
-            .withText(terrainProperty.value.toFrontendString(Format.SIDEBAR).value)
             .withSize(width - icon.size.width - fixedText.size.width, 1)
             .build()
             .apply {
