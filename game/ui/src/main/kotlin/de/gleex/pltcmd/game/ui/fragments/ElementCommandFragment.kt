@@ -30,11 +30,13 @@ class ElementCommandFragment(override val width: Int, private val world: GameWor
 
     private var selectedElement: ElementEntity = elements.first()
     private val destinationProperty = createPropertyFrom(selectedElement.position.value)
-    private val elementSelect = Fragments.multiSelect(width, elements)
+    private val elementSelect = Fragments.selector(width, elements)
             .withDefaultSelected(selectedElement)
-            .withCallback { _, newElement -> selectedElement = newElement }
             .withToStringMethod { it.callsign.toString() }
             .build()
+            .apply {
+                selectedValue.onChange { selectedElement = it.newValue }
+            }
 
     companion object {
         private val log = LoggerFactory.getLogger(ElementCommandFragment::class)

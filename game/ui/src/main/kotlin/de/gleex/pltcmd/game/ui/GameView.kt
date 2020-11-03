@@ -52,7 +52,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                 withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld)).
                 build().apply {
                     // redraw MapCoordinateDecorationRenderer
-                    gameWorld.visibleOffsetValue.onChange { asInternalComponent().render() }
+//                    gameWorld.visibleOffsetValue.onChange { asInternalComponent().render() }
                 }
 
         val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>().

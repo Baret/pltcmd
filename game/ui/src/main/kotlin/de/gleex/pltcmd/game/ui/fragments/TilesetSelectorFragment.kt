@@ -20,10 +20,12 @@ class TilesetSelectorFragment(override val width: Int, vararg components: Compon
             build().
             apply {
                 addFragment(Fragments.
-                    multiSelect(contentSize.width, tilesets).
+                    selector(contentSize.width, tilesets).
                     withDefaultSelected(tilesets.first { it.id == UiOptions.DEFAULT_TILESET.id }).
-                    withCallback { _, newTileset -> components.forEach { it.tilesetProperty.value = newTileset } }.
                     withToStringMethod { it.tilesetName }.
-                    build())
+                    build()
+                        .apply {
+                            selectedValue.onChange { selection -> components.forEach { compoennt -> compoennt.tilesetProperty.value = selection.newValue } }
+                        })
             }
 }

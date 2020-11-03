@@ -11,7 +11,7 @@ import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.Fragments
 import org.hexworks.zircon.api.builder.Builder
 import org.hexworks.zircon.api.component.*
-import org.hexworks.zircon.api.fragment.MultiSelect
+import org.hexworks.zircon.api.fragment.Selector
 import kotlin.math.min
 
 /**
@@ -130,17 +130,19 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
 
     private fun buildModelLabel(): Label = buildLabelLine("Attenuation model")
 
-    private fun buildModelInput(): MultiSelect<Pair<String, AttenuationModel>> {
+    private fun buildModelInput(): Selector<Pair<String, AttenuationModel>> {
         val models = listOf(
                 Pair("by percentage", PercentageReducingAttenuation()),
                 Pair("absolute", AbsoluteSignalLossAttenuation())
         )
 
         return Fragments.
-                multiSelect(width, models).
-                withCallback { _, newValue -> AttenuationModel.DEFAULT.value = newValue.second }.
+                selector(width, models).
                 withToStringMethod(Pair<String, AttenuationModel>::first).
                 build()
+                .apply {
+                    selectedValue.onChange { AttenuationModel.DEFAULT.value = it.newValue.second }
+                }
     }
 
 }

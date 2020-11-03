@@ -15,10 +15,12 @@ class ThemeSelectorFragment(override val width: Int, private val screen: Screen)
             build().apply {
                 val themeResources = ColorThemeResource.values()
                 addFragment(Fragments.
-                        multiSelect(contentSize.width, themeResources.toList()).
+                        selector(contentSize.width, themeResources.toList()).
                         withDefaultSelected(themeResources.first { it.getTheme() == screen.theme }).
-                        withCallback { _, newValue -> screen.theme = newValue.getTheme() }.
                         withCenteredText(true).
-                        build())
+                        build()
+                        .apply {
+                            selectedValue.onChange { screen.theme = it.newValue.getTheme() }
+                        })
             }
 }
