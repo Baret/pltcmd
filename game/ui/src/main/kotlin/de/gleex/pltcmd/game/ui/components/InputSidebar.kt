@@ -16,7 +16,6 @@ import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.uievent.MouseEventType
-import org.hexworks.zircon.api.uievent.Pass
 import org.hexworks.zircon.internal.game.impl.DefaultGameComponent
 
 /**
@@ -44,11 +43,10 @@ class InputSidebar(
         val mapOffset = map.absolutePosition.toProperty()
         val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, mapOffset, game)
         root.addFragment(commandFragment)
-        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED) { _, _ ->
+        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED) { event, phase ->
             mapOffset.updateValue(map.absolutePosition)
-            Pass
+            commandFragment(event, phase)
         }
-        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
 
         if (GameOptions.displayRadioSignals.value) {
             val radioSignalFragment = RadioSignalFragment(sidebarWidth)
