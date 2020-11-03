@@ -4,10 +4,7 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.TickFragment
-import de.gleex.pltcmd.game.ui.fragments.tileinformation.CurrentCoordinateFragment
-import de.gleex.pltcmd.game.ui.fragments.tileinformation.ElementInfoFragment
-import de.gleex.pltcmd.game.ui.fragments.tileinformation.TerrainDetailsFragment
-import de.gleex.pltcmd.game.ui.fragments.tileinformation.TileInformationFragment
+import de.gleex.pltcmd.game.ui.fragments.tileinformation.*
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
 import org.hexworks.cobalt.databinding.api.extension.toProperty
@@ -64,8 +61,9 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, g
         val fragmentWidth = intelPanel.contentSize.width
 
         val fragments: List<TileInformationFragment> = listOf(
-                TerrainDetailsFragment(fragmentWidth, observedTile, gameWorld.worldMap),
                 CurrentCoordinateFragment(fragmentWidth, observedTile),
+                TerrainDetailsFragment(fragmentWidth, observedTile, gameWorld.worldMap),
+                MarkersFragment(fragmentWidth, observedTile),
                 ElementInfoFragment(fragmentWidth, observedTile, game)
         )
 
