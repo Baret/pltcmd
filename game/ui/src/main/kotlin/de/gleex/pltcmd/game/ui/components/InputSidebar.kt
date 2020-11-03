@@ -9,12 +9,14 @@ import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.ElementCommandFragment
 import de.gleex.pltcmd.game.ui.fragments.RadioSignalFragment
 import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.uievent.MouseEventType
+import org.hexworks.zircon.api.uievent.Pass
 import org.hexworks.zircon.internal.game.impl.DefaultGameComponent
 
 /**
@@ -39,8 +41,13 @@ class InputSidebar(
     init {
         val sidebarWidth = root.contentSize.width
 
-        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, map.absolutePosition, game)
+        val mapOffset = map.absolutePosition.toProperty()
+        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, mapOffset, game)
         root.addFragment(commandFragment)
+        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED) { _, _ ->
+            mapOffset.updateValue(map.absolutePosition)
+            Pass
+        }
         map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
 
         if (GameOptions.displayRadioSignals.value) {

@@ -13,6 +13,7 @@ import kotlinx.coroutines.runBlocking
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.Fragments
@@ -29,7 +30,7 @@ class ElementCommandFragment(
         private val world: GameWorld,
         val hq: ElementEntity,
         elements: List<ElementEntity>,
-        private val mapOffset: Position,
+        private val mapOffset: Property<Position>,
         private val game: Game
 ) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
 
@@ -90,7 +91,7 @@ class ElementCommandFragment(
 
     override fun invoke(event: MouseEvent, phase: UIEventPhase): UIEventResponse =
             if (phase == UIEventPhase.TARGET && event.button == 1) {
-                val coord = world.coordinateAtVisiblePosition(event.position - mapOffset)
+                val coord = world.coordinateAtVisiblePosition(event.position - mapOffset.value)
                 log.debug("MOUSE CLICKED at ${event.position}! Offset is $mapOffset. Updating command fragment value to $coord")
                 destinationProperty.updateValue(coord)
                 Processed
