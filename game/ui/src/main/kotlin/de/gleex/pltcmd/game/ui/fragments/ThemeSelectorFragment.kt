@@ -20,7 +20,7 @@ class ThemeSelectorFragment(override val width: Int, private val screen: Screen)
                         withCenteredText(true).
                         build()
                         .apply {
-                            selectedValue.onChange { screen.theme = it.newValue.getTheme() }
+                            selectedValue.onChange { screen.themeProperty.updateValue(it.newValue.getTheme()) }
                         })
             }
 }

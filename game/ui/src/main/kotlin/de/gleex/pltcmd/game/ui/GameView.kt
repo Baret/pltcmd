@@ -8,8 +8,6 @@ import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.*
-import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
-import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
 import de.gleex.pltcmd.model.radio.BroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
@@ -49,7 +47,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
         val mainPart = Components.panel().
                 withSize(UiOptions.MAP_VIEW_WDTH, UiOptions.MAP_VIEW_HEIGHT).
                 withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
-                withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld)).
+//                withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld)).
                 build().apply {
                     // redraw MapCoordinateDecorationRenderer
 //                    gameWorld.visibleOffsetValue.onChange { asInternalComponent().render() }
