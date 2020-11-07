@@ -13,18 +13,16 @@ import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.builder.component.ColorThemeBuilder
 import org.hexworks.zircon.api.component.ColorTheme
+import org.hexworks.zircon.api.component.Component
 import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.game.GameComponent
 import org.hexworks.zircon.api.graphics.BoxType
-import org.hexworks.zircon.api.uievent.MouseEventType
-import org.hexworks.zircon.api.uievent.Pass
-import org.hexworks.zircon.api.uievent.Processed
-import org.hexworks.zircon.api.uievent.UIEventPhase
+import org.hexworks.zircon.api.uievent.*
 
 /**
  * The info sidebar displays contextual information for the player like "what is on that tile?".
  */
-class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, game: Game) : Fragment {
+class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : Fragment {
 
     private val timePanel = Components.panel()
             .withSize(UiOptions.SIDEBAR_WIDTH, TickFragment.FRAGMENT_HEIGHT + 2)
@@ -54,9 +52,10 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, g
             .withSecondaryBackgroundColor(themeUnlocked.secondaryBackgroundColor.desaturate(.3))
             .build()
 
+    private val observedTile: Property<Coordinate> = gameWorld.visibleTopLeftCoordinate().toProperty()
+    private val lockedState: Property<Boolean> = false.toProperty()
+
     init {
-        val observedTile: Property<Coordinate> = gameWorld.visibleTopLeftCoordinate()
-                .toProperty()
 
         val fragmentWidth = intelPanel.contentSize.width
 
@@ -67,7 +66,6 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, g
                 ElementInfoFragment(fragmentWidth, observedTile, game)
         )
 
-        val lockedState: Property<Boolean> = false.toProperty()
         lockedState.onChange { valueChanged: ObservableValueChanged<Boolean> ->
             fragments.forEach { it.toggleLock() }
             if (valueChanged.newValue) {
@@ -77,17 +75,20 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, g
             }
         }
 
-        map.updateObservedTile(observedTile, gameWorld)
-        map.toggleLockedState(lockedState)
-
         timePanel.addFragment(TickFragment(timePanel.contentSize.width))
         fragments.forEach { intelPanel.addFragment(it) }
+    }
+
+    /** registers events on the given component that will be handled by this sidebar */
+    fun connectTo(mapComponent: Component) {
+        mapComponent.updateObservedTile(observedTile, gameWorld)
+        mapComponent.toggleLockedState(lockedState)
     }
 
     /**
      * Adds a mouse listener to this [GameComponent] that updates [observedTile] when the mouse moved.
      */
-    private fun GameComponent<*, *>.updateObservedTile(observedTile: Property<Coordinate>, gameWorld: GameWorld) {
+    private fun Component.updateObservedTile(observedTile: Property<Coordinate>, gameWorld: GameWorld) {
         handleMouseEvents(MouseEventType.MOUSE_MOVED) { event, phase ->
             if (phase == UIEventPhase.TARGET) {
                 observedTile.updateValue(gameWorld.coordinateAtVisiblePosition(event.position - absolutePosition))
@@ -99,7 +100,7 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, g
     /**
      * Adds a mouse listener to this [GameComponent] that toggles [lockedState] on right click.
      */
-    private fun GameComponent<*, *>.toggleLockedState(lockedState: Property<Boolean>) {
+    private fun UIEventSource.toggleLockedState(lockedState: Property<Boolean>) {
         handleMouseEvents(MouseEventType.MOUSE_CLICKED) { event, phase ->
             if (phase == UIEventPhase.TARGET && event.button == 3) {
                 lockedState.updateValue(!lockedState.value)

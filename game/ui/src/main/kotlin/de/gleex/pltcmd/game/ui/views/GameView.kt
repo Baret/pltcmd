@@ -58,11 +58,6 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                     it.logRadioCalls()
                 }
 
-        val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>()
-                .withGameArea(gameWorld)
-                .withSize(gameWorld.visibleSize.to2DSize())
-                .build()
-
         val leftSidebar = InputSidebar(SIDEBAR_HEIGHT, game, commandingElement, elementsToCommand, gameWorld)
 
         val leftSidebarComponent = CustomComponent(leftSidebar, Position.bottomLeftOf(logArea))
@@ -77,11 +72,16 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                     gameWorld.visibleOffsetValue.onChange { asInternalComponent().render() }
                 }
 
+        val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>()
+                .withGameArea(gameWorld)
+                .withSize(gameWorld.visibleSize.to2DSize())
+                .build()
+
         mainPart.addComponent(map)
         // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
         map.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
 
-        val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT, map, gameWorld, game)
+        val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT, gameWorld, game)
 
         screen.addComponents(
                 logArea,
@@ -125,6 +125,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
         }
         // connect parts that depend on each other
         leftSidebar.connectTo(map)
+        rightSidebar.connectTo(map)
     }
 
     private fun LogArea.logRadioCalls() {

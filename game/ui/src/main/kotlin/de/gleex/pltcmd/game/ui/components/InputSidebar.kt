@@ -4,7 +4,6 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
-import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.ElementCommandFragment
 import de.gleex.pltcmd.game.ui.fragments.RadioSignalFragment
@@ -13,12 +12,11 @@ import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
+import org.hexworks.zircon.api.component.Component
 import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.data.Position
-import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.uievent.MouseEventType
-import org.hexworks.zircon.internal.game.impl.DefaultGameComponent
 
 /**
  * The sidebar for the main user input. It contains the fragments used to select elements and send them commands.
@@ -54,11 +52,11 @@ class InputSidebar(
     }
 
     /** registers events on the given component that will be handled by this sidebar */
-    fun connectTo(map: DefaultGameComponent<Tile, GameBlock>) {
-        mapOffset.updateValue(map.absolutePosition)
-        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
+    fun connectTo(mapComponent: Component) {
+        mapOffset.updateValue(mapComponent.absolutePosition)
+        mapComponent.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
         radioVisualizer.ifPresent {
-            map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, it)
+            mapComponent.handleMouseEvents(MouseEventType.MOUSE_CLICKED, it)
         }
     }
 
