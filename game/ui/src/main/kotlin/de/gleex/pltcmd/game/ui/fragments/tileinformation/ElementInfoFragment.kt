@@ -36,7 +36,7 @@ class ElementInfoFragment(
     }
 
     @ExperimentalTime
-    private val callSign: FrontendString<String> = whenElementPresent { it.callsign.toString() }
+    private val callSign: FrontendString<String> = whenElementPresent { it.callsign.name }
 
     @ExperimentalTime
     private val description: FrontendString<String> = whenElementPresent { "  ${it.element.description}" }
