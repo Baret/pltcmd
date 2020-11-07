@@ -62,7 +62,7 @@ class InfoSidebar(height: Int, map: GameComponent<*, *>, gameWorld: GameWorld, g
 
         val fragments: List<TileInformationFragment> = listOf(
                 CurrentCoordinateFragment(fragmentWidth, observedTile),
-                TerrainDetailsFragment(fragmentWidth, observedTile, gameWorld.worldMap),
+                TerrainDetailsFragment(fragmentWidth, observedTile, game.world),
                 MarkersFragment(fragmentWidth, observedTile),
                 ElementInfoFragment(fragmentWidth, observedTile, game)
         )

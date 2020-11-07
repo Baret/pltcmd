@@ -24,7 +24,7 @@ import org.hexworks.zircon.internal.game.impl.TopDownProjectionStrategy
  * - An optional overlay, currently used for debug purposes (radio signal strength), but might later be used by the player to "paint on the map".
  *
  */
-class GameWorld(val worldMap: WorldMap) :
+class GameWorld(private val worldMap: WorldMap) :
         BaseGameArea<Tile, GameBlock>(
                 initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
                 initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
