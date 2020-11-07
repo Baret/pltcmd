@@ -7,11 +7,7 @@ import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.terrain.Terrain
-import de.gleex.pltcmd.model.world.terrain.TerrainHeight
-import de.gleex.pltcmd.model.world.terrain.TerrainType
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
-import org.hexworks.cobalt.databinding.api.extension.toProperty
-import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.Icon
@@ -30,7 +26,7 @@ class TerrainDetailsFragment(
         private const val FILLER_TEXT = "Terrain "
     }
 
-    private val terrainProperty: Property<Terrain> = Terrain.of(TerrainType.GRASSLAND, TerrainHeight.MIN).toProperty()
+    private val terrainProperty: ObservableValue<Terrain> = currentInfoTile.bindTransform { world[it] }
 
     private val icon: Icon = Components.icon()
             .withIcon(TileRepository.createTerrainTile(terrainProperty.value))
@@ -44,7 +40,7 @@ class TerrainDetailsFragment(
             .withSize(FILLER_TEXT.length, 1)
             .build()
 
-    private val terrainDesciption: Label = Components.label()
+    private val terrainDescription: Label = Components.label()
             .withSize(width - icon.size.width - fixedText.size.width, 1)
             .build()
             .apply {
@@ -59,12 +55,9 @@ class TerrainDetailsFragment(
                         addComponents(
                                 fixedText,
                                 icon,
-                                terrainDesciption
+                                terrainDescription
                         )
                         icon.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
                     }
 
-    override fun updateInformation(newCoordinate: Coordinate) {
-        terrainProperty.updateValue(world[newCoordinate])
-    }
 }

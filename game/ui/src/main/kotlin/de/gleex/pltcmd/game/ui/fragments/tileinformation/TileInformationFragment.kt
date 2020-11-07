@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.ui.fragments.tileinformation
 
 import de.gleex.pltcmd.game.ui.fragments.BaseFragment
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.zircon.internal.behavior.Observable
 
@@ -14,15 +15,21 @@ abstract class TileInformationFragment(
         currentTile: ObservableValue<Coordinate>
 ) : BaseFragment {
 
+    // create an independent Property initialized with the current value
+    private val tileForInformation = currentTile.value.toProperty()
+
+    /** The tile for which an information should be provided. */
+    protected val currentInfoTile: ObservableValue<Coordinate> = tileForInformation
+
+    private var locked = false
+
     init {
         currentTile.onChange {
             if (!locked) {
-                updateInformation(it.newValue)
+                tileForInformation.updateValue(it.newValue)
             }
         }
     }
-
-    private var locked = false
 
     /**
      * Toggles the locked state of this fragment. When the fragment is locked it does not update when the
@@ -32,10 +39,4 @@ abstract class TileInformationFragment(
         locked = !locked
     }
 
-    /**
-     * This method is called when the underlying observed tile updates and this fragment is not locked.
-     *
-     * @see toggleLock
-     */
-    protected abstract fun updateInformation(newCoordinate: Coordinate)
 }

@@ -10,8 +10,8 @@ import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
-import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
+import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.zircon.api.Components
 import kotlin.time.ExperimentalTime
@@ -28,12 +28,20 @@ class ElementInfoFragment(
         private val game: Game
 ) : TileInformationFragment(observedTile) {
 
-    private val currentElement: Property<Maybe<ElementEntity>> = Maybe.empty<ElementEntity>().toProperty()
+    @ExperimentalTime
+    private val currentElement: ObservableValue<Maybe<ElementEntity>> = currentInfoTile.bindTransform {
+        Maybe.ofNullable(
+                game.elementsAt(it)
+                        .firstOrNull())
+    }
 
+    @ExperimentalTime
     private val callSign: FrontendString<String> = whenElementPresent { it.callsign.toString() }
 
+    @ExperimentalTime
     private val description: FrontendString<String> = whenElementPresent { "  ${it.element.description}" }
 
+    @ExperimentalTime
     override val root = Components.vbox()
             .withSize(width, 2)
             .build()
@@ -56,12 +64,6 @@ class ElementInfoFragment(
             }
 
     @ExperimentalTime
-    override fun updateInformation(newCoordinate: Coordinate) {
-        currentElement.updateValue(
-                Maybe.ofNullable(
-                        game.elementsAt(newCoordinate).firstOrNull()))
-    }
-
     private fun whenElementPresent(transformation: (ElementEntity) -> String): FrontendString<String> {
         return currentElement.bindTransform {
             if(it.isPresent) {

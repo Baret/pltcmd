@@ -24,7 +24,4 @@ class MarkersFragment(override val width: Int, observedTile: Property<Coordinate
                 )
             }
 
-    override fun updateInformation(newCoordinate: Coordinate) {
-        // nothing to do yet
-    }
 }
