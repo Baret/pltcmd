@@ -63,7 +63,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                 .withSize(gameWorld.visibleSize.to2DSize())
                 .build()
 
-        val leftSidebar = InputSidebar(SIDEBAR_HEIGHT, game, commandingElement, elementsToCommand, map, gameWorld)
+        val leftSidebar = InputSidebar(SIDEBAR_HEIGHT, game, commandingElement, elementsToCommand, gameWorld)
 
         val leftSidebarComponent = CustomComponent(leftSidebar, Position.bottomLeftOf(logArea))
 
@@ -123,6 +123,8 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                 Pass
             }
         }
+        // connect parts that depend on each other
+        leftSidebar.connectTo(map)
     }
 
     private fun LogArea.logRadioCalls() {

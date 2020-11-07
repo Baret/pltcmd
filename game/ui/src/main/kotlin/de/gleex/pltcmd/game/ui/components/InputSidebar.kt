@@ -10,9 +10,11 @@ import de.gleex.pltcmd.game.ui.fragments.ElementCommandFragment
 import de.gleex.pltcmd.game.ui.fragments.RadioSignalFragment
 import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
 import org.hexworks.cobalt.databinding.api.extension.toProperty
+import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.Fragment
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.uievent.MouseEventType
@@ -27,7 +29,6 @@ class InputSidebar(
         game: Game,
         commandingElement: ElementEntity,
         elementsToCommand: List<ElementEntity>,
-        map: DefaultGameComponent<Tile, GameBlock>,
         gameWorld: GameWorld
 ) : Fragment {
     override val root =
@@ -37,21 +38,28 @@ class InputSidebar(
                     .withDecorations(ComponentDecorations.box(BoxType.DOUBLE, "Command net"))
                     .build()
 
-    init {
-        val sidebarWidth = root.contentSize.width
+    // property for lazy initialization of offset
+    private val mapOffset = Position.zero().toProperty()
+    private val commandFragment = ElementCommandFragment(root.contentSize.width, gameWorld, commandingElement, elementsToCommand, mapOffset, game)
+    private var radioVisualizer: Maybe<RadioSignalVisualizer> = Maybe.empty()
 
-        val mapOffset = map.absolutePosition.toProperty()
-        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, mapOffset, game)
+    init {
         root.addFragment(commandFragment)
-        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED) { event, phase ->
-            mapOffset.updateValue(map.absolutePosition)
-            commandFragment(event, phase)
-        }
 
         if (GameOptions.displayRadioSignals.value) {
-            val radioSignalFragment = RadioSignalFragment(sidebarWidth)
-            map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer(gameWorld, radioSignalFragment.selectedStrength, radioSignalFragment.selectedRange, map.absolutePosition))
+            val radioSignalFragment = RadioSignalFragment(root.contentSize.width)
+            radioVisualizer = Maybe.of(RadioSignalVisualizer(gameWorld, radioSignalFragment.selectedStrength, radioSignalFragment.selectedRange, mapOffset))
             root.addFragment(radioSignalFragment)
         }
     }
+
+    /** registers events on the given component that will be handled by this sidebar */
+    fun connectTo(map: DefaultGameComponent<Tile, GameBlock>) {
+        mapOffset.updateValue(map.absolutePosition)
+        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
+        radioVisualizer.ifPresent {
+            map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, it)
+        }
+    }
+
 }

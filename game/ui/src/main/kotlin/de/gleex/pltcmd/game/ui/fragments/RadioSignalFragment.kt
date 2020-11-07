@@ -114,6 +114,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
     private fun buildRangeInput(rangeLabel: Label): Slider {
         val rangeInput = Components.
                 horizontalSlider().
+                withSize(width, 1).
                 withMinValue(1).
                 withMaxValue(70).
                 withNumberOfSteps(min(34, width)).
