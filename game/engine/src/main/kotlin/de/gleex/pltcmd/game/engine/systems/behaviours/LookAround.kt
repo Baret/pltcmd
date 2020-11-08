@@ -7,11 +7,12 @@ import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
+import de.gleex.pltcmd.model.world.coordinate.fillCircle
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
-import java.util.*
 
 /** Behavior of an entity that updates the [VisibleAreaAttribute] each tick. **/
 object LookAround :
@@ -35,7 +36,7 @@ object LookAround :
     /**
      * Calculates and stores the visible area of the entity if necessary.
      */
-    suspend fun updateVisibleArea(entity: SeeingEntity, context: GameContext): Boolean {
+    fun updateVisibleArea(entity: SeeingEntity, context: GameContext): Boolean {
         val currentPosition = entity.currentPosition
         if (currentPosition != entity.lookingFrom || entity.visibleTiles.isEmpty) {
             // position changed or view was reset
@@ -47,30 +48,25 @@ object LookAround :
     }
 
     private fun lookAround(from: Coordinate, world: WorldMap): CoordinateArea {
-        val visible = TreeSet<Coordinate>()
-        visible.add(from)
-        val storeVisible: (Coordinate) -> Boolean = { element: Coordinate ->
-            visible.add(element) && from.distanceTo(element) <= MAX_RANGE
-        }
-        addVisibleNeighbors(from, world, storeVisible)
+        val visible = from.fillCircle(MAX_RANGE)
+        visible.removeIf { !it.isVisibleFrom(from, world) }
         return CoordinateArea(visible)
     }
 
-    private fun addVisibleNeighbors(current: Coordinate, world: WorldMap, storeVisible: (Coordinate) -> Boolean) {
-        world.neighborsOf(current)
-                .forEach { neighbor ->
-                    val isVisible = isVisible(neighbor, current, world)
-                    log.trace("$neighbor is visible from $current? $isVisible")
-                    if (isVisible && storeVisible(neighbor)) {
-                        addVisibleNeighbors(neighbor, world, storeVisible)
-                    }
-                }
-    }
+}
 
-    private fun isVisible(next: Coordinate, from: Coordinate, world: WorldMap): Boolean {
-        val currentHeight = world[from].height
-        val nextHeight = world[next].height
-        return currentHeight >= nextHeight
-    }
-
+/** @return true if no higher terrain is on the direct line between the two tiles */
+fun Coordinate.isVisibleFrom(from: Coordinate, world: WorldMap): Boolean {
+    val fromHeight = world[from].height.value
+    val targetHeight = world[this].height.value
+    val deltaHeight = targetHeight - fromHeight
+    val distance = from.distanceTo(this)
+    val /* m = */ heightPerDistance = deltaHeight / distance
+    // the function that describes the line between the two terrain heights and provides the height at each coordinate:
+    // f(x) = m*x + b
+    val lineOfSight: (Coordinate) -> Double = { location -> from.distanceTo(location) * heightPerDistance + /* b = */ fromHeight  }
+    // stop when the terrain height blocks the direct line
+    return CoordinatePath.line(from, this)
+            .dropWhile { lineOfSight.invoke(it) >= world[it].height.value }
+            .isEmpty()
 }
