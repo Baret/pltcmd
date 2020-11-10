@@ -54,7 +54,7 @@ object EntityFactory {
 
         val behaviors: MutableList<Behavior<GameContext>> = mutableListOf(
                 IntentPursuing,
-                LookAround,
+                LookingAround,
                 MovingForOneMinute,
                 Communicating,
                 Fighting

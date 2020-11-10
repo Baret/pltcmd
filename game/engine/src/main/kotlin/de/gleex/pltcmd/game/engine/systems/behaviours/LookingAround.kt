@@ -15,13 +15,13 @@ import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /** Behavior of an entity that updates the [VisibleAreaAttribute] each tick. **/
-object LookAround :
+object LookingAround :
         BaseBehavior<GameContext>(
                 PositionAttribute::class,
                 VisibleAreaAttribute::class
         ) {
 
-    private val log = LoggerFactory.getLogger(LookAround::class)
+    private val log = LoggerFactory.getLogger(LookingAround::class)
     private const val MAX_RANGE = 30
 
     // implements only type checking
