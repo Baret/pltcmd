@@ -1,11 +1,13 @@
 package de.gleex.pltcmd.game.engine
 
+import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.ticks.TickId
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Context
+import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.datatypes.Maybe
 import kotlin.random.Random
 
@@ -17,12 +19,12 @@ import kotlin.random.Random
 data class GameContext(
         val currentTick: TickId,
         val world: WorldMap,
-        private val allElements: Set<ElementEntity>,
+        val entities: EntitySet<EntityType>,
         val random: Random
 ) : Context {
 
     fun findElementAt(location: Coordinate): Maybe<ElementEntity> {
-        return Maybe.ofNullable(allElements.find { it.currentPosition == location })
+        return Maybe.ofNullable(entities.allElements().all.find { it.currentPosition == location })
     }
 
 }

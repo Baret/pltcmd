@@ -103,6 +103,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>de.gleex.pltcmd.model.signals</groupId>
+                <artifactId>signals-all</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>de.gleex.pltcmd.util</groupId>
                 <artifactId>events</artifactId>
                 <version>${project.version}</version>

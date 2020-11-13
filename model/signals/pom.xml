@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>model</artifactId>
+        <groupId>de.gleex.pltcmd.model</groupId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.gleex.pltcmd.model.signals</groupId>
+    <artifactId>signals-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Signals parent</name>
+    <description>Groups together all modules belonging to signaling.</description>
+
+    <modules>
+        <module>core</module>
+        <module>vision</module>
+        <module>signals-all</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>world</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>elements</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- modules -->
+            <dependency>
+                <groupId>de.gleex.pltcmd.model.signals</groupId>
+                <artifactId>core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model.signals</groupId>
+                <artifactId>vision</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

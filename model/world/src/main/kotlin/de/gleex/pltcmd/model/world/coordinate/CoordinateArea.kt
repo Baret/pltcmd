@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import de.gleex.pltcmd.model.world.toSectorOrigin
 import java.util.*
 
 /**
@@ -15,9 +16,34 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
         get() = coordinates.isEmpty()
 
     /**
+     * Maps all [MainCoordinate]s contained in this area to their [Coordinate]s that are present in this
+     * area. This map is useful to more efficiently find coordinates in very large areas.
+     */
+    protected val mainCoordinatesMap: Map<MainCoordinate, SortedSet<Coordinate>> =
+            coordinates
+                    .groupBy { it.toMainCoordinate() }
+                    .mapValues { it.value.toSortedSet() }
+
+    /**
+     * All [MainCoordinate]s contained in this area.
+     */
+    val mainCoordinates: Set<MainCoordinate> = mainCoordinatesMap.keys
+
+    /**
+     * All sector origins contained in this area.
+     */
+    val sectorOrigins: SortedSet<Coordinate> =
+            coordinates
+                    .map { it.toSectorOrigin() }
+                    .toSortedSet()
+
+    /**
      * Checks if this area contains the given [Coordinate].
      */
-    open operator fun contains(coordinate: Coordinate) = coordinates.contains(coordinate)
+    open operator fun contains(coordinate: Coordinate) =
+            contains(coordinate.toMainCoordinate()) && coordinates.contains(coordinate)
+
+    open operator fun contains(mainCoordinate: MainCoordinate) = mainCoordinatesMap.containsKey(mainCoordinate)
 
     /**
      * Returns an ordered sequence of all [Coordinate]s in this area.

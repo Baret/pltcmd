@@ -20,6 +20,7 @@
         <module>radio</module>
         <module>world</module>
         <module>combat</module>
+        <module>signals</module>
     </modules>
 
     <dependencyManagement>

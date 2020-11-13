@@ -1,10 +1,9 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
-import de.gleex.pltcmd.game.engine.attributes.VisibleAreaAttribute
+import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.signals.vision.VisualSignal
 
 /**
  * This file contains code for entities that have the [VisibleAreaAttribute].
@@ -14,16 +13,20 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 interface Seeing : Positionable
 typealias SeeingEntity = GameEntity<Seeing>
 
-private val SeeingEntity.visibleArea: VisibleAreaAttribute
-    get() = getAttribute(VisibleAreaAttribute::class)
+private val SeeingEntity.visionAttribute: VisionAttribute
+    get() = getAttribute(VisionAttribute::class)
 
-internal fun SeeingEntity.updateVision(lookingFrom: Coordinate, visibleTiles: CoordinateArea) {
-    visibleArea.from = lookingFrom
-    visibleArea.area = visibleTiles
-}
+internal var SeeingEntity.vision: VisualSignal
+    get() = visionAttribute.vision
+    set(value) {
+        visionAttribute.vision = value
+    }
 
 internal val SeeingEntity.lookingFrom
-    get() = visibleArea.from
+    get() = vision.origin
 
 internal val SeeingEntity.visibleTiles
-    get() = visibleArea.area
+    get() = vision.area
+
+internal val SeeingEntity.visualRange
+    get() = visionAttribute.visualRange

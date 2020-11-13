@@ -2,8 +2,12 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.attributes.VisibleAreaAttribute
+import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
+import de.gleex.pltcmd.game.engine.commands.DetectEntities
+import de.gleex.pltcmd.game.engine.entities.EntitySet
+import de.gleex.pltcmd.game.engine.entities.toEntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.model.signals.vision.builder.visionAt
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
@@ -14,11 +18,11 @@ import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
-/** Behavior of an entity that updates the [VisibleAreaAttribute] each tick. **/
+/** Behavior of an entity that updates the [VisionAttribute] each tick. **/
 object LookingAround :
         BaseBehavior<GameContext>(
                 PositionAttribute::class,
-                VisibleAreaAttribute::class
+                VisionAttribute::class
         ) {
 
     private val log = LoggerFactory.getLogger(LookingAround::class)
@@ -30,8 +34,26 @@ object LookingAround :
             return false
         }
         @Suppress("UNCHECKED_CAST")
-        return updateVisibleArea(entity as SeeingEntity, context)
+        return lookForElements(entity as SeeingEntity, context)
     }
+
+    private fun lookForElements(entity: SeeingEntity, context: GameContext): Boolean {
+        if(entity.moved) {
+            entity.vision = context.world.visionAt(entity.currentPosition, entity.visualRange)
+        }
+        val visibleEntities: EntitySet<Positionable> =
+                context
+                        .entities
+                        .allOfType(Positionable::class)
+                        .filter { it.currentPosition in entity.visibleTiles }
+                        .toEntitySet()
+        if (visibleEntities.isNotEmpty()) {
+            entity.executeCommand(DetectEntities(visibleEntities))
+        }
+        return true
+    }
+
+    private val SeeingEntity.moved = vision.origin != currentPosition
 
     /**
      * Calculates and stores the visible area of the entity if necessary.

@@ -34,7 +34,7 @@ class RadioSender(private val location: ObservableValue<Coordinate>, power: Doub
     val currentLocation: Coordinate
         get() = location.value
 
-    private val signal = RadioSignal(power)
+    private val signal = RadioSignal(power)  // map.signalAt<RadioSignal>(entity.currentPosition, entity.visualRange)
 
     // cached as we send with constant power over a fixed world
     private var _cachedReachableTiles: CoordinateRectangle? = null

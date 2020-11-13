@@ -37,7 +37,7 @@ object EntityFactory {
                 CommandersIntent(),
                 ElementAttribute(element, affiliation),
                 PositionAttribute(initialPosition),
-                VisibleAreaAttribute(initialPosition.value, CoordinateArea.empty),
+                VisionAttribute(initialPosition.value, CoordinateArea.empty),
                 // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
                 RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
                 ShootersAttribute(element),

@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import java.util.*
@@ -80,6 +81,17 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
      **/
     fun moveInside(location: Coordinate): Coordinate {
         return Utils.moveInside(location, origin, last)
+    }
+
+    /**
+     * Returns a [WorldArea] containing all [WorldTile]s contained in the given [CoordinateArea]
+     */
+    fun areaOf(coordinateArea: CoordinateArea): WorldArea {
+        return WorldArea(sectors
+                .filter { origin in coordinateArea.sectorOrigins }
+                .flatMap { sector -> sector.tiles }
+                .filter { it.coordinate in coordinateArea }
+                .toSortedSet())
     }
 
     companion object {
