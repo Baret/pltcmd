@@ -51,11 +51,7 @@ class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<S
         if (!contains(coordinate)) {
             return null
         }
-        return get(coordinate)!!.terrain
-    }
-
-    operator fun get(coordinate: Coordinate): WorldTile? {
-        return tiles.find { it.coordinate == coordinate }
+        return get(coordinate).get().terrain
     }
 
     /** sorted by origin */

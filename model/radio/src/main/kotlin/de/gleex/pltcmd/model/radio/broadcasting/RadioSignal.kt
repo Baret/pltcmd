@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.model.radio.broadcasting
 
 import de.gleex.pltcmd.model.world.terrain.Terrain
-import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import kotlin.math.floor
 import kotlin.math.log
 import kotlin.math.max
@@ -81,8 +80,6 @@ open class RadioSignal(private val power: Double) {
         }
         return Pair(signal.toSignalStrength(), used)
     }
-
-    private fun TerrainHeight.toDouble(): Double = value.toDouble()
 
     override fun toString(): String {
         return "radio signal with power $power (${power.toSignalStrength() * 100.0}%)"

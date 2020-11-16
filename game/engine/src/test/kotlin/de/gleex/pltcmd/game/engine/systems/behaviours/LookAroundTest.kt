@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.model.world.Sector
-import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.terrain.Terrain
@@ -9,7 +8,6 @@ import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.shouldBe
 import java.util.*
 
 class LookAroundTest : StringSpec({
@@ -30,7 +28,7 @@ class LookAroundTest : StringSpec({
         }
     }
     val sector = Sector(origin, tiles)
-
+/*
     val world = WorldMap.create(setOf(sector))
     "isVisibleFrom straight" {
         val straightVisible = Coordinate(2, 0)
@@ -59,6 +57,7 @@ class LookAroundTest : StringSpec({
         downInvisible.isVisibleFrom(origin, world) shouldBe false
         origin.isVisibleFrom(downInvisible, world) shouldBe false
     }
+ */
 })
 
 fun testHeight(x: Int): TerrainHeight {

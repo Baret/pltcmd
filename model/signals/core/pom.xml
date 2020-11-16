@@ -11,4 +11,10 @@
 
     <artifactId>core</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>geometry</artifactId>
+        </dependency>
+    </dependencies>
 </project>

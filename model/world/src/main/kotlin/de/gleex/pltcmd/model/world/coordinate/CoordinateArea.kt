@@ -72,7 +72,7 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
     }
 
     companion object {
-        val empty = CoordinateArea(TreeSet())
+        val EMPTY = CoordinateArea(TreeSet())
     }
 
 }
