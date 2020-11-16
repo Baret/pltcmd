@@ -70,6 +70,7 @@ object EntityFactory {
         }
 
         val facets: MutableList<Facet<GameContext>> = mutableListOf(
+                Detects,
                 PathFinding,
                 ExecuteOrder,
                 ConversationSender,
