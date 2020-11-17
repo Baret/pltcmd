@@ -6,6 +6,7 @@ import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
 import de.gleex.pltcmd.game.engine.commands.DetectEntities
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.signals.vision.VisualSignal
 import de.gleex.pltcmd.model.signals.vision.builder.visionAt
 import org.hexworks.amethyst.api.base.BaseBehavior
@@ -28,16 +29,22 @@ object LookingAround :
             return false
         }
         @Suppress("UNCHECKED_CAST")
-        return lookForElements(entity as SeeingEntity, context)
+        return lookForEntities(entity as SeeingEntity, context)
     }
 
-    private suspend fun lookForElements(entity: SeeingEntity, context: GameContext): Boolean {
+    private suspend fun lookForEntities(entity: SeeingEntity, context: GameContext): Boolean {
+        val element = entity as ElementEntity
         if (entity.hasMoved()) {
             entity.vision = context.world.visionAt(entity.currentPosition, entity.visualRange)
         }
         val visibleEntities: EntitySet<Positionable> =
                 context.entities
+                        .without(entity)
                         .inArea(entity.visibleTiles)
+
+        if(element.callsign.name == "Bravo" && element.affiliation == Affiliation.Friendly) {
+            log.info("${visibleEntities.size}/${context.entities.size} (${context.entities.ofType(Positionable::class).size} positionable) visible")
+        }
         if (visibleEntities.isNotEmpty()) {
             entity.executeCommand(DetectEntities(visibleEntities, context, entity))
         }

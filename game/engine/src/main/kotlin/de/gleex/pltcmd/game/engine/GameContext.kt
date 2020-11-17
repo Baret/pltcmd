@@ -24,7 +24,7 @@ data class GameContext(
 ) : Context {
 
     fun findElementAt(location: Coordinate): Maybe<ElementEntity> {
-        return Maybe.ofNullable(entities.allElements().all.find { it.currentPosition == location })
+        return Maybe.ofNullable(entities.allElements().find { it.currentPosition == location })
     }
 
 }

@@ -11,6 +11,8 @@ abstract class Signal<M: PropagationModel<P>, P: SignalPower>(val power: P, val 
 
     protected abstract val model: M
 
+    abstract val maxRangeInTiles: Int
+
     // gibt einen Wert von 0.0 bis 1.0 zurück
     open fun at(target: Coordinate): SignalStrength {
         val terrainList = area[CoordinatePath.line(origin, target)]

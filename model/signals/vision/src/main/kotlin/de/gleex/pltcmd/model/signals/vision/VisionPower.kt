@@ -17,4 +17,8 @@ class VisionPower(power: Double) : SignalPower(max(power, MIN_POWER)) {
             VisionPower(power - i)
 
     override fun initialProcessingValue(): Double = 1.0
+
+    override fun toString(): String {
+        return "VisionPower(power=$power)"
+    }
 }

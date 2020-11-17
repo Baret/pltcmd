@@ -88,9 +88,9 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
      */
     fun areaOf(coordinateArea: CoordinateArea): WorldArea {
         return WorldArea(sectors
-                .filter { origin in coordinateArea.sectorOrigins }
+                .filter { sector ->  sector.origin in coordinateArea.sectorOrigins }
                 .flatMap { sector -> sector.tiles }
-                .filter { it.coordinate in coordinateArea }
+                .filter { worldTile -> worldTile.coordinate in coordinateArea }
                 .toSortedSet())
     }
 
