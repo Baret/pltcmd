@@ -30,6 +30,7 @@ class ElementInfoFragment(
         private val game: Game
 ) : TileInformationFragment(observedTile) {
 
+    // TODO: Handle multiple elements (list binding, show list of elements)
     private val currentElement: ObservableValue<Maybe<ElementEntity>> = currentInfoTile.bindTransform {
         Maybe.ofNullable(
                 game.elementsAt(it)
