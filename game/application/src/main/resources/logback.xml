@@ -1,9 +1,6 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
     <jmxConfigurator/>
-    <filter class="ch.qos.logback.access.filter.CountingFilter">
-        <name>countingFilter</name>
-    </filter>
 
     <timestamp key="bySecond" datePattern="yyyyMMdd_HHmmss"/>
 
@@ -33,9 +30,9 @@
     <!--    <logger name="org.hexworks.amethyst.api.entity.Entity" level="DEBUG"/>-->
 
     <logger name="de.gleex.pltcmd.game.application" level="DEBUG"/>
-    <logger name="de.gleex.pltcmd.game.engine.systems" level="INFO"/>
+<!--    <logger name="de.gleex.pltcmd.game.engine.systems" level="DEBUG"/>-->
 
-    <logger name="de.gleex.pltcmd.game.engine.Game" level="TRACE">
+    <logger name="de.gleex.pltcmd.game.engine.Game" level="TRACE" additivity="false">
         <appender-ref ref="ELEMENTS_PERFORMANCE"/>
     </logger>
 
