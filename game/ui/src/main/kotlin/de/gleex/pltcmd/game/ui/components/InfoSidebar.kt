@@ -21,6 +21,9 @@ import org.hexworks.zircon.api.uievent.*
 
 /**
  * The info sidebar displays contextual information for the player like "what is on that tile?".
+ *
+ * It can be locked by right clicking in the map. This means it no longer updates the information from
+ * mouse movement but rather displays the clicked tile. Another right click unlocks it again.
  */
 class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : Fragment {
 
@@ -56,7 +59,12 @@ class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : F
             .build()
 
     private val observedTile: Property<Coordinate> = gameWorld.visibleTopLeftCoordinate().toProperty()
-    private val lockedState: Property<Boolean> = false.toProperty()
+
+    /**
+     * This property is used to toggle the lock on the contained [TileInformationFragment]s and to update the
+     * sidebar's theme so the user can see that the information does not update by moving the cursor.
+     */
+    private val lockIntelPanel: Property<Boolean> = false.toProperty()
 
     init {
 
@@ -69,7 +77,7 @@ class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : F
                 ElementInfoFragment(fragmentWidth, observedTile, game)
         )
 
-        lockedState.onChange { valueChanged: ObservableValueChanged<Boolean> ->
+        lockIntelPanel.onChange { valueChanged: ObservableValueChanged<Boolean> ->
             fragments.forEach { it.toggleLock() }
             if (valueChanged.newValue) {
                 intelPanel.themeProperty.updateValue(themeLocked)
@@ -84,7 +92,7 @@ class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : F
     /** registers events on the given component that will be handled by this sidebar */
     fun connectTo(mapComponent: Component) {
         mapComponent.updateObservedTile(observedTile, gameWorld)
-        mapComponent.toggleLockedState(lockedState)
+        mapComponent.toggleLockedState(lockIntelPanel)
     }
 
     /**
