@@ -7,10 +7,10 @@ import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.screen.Screen
 import org.hexworks.zircon.internal.resource.ColorThemeResource
 
-class ThemeSelectorFragment(override val width: Int, private val screen: Screen) : BaseFragment {
+class ThemeSelectorFragment(override val fragmentWidth: Int, private val screen: Screen) : BaseFragment {
     override val root = Components.
             panel().
-            withSize(width, 3).
+            withSize(fragmentWidth, 3).
             withDecorations(ComponentDecorations.box(BoxType.TOP_BOTTOM_DOUBLE, "Color theme")).
             build().apply {
                 val themeResources = ColorThemeResource.values()

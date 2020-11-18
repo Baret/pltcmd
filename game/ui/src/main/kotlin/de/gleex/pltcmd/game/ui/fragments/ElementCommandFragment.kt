@@ -26,7 +26,7 @@ import org.hexworks.zircon.api.uievent.*
  * feature. But it may be used as the base for the UI element used to send radio commands to elements.
  */
 class ElementCommandFragment(
-        override val width: Int,
+        override val fragmentWidth: Int,
         private val world: GameWorld,
         val hq: ElementEntity,
         elements: List<ElementEntity>,
@@ -36,7 +36,7 @@ class ElementCommandFragment(
 
     private var selectedElement: ElementEntity = elements.first()
     private val destinationProperty = createPropertyFrom(selectedElement.position.value)
-    private val elementSelect = Fragments.multiSelect(width, elements)
+    private val elementSelect = Fragments.multiSelect(fragmentWidth, elements)
             .withDefaultSelected(selectedElement)
             .withCallback { _, newElement -> selectedElement = newElement }
             .withToStringMethod { it.callsign.toString() }
@@ -47,7 +47,7 @@ class ElementCommandFragment(
     }
 
     override val root = Components.vbox()
-            .withSize(width, 5)
+            .withSize(fragmentWidth, 5)
             .build()
             .apply {
                 addFragment(elementSelect)

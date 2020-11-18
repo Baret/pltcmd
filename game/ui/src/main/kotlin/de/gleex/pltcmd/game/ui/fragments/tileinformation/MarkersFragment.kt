@@ -9,10 +9,10 @@ import org.hexworks.zircon.api.Components
  *
  * MARKERS ARE NOT YET IMPLEMENTED! This is just a dummy fragment for now!
  */
-class MarkersFragment(override val width: Int, observedTile: Property<Coordinate>) : TileInformationFragment(observedTile) {
+class MarkersFragment(override val fragmentWidth: Int, observedTile: Property<Coordinate>) : TileInformationFragment(observedTile) {
 
     override val root = Components.vbox()
-            .withSize(width, 2)
+            .withSize(fragmentWidth, 2)
             .withSpacing(0)
             .build()
             .apply {

@@ -3,7 +3,7 @@ package de.gleex.pltcmd.game.ui.components
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.game.ui.fragments.TickFragment
+import de.gleex.pltcmd.game.ui.fragments.GameTimeFragment
 import de.gleex.pltcmd.game.ui.fragments.tileinformation.*
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
@@ -27,12 +27,24 @@ import org.hexworks.zircon.api.uievent.*
  */
 class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : Fragment {
 
+    companion object {
+        private val themeUnlocked: ColorTheme = UiOptions.THEME
+        private val themeLocked: ColorTheme = ColorThemeBuilder.newBuilder()
+                .withAccentColor(themeUnlocked.accentColor)
+                .withPrimaryForegroundColor(themeUnlocked.primaryForegroundColor.lightenByPercent(.2))
+                .withPrimaryBackgroundColor(themeUnlocked.primaryBackgroundColor.desaturate(.3))
+                .withSecondaryForegroundColor(themeUnlocked.secondaryForegroundColor.lightenByPercent(.2))
+                .withSecondaryBackgroundColor(themeUnlocked.secondaryBackgroundColor.desaturate(.3))
+                .build()
+    }
+
     private val timePanel = Components.panel()
-            .withSize(UiOptions.SIDEBAR_WIDTH, TickFragment.FRAGMENT_HEIGHT + 2)
+            .withSize(UiOptions.SIDEBAR_WIDTH, GameTimeFragment.FRAGMENT_HEIGHT + 2)
             .withDecorations(ComponentDecorations.box(BoxType.LEFT_RIGHT_DOUBLE, "Current time"))
             .build()
             .apply {
-                addFragment(TickFragment(contentSize.width))
+                addFragment(GameTimeFragment(contentSize.width))
+
             }
 
     private val intelPanel = Components.vbox()
@@ -48,15 +60,6 @@ class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : F
                     .apply {
                         addComponents(timePanel, intelPanel)
                     }
-
-    private val themeUnlocked: ColorTheme = UiOptions.THEME
-    private val themeLocked: ColorTheme = ColorThemeBuilder.newBuilder()
-            .withAccentColor(themeUnlocked.accentColor)
-            .withPrimaryForegroundColor(themeUnlocked.primaryForegroundColor.lightenByPercent(.2))
-            .withPrimaryBackgroundColor(themeUnlocked.primaryBackgroundColor.desaturate(.3))
-            .withSecondaryForegroundColor(themeUnlocked.secondaryForegroundColor.lightenByPercent(.2))
-            .withSecondaryBackgroundColor(themeUnlocked.secondaryBackgroundColor.desaturate(.3))
-            .build()
 
     private val observedTile: Property<Coordinate> = gameWorld.visibleTopLeftCoordinate().toProperty()
 

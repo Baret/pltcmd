@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.ticks
 
 import de.gleex.pltcmd.game.options.GameConstants
+import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
@@ -37,7 +38,9 @@ object Ticker {
 
     private val _currentDayProperty: Property<Int> = 0.toProperty { newDay -> newDay > 0 }
 
-    private val executor = Executors.newScheduledThreadPool(1)
+    private val _isPausedProperty: Property<Boolean> = true.toProperty()
+
+    private var executor = newExecutor()
 
     init {
         val initialTime = LocalTime.of(23, 50)
@@ -67,9 +70,14 @@ object Ticker {
     val currentTickObservable: ObservableValue<TickId> = _currentTickProperty
 
     /**
+     * Observable flag to see if the game is currently paused.
+     */
+    val isPaused: ObservableValue<Boolean> = _isPausedProperty
+
+    /**
      * Increases the current tick, publishes the corresponding [TickEvent].
      */
-    fun tick() {
+    private fun tick() {
         _currentTickProperty.value = nextTick
         _currentTimeProperty.updateValue(
                 _currentTimeProperty
@@ -79,16 +87,43 @@ object Ticker {
         globalEventBus.publishTick(currentTick)
     }
 
+    /**
+     * Starts the ticker with the values from [GameOptions].
+     */
+    fun start() =
+            start(GameOptions.TickRate.duration, GameOptions.TickRate.timeUnit)
+
+    /**
+     * Starts the ticker with the given duration between each tick.
+     */
     fun start(tickRateDuration: Long, tickRateTimeunit: TimeUnit) {
         executor.scheduleAtFixedRate({
             tick()
         }, 1, tickRateDuration, tickRateTimeunit)
+        _isPausedProperty.updateValue(false)
     }
 
+    /**
+     * Stops the ticker and thus advancement of ingame time (aka "game paused")
+     */
     fun stop() {
         executor.shutdown()
+        executor = newExecutor()
+        _isPausedProperty.updateValue(true)
     }
 
+    /**
+     * Starts/stops the ticker depending on [isPaused].
+     */
+    fun togglePause() {
+        if(isPaused.value) {
+            start()
+        } else {
+            stop()
+        }
+    }
+
+    private fun newExecutor() = Executors.newScheduledThreadPool(1)
 }
 
 /**

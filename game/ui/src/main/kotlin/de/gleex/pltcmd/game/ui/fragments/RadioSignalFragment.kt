@@ -17,14 +17,14 @@ import kotlin.math.min
 /**
  * A fragment used to configure the settings for the RadioSignalVisualizer.
  */
-class RadioSignalFragment(override val width: Int) : BaseFragment {
+class RadioSignalFragment(override val fragmentWidth: Int) : BaseFragment {
 
     val selectedStrength: Property<Int> = createPropertyFrom(200)
     val selectedRange: Property<Int> = createPropertyFrom(20)
 
     override val root = Components.
             vbox().
-            withSize(width, 9).
+            withSize(fragmentWidth, 9).
             withSpacing(0).
             build().
             apply {
@@ -66,7 +66,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
         return Components.
                 hbox().
                 withSpacing(0).
-                withSize(width, 1).
+                withSize(fragmentWidth, 1).
                 build().
                 apply {
                     addComponents(*buildLegendText())
@@ -90,8 +90,8 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
                 horizontalSlider().
                 withMinValue(1).
                 withMaxValue(5001).
-                withNumberOfSteps(min(30, width)).
-                withSize(width, 2).
+                withNumberOfSteps(min(30, fragmentWidth)).
+                withSize(fragmentWidth, 2).
                 build().
                 apply {
                     currentValue = selectedStrength.value
@@ -107,17 +107,17 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
         return Components.
                 label().
                 withText(text).
-                withSize(width, 1).
+                withSize(fragmentWidth, 1).
                 build()
     }
 
     private fun buildRangeInput(rangeLabel: Label): Slider {
         val rangeInput = Components.
                 horizontalSlider().
-                withSize(width, 1).
+                withSize(fragmentWidth, 1).
                 withMinValue(1).
                 withMaxValue(70).
-                withNumberOfSteps(min(34, width)).
+                withNumberOfSteps(min(34, fragmentWidth)).
                 build().
                 apply {
                     currentValueProperty.value = selectedRange.value
@@ -138,7 +138,7 @@ class RadioSignalFragment(override val width: Int) : BaseFragment {
         )
 
         return Fragments.
-                multiSelect(width, models).
+                multiSelect(fragmentWidth, models).
                 withCallback { _, newValue -> AttenuationModel.DEFAULT.value = newValue.second }.
                 withToStringMethod(Pair<String, AttenuationModel>::first).
                 build()

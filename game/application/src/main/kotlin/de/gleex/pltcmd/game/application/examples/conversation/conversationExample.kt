@@ -9,7 +9,7 @@ import de.gleex.pltcmd.game.engine.entities.types.inConversationWith
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
-import de.gleex.pltcmd.game.ui.fragments.TickFragment
+import de.gleex.pltcmd.game.ui.fragments.GameTimeFragment
 import de.gleex.pltcmd.game.ui.fragments.TilesetSelectorFragment
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
@@ -166,7 +166,7 @@ fun buildUI(hqSender: ElementEntity, bravoSender: ElementEntity, charlieSender: 
                     withSize(sideBarWidth, contentSize.height).
                     build().
                     apply {
-                            addFragment(TickFragment(sideBarWidth))
+                            addFragment(GameTimeFragment(sideBarWidth))
                             // TESTING
                             addFragment(TilesetSelectorFragment(sideBarWidth, hBox, logArea))
                         })

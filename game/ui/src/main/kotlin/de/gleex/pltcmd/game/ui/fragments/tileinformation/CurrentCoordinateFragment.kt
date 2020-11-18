@@ -9,10 +9,10 @@ import org.hexworks.zircon.api.Components
 /**
  * Displays the observed coordinate.
  */
-class CurrentCoordinateFragment(override val width: Int, currentTile: ObservableValue<Coordinate>) : TileInformationFragment(currentTile) {
+class CurrentCoordinateFragment(override val fragmentWidth: Int, currentTile: ObservableValue<Coordinate>) : TileInformationFragment(currentTile) {
 
     override val root = Components.hbox().
-            withSize(width, 1).
+            withSize(fragmentWidth, 1).
             build().
             apply {
                 addComponent(Components.

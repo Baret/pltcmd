@@ -23,7 +23,7 @@ import kotlin.time.ExperimentalTime
  * needed or expected or the layout can be improved, go ahead and do so.
  */
 class ElementInfoFragment(
-        override val width: Int,
+        override val fragmentWidth: Int,
         observedTile: Property<Coordinate>,
         private val game: Game
 ) : TileInformationFragment(observedTile) {
@@ -43,7 +43,7 @@ class ElementInfoFragment(
 
     @ExperimentalTime
     override val root = Components.vbox()
-            .withSize(width, 2)
+            .withSize(fragmentWidth, 2)
             .build()
             .apply {
                 addComponent(

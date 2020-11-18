@@ -17,7 +17,7 @@ import org.hexworks.zircon.api.component.Label
  * Simply shows what terrain is present at that tile.
  */
 class TerrainDetailsFragment(
-        override val width: Int,
+        override val fragmentWidth: Int,
         currentTile: ObservableValue<Coordinate>,
         private val world: WorldMap
 ) : TileInformationFragment(currentTile) {
@@ -41,7 +41,7 @@ class TerrainDetailsFragment(
             .build()
 
     private val terrainDescription: Label = Components.label()
-            .withSize(width - icon.size.width - fixedText.size.width, 1)
+            .withSize(fragmentWidth - icon.size.width - fixedText.size.width, 1)
             .build()
             .apply {
                 withFrontendString(Format.SIDEBAR, terrainProperty)
@@ -49,7 +49,7 @@ class TerrainDetailsFragment(
 
     override val root =
             Components.hbox()
-                    .withSize(width, 1)
+                    .withSize(fragmentWidth, 1)
                     .build()
                     .apply {
                         addComponents(

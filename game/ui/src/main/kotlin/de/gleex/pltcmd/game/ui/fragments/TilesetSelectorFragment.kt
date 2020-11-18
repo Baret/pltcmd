@@ -8,14 +8,14 @@ import org.hexworks.zircon.api.component.Component
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.internal.resource.BuiltInCP437TilesetResource
 
-class TilesetSelectorFragment(override val width: Int, vararg components: Component) : BaseFragment {
+class TilesetSelectorFragment(override val fragmentWidth: Int, vararg components: Component) : BaseFragment {
 
     private val tilesets: List<BuiltInCP437TilesetResource> = BuiltInCP437TilesetResource.values().filter {
                                 it.width == UiOptions.DEFAULT_TILESET.width && it.height == UiOptions.DEFAULT_TILESET.height
                             }
 
     override val root = Components.panel().
-            withSize(width, 3).
+            withSize(fragmentWidth, 3).
             withDecorations(ComponentDecorations.box(BoxType.TOP_BOTTOM_DOUBLE, "Tileset")).
             build().
             apply {

@@ -112,12 +112,16 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                         gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.KEY_Q -> {
+                    KeyCode.KEY_Q                     -> {
                         GameOptions.displayRadioSignals.value = GameOptions.displayRadioSignals.value.not()
                         log.debug("Toggled radio signal display to ${if (GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
                         Processed
                     }
-                    else          -> Pass
+                    KeyCode.KEY_P, KeyCode.SPACE -> {
+                        Ticker.togglePause()
+                        Processed
+                    }
+                    else                              -> Pass
                 }
             } else {
                 Pass

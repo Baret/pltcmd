@@ -74,7 +74,7 @@ open class Main {
 
         screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
-        Ticker.start(GameOptions.TickRate.duration, GameOptions.TickRate.timeUnit)
+        Ticker.start()
         // cleanup
         screen.onShutdown { Ticker.stop() }
     }
