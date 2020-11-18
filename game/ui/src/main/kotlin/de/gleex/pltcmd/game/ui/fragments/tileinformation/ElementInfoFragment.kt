@@ -2,8 +2,10 @@ package de.gleex.pltcmd.game.ui.fragments.tileinformation
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.affiliation
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.element
+import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.FrontendString
 import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
@@ -14,6 +16,7 @@ import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.zircon.api.Components
+import org.hexworks.zircon.api.color.ANSITileColor
 import kotlin.time.ExperimentalTime
 
 /**
@@ -47,14 +50,45 @@ class ElementInfoFragment(
             .build()
             .apply {
                 addComponent(
-                        Components.header()
+                        Components.hbox()
+                                .withSpacing(1)
                                 .withSize(width, 1)
                                 .build()
                                 .apply {
-                                    withFrontendString(Format.SIDEBAR,
-                                            "Element: ",
-                                            callSign.bindTransform { cs -> if(cs.isBlank()) { "none" } else { cs } })
-                                })
+                                    val labelText = "Element:"
+                                    addComponents(
+                                            Components.header()
+                                                    .withSize(labelText.length, 1)
+                                                    .withText(labelText)
+                                                    .build(),
+                                            Components.icon()
+                                                    .withIcon(TileRepository.empty())
+                                                    .build()
+                                                    .apply {
+                                                        iconProperty.updateFrom(currentElement.bindTransform {
+                                                                it.map { element ->
+                                                                    TileRepository.Elements.marker(element.element, element.affiliation).withBackgroundColor(ANSITileColor.BLACK)
+                                                                }
+                                                                        .orElse(TileRepository.empty())
+                                                            },
+                                                                updateWhenBound = false)
+                                                    },
+                                            Components.header()
+                                                    .withSize(width - labelText.length - 3, 1)
+                                                    .build()
+                                                    .apply {
+                                                        withFrontendString(Format.SIDEBAR,
+                                                                callSign.bindTransform { cs ->
+                                                                    if (cs.isBlank()) {
+                                                                        "none"
+                                                                    } else {
+                                                                        cs
+                                                                    }
+                                                                })
+                                                    }
+                                    )
+                                }
+                )
                 addComponent(Components.label()
                         .withSize(width, 1)
                         .build()
