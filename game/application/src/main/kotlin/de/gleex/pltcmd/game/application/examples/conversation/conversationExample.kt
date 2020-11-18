@@ -10,7 +10,6 @@ import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.fragments.GameTimeFragment
-import de.gleex.pltcmd.game.ui.fragments.TilesetSelectorFragment
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.Elements
@@ -167,8 +166,6 @@ fun buildUI(hqSender: ElementEntity, bravoSender: ElementEntity, charlieSender: 
                     build().
                     apply {
                             addFragment(GameTimeFragment(sideBarWidth))
-                            // TESTING
-                            addFragment(TilesetSelectorFragment(sideBarWidth, hBox, logArea))
                         })
 
                 // RadioCommunicator panels
