@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.ui.components
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.GameTimeFragment
 import de.gleex.pltcmd.game.ui.fragments.tileinformation.*
@@ -28,13 +29,13 @@ import org.hexworks.zircon.api.uievent.*
 class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : Fragment {
 
     companion object {
-        private val themeUnlocked: ColorTheme = UiOptions.THEME
-        private val themeLocked: ColorTheme = ColorThemeBuilder.newBuilder()
-                .withAccentColor(themeUnlocked.accentColor)
-                .withPrimaryForegroundColor(themeUnlocked.primaryForegroundColor.lightenByPercent(.2))
-                .withPrimaryBackgroundColor(themeUnlocked.primaryBackgroundColor.desaturate(.3))
-                .withSecondaryForegroundColor(themeUnlocked.secondaryForegroundColor.lightenByPercent(.2))
-                .withSecondaryBackgroundColor(themeUnlocked.secondaryBackgroundColor.desaturate(.3))
+        private val THEME_UNLOCKED: ColorTheme = UiOptions.THEME
+        private val THEME_LOCKED: ColorTheme = ColorThemeBuilder.newBuilder()
+                .withAccentColor(THEME_UNLOCKED.accentColor)
+                .withPrimaryForegroundColor(THEME_UNLOCKED.primaryForegroundColor.lightenByPercent(.2))
+                .withPrimaryBackgroundColor(THEME_UNLOCKED.primaryBackgroundColor.desaturate(.3))
+                .withSecondaryForegroundColor(THEME_UNLOCKED.secondaryForegroundColor.lightenByPercent(.2))
+                .withSecondaryBackgroundColor(THEME_UNLOCKED.secondaryBackgroundColor.desaturate(.3))
                 .build()
     }
 
@@ -44,7 +45,13 @@ class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : F
             .build()
             .apply {
                 addFragment(GameTimeFragment(contentSize.width))
-
+                themeProperty.updateFrom(Ticker.isPaused, true) { isPaused ->
+                    if(isPaused) {
+                        THEME_LOCKED
+                    } else {
+                        THEME_UNLOCKED
+                    }
+                }
             }
 
     private val intelPanel = Components.vbox()
@@ -83,9 +90,9 @@ class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : F
         lockIntelPanel.onChange { valueChanged: ObservableValueChanged<Boolean> ->
             fragments.forEach { it.toggleLock() }
             if (valueChanged.newValue) {
-                intelPanel.themeProperty.updateValue(themeLocked)
+                intelPanel.themeProperty.updateValue(THEME_LOCKED)
             } else {
-                intelPanel.themeProperty.updateValue(themeUnlocked)
+                intelPanel.themeProperty.updateValue(THEME_UNLOCKED)
             }
         }
 
