@@ -24,7 +24,7 @@ internal val terrainTypeTransformation: Transformation<TerrainType> = { format -
             TerrainType.FOREST        -> "F"
             TerrainType.MOUNTAIN      -> "M"
             TerrainType.HILL          -> "H"
-            TerrainType.WATER_DEEP    -> "D"
+            TerrainType.WATER_DEEP    -> "W"
             TerrainType.WATER_SHALLOW -> "S"
         }
         Format.SHORT3  -> when (this) {
@@ -40,8 +40,8 @@ internal val terrainTypeTransformation: Transformation<TerrainType> = { format -
             TerrainType.FOREST        -> "Fores"
             TerrainType.MOUNTAIN      -> "Mount"
             TerrainType.HILL          -> "Hills"
-            TerrainType.WATER_DEEP    -> "WDeep"
-            TerrainType.WATER_SHALLOW -> "WShlw"
+            TerrainType.WATER_DEEP    -> "WtrDp"
+            TerrainType.WATER_SHALLOW -> "WtrSh"
         }
         Format.SIDEBAR, Format.FULL    -> when (this) {
             TerrainType.GRASSLAND,
