@@ -29,7 +29,7 @@ class RadioSignalVisualizer(
         private val world: GameWorld,
         private val strengthProperty: Property<Int>,
         private val rangeProperty: Property<Int>,
-        private val mapOffset: Position) : (MouseEvent, UIEventPhase) -> UIEventResponse {
+        private val mapOffset: Property<Position>) : (MouseEvent, UIEventPhase) -> UIEventResponse {
 
     private var clickedPosition = Position.defaultPosition()
     private val lastBlocks = mutableSetOf<GameBlock>()
@@ -45,7 +45,7 @@ class RadioSignalVisualizer(
         if(phase == UIEventPhase.TARGET
                 && event.type == MouseEventType.MOUSE_CLICKED
                 && drawingAllowed()) {
-            val newPosition = event.position.minus(mapOffset)
+            val newPosition = event.position.minus(mapOffset.value)
             if(clickedPosition == newPosition && lastBlocks.isNotEmpty()) {
                 reset()
             } else {
