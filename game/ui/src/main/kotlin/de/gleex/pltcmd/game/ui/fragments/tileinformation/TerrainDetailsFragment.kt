@@ -10,54 +10,43 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.component.Icon
-import org.hexworks.zircon.api.component.Label
 
 /**
  * Simply shows what terrain is present at that tile.
  */
 class TerrainDetailsFragment(
-        override val fragmentWidth: Int,
         currentTile: ObservableValue<Coordinate>,
         private val world: WorldMap
-) : TileInformationFragment(currentTile) {
+) : InfoSidebarFragment(currentTile, title = "Terrain", neededHeight = 1) {
 
-    companion object {
-        private const val FILLER_TEXT = "Terrain "
+    init {
+        val terrainProperty: ObservableValue<Terrain> = currentInfoTile.bindTransform { world[it] }
+        componentsContainer.addComponent(
+                Components.hbox()
+                        .withSpacing(1)
+                        .withSize(SUB_COMPONENT_WIDTH, 1)
+                        .build()
+                        .apply {
+                            val icon = Components.icon()
+                                    .withIcon(TileRepository.createTerrainTile(terrainProperty.value))
+                                    .build()
+                                    .apply {
+                                        iconProperty.updateFrom(
+                                                terrainProperty.bindTransform { TileRepository.createTerrainTile(it) })
+                                        tilesetProperty.updateValue(UiOptions.MAP_TILESET)
+                                    }
+                            addComponents(
+                                    icon,
+                                    Components.label()
+                                            .withSize(SUB_COMPONENT_WIDTH - icon.size.width - 1, 1)
+                                            .build()
+                                            .apply {
+                                                withFrontendString(Format.SIDEBAR, terrainProperty)
+                                            }
+                            )
+                        }
+        )
     }
 
-    private val terrainProperty: ObservableValue<Terrain> = currentInfoTile.bindTransform { world[it] }
-
-    private val icon: Icon = Components.icon()
-            .withIcon(TileRepository.createTerrainTile(terrainProperty.value))
-            .build()
-            .apply { iconProperty.updateFrom(
-                    terrainProperty.bindTransform { TileRepository.createTerrainTile(it) })
-            }
-
-    private val fixedText: Label = Components.label()
-            .withText(FILLER_TEXT)
-            .withSize(FILLER_TEXT.length, 1)
-            .build()
-
-    private val terrainDescription: Label = Components.label()
-            .withSize(fragmentWidth - icon.size.width - fixedText.size.width, 1)
-            .build()
-            .apply {
-                withFrontendString(Format.SIDEBAR, terrainProperty)
-            }
-
-    override val root =
-            Components.hbox()
-                    .withSize(fragmentWidth, 1)
-                    .build()
-                    .apply {
-                        addComponents(
-                                fixedText,
-                                icon,
-                                terrainDescription
-                        )
-                        icon.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
-                    }
 
 }

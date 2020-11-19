@@ -77,14 +77,11 @@ class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : F
     private val lockIntelPanel: Property<Boolean> = false.toProperty()
 
     init {
-
-        val fragmentWidth = intelPanel.contentSize.width
-
-        val fragments: List<TileInformationFragment> = listOf(
-                CurrentCoordinateFragment(fragmentWidth, observedTile),
-                TerrainDetailsFragment(fragmentWidth, observedTile, game.world),
-                MarkersFragment(fragmentWidth, observedTile),
-                ElementInfoFragment(fragmentWidth, observedTile, game)
+        val fragments: List<InfoSidebarFragment> = listOf(
+                CurrentCoordinateFragment(observedTile),
+                TerrainDetailsFragment(observedTile, game.world),
+                MarkersFragment(observedTile),
+                ElementInfoFragment(observedTile, game)
         )
 
         lockIntelPanel.onChange { valueChanged: ObservableValueChanged<Boolean> ->

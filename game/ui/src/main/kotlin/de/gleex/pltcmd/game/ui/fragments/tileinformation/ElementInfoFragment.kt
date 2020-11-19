@@ -25,10 +25,9 @@ import org.hexworks.zircon.api.color.ANSITileColor
  * needed or expected or the layout can be improved, go ahead and do so.
  */
 class ElementInfoFragment(
-        override val fragmentWidth: Int,
         observedTile: Property<Coordinate>,
         private val game: Game
-) : TileInformationFragment(observedTile) {
+) : InfoSidebarFragment(observedTile, title = "Element", neededHeight = 2) {
 
     // TODO: Handle multiple elements (list binding, show list of elements)
     private val currentElement: ObservableValue<Maybe<ElementEntity>> = currentInfoTile.bindTransform {
@@ -41,57 +40,50 @@ class ElementInfoFragment(
 
     private val description: FrontendString<String> = whenElementPresent { "  ${it.element.description}" }
 
-    override val root = Components.vbox()
-            .withSize(fragmentWidth, 2)
-            .build()
-            .apply {
-                addComponent(
-                        Components.hbox()
-                                .withSpacing(1)
-                                .withSize(width, 1)
-                                .build()
-                                .apply {
-                                    val labelText = "Element:"
-                                    addComponents(
-                                            Components.header()
-                                                    .withSize(labelText.length, 1)
-                                                    .withText(labelText)
-                                                    .build(),
-                                            Components.icon()
-                                                    .withIcon(TileRepository.empty())
-                                                    .build()
-                                                    .apply {
-                                                        iconProperty.updateFrom(currentElement.bindTransform {
-                                                                it.map { element ->
-                                                                    TileRepository.Elements.marker(element.element, element.affiliation).withBackgroundColor(ANSITileColor.BLACK)
-                                                                }
-                                                                        .orElse(TileRepository.empty())
-                                                            },
-                                                                updateWhenBound = false)
-                                                    },
-                                            Components.header()
-                                                    .withSize(width - labelText.length - 3, 1)
-                                                    .build()
-                                                    .apply {
-                                                        withFrontendString(Format.SIDEBAR,
-                                                                callSign.bindTransform { cs ->
-                                                                    if (cs.isBlank()) {
-                                                                        "none"
-                                                                    } else {
-                                                                        cs
-                                                                    }
-                                                                })
+    init {
+        componentsContainer.addComponents(
+                Components.hbox()
+                        .withSpacing(1)
+                        .withSize(SUB_COMPONENT_WIDTH, 1)
+                        .build()
+                        .apply {
+                            addComponents(
+                                    Components.icon()
+                                            .withIcon(TileRepository.empty())
+                                            .build()
+                                            .apply {
+                                                iconProperty.updateFrom(currentElement.bindTransform {
+                                                    it.map { element ->
+                                                        TileRepository.Elements.marker(element.element, element.affiliation)
+                                                                .withBackgroundColor(ANSITileColor.BLACK)
                                                     }
-                                    )
-                                }
-                )
-                addComponent(Components.label()
-                        .withSize(width, 1)
+                                                            .orElse(TileRepository.empty())
+                                                },
+                                                        updateWhenBound = false)
+                                            },
+                                    Components.header()
+                                            .withSize(width - 3, 1)
+                                            .build()
+                                            .apply {
+                                                withFrontendString(Format.SIDEBAR,
+                                                        callSign.bindTransform { cs ->
+                                                            if (cs.isBlank()) {
+                                                                "none"
+                                                            } else {
+                                                                cs
+                                                            }
+                                                        })
+                                            }
+                            )
+                        },
+                Components.label()
+                        .withSize(SUB_COMPONENT_WIDTH, 1)
                         .build()
                         .apply {
                             withFrontendString(description)
-                        })
-            }
+                        }
+        )
+    }
 
     private fun whenElementPresent(transformation: (ElementEntity) -> String): FrontendString<String> {
         return currentElement.bindTransform {
