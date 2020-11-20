@@ -11,6 +11,9 @@
 
     <artifactId>core</artifactId>
 
+    <name>Signals core</name>
+    <description>The core algorithms for signals</description>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>

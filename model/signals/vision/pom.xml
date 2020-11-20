@@ -11,6 +11,8 @@
 
     <artifactId>vision</artifactId>
 
+    <name>Vision</name>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.model.signals</groupId>
