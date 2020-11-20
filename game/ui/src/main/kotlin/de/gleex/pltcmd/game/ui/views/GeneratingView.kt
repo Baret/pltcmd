@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.ui
+package de.gleex.pltcmd.game.ui.views
 
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.mapgeneration.IncompleteMapBlock
@@ -66,6 +66,7 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
     private fun createProgressBar(): ProgressBar {
         return Components.progressBar()
                 .withAlignmentWithin(footer, ComponentAlignment.BOTTOM_CENTER)
+                .withRange(footer.width)
                 .withNumberOfSteps(footer.width) // use 1 tile per step
                 .withDisplayPercentValueOfProgress(true)
                 .build()

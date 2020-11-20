@@ -8,11 +8,11 @@ import de.gleex.pltcmd.game.engine.entities.types.element
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
-import de.gleex.pltcmd.game.ui.GameView
-import de.gleex.pltcmd.game.ui.GeneratingView
-import de.gleex.pltcmd.game.ui.MapGenerationProgressController
-import de.gleex.pltcmd.game.ui.TitleView
 import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.game.ui.mapgeneration.MapGenerationProgressController
+import de.gleex.pltcmd.game.ui.views.GameView
+import de.gleex.pltcmd.game.ui.views.GeneratingView
+import de.gleex.pltcmd.game.ui.views.TitleView
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
@@ -74,7 +74,7 @@ open class Main {
 
         screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
-        Ticker.start(GameOptions.TickRate.duration, GameOptions.TickRate.timeUnit)
+        Ticker.start()
         // cleanup
         screen.onShutdown { Ticker.stop() }
     }
