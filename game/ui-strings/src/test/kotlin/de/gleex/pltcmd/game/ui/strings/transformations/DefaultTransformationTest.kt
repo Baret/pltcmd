@@ -15,7 +15,7 @@ class DefaultTransformationTest : WordSpec({
                         val actualValue = testString.defaultTransformation(format)
                         when (format) {
                             Format.FULL    -> actualValue shouldBe testString
-                            Format.SIDEBAR -> actualValue shouldBe "A very long string that needs to..."
+                            Format.SIDEBAR -> actualValue shouldBe "A very long string that need..."
                             Format.SHORT5  -> actualValue shouldBe "A ver"
                             Format.SHORT3  -> actualValue shouldBe "A v"
                             Format.ICON    -> actualValue shouldBe "A"
