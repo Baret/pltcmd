@@ -2,7 +2,7 @@ template: |
   ## Changes in $RESOLVED_VERSION
 
   $CHANGES
-tag-template: 'pltcmd-$RESOLVED_VERSION'
+version-template: 'pltcmd-$MAJOR.$MINOR.$PATCH'
 no-changes-template: '### Nothing included yet'
 categories:
   - title: 'UI improvements'
