@@ -22,9 +22,6 @@ jobs:
       - name: Draft next release
         uses: release-drafter/release-drafter@v5.12.1
         with:
-          name: 'v0.2.0 Fighting elements'
-          tag: 'pltcmd-0.2.0'
-          version: '0.2.0'
-          publish: false
+          name: '$RESOLVED_VERSION Fighting elements'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

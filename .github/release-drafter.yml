@@ -1,0 +1,29 @@
+template: |
+  ## Changes in $RESOLVED_VERSION
+
+  $CHANGES
+tag-template: 'pltcmd-$RESOLVED_VERSION'
+no-changes-template: '### Nothing included yet'
+categories:
+  - title: 'UI improvements'
+    labels:
+      - 'UI'
+  - title: 'New and improved Features'
+    labels:
+      - 'feature'
+      - 'enhancement'
+  - title: 'Bug Fixes'
+    labels:
+      - 'bug'
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'feature'
+  patch:
+    labels:
+      - 'bug'
+      - 'enhancement'
+  default: patch
