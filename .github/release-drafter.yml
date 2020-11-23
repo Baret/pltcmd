@@ -2,7 +2,8 @@ template: |
   ## Changes in $RESOLVED_VERSION
 
   $CHANGES
-tag-template: 'pltcmd-$MAJOR.$MINOR.$PATCH'
+name-template: '$RESOLVED_VERSION Fighting elements'
+tag-template: 'pltcmd-$RESOLVED_VERSION'
 no-changes-template: '### Nothing included yet'
 categories:
   - title: 'UI improvements'
@@ -27,3 +28,6 @@ version-resolver:
       - 'bug'
       - 'enhancement'
   default: patch
+replacers:
+  - search: '/(close(s|d)?|fix(es|ed)?|resolve(s|d)?)\s*#\d*:?/gi'
+    replace: ''

@@ -17,7 +17,5 @@ jobs:
     steps:
       - name: Draft next release
         uses: release-drafter/release-drafter@v5.12.1
-        with:
-          name: '$RESOLVED_VERSION Fighting elements'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
