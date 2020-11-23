@@ -1,4 +1,4 @@
-name: CI
+name: Draft next release
 
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
@@ -26,3 +26,5 @@ jobs:
           tag: 'pltcmd-0.2.0'
           version: '0.2.0'
           publish: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
