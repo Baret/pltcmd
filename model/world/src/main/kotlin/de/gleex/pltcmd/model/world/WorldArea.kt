@@ -7,7 +7,7 @@ import org.hexworks.cobalt.datatypes.Maybe
 import java.util.*
 
 /**
- * A part of the [WorldMap] containing a set of [WorldTile]s. As world tiles map a terrain to a coordiante, a world
+ * A part of the [WorldMap] containing a set of [WorldTile]s. As world tiles map a terrain to a coordinate, a world
  * area is also a [CoordinateArea].
  */
 open class WorldArea(val tiles: SortedSet<WorldTile>)
