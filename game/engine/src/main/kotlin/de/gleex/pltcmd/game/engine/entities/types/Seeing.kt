@@ -6,7 +6,7 @@ import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.signals.vision.VisualSignal
 
 /**
- * This file contains code for entities that have the [VisibleAreaAttribute].
+ * This file contains code for entities that have the [VisionAttribute].
  */
 
 /** Type marker for entities that are [Positionable] and can "see" (scan) their surroundings. */
