@@ -19,7 +19,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * Handles the [DetectEntities] command. It gets a set of possibly visible entities and calculates the actual
  * visibility using source's vision.
  */
-object Detects: BaseFacet<GameContext>(
+object Detects : BaseFacet<GameContext>(
         VisionAttribute::class,
         PositionAttribute::class
 ) {
@@ -27,19 +27,21 @@ object Detects: BaseFacet<GameContext>(
 
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>): Response =
             command.responseWhenCommandIs<GameContext, DetectEntities> { detectCommand ->
-                if(detectCommand.visibleEntities.isNotEmpty()) {
-                    detectCommand.visibleEntities.forEach { seen ->
-                        // TODO: Implement actual behavior of detecting things and reacting to them (i.e. do a contact report)
-                        val element = detectCommand.source as ElementEntity
-                        if(element.affiliation == Affiliation.Friendly) {
-                            val seenElement = seen as ElementEntity
-                            val targetLocation = seenElement.currentPosition
-                            log.info("${element.callsign.name.padEnd(25)} sees ${seenElement.callsign.name.padEnd(25)} at ${targetLocation.toString().padEnd(12)} with signal strength \t\t${element.vision.at(targetLocation)}")
-                        }
-                    }
-                    Consumed
-                } else {
+                if (detectCommand.visibleEntities.isEmpty()) {
                     Pass
                 }
+                val seeingElement = detectCommand.source as ElementEntity
+                detectCommand.visibleEntities.forEach { seen ->
+                    // TODO: Implement actual behavior of detecting things and reacting to them (i.e. do a contact report)
+                    if (seeingElement.affiliation == Affiliation.Friendly) {
+                        val seenElement = seen as ElementEntity
+                        val targetLocation = seenElement.currentPosition
+                        log.info("${seeingElement.callsign.name.padEnd(25)} sees ${seenElement.callsign.name.padEnd(25)} at ${
+                            targetLocation.toString()
+                                    .padEnd(12)
+                        } with signal strength \t${seeingElement.vision.at(targetLocation)}")
+                    }
+                }
+                Consumed
             }
 }
