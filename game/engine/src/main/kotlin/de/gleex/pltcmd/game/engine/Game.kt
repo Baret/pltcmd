@@ -3,7 +3,10 @@ package de.gleex.pltcmd.game.engine
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.toEntity
-import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.ElementType
+import de.gleex.pltcmd.game.engine.entities.types.callsign
+import de.gleex.pltcmd.game.engine.entities.types.onDefeat
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.options.GameOptions
@@ -95,12 +98,13 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
      * Gets all [ElementEntity]s at the given coordinate.
      */
     @OptIn(ExperimentalTime::class)
-    fun elementsAt(coordinate: Coordinate): Collection<ElementEntity> {
-        val allElements = allEntities.allElements()
+    fun elementsAt(location: Coordinate): Collection<ElementEntity> {
         val (elements, duration) = measureTimedValue {
-            allElements.filter { it.currentPosition == coordinate }
+            allEntities.elementsAt(location)
         }
-        log.trace("Finding ${elements.size} of ${allElements.size} elements at $coordinate took ${duration.inMilliseconds} ms")
+        if (log.isTraceEnabled()) {
+            log.trace("Finding ${elements.size} of ${allEntities.allElements().size} elements at $location took ${duration.inMilliseconds} ms")
+        }
         return elements
     }
 

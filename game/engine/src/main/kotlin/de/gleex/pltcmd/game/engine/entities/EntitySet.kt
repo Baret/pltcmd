@@ -4,10 +4,12 @@ import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.Positionable
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.toPersistentSet
 import org.hexworks.amethyst.api.entity.EntityType
+import org.hexworks.cobalt.datatypes.Maybe
 import kotlin.reflect.KClass
 
 class EntitySet<T : EntityType>(initialSet: Set<GameEntity<T>> = emptySet()) : Set<GameEntity<T>> {
@@ -27,6 +29,13 @@ class EntitySet<T : EntityType>(initialSet: Set<GameEntity<T>> = emptySet()) : S
     }
 
     fun allElements(): EntitySet<ElementType> = ofType(ElementType::class)
+
+    fun elementsAt(location: Coordinate): List<GameEntity<ElementType>> =
+            allElements().filter { it.currentPosition == location }
+
+    fun firstElementAt(location: Coordinate): Maybe<GameEntity<ElementType>> =
+            // This should be faster than using elementsAt.first() because not the whole list needs to be filtered
+            Maybe.ofNullable(allElements().first { it.currentPosition == location })
 
     fun inArea(area: CoordinateArea): EntitySet<Positionable> =
             ofType(Positionable::class)
