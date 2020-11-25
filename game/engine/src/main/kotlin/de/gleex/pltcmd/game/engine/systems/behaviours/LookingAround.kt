@@ -33,7 +33,6 @@ object LookingAround :
     }
 
     private suspend fun lookForEntities(entity: SeeingEntity, context: GameContext): Boolean {
-        val element = entity as ElementEntity
         if (entity.hasMoved()) {
             entity.vision = context.world.visionAt(entity.currentPosition, entity.visualRange)
         }
@@ -42,6 +41,8 @@ object LookingAround :
                         .without(entity)
                         .inArea(entity.visibleTiles)
 
+        // FIXME: Just for playing around, logging will be removed eventually
+        val element = entity as ElementEntity
         if(element.callsign.name == "Bravo" && element.affiliation == Affiliation.Friendly) {
             log.info("${visibleEntities.size}/${context.entities.size} (${context.entities.ofType<Positionable>().size} positionable) visible")
         }
