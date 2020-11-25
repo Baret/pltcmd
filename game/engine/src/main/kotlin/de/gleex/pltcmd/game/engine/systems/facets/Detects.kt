@@ -15,6 +15,10 @@ import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.amethyst.api.extensions.responseWhenCommandIs
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
+/**
+ * Handles the [DetectEntities] command. It gets a set of possibly visible entities and calculates the actual
+ * visibility using source's vision.
+ */
 object Detects: BaseFacet<GameContext>(
         VisionAttribute::class,
         PositionAttribute::class
@@ -25,11 +29,12 @@ object Detects: BaseFacet<GameContext>(
             command.responseWhenCommandIs<GameContext, DetectEntities> { detectCommand ->
                 if(detectCommand.visibleEntities.isNotEmpty()) {
                     detectCommand.visibleEntities.forEach { seen ->
+                        // TODO: Implement actual behavior of detecting things and reacting to them (i.e. do a contact report)
                         val element = detectCommand.source as ElementEntity
                         if(element.affiliation == Affiliation.Friendly) {
                             val seenElement = seen as ElementEntity
                             val targetLocation = seenElement.currentPosition
-                            log.info("${element.callsign} sees ${seenElement.callsign} at $targetLocation with signal strength ${element.vision.at(targetLocation)}")
+                            log.info("${element.callsign.name.padEnd(25)} sees ${seenElement.callsign.name.padEnd(25)} at ${targetLocation.toString().padEnd(12)} with signal strength \t\t${element.vision.at(targetLocation)}")
                         }
                     }
                     Consumed
