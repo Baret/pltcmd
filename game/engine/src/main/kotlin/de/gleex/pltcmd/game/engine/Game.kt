@@ -22,6 +22,7 @@ import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
+import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
@@ -107,5 +108,11 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
         }
         return elements
     }
+
+    /**
+     * @return a [Maybe] containing the first [ElementEntity] found at the given location.
+     */
+    fun firstElementAt(location: Coordinate): Maybe<GameEntity<ElementType>> =
+            allEntities.firstElementAt(location)
 
 }

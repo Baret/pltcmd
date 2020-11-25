@@ -6,15 +6,35 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import kotlin.math.floor
 
-abstract class Signal<M: PropagationModel<P>, P: SignalPower>(val power: P, val area: WorldArea) {
+abstract class Signal<M : PropagationModel<P>, P : SignalPower>(val power: P, val area: WorldArea) {
     abstract val origin: Coordinate
+
+    private val signalCache: MutableMap<Coordinate, SignalStrength> = mutableMapOf()
+
+    /**
+     * All [Coordinate]s of [area] mapped to their corresponding [SignalStrength]. The same as if
+     * you would call [at] for every single coordinate.
+     */
+    val signalMap: Map<Coordinate, SignalStrength>
+        // Calculate or load signals from cache for every coordinate in the area
+        get() = area.associateWith { coordinate -> at(coordinate) }
 
     protected abstract val model: M
 
     abstract val maxRangeInTiles: Int
 
-    // gibt einen Wert von 0.0 bis 1.0 zurück
-    open fun at(target: Coordinate): SignalStrength {
+    /**
+     *
+     */
+    fun at(target: Coordinate): SignalStrength {
+        return signalCache.computeIfAbsent(target) { calculateSignalStrengthAt(it) }
+    }
+
+    /**
+     * Used to calculate the [SignalStrength] at the given coordinate. By default it creates a straight line
+     * from [origin] to [target] and calls [along]. This behavior may be overridden though.
+     */
+    protected open fun calculateSignalStrengthAt(target: Coordinate): SignalStrength {
         val terrainList = area[CoordinatePath.line(origin, target)]
                 .map { it.terrain }
         return along(terrainList)
@@ -23,7 +43,7 @@ abstract class Signal<M: PropagationModel<P>, P: SignalPower>(val power: P, val 
     /** @return the SignalStrength at the end of the given terrain and the number of tiles to reach no signal or the end */
     protected fun along(terrain: List<Terrain>): SignalStrength {
         var currentPower: Double = power.initialProcessingValue()
-        if(terrain.size <= 1) {
+        if (terrain.size <= 1) {
             return model.toSignalStrength(currentPower)
         }
         val startHeight = terrain.first().height // b

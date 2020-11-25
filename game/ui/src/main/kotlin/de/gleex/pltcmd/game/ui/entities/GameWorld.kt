@@ -5,6 +5,7 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import kotlinx.collections.immutable.persistentMapOf
+import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Position3D
@@ -30,6 +31,11 @@ class GameWorld(private val worldMap: WorldMap) :
                 initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
                 initialContents = persistentMapOf(),
                 projectionStrategy = TopDownProjectionStrategy()) {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(GameWorld::class)
+    }
+
     /**
      * Returns all currently visible blocks.
      *
@@ -37,10 +43,6 @@ class GameWorld(private val worldMap: WorldMap) :
      */
     val visibleBlocks
         get() = fetchBlocksAt(visibleOffset, visibleSize)
-
-    companion object {
-        private val log = LoggerFactory.getLogger(GameWorld::class)
-    }
 
     private val topLeftOffset: Position
         get() = worldMap.getTopLeftOffset()
@@ -85,7 +87,7 @@ class GameWorld(private val worldMap: WorldMap) :
         currentPosition.hideUnit()
     }
 
-        private fun Coordinate.hideUnit() {
+    private fun Coordinate.hideUnit() {
         val position = toPosition()
         fetchBlockAt(position).ifPresent {
             it.resetUnit()
@@ -107,6 +109,13 @@ class GameWorld(private val worldMap: WorldMap) :
         scrollTo(visibleTopLeftPos)
     }
 
+    fun resetOverlayAt(coordinate: Coordinate) {
+        fetchBlockAt(coordinate)
+                .ifPresent { block ->
+                    block.resetOverlay()
+                }
+    }
+
     // model size
     private fun getMaxY() = actualSize.yLength - 1 // -1 because y is zero-based
 
@@ -121,6 +130,12 @@ class GameWorld(private val worldMap: WorldMap) :
         // use origin of world (minimal numeric value of coordinate) to calculate the offset
         return Position.create(-origin.eastingFromLeft, -origin.northingFromBottom)
     }
+
+    /**
+     * @return the [GameBlock] at the given [Coordinate] if it is contained in this world.
+     */
+    fun fetchBlockAt(coordinate: Coordinate): Maybe<GameBlock> =
+            fetchBlockAt(coordinate.toPosition())
 
     private fun Coordinate.toPosition(): Position3D {
         // translate to 0,0 based grid then invert y axis
@@ -145,8 +160,10 @@ class GameWorld(private val worldMap: WorldMap) :
      * Returns the [Coordinate] at the currently visible position
      * @see fetchBlockAtVisiblePosition
      */
-    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D()
-            .toCoordinate()
+    fun coordinateAtVisiblePosition(position: Position) =
+            position
+                    .toVisiblePosition3D()
+                    .toCoordinate()
 
     private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.to3DPosition(0))
 }

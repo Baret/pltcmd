@@ -44,7 +44,7 @@ object LookingAround :
         // FIXME: Just for playing around, logging will be removed eventually
         val element = entity as ElementEntity
         if(element.callsign.name == "Bravo" && element.affiliation == Affiliation.Friendly) {
-            log.info("${visibleEntities.size}/${context.entities.size} (${context.entities.ofType<Positionable>().size} positionable) visible")
+            log.debug("${visibleEntities.size}/${context.entities.size} (${context.entities.ofType<Positionable>().size} positionable) visible")
         }
         if (visibleEntities.isNotEmpty()) {
             entity.executeCommand(DetectEntities(visibleEntities, context, entity))

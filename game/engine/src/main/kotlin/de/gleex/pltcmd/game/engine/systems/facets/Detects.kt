@@ -36,7 +36,7 @@ object Detects : BaseFacet<GameContext>(
                     if (seeingElement.affiliation == Affiliation.Friendly) {
                         val seenElement = seen as ElementEntity
                         val targetLocation = seenElement.currentPosition
-                        log.info("${seeingElement.callsign.name.padEnd(25)} sees ${seenElement.callsign.name.padEnd(25)} at ${
+                        log.debug("${seeingElement.callsign.name.padEnd(25)} sees ${seenElement.callsign.name.padEnd(25)} at ${
                             targetLocation.toString()
                                     .padEnd(12)
                         } with signal strength \t${seeingElement.vision.at(targetLocation)}")
