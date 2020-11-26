@@ -22,6 +22,9 @@ categories:
   - title: 'Bug Fixes'
     labels:
       - 'bug'
+  - title: 'Other changes'
+    labels:
+      - 'misc'
 version-resolver:
   major:
     labels:
