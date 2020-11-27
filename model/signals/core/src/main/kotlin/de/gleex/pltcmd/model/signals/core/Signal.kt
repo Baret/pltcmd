@@ -40,30 +40,34 @@ abstract class Signal<M : PropagationModel<P>, P : SignalPower>(val power: P, va
         return along(terrainList)
     }
 
-    /** @return the SignalStrength at the end of the given terrain and the number of tiles to reach no signal or the end */
+    /**
+     * Calculates signal loss along the given terrain which is usually a straight line.
+     *
+     * @param terrain the line of terrain that the signal travels along **including** the origin
+     * @return the [SignalStrength] at the end of the given terrain
+     */
     protected fun along(terrain: List<Terrain>): SignalStrength {
         var currentPower: Double = power.initialProcessingValue()
-        if (terrain.size <= 1) {
-            return model.toSignalStrength(currentPower)
-        }
-        val startHeight = terrain.first().height // b
-        val targetHeight = terrain.last().height
-        val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrain.size.toDouble() // m
-        val terrainToTravel = terrain.drop(1)
-        for ((index, t) in terrainToTravel.withIndex()) {
-            // Calculate if the signal is above, at or through the current field
-            // currentHeight (y) = mx + b
-            val currentHeight = floor(slope * (index + 1) + startHeight.toDouble())
-            currentPower = when {
-                // signal travels through the air (above ground)
-                currentHeight > t.height.toDouble() -> model.overAir(currentPower)
-                // signal travels through the ground
-                currentHeight < t.height.toDouble() -> model.throughGround(currentPower)
-                // signal travels along the terrain
-                else                                -> model.throughTerrain(currentPower, t.type)
-            }
-            if (currentPower <= model.minThreshold) {
-                break
+        if (terrain.size > 1) {
+            val startHeight = terrain.first().height // b
+            val targetHeight = terrain.last().height
+            val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrain.size.toDouble() // m
+            val terrainToTravel = terrain.drop(1)
+            for ((index, t) in terrainToTravel.withIndex()) {
+                // Calculate if the signal is above, at or through the current field
+                // currentHeight (y) = mx + b
+                val currentHeight = floor(slope * (index + 1) + startHeight.toDouble())
+                currentPower = when {
+                    // signal travels through the air (above ground)
+                    currentHeight > t.height.toDouble() -> model.overAir(currentPower)
+                    // signal travels through the ground
+                    currentHeight < t.height.toDouble() -> model.throughGround(currentPower)
+                    // signal travels along the terrain
+                    else                                -> model.throughTerrain(currentPower, t.type)
+                }
+                if (currentPower <= model.minThreshold) {
+                    break
+                }
             }
         }
         return model.toSignalStrength(currentPower)
