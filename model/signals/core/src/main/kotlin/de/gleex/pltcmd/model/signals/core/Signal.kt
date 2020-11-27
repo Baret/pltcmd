@@ -73,9 +73,4 @@ abstract class Signal<M : PropagationModel<P>, P : SignalPower>(val power: P, va
         return model.toSignalStrength(currentPower)
     }
 
-    // evtl hat das noch ein voll imperformantes
-//    fun signalMap(): Map<Coordinate: Double> {
-//        // das eine Linie zu jedem Punkt in der Reichweite zieht
-//        // (so wie das jetzt der SignalVisualizerFragment oder wie das Dingen heisst macht)
-//    }
 }
