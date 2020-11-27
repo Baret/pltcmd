@@ -43,27 +43,27 @@ abstract class Signal<M : PropagationModel<P>, P : SignalPower>(val power: P, va
     /**
      * Calculates signal loss along the given terrain which is usually a straight line.
      *
-     * @param terrain the line of terrain that the signal travels along **including** the origin
+     * @param terrainLine the line of terrain that the signal travels along **including** the origin
      * @return the [SignalStrength] at the end of the given terrain
      */
-    protected fun along(terrain: List<Terrain>): SignalStrength {
+    protected fun along(terrainLine: List<Terrain>): SignalStrength {
         var currentPower: Double = power.initialProcessingValue()
-        if (terrain.size > 1) {
-            val startHeight = terrain.first().height // b
-            val targetHeight = terrain.last().height
-            val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrain.size.toDouble() // m
-            val terrainToTravel = terrain.drop(1)
-            for ((index, t) in terrainToTravel.withIndex()) {
+        if (terrainLine.size > 1) {
+            val startHeight = terrainLine.first().height // b
+            val targetHeight = terrainLine.last().height
+            val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrainLine.size.toDouble() // m
+            val terrainToTravel = terrainLine.drop(1)
+            for ((index, terrain) in terrainToTravel.withIndex()) {
                 // Calculate if the signal is above, at or through the current field
                 // currentHeight (y) = mx + b
                 val currentHeight = floor(slope * (index + 1) + startHeight.toDouble())
                 currentPower = when {
                     // signal travels through the air (above ground)
-                    currentHeight > t.height.toDouble() -> model.overAir(currentPower)
+                    currentHeight > terrain.height.toDouble() -> model.overAir(currentPower)
                     // signal travels through the ground
-                    currentHeight < t.height.toDouble() -> model.throughGround(currentPower)
+                    currentHeight < terrain.height.toDouble() -> model.throughGround(currentPower)
                     // signal travels along the terrain
-                    else                                -> model.throughTerrain(currentPower, t.type)
+                    else                                -> model.throughTerrain(currentPower, terrain.type)
                 }
                 if (currentPower <= model.minThreshold) {
                     break
