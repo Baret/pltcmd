@@ -18,7 +18,7 @@ import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.signals.vision.VisionPower
-import de.gleex.pltcmd.model.signals.vision.noVisionAt
+import de.gleex.pltcmd.model.signals.vision.initialVision
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.newEntityOfType
@@ -43,7 +43,7 @@ object EntityFactory {
                 CommandersIntent(),
                 ElementAttribute(element, affiliation),
                 PositionAttribute(initialPosition),
-                VisionAttribute(noVisionAt(initialPosition.value), visualRange),
+                VisionAttribute(initialVision, visualRange),
                 // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
                 RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
                 ShootersAttribute(element),

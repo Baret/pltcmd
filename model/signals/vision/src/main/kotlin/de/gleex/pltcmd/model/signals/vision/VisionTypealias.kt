@@ -13,11 +13,11 @@ import kotlin.random.Random
 typealias Vision = Signal<VisionPower>
 
 /**
- * Utility method to create an "empty" signal that has only a range of the given coordinate.
+ * An "empty vision signal" at an invalid location. Can be used as placeholder when no [WorldArea] can be
+ * created.
  */
-fun noVisionAt(location: Coordinate): Vision =
-        Vision(
-                location,
-                WorldArea(sortedSetOf(WorldTile(location, Terrain.random(Random)))),
-                VisionPower.MIN
-        )
+val initialVision = Vision(
+        Coordinate.maximum,
+        WorldArea(sortedSetOf(WorldTile(Coordinate.maximum, Terrain.random(Random)))),
+        VisionPower.MIN
+)

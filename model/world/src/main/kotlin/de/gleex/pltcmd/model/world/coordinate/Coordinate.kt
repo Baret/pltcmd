@@ -142,6 +142,12 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         val minusOne = Coordinate(-1, -1)
 
         /**
+         * A [Coordinate] with Int.MAX_VALUE values. Rather a placeholder for an "invalid coordinate" than
+         * a normally used [Coordinate].
+         */
+        val maximum = Coordinate(Int.MAX_VALUE, Int.MAX_VALUE)
+
+        /**
          * The separator used in the string representation.
          */
         const val SEPARATOR = "|"
