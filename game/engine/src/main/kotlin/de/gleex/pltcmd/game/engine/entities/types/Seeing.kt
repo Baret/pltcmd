@@ -3,7 +3,9 @@ package de.gleex.pltcmd.game.engine.entities.types
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
-import de.gleex.pltcmd.model.signals.vision.VisualSignal
+import de.gleex.pltcmd.model.signals.vision.Vision
+import de.gleex.pltcmd.model.signals.vision.VisionPower
+import de.gleex.pltcmd.model.world.WorldArea
 
 /**
  * This file contains code for entities that have the [VisionAttribute].
@@ -17,17 +19,14 @@ private val SeeingEntity.visionAttribute: VisionAttribute
     get() = getAttribute(VisionAttribute::class)
 
 // visible for the UI
-var SeeingEntity.vision: VisualSignal
+var SeeingEntity.vision: Vision
     get() = visionAttribute.vision
     set(value) {
         visionAttribute.vision = value
     }
 
-internal val SeeingEntity.lookingFrom
-    get() = vision.origin
-
-internal val SeeingEntity.visibleTiles
+internal val SeeingEntity.visibleTiles: WorldArea
     get() = vision.area
 
-internal val SeeingEntity.visualRange
+internal val SeeingEntity.visualRange: VisionPower
     get() = visionAttribute.visualRange

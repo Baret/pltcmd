@@ -7,7 +7,6 @@ import de.gleex.pltcmd.game.engine.commands.DetectEntities
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.Affiliation
-import de.gleex.pltcmd.model.signals.vision.VisualSignal
 import de.gleex.pltcmd.model.signals.vision.builder.visionAt
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
@@ -52,6 +51,6 @@ object LookingAround :
         return true
     }
 
-    private fun SeeingEntity.hasMoved() = vision.origin != currentPosition || vision == VisualSignal.NONE
+    private fun SeeingEntity.hasMoved() = vision.origin != currentPosition
 
 }

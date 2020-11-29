@@ -11,7 +11,7 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
  */
 class SignalVisualizer(val world: GameWorld) {
 
-    private var currentSignal: Signal<*, *>? = null
+    private var currentSignal: Signal<*>? = null
     private var lastDrawnMap: Map<Coordinate, SignalStrength> = emptyMap()
 
     /**
@@ -31,7 +31,7 @@ class SignalVisualizer(val world: GameWorld) {
     /**
      * Draws the given signal at its origin.
      */
-    fun activateWith(signal: Signal<*, *>) {
+    fun activateWith(signal: Signal<*>) {
         deactivate()
         draw(signal.signalMap)
     }
