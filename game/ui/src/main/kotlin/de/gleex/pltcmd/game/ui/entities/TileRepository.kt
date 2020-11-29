@@ -104,7 +104,7 @@ object TileRepository {
         when {
             signalStrength.isNone() -> {
                 tileBuilder.
-                withCharacter(Symbols.SINGLE_LINE_CROSS).
+                withCharacter(Symbols.BLOCK_SPARSE).
                 withModifiers(
                         BorderBuilder.newBuilder().
                         withBorderType(BorderType.SOLID).
