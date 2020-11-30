@@ -4,7 +4,7 @@ import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
-import kotlin.math.ceil
+import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.math.floor
 
 /**
@@ -21,6 +21,10 @@ class Signal<P: SignalPower>(
         val area: WorldArea,
         private val power: P
 ) {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(Signal::class)
+    }
 
     init {
         require(origin in area) {
@@ -42,15 +46,6 @@ class Signal<P: SignalPower>(
         get() = area.associateWith { coordinate -> at(coordinate) }
 
     /**
-     * The maximum distance this signal can travel.
-     */
-    // TODO: Maybe ask the SignalPower? The area might be really really big...
-    val maxRangeInTiles: Int =
-            ceil(
-                    area.maxOf { it.distanceTo(origin) }
-            ).toInt()
-
-    /**
      *
      */
     fun at(target: Coordinate): SignalStrength {
@@ -58,13 +53,20 @@ class Signal<P: SignalPower>(
     }
 
     /**
-     * Used to calculate the [SignalStrength] at the given coordinate. By default it creates a straight line
-     * from [origin] to [target] and calls [along]. This behavior may be overridden though.
+     * Used to calculate the [SignalStrength] at the given coordinate. It creates a straight line
+     * from [origin] to [target] and calls [along].
      */
     private fun calculateSignalStrengthAt(target: Coordinate): SignalStrength {
+        if (log.isTraceEnabled()) {
+            log.trace(" - - - calculating signal from $origin to $target")
+        }
         val terrainList = area[CoordinatePath.line(origin, target)]
                 .map { it.terrain }
-        return along(terrainList)
+        return along(terrainList).also {
+            if (log.isTraceEnabled()) {
+                log.trace(" - - - Finished calculating signal from $origin to $target. Result: $it")
+            }
+        }
     }
 
     /**
@@ -79,6 +81,11 @@ class Signal<P: SignalPower>(
             val startHeight = terrainLine.first().height // b
             val targetHeight = terrainLine.last().height
             val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrainLine.size.toDouble() // m
+            if (log.isTraceEnabled()) {
+                log.trace("\tStarting terrain: ${terrainLine.first()}")
+                log.trace("\tTarget terrain: ${terrainLine.last()}")
+                log.trace("\tSlope: $slope")
+            }
             val terrainToTravel = terrainLine.drop(1)
             for ((index, terrain) in terrainToTravel.withIndex()) {
                 // Calculate if the signal is above, at or through the current field
@@ -93,6 +100,9 @@ class Signal<P: SignalPower>(
                     else                                      -> propagator.signalLossThroughTerrain(terrain.type)
                 }
                 if (propagator.signalDepleted) {
+                    if (log.isTraceEnabled()) {
+                        log.trace("\t XXX Short circuit! Signal depleted!")
+                    }
                     break
                 }
             }

@@ -4,6 +4,7 @@ import de.gleex.pltcmd.model.signals.core.SignalPropagator
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.core.toSignalStrength
 import de.gleex.pltcmd.model.world.terrain.TerrainType
+import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Vision propagates really far through air but stops instantly when hitting the ground (obviously).
@@ -13,9 +14,15 @@ import de.gleex.pltcmd.model.world.terrain.TerrainType
  */
 class VisionPropagator(maxRangeInTiles: Double) : SignalPropagator {
 
+    companion object {
+        private val log = LoggerFactory.getLogger(VisionPropagator::class)
+    }
+
     private var accumulatedSignalLoss: Double = 0.0
 
     private var remainingTiles = maxRangeInTiles
+
+    private var hitGround = false
 
     override val remainingSignalStrength: SignalStrength
         get() = (1.0 - accumulatedSignalLoss).toSignalStrength()
@@ -24,14 +31,25 @@ class VisionPropagator(maxRangeInTiles: Double) : SignalPropagator {
         get() = remainingTiles <= 0 || accumulatedSignalLoss >= 1.0
 
     override fun signalLossThroughAir() {
+        if (log.isTraceEnabled()) {
+            log.trace("\t\tSignal travels through air")
+        }
         addSignalLoss(0.02)
     }
 
     override fun signalLossThroughGround() {
-        addSignalLoss(1.0)
+        if (log.isTraceEnabled()) {
+            log.trace("\t\tSignal travels through ground. hitGround = $hitGround")
+        }
+        // You can poorly see the first tile uphill
+        addSignalLoss(0.5)
+        hitGround = true
     }
 
     override fun signalLossThroughTerrain(terrainType: TerrainType) {
+        if (log.isTraceEnabled()) {
+            log.trace("\t\tSignal travels through terrain $terrainType")
+        }
         addSignalLoss(when (terrainType) {
             TerrainType.GRASSLAND     -> 0.05
             TerrainType.FOREST        -> 0.25
@@ -44,6 +62,15 @@ class VisionPropagator(maxRangeInTiles: Double) : SignalPropagator {
 
     private fun addSignalLoss(additionalSignalLoss: Double) {
         accumulatedSignalLoss += additionalSignalLoss
+        if (log.isTraceEnabled()) {
+            log.trace("\t\t\tAdding $additionalSignalLoss. Currently accumulated: $accumulatedSignalLoss")
+        }
+        if (hitGround) {
+            accumulatedSignalLoss += 1.0
+            if (log.isTraceEnabled()) {
+                log.trace("\t\t\tSignal has hit the ground! Adding extra signal loss! New value: $accumulatedSignalLoss")
+            }
+        }
         remainingTiles--
     }
 
