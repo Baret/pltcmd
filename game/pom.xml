@@ -89,7 +89,7 @@
             </dependency>
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
-                <artifactId>radio</artifactId>
+                <artifactId>communication</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

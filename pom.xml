@@ -21,7 +21,7 @@
 		<module>util</module>
 		<module>model</module>
 		<module>game</module>
-	</modules>
+    </modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

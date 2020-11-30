@@ -19,6 +19,7 @@
     <modules>
         <module>core</module>
         <module>vision</module>
+        <module>radio</module>
         <module>signals-all</module>
     </modules>
 
@@ -35,17 +36,13 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- modules -->
+            <!-- signals modules -->
             <dependency>
                 <groupId>de.gleex.pltcmd.model.signals</groupId>
                 <artifactId>core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>de.gleex.pltcmd.model.signals</groupId>
-                <artifactId>vision</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+            <!-- other internal projects -->
             <dependency>
                 <groupId>de.gleex.pltcmd.util</groupId>
                 <artifactId>geometry</artifactId>

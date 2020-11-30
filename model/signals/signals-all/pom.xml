@@ -19,11 +19,13 @@
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.model.signals</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>vision</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.model.signals</groupId>
-            <artifactId>vision</artifactId>
+            <artifactId>radio</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
