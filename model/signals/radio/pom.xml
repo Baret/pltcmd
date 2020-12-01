@@ -14,4 +14,11 @@
     <name>Radio signals</name>
     <description>The radio simulation model representing how radio signals travel through the world.</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model.signals</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
