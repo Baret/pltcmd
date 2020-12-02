@@ -8,6 +8,9 @@ import de.gleex.pltcmd.model.signals.core.SignalPropagator
  */
 class RadioPower(power: Double) : SignalPower(power) {
 
+    /**
+     * The maximum number of tiles that a radio signal can travel with this power.
+     */
     val maxRange = RadioSignalPropagator.maxRangeInTiles(power)
 
     override fun newSignalPropagator(): SignalPropagator =
