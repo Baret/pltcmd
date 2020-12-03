@@ -1,14 +1,16 @@
 package de.gleex.pltcmd.game.ui.views
 
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.game.ui.mapgeneration.IncompleteMapBlock
 import de.gleex.pltcmd.game.ui.mapgeneration.IncompleteMapGameArea
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.*
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.game.GameComponent
+import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.view.base.BaseView
 
@@ -48,11 +50,16 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
                 .build()
     }
 
-    private fun createMainPart(): GameComponent<Tile, IncompleteMapBlock> {
-        return GameComponents.newGameComponentBuilder<Tile, IncompleteMapBlock>()
-                .withGameArea(incompleteWorld)
+    private fun createMainPart(): Panel {
+        val renderer = GameComponents.newGameAreaComponentRenderer<Panel, Tile, IncompleteMapBlock>(
+                gameArea = incompleteWorld,
+                fillerTile = TileRepository.empty(),
+                projectionMode = ProjectionMode.TOP_DOWN.toProperty()
+        )
+        return Components.panel()
                 .withSize(screen.width, screen.height - usedLines)
                 .withPosition(0, header.height)
+                .withComponentRenderer(renderer)
                 .build()
     }
 

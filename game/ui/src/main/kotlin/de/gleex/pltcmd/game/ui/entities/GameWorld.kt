@@ -11,7 +11,6 @@ import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.base.BaseGameArea
-import org.hexworks.zircon.internal.game.impl.TopDownProjectionStrategy
 
 /**
  * The game world contains all [GameBlock]s representing the map. It has a visible part and can scroll from [Sector] to sector.
@@ -29,14 +28,7 @@ class GameWorld(private val worldMap: WorldMap) :
                 initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
                 initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
                 initialContents = persistentMapOf(),
-                projectionStrategy = TopDownProjectionStrategy()) {
-    /**
-     * Returns all currently visible blocks.
-     *
-     * @see GameWorld.fetchBlocksAt
-     */
-    val visibleBlocks
-        get() = fetchBlocksAt(visibleOffset, visibleSize)
+                initialFilters = emptyList()) {
 
     companion object {
         private val log = LoggerFactory.getLogger(GameWorld::class)

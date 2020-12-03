@@ -20,7 +20,8 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
         BaseGameArea<Tile, IncompleteMapBlock>(
                 initialVisibleSize = Size3D.from2DSize(size, 1),
                 initialActualSize = Size3D.from2DSize(size, 1),
-                initialContents = BlocksWithGrid(size, worldSizeInTiles).create()) {
+                initialContents = BlocksWithGrid(size, worldSizeInTiles).create(),
+                initialFilters = emptyList()) {
 
     fun updateBlock(position: Position3D, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         blocks[position]?.setTerrain(terrainHeight, terrainType)

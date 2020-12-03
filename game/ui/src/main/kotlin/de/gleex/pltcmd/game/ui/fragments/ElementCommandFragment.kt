@@ -36,11 +36,15 @@ class ElementCommandFragment(
 
     private var selectedElement: ElementEntity = elements.first()
     private val destinationProperty = createPropertyFrom(selectedElement.position.value)
-    private val elementSelect = Fragments.multiSelect(fragmentWidth, elements)
+    private val elementSelect = Fragments.selector(fragmentWidth, elements)
             .withDefaultSelected(selectedElement)
-            .withCallback { _, newElement -> selectedElement = newElement }
             .withToStringMethod { it.callsign.toString() }
             .build()
+            .also {
+                it.selectedValue.onChange { newElement ->
+                    selectedElement = newElement.newValue
+                }
+            }
 
     companion object {
         private val log = LoggerFactory.getLogger(ElementCommandFragment::class)
