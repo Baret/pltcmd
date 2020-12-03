@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.ui.views
 
 import de.gleex.pltcmd.game.options.UiOptions
-import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.game.ui.mapgeneration.IncompleteMapBlock
 import de.gleex.pltcmd.game.ui.mapgeneration.IncompleteMapGameArea
 import org.hexworks.cobalt.databinding.api.extension.toProperty
@@ -51,10 +50,8 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
     }
 
     private fun createMainPart(): Panel {
-        val renderer = GameComponents.newGameAreaComponentRenderer<Panel, Tile, IncompleteMapBlock>(
-                gameArea = incompleteWorld,
-                fillerTile = TileRepository.empty(),
-                projectionMode = ProjectionMode.TOP_DOWN.toProperty()
+        val renderer = GameComponents.newGameAreaComponentRenderer<Panel, Tile, IncompleteMapBlock>(incompleteWorld,
+                projectionMode = ProjectionMode.TOP_DOWN_OBLIQUE_FRONT.toProperty()
         )
         return Components.panel()
                 .withSize(screen.width, screen.height - usedLines)

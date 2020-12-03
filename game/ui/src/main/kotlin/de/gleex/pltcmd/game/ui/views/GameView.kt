@@ -14,9 +14,6 @@ import de.gleex.pltcmd.game.ui.components.InfoSidebar
 import de.gleex.pltcmd.game.ui.components.InputSidebar
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.game.ui.entities.TileRepository
-import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
-import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.model.radio.BroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
@@ -66,16 +63,15 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
 
         val leftSidebarComponent = CustomComponent(leftSidebar, Position.bottomLeftOf(logArea))
 
-        val map = GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(
-                gameArea = gameWorld,
+        val map = GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(gameWorld,
                 projectionMode = ProjectionMode.TOP_DOWN.toProperty(),
-                fillerTile = TileRepository.empty()
         )
 
         val mainPart = Components.panel()
                 .withSize(MAP_VIEW_WIDTH, MAP_VIEW_HEIGHT)
                 .withPosition(Position.topRightOf(leftSidebarComponent))
-                .withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld))
+                // FIXME!
+//                .withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld))
                 .withComponentRenderer(map)
                 .build()
                 .apply {
