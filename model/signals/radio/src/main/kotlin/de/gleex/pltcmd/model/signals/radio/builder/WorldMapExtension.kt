@@ -4,7 +4,6 @@ import de.gleex.pltcmd.model.signals.core.Signal
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateCircle
 
 /**
  * A radio signal carries a message. It has an initial absolute power depending on the sending radio.
@@ -14,6 +13,6 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateCircle
 fun WorldMap.radioSignalAt(location: Coordinate, power: RadioPower): Signal<RadioPower> =
         Signal(
                 location,
-                areaOf(CoordinateCircle(location, power.maxRange)),
+                circleAt(location, power.maxRange),
                 power
         )

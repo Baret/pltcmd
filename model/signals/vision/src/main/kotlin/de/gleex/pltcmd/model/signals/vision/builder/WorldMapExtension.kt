@@ -5,7 +5,6 @@ import de.gleex.pltcmd.model.signals.vision.Vision
 import de.gleex.pltcmd.model.signals.vision.VisionPower
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateCircle
 import kotlin.math.ceil
 
 /**
@@ -20,7 +19,7 @@ fun WorldMap.visionAt(location: Coordinate, visualRange: VisionPower): Vision {
     val radius: Int = ceil(visualRange.power).toInt()
     return Signal(
             location,
-            areaOf(CoordinateCircle(location, radius)),
+            circleAt(location, radius),
             visualRange
     )
 }
