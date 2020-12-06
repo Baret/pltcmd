@@ -99,28 +99,8 @@ class GameWorld(private val worldMap: WorldMap) :
         return visibleOffset.toCoordinate()
     }
 
-    /**
-     * Make the given coordinate and ascending ones visible.
-     * If the visible area has the size of a [Sector] and the origin of a [Sector] is given, the full sector will be visible.
-     */
-    fun scrollToCoordinate(bottomLeft: Coordinate) {
-        val bottomLeftPos = bottomLeft.toPosition()
-        val visibleTopLeftPos = bottomLeftPos.withRelativeY(-getMaxVisibleY())
-        scrollTo(visibleTopLeftPos)
-    }
-
-    fun resetOverlayAt(coordinate: Coordinate) {
-        fetchBlockAt(coordinate)
-                .ifPresent { block ->
-                    block.resetOverlay()
-                }
-    }
-
     // model size
     private fun getMaxY() = actualSize.yLength - 1 // -1 because y is zero-based
-
-    // ui size
-    private fun getMaxVisibleY() = visibleSize.yLength - 1 // -1 because y is zero-based
 
     /**
      * Returns the difference between the origin of the world and the absolute origin (0, 0).

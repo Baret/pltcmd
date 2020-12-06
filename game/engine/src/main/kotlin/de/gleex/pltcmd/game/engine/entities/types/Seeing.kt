@@ -13,6 +13,9 @@ import de.gleex.pltcmd.model.world.WorldArea
 
 /** Type marker for entities that are [Positionable] and can "see" (scan) their surroundings. */
 interface Seeing : Positionable
+/**
+ * An entity of type [Seeing]
+ */
 typealias SeeingEntity = GameEntity<Seeing>
 
 private val SeeingEntity.visionAttribute: VisionAttribute
