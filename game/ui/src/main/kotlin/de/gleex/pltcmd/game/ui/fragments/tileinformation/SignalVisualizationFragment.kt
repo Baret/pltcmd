@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.ui.fragments.tileinformation
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.SeeingEntity
-import de.gleex.pltcmd.game.engine.entities.types.vision
+import de.gleex.pltcmd.game.engine.entities.types.visionImmutable
 import de.gleex.pltcmd.game.ui.renderers.SignalVisualizer
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.binding.Binding
@@ -29,7 +29,7 @@ class SignalVisualizationFragment(
     private val values: List<Pair<String, (SeeingEntity) -> Unit>> = listOf(
             "None" to { visualizer.deactivate() },
             "Vision" to { entity: SeeingEntity ->
-                visualizer.activateWith(entity.vision)
+                visualizer.activateWith(entity.visionImmutable)
             },
             "Radio" to { visualizer.deactivate(); log.warn("Not yet visualizing radio signals!") })
 

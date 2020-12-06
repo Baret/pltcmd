@@ -9,6 +9,10 @@ import java.util.*
 open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iterable<Coordinate> {
     constructor(coordinates: Coordinate.Progression) : this(coordinates.toSortedSet())
 
+    companion object {
+        val EMPTY = CoordinateArea(Collections.emptySortedSet())
+    }
+
     val size
         get() = coordinates.size
 
@@ -69,10 +73,6 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
 
     override fun hashCode(): Int {
         return coordinates.hashCode()
-    }
-
-    companion object {
-        val EMPTY = CoordinateArea(TreeSet())
     }
 
 }
