@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.engine.entities
 
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.Positionable
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
@@ -57,7 +58,7 @@ class EntitySet<T : EntityType>(initialEntities: Iterable<GameEntity<T>> = empty
      * @return a [Maybe] containing the first [GameEntity] of type [ElementType] found at the given [location]
      *  or an empty [Maybe] if no elements are present.
      */
-    fun firstElementAt(location: Coordinate): Maybe<GameEntity<ElementType>> =
+    fun firstElementAt(location: Coordinate): Maybe<ElementEntity> =
             // This should be faster than using elementsAt.first() because not the whole list needs to be filtered
             Maybe.ofNullable(allElements().firstOrNull { it.currentPosition == location })
 
