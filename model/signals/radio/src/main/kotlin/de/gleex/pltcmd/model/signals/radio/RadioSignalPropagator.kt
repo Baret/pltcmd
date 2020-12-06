@@ -20,15 +20,6 @@ class RadioSignalPropagator(initialRadioPower: Double) : SignalPropagator {
 
     companion object {
         /**
-         * The maximum number of tiles a radio signal can travel with the given power. This is only possible
-         * when it only travels through air.
-         */
-        fun maxRangeInTiles(power: Double): Int {
-            // MIN = power * loss^x -> x = log(MIN/power, loss)
-            return max(log(MIN_POWER_THRESHOLD / power, AIR_LOSS_FACTOR).toInt(), 0)
-        }
-
-        /**
          * The factor to apply when a signal travels *through* terrain instead of over it
          */
         const val GROUND_LOSS_FACTOR = .70
@@ -43,6 +34,15 @@ class RadioSignalPropagator(initialRadioPower: Double) : SignalPropagator {
          * In other words: Signals lower than this are cut off.
          */
         const val MIN_POWER_THRESHOLD = 8.0
+
+        /**
+         * The maximum number of tiles a radio signal can travel with the given power. This is only possible
+         * when it only travels through air.
+         */
+        fun maxRangeInTiles(power: Double): Int {
+            // MIN = power * loss^x -> x = log(MIN/power, loss)
+            return max(log(MIN_POWER_THRESHOLD / power, AIR_LOSS_FACTOR).toInt(), 0)
+        }
     }
 
     private var remainingPower: Double = initialRadioPower
@@ -72,7 +72,7 @@ class RadioSignalPropagator(initialRadioPower: Double) : SignalPropagator {
      * Translates an absolute radio power to a [SignalStrength] represented as percentage value from 0.0 to 1.0.
      * Power >= 100 means full strength of 100%, lower values equal the percentage value.
      */
-    fun Double.convertToSignalStrength(): SignalStrength {
+    private fun Double.convertToSignalStrength(): SignalStrength {
         return if(this < MIN_POWER_THRESHOLD) {
             SignalStrength.NONE
         } else {
