@@ -14,12 +14,12 @@ import de.gleex.pltcmd.game.ui.components.InfoSidebar
 import de.gleex.pltcmd.game.ui.components.InputSidebar
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.model.radio.BroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.util.events.globalEventBus
-import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -28,7 +28,6 @@ import org.hexworks.zircon.api.component.LogArea
 import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.uievent.*
@@ -37,7 +36,13 @@ import org.hexworks.zircon.api.view.base.BaseView
 /**
  * The view to display the map, radio log and interaction panel
  */
-class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val game: Game, val commandingElement: ElementEntity, val elementsToCommand: List<ElementEntity>) :
+class GameView(
+        private val gameWorld: GameWorld,
+        tileGrid: TileGrid,
+        private val game: Game,
+        val commandingElement: ElementEntity,
+        val elementsToCommand: List<ElementEntity>
+) :
         BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     companion object {
@@ -63,24 +68,18 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
 
         val leftSidebarComponent = CustomComponent(leftSidebar, Position.bottomLeftOf(logArea))
 
-        val map = GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(gameWorld,
-                projectionMode = ProjectionMode.TOP_DOWN.toProperty(),
-        )
+        val map = GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(gameWorld)
 
         val mainPart = Components.panel()
                 .withSize(MAP_VIEW_WIDTH, MAP_VIEW_HEIGHT)
                 .withPosition(Position.topRightOf(leftSidebarComponent))
                 // FIXME!
-//                .withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld))
+                .withDecorations(
+                        MapGridDecorationRenderer(),
+//                        MapCoordinateDecorationRenderer(gameWorld)
+                )
                 .withComponentRenderer(map)
                 .build()
-                .apply {
-                    // redraw MapCoordinateDecorationRenderer
-//                    gameWorld.visibleOffsetValue.onChange { asInternalComponent().render() }
-                }
-
-        // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
-        mainPart.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
 
         val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT, gameWorld, game)
 
@@ -89,6 +88,9 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                 leftSidebarComponent,
                 mainPart,
                 CustomComponent(rightSidebar, Position.topRightOf(mainPart)))
+
+        // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
+        mainPart.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
 
         log.debug("Created map view with size ${mainPart.size}, content size ${mainPart.contentSize} and position ${mainPart.position}")
         log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
