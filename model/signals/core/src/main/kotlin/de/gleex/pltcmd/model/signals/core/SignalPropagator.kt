@@ -35,7 +35,7 @@ interface SignalPropagator {
     fun signalLossThroughGround()
 
     /**
-     * Called for each tile a signals travels through the given [TerrainType].
+     * Called for each tile a signal travels through the given [TerrainType].
      */
     fun signalLossThroughTerrain(terrainType: TerrainType)
 }

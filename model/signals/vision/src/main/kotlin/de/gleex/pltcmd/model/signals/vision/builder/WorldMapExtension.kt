@@ -17,7 +17,7 @@ import kotlin.math.ceil
  */
 fun WorldMap.visionAt(location: Coordinate, visualRange: VisionPower): Vision {
     val radius: Int = ceil(visualRange.power).toInt()
-    return Signal(
+    return Vision(
             location,
             circleAt(location, radius),
             visualRange

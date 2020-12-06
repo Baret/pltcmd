@@ -32,7 +32,7 @@ class VisionPropagator(maxRangeInTiles: Double) : SignalPropagator {
 
     override fun signalLossThroughAir() {
         if (log.isTraceEnabled()) {
-            log.trace("\t\tSignal travels through air")
+            log.trace("\t\tVision travels through air")
         }
         addSignalLoss(0.02)
     }
