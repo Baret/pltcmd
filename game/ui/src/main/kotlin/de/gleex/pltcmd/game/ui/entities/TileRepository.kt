@@ -85,13 +85,6 @@ object TileRepository {
     fun empty() = Tile.empty()
 
     /**
-     * OLD IMPLEMENTATION
-     */
-    fun forSignal(signalStrength: de.gleex.pltcmd.model.radio.broadcasting.SignalStrength): Tile =
-            // TODO: Remove old stuff
-            forSignal(SignalStrength(signalStrength.strength))
-
-    /**
      * Returns a [Tile] to display the given signal strength.
      */
     fun forSignal(signalStrength: SignalStrength): Tile {

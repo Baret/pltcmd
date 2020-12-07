@@ -16,6 +16,7 @@ import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
+import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
@@ -64,10 +65,10 @@ fun main() {
     val charlieLocation = origin.withRelativeEasting(10).toProperty()
     val zuluLocation = tiles.last().coordinate.toProperty()
 
-    val hqRadio = RadioSender(hqLocation, 50.0, map)
-    val bravoRadio = RadioSender(bravoLocation, 50.0, map)
-    val charlieRadio = RadioSender(charlieLocation, 50.0, map)
-    val zuluRadio = RadioSender(zuluLocation, 1.0, map)
+    val hqRadio = RadioSender(hqLocation, RadioPower(50.0), map)
+    val bravoRadio = RadioSender(bravoLocation, RadioPower(50.0), map)
+    val charlieRadio = RadioSender(charlieLocation, RadioPower(50.0), map)
+    val zuluRadio = RadioSender(zuluLocation, RadioPower(1.0), map)
 
     val hqCallSign = CallSign("Command")
     val bravoCallSign = CallSign("Bravo-2")

@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.radio
 
-import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
+import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.events.api.*
 
@@ -13,12 +13,13 @@ data class BroadcastEvent(
         val transmission: Transmission
 ) : Event {
 
+    /** @return true if this transmission may be received at the given location */
     fun isReceivedAt(location: Coordinate): Boolean {
         return emitter.isReceivedAt(location)
     }
 
     fun receivedAt(location: Coordinate): Pair<SignalStrength, Transmission> {
-        return Pair(emitter.signalAtTarget(location), transmission)
+        return Pair(emitter.signalAt(location), transmission)
     }
 }
 

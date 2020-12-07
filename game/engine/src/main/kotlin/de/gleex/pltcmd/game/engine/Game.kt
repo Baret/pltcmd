@@ -9,12 +9,12 @@ import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.onDefeat
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
-import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.radio.RadioSender
+import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -85,7 +85,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
             affiliation: Affiliation = Affiliation.Unknown
     ): ElementEntity {
         val elementPosition = positionInSector.toProperty()
-        val radioSender = RadioSender(elementPosition, GameOptions.defaultRadioPower, world)
+        val radioSender = RadioSender(elementPosition, RadioPower(5000.0), world)
         val elementEntity = if (affiliation == Affiliation.Friendly || affiliation == Affiliation.Self) {
             element.toEntity(elementPosition, affiliation, radioSender)
         } else {

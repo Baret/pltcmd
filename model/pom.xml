@@ -51,6 +51,11 @@
                 <artifactId>world</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model.signals</groupId>
+                <artifactId>radio</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- other internal projects -->
             <dependency>
                 <groupId>de.gleex.pltcmd.util</groupId>

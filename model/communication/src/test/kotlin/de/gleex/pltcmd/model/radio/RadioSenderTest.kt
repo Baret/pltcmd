@@ -1,18 +1,6 @@
 package de.gleex.pltcmd.model.radio
 
-import de.gleex.pltcmd.model.radio.broadcasting.RadioSignal
-import de.gleex.pltcmd.model.world.WorldMap
-import de.gleex.pltcmd.model.world.WorldTile
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
-import de.gleex.pltcmd.model.world.terrain.Terrain
-import de.gleex.pltcmd.model.world.terrain.TerrainHeight
-import de.gleex.pltcmd.model.world.terrain.TerrainType
-import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
-import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.shouldBe
-import org.hexworks.cobalt.databinding.api.extension.toProperty
-
+/*
 class RadioSenderTest : StringSpec() {
     private val map = WorldMap.create(setOf(sectorAtWithTerrain(Coordinate(0, 0)) {
         Terrain.of(TerrainType.FOREST, TerrainHeight.FIVE)
@@ -48,4 +36,4 @@ class RadioSenderTest : StringSpec() {
         }
     }
 
-}
+}*/

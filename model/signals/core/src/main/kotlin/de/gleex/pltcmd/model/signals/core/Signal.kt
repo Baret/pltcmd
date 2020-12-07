@@ -46,10 +46,17 @@ class Signal<P: SignalPower>(
         get() = area.associateWith { coordinate -> at(coordinate) }
 
     /**
-     *
+     * @return the [SignalStrength] of this signal at the given target. All [Coordinate]s outside
+     * of [area] are automatically considered [SignalStrength.NONE].
      */
     fun at(target: Coordinate): SignalStrength {
-        return signalCache.computeIfAbsent(target) { calculateSignalStrengthAt(it) }
+        synchronized(signalCache) {
+            return if (target in area) {
+                signalCache.computeIfAbsent(target) { calculateSignalStrengthAt(it) }
+            } else {
+                SignalStrength.NONE
+            }
+        }
     }
 
     /**

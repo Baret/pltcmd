@@ -80,12 +80,6 @@ object ColorRepository {
         }
     }
 
-    /**
-     * OLD IMPLEMENTATION
-     */
-    fun radioColor(signalStrength: de.gleex.pltcmd.model.radio.broadcasting.SignalStrength): TileColor =
-            radioColor(SignalStrength(signalStrength.strength))
-
     fun radioColor(signalStrength: SignalStrength): TileColor {
         val signalColor = SIGNAL_EMPTY.interpolateTo(SIGNAL_FULL).getColorAtRatio(signalStrength.strength)
         return if (signalStrength.isNone()) {

@@ -10,9 +10,13 @@
     <artifactId>communication</artifactId>
 
     <name>Communication model</name>
-    <description>The Model for radio communications.</description>
+    <description>The model for radio communications.</description>
 
     <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model.signals</groupId>
+            <artifactId>radio</artifactId>
+        </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>world</artifactId>
