@@ -7,13 +7,30 @@ package de.gleex.pltcmd.model.signals.core
 data class SignalStrength(
         /**
          * The strength of a signal represented by a value between 0.0 and 1.0 (inclusive).
+         *
+         * @see MIN_ALLOWED_VALUE
+         * @see MAX_ALLOWED_VALUE
          */
         val strength: Double): Comparable<SignalStrength> {
     companion object {
+        /**
+         * The minimum that [SignalStrength.strength] may have.
+         */
         const val MIN_ALLOWED_VALUE = 0.0
+
+        /**
+         * The maximum that [SignalStrength.strength] may have.
+         */
         const val MAX_ALLOWED_VALUE = 1.0
 
+        /**
+         * This value represents a signal at full strength.
+         */
         val FULL = SignalStrength(MAX_ALLOWED_VALUE)
+
+        /**
+         * No signal left.
+         */
         val NONE = SignalStrength(MIN_ALLOWED_VALUE)
     }
 
@@ -38,10 +55,6 @@ data class SignalStrength(
      */
     fun isAny() = strength > MIN_ALLOWED_VALUE
 
-    operator fun times(multiplicand: Int) = strength * multiplicand
-
-    operator fun times(multiplicand: Double) = strength * multiplicand
-
     override fun compareTo(other: SignalStrength): Int = strength.compareTo(other.strength)
 }
 
@@ -50,4 +63,4 @@ data class SignalStrength(
  * negative values will result in [SignalStrength.NONE] and values >= 1.0 result in [SignalStrength.FULL]
  */
 fun Double.toSignalStrength() =
-        SignalStrength(coerceIn(0.0, 1.0))
+        SignalStrength(coerceIn(SignalStrength.MIN_ALLOWED_VALUE, SignalStrength.MAX_ALLOWED_VALUE))
