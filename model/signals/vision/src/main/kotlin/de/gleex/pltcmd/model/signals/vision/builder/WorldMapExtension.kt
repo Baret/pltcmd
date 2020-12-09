@@ -5,7 +5,12 @@ import de.gleex.pltcmd.model.signals.vision.Vision
 import de.gleex.pltcmd.model.signals.vision.VisionPower
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.math.ceil
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
+
+private val log = LoggerFactory.getLogger(WorldMap::visionAt::class)
 
 /**
  * Creates a new [Signal] representing the vision of an entity at [location] with the given [visualRange].
@@ -15,11 +20,15 @@ import kotlin.math.ceil
  *
  * @return a visual
  */
+@OptIn(ExperimentalTime::class)
 fun WorldMap.visionAt(location: Coordinate, visualRange: VisionPower): Vision {
     val radius: Int = ceil(visualRange.power).toInt()
+    log.debug("Creating vision at $location with $visualRange. Calculating circle with radius ${radius}...")
+    val (area, duration) = measureTimedValue { circleAt(location, radius) }
+    log.debug("Created area in ${duration.inMilliseconds} ms, returning signal.")
     return Vision(
             location,
-            circleAt(location, radius),
+            area,
             visualRange
     )
 }

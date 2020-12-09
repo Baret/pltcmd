@@ -12,6 +12,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasRecei
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.location
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
+import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.datatypes.Maybe
@@ -42,6 +43,9 @@ class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
      **/
     val inConversationWith: ObservableValue<Maybe<CallSign>>
         get() = state._inConversationWith
+
+    val currentSignal: RadioSignal
+        get() = sender.radio.signal
 
     init {
         startRadio()

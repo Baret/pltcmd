@@ -47,6 +47,9 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
     open operator fun contains(coordinate: Coordinate) =
             contains(coordinate.toMainCoordinate()) && coordinates.contains(coordinate)
 
+    /**
+     * Checks if this area contains the given [MainCoordinate].
+     */
     open operator fun contains(mainCoordinate: MainCoordinate) = mainCoordinatesMap.containsKey(mainCoordinate)
 
     /**

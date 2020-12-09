@@ -1,8 +1,7 @@
 package de.gleex.pltcmd.game.ui.fragments.tileinformation
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.entities.types.SeeingEntity
-import de.gleex.pltcmd.game.engine.entities.types.visionImmutable
+import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.ui.renderers.SignalVisualizer
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.binding.Binding
@@ -31,7 +30,18 @@ class SignalVisualizationFragment(
             "Vision" to { entity: SeeingEntity ->
                 visualizer.activateWith(entity.visionImmutable)
             },
-            "Radio" to { visualizer.deactivate(); log.warn("Not yet visualizing radio signals!") })
+            "Radio" to {
+                @Suppress("UNCHECKED_CAST")
+                if (it.type is Communicating) {
+                    it as CommunicatingEntity
+                    log.info("Entity is communicating. Creating radio signal at ${it.currentPosition}")
+                    @Suppress("UNCHECKED_CAST")
+                    visualizer.activateWith(it.radioSignal)
+                } else {
+                    log.info("Entity is NOT communicating!")
+                    visualizer.deactivate()
+                }
+            })
 
     private val selectedAction: Property<(SeeingEntity) -> Unit> = values.first().second.toProperty()
 

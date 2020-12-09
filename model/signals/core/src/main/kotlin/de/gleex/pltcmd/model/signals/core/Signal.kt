@@ -6,6 +6,8 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.math.floor
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 /**
  * A signal has an [origin] and an [area] that it can be received in. For every [Coordinate] in [area] the
@@ -41,9 +43,15 @@ class Signal<P: SignalPower>(
      * All [Coordinate]s of [area] mapped to their corresponding [SignalStrength]. The same as if
      * you would call [at] for every single coordinate.
      */
+    @OptIn(ExperimentalTime::class)
     val signalMap: Map<Coordinate, SignalStrength>
         // Calculate or load signals from cache for every coordinate in the area
-        get() = area.associateWith { coordinate -> at(coordinate) }
+        get() {
+            log.debug("Getting signal map...")
+            val (map, duration) = measureTimedValue { area.associateWith { coordinate -> at(coordinate) } }
+            log.debug("...took ${duration.inMilliseconds} ms")
+            return map
+        }
 
     /**
      * @return the [SignalStrength] of this signal at the given target. All [Coordinate]s outside
