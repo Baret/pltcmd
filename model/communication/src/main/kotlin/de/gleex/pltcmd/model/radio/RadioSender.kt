@@ -9,6 +9,8 @@ import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.events.globalEventBus
+import org.hexworks.cobalt.databinding.api.binding.Binding
+import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -28,8 +30,10 @@ class RadioSender(private val location: ObservableValue<Coordinate>, val power: 
     val currentLocation: Coordinate
         get() = location.value
 
+    private val signalBinding: Binding<RadioSignal> = location.bindTransform { map.radioSignalAt(it, power) }
+
     internal val signal: RadioSignal
-        get() = map.radioSignalAt(location.value, power)
+            get() = signalBinding.value
 
     // visible for tests
     internal val reachableTiles: WorldArea
