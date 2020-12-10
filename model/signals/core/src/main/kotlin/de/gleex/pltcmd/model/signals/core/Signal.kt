@@ -5,9 +5,10 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.floor
 import kotlin.time.ExperimentalTime
-import kotlin.time.measureTimedValue
+import kotlin.time.measureTime
 
 /**
  * A signal has an [origin] and an [area] that it can be received in. For every [Coordinate] in [area] the
@@ -18,7 +19,7 @@ import kotlin.time.measureTimedValue
  * this area has a [SignalStrength] of [SignalStrength.NONE]
  * @param power the power of this signal (in the end some arbitrary number of how "powerful" this signal is)
  */
-class Signal<P: SignalPower>(
+class Signal<P : SignalPower>(
         val origin: Coordinate,
         val area: WorldArea,
         private val power: P
@@ -37,7 +38,7 @@ class Signal<P: SignalPower>(
     /**
      * To only calculate every [SignalStrength] once, this map caches each result.
      */
-    private val signalCache: MutableMap<Coordinate, SignalStrength> = mutableMapOf()
+    private val signalCache: MutableMap<Coordinate, SignalStrength> = ConcurrentHashMap()
 
     /**
      * All [Coordinate]s of [area] mapped to their corresponding [SignalStrength]. The same as if
@@ -48,9 +49,15 @@ class Signal<P: SignalPower>(
         // Calculate or load signals from cache for every coordinate in the area
         get() {
             log.debug("Getting signal map...")
-            val (map, duration) = measureTimedValue { area.associateWith { coordinate -> at(coordinate) } }
+            val duration = measureTime {
+                if (area.size != signalCache.size) {
+                    fillCache()
+                } else {
+                    log.debug("Cache already filled!")
+                }
+            }
             log.debug("...took ${duration.inMilliseconds} ms")
-            return map
+            return signalCache
         }
 
     /**
@@ -58,12 +65,11 @@ class Signal<P: SignalPower>(
      * of [area] are automatically considered [SignalStrength.NONE].
      */
     fun at(target: Coordinate): SignalStrength {
-        synchronized(signalCache) {
-            return if (target in area) {
-                signalCache.computeIfAbsent(target) { calculateSignalStrengthAt(it) }
-            } else {
-                SignalStrength.NONE
-            }
+        log.debug("Calculating signal strength at $target")
+        return if (target in area) {
+            signalCache.computeIfAbsent(target) { calculateSignalStrengthAt(it) }
+        } else {
+            SignalStrength.NONE
         }
     }
 
@@ -125,4 +131,15 @@ class Signal<P: SignalPower>(
         return propagator.remainingSignalStrength
     }
 
+    @OptIn(ExperimentalTime::class)
+    private fun fillCache() {
+        log.debug("Filling cache with ${area.size} elements. Cache size before: ${signalCache.size}")
+        val duration = measureTime {
+            area
+                    .toSet()
+                    .parallelStream()
+                    .forEach { at(it) }
+        }
+        log.debug("Filling cache took ${duration.inMilliseconds} ms. Cache size after: ${signalCache.size}")
+    }
 }
