@@ -34,12 +34,14 @@ object TileRepository {
             }
 
         private fun platoonTile(representation: Char, colorForeground: TileColor, colorBackground: TileColor) =
-                Tile.newBuilder().
-                withForegroundColor(colorForeground).
-                withBackgroundColor(colorBackground).
-                withCharacter(representation).
-                withModifiers(BorderBuilder.newBuilder().withBorderColor(colorBackground).build()).
-                buildCharacterTile()
+                Tile.newBuilder()
+                        .withForegroundColor(colorForeground)
+                        .withBackgroundColor(colorBackground)
+                        .withCharacter(representation)
+                        .withModifiers(BorderBuilder.newBuilder()
+                                .withBorderColor(colorBackground)
+                                .build())
+                        .buildCharacterTile()
 
         fun marker(element: CommandingElement, affiliation: Affiliation): Tile {
             // TODO: cache the tiles, because they are immutable (#101)
@@ -52,22 +54,21 @@ object TileRepository {
     fun createTerrainTile(terrain: Terrain): Tile = createTerrainTile(terrain.height, terrain.type)
 
     fun createTerrainTile(terrainHeight: TerrainHeight?, terrainType: TerrainType?): Tile =
-            Tile.
-                newBuilder().
-                withForegroundColor(ColorRepository.forType(terrainType)).
-                withBackgroundColor(ColorRepository.forHeight(terrainHeight)).
-                withCharacter(terrainType.char()).
-                buildCharacterTile()
+            Tile.newBuilder()
+                    .withForegroundColor(ColorRepository.forType(terrainType))
+                    .withBackgroundColor(ColorRepository.forHeight(terrainHeight))
+                    .withCharacter(terrainType.char())
+                    .buildCharacterTile()
 
     fun Tile.withGridBorder(borders: Set<BorderPosition>): Tile {
         return if (borders.isEmpty()) {
             this
         } else {
-            withModifiers(BorderBuilder.newBuilder().
-                    withBorderPositions(borders).
-                    withBorderType(BorderType.DASHED).
-                    withBorderColor(ColorRepository.GRID_COLOR).
-                    build())
+            withModifiers(BorderBuilder.newBuilder()
+                    .withBorderPositions(borders)
+                    .withBorderType(BorderType.DASHED)
+                    .withBorderColor(ColorRepository.GRID_COLOR)
+                    .build())
         }
     }
 
@@ -96,23 +97,21 @@ object TileRepository {
 
         when {
             signalStrength.isNone() -> {
-                tileBuilder.
-                withCharacter(Symbols.BLOCK_SPARSE).
-                withModifiers(
-                        BorderBuilder.newBuilder().
-                        withBorderType(BorderType.SOLID).
-                        withBorderWidth(2).
-                        withBorderColor(ColorRepository.SIGNAL_EMPTY).
-                        build())
+                tileBuilder.withCharacter(Symbols.BLOCK_SPARSE)
+                        .withModifiers(
+                                BorderBuilder.newBuilder()
+                                        .withBorderType(BorderType.SOLID)
+                                        .withBorderWidth(2)
+                                        .withBorderColor(ColorRepository.SIGNAL_EMPTY)
+                                        .build())
             }
             signalStrength.isFull() -> {
-                tileBuilder.
-                withModifiers(
-                        BorderBuilder.newBuilder().
-                        withBorderType(BorderType.SOLID).
-                        withBorderWidth(2).
-                        withBorderColor(ColorRepository.SIGNAL_FULL_HIGHLIGHT).
-                        build())
+                tileBuilder.withModifiers(
+                        BorderBuilder.newBuilder()
+                                .withBorderType(BorderType.SOLID)
+                                .withBorderWidth(2)
+                                .withBorderColor(ColorRepository.SIGNAL_FULL_HIGHLIGHT)
+                                .build())
             }
         }
 

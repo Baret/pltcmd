@@ -4,11 +4,13 @@ import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.floor
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
 
 /**
  * A signal has an [origin] and an [area] that it can be received in. For every [Coordinate] in [area] the
@@ -40,32 +42,39 @@ class Signal<P : SignalPower>(
      */
     private val signalCache: MutableMap<Coordinate, SignalStrength> = ConcurrentHashMap()
 
-    /**
-     * All [Coordinate]s of [area] mapped to their corresponding [SignalStrength]. The same as if
-     * you would call [at] for every single coordinate.
-     */
-    @OptIn(ExperimentalTime::class)
-    val signalMap: Map<Coordinate, SignalStrength>
-        // Calculate or load signals from cache for every coordinate in the area
-        get() {
-            log.debug("Getting signal map...")
-            val duration = measureTime {
-                if (area.size != signalCache.size) {
-                    fillCache()
+    private val coordinatesByDistanceToOrigin: SortedSet<Coordinate> = area
+            .toSortedSet { c1, c2 ->
+                val distanceDiff = c1.distanceTo(origin)
+                        .compareTo(c2.distanceTo(origin))
+                if (distanceDiff != 0) {
+                    distanceDiff
                 } else {
-                    log.debug("Cache already filled!")
+                    c1.compareTo(c2)
                 }
             }
-            log.debug("...took ${duration.inMilliseconds} ms")
-            return signalCache
-        }
+
+    /**
+     * A flow of calls to [at] for every coordinate in [area]. It fills the area from inner to outer
+     * (going outwards from [origin]).
+     *
+     * This flow is cancellable.
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val all: Flow<Pair<Coordinate, SignalStrength>> =
+            coordinatesByDistanceToOrigin
+                    .asFlow()
+                    .map { it to at(it) }
+                    .onStart { log.debug("Starting to fill cache (current size ${signalCache.size})...") }
+                    .onCompletion { log.debug("...finished filling cache (current size ${signalCache.size})!") }
+                    .buffer(Channel.UNLIMITED)
+                    .cancellable()
 
     /**
      * @return the [SignalStrength] of this signal at the given target. All [Coordinate]s outside
      * of [area] are automatically considered [SignalStrength.NONE].
      */
     fun at(target: Coordinate): SignalStrength {
-        log.debug("Calculating signal strength at $target")
+        log.trace("Calculating signal strength at $target")
         return if (target in area) {
             signalCache.computeIfAbsent(target) { calculateSignalStrengthAt(it) }
         } else {
@@ -129,17 +138,5 @@ class Signal<P : SignalPower>(
             }
         }
         return propagator.remainingSignalStrength
-    }
-
-    @OptIn(ExperimentalTime::class)
-    private fun fillCache() {
-        log.debug("Filling cache with ${area.size} elements. Cache size before: ${signalCache.size}")
-        val duration = measureTime {
-            area
-                    .toSet()
-                    .parallelStream()
-                    .forEach { at(it) }
-        }
-        log.debug("Filling cache took ${duration.inMilliseconds} ms. Cache size after: ${signalCache.size}")
     }
 }
