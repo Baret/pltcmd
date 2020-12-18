@@ -67,20 +67,20 @@ class RadioSignalPropagator(initialRadioPower: Double) : SignalPropagator {
             TerrainType.WATER_DEEP, TerrainType.WATER_SHALLOW -> AIR_LOSS_FACTOR
         }
     }
+}
 
-    /**
-     * Translates an absolute radio power to a [SignalStrength] represented as percentage value from 0.0 to 1.0.
-     * Power >= 100 means full strength of 100%, lower values equal the percentage value.
-     */
-    private fun Double.convertToSignalStrength(): SignalStrength {
-        return if(this < MIN_POWER_THRESHOLD) {
-            SignalStrength.NONE
-        } else {
-            SignalStrength(this.toBigDecimal()
-                    .divide(100.0.toBigDecimal())
-                    .setScale(5, RoundingMode.HALF_DOWN)
-                    .toDouble()
-                    .coerceIn(0.0, 1.0))
-        }
+/**
+ * Translates an absolute radio power to a [SignalStrength] represented as percentage value from 0.0 to 1.0.
+ * Power >= 100 means full strength of 100%, lower values equal the percentage value.
+ */
+internal fun Double.convertToSignalStrength(): SignalStrength {
+    return if(this < MIN_POWER_THRESHOLD) {
+        SignalStrength.NONE
+    } else {
+        SignalStrength(this.toBigDecimal()
+                .divide(100.0.toBigDecimal())
+                .setScale(5, RoundingMode.HALF_DOWN)
+                .toDouble()
+                .coerceIn(0.0, 1.0))
     }
 }
