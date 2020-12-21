@@ -14,6 +14,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.collection
 import kotlin.math.ceil
 import kotlin.math.sqrt
+import kotlin.system.measureTimeMillis
 
 class WorldMapTest : WordSpec({
     "A WorldMap" should {
@@ -65,6 +66,41 @@ class WorldMapTest : WordSpec({
                     row(map.last.movedBy(3, -13), map.last.movedBy(0, -13))
             ) { position, expected ->
                 map.moveInside(position) shouldBe expected
+            }
+        }
+
+        "circleAt() should find all titles in the world" {
+            // 3x3 sectors
+            val s = Sector.TILE_COUNT
+            val manySectors = setOf(
+                origin.movedBy(0 * s, 0 * s), origin.movedBy(1 * s, 0 * s), origin.movedBy(2 * s, 0 * s),
+                origin.movedBy(0 * s, 1 * s), origin.movedBy(1 * s, 1 * s), origin.movedBy(2 * s, 1 * s),
+                origin.movedBy(0 * s, 2 * s), origin.movedBy(1 * s, 2 * s), origin.movedBy(2 * s, 2 * s)
+            ).map { randomSectorAt(it) }
+            val largeMap = WorldMap.create(manySectors)
+            val center = origin.movedBy(123, 57)
+
+            val allDurations = mutableListOf<Long>()
+            forAll(
+                row(10, 317),
+                row(50, 6439),
+                row(100, 17054),
+                row(200, 22500),
+                row(300, 22500)
+            ) { radius, expected ->
+                allDurations.clear()
+                repeat(20) {
+                    allDurations.add(
+                        measureTimeMillis {
+                            largeMap.circleAt(center, radius).size shouldBe expected
+                        }
+                    )
+                }
+                println("Values for radius $radius")
+                println(allDurations.joinToString(", "))
+                val average = allDurations.average()
+                println("Average: $average ms")
+                println()
             }
         }
     }
