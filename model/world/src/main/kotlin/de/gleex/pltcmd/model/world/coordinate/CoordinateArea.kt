@@ -20,18 +20,11 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
         get() = coordinates.isEmpty()
 
     /**
-     * Maps all [MainCoordinate]s contained in this area to their [Coordinate]s that are present in this
-     * area. This map is useful to more efficiently find coordinates in very large areas.
-     */
-    protected val mainCoordinatesMap: Map<MainCoordinate, SortedSet<Coordinate>> =
-            coordinates
-                    .groupBy { it.toMainCoordinate() }
-                    .mapValues { it.value.toSortedSet() }
-
-    /**
      * All [MainCoordinate]s contained in this area.
      */
-    val mainCoordinates: Set<MainCoordinate> = mainCoordinatesMap.keys
+    val mainCoordinates: Set<MainCoordinate> = coordinates
+            .map { it.toMainCoordinate() }
+            .toSortedSet()
 
     /**
      * All sector origins contained in this area.
@@ -50,7 +43,7 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
     /**
      * Checks if this area contains the given [MainCoordinate].
      */
-    open operator fun contains(mainCoordinate: MainCoordinate) = mainCoordinatesMap.containsKey(mainCoordinate)
+    open operator fun contains(mainCoordinate: MainCoordinate) = mainCoordinates.contains(mainCoordinate)
 
     /**
      * Returns an ordered sequence of all [Coordinate]s in this area.
