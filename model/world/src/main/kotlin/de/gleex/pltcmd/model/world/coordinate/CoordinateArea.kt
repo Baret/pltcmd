@@ -62,7 +62,7 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
     fun toSet() = coordinates
 
     override fun toString(): String {
-        return "CoordinateArea with $size coordinates: $coordinates"
+        return "CoordinateArea with $size coordinates"
     }
 
     override fun equals(other: Any?): Boolean {

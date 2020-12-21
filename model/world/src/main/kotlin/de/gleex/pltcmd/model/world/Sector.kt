@@ -62,6 +62,22 @@ class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<S
     override fun toString(): String {
         return "Sector at $origin"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Sector) return false
+        if (!super.equals(other)) return false
+
+        if (origin != other.origin) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + origin.hashCode()
+        return result
+    }
 }
 
 // extensions for WorldTile

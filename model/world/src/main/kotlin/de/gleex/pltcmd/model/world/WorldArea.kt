@@ -38,4 +38,24 @@ open class WorldArea(val tiles: SortedSet<WorldTile>)
 
     open operator fun contains(worldTile: WorldTile) =
             super.contains(worldTile.coordinate)
+
+    override fun toString(): String {
+        return "WorldArea(${tiles.size} tiles)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is WorldArea) return false
+        if (!super.equals(other)) return false
+
+        if (tiles != other.tiles) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + tiles.hashCode()
+        return result
+    }
 }
