@@ -34,8 +34,6 @@ class SignalVisualizationFragment(
                 @Suppress("UNCHECKED_CAST")
                 if (it.type is Communicating) {
                     it as CommunicatingEntity
-                    log.info("Entity is communicating. Creating radio signal at ${it.currentPosition}")
-                    @Suppress("UNCHECKED_CAST")
                     visualizer.activateWith(it.radioSignal)
                 } else {
                     log.info("Entity is NOT communicating!")
