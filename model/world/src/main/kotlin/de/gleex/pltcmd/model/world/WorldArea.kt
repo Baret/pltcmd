@@ -10,14 +10,20 @@ import java.util.*
  * A part of the [WorldMap] containing a set of [WorldTile]s. As world tiles map a terrain to a coordinate, a world
  * area is also a [CoordinateArea].
  */
-open class WorldArea(val tiles: SortedSet<WorldTile>)
-    : CoordinateArea(
-        tiles.map { it.coordinate }
-                .toSortedSet()) {
+open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
+    tiles.map { it.coordinate }
+        .toSortedSet()
+}) {
 
     companion object {
         val EMPTY = WorldArea(emptySet<WorldTile>().toSortedSet())
     }
+
+    override val size: Int
+        get() = tiles.size
+
+    override val isEmpty: Boolean
+        get() = tiles.isEmpty()
 
     /**
      * Gets the [WorldTile] with the given [Coordinate].

@@ -6,30 +6,33 @@ import java.util.*
 /**
  * An immutable set of coordinates that should be connected, but there is no check for that.
  */
-open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iterable<Coordinate> {
-    constructor(coordinates: Coordinate.Progression) : this(coordinates.toSortedSet())
+open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Iterable<Coordinate> {
+    constructor(coordinates: SortedSet<Coordinate>) : this({ coordinates })
+    constructor(coordinates: Coordinate.Progression) : this(coordinates::toSortedSet)
 
     companion object {
         val EMPTY = CoordinateArea(Collections.emptySortedSet())
     }
 
-    val size
+    private val coordinates: SortedSet<Coordinate> by lazy(coordinateProvider)
+
+    open val size
         get() = coordinates.size
 
-    val isEmpty: Boolean
+    open val isEmpty: Boolean
         get() = coordinates.isEmpty()
 
     /**
      * All [MainCoordinate]s contained in this area.
      */
-    val mainCoordinates: Set<MainCoordinate> = coordinates
+    open val mainCoordinates: Set<MainCoordinate> = coordinates
             .map { it.toMainCoordinate() }
             .toSortedSet()
 
     /**
      * All sector origins contained in this area.
      */
-    val sectorOrigins: SortedSet<Coordinate> =
+    open val sectorOrigins: SortedSet<Coordinate> =
             coordinates
                     .map { it.toSectorOrigin() }
                     .toSortedSet()
@@ -48,11 +51,11 @@ open class CoordinateArea(private val coordinates: SortedSet<Coordinate>) : Iter
     /**
      * Returns an ordered sequence of all [Coordinate]s in this area.
      */
-    fun asSequence() = coordinates.sorted().asSequence()
+    open fun asSequence() = coordinates.asSequence()
 
     override operator fun iterator() = coordinates.iterator()
 
-    fun toSet() = coordinates
+    open fun toSet() = coordinates
 
     override fun toString(): String {
         return "CoordinateArea with $size coordinates"
