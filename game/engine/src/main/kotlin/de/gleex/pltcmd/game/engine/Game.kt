@@ -85,7 +85,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
             affiliation: Affiliation = Affiliation.Unknown
     ): ElementEntity {
         val elementPosition = positionInSector.toProperty()
-        val radioSender = RadioSender(elementPosition, RadioPower(2000.0), world)
+        val radioSender = RadioSender(elementPosition, RadioPower(), world)
         val elementEntity = if (affiliation == Affiliation.Friendly || affiliation == Affiliation.Self) {
             element.toEntity(elementPosition, affiliation, radioSender)
         } else {
