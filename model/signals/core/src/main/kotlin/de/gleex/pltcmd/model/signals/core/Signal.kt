@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.signals.core
 
 import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.Coordinate.Companion.compareByDistanceFrom
 import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,15 +44,7 @@ class Signal<P : SignalPower>(
     private val signalCache: MutableMap<Coordinate, SignalStrength> = ConcurrentHashMap()
 
     private val coordinatesByDistanceToOrigin: SortedSet<Coordinate> = area
-            .toSortedSet { c1, c2 ->
-                val distanceDiff = c1.distanceTo(origin)
-                        .compareTo(c2.distanceTo(origin))
-                if (distanceDiff != 0) {
-                    distanceDiff
-                } else {
-                    c1.compareTo(c2)
-                }
-            }
+            .toSortedSet(compareByDistanceFrom(origin))
 
     /**
      * A flow of calls to [at] for every coordinate in [area]. It fills the area from inner to outer
