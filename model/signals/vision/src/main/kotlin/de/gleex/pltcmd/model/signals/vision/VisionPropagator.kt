@@ -39,7 +39,7 @@ class VisionPropagator(maxRangeInTiles: Double) : SignalPropagator {
 
     override fun signalLossThroughGround() {
         if (log.isTraceEnabled()) {
-            log.trace("\t\tSignal travels through ground. hitGround = $hitGround")
+            log.trace("\t\tVision travels through ground. hitGround = $hitGround")
         }
         // You can poorly see the first tile uphill
         addSignalLoss(0.5)
@@ -48,7 +48,7 @@ class VisionPropagator(maxRangeInTiles: Double) : SignalPropagator {
 
     override fun signalLossThroughTerrain(terrainType: TerrainType) {
         if (log.isTraceEnabled()) {
-            log.trace("\t\tSignal travels through terrain $terrainType")
+            log.trace("\t\tVision travels through terrain $terrainType")
         }
         addSignalLoss(when (terrainType) {
             TerrainType.GRASSLAND     -> 0.05
@@ -68,7 +68,7 @@ class VisionPropagator(maxRangeInTiles: Double) : SignalPropagator {
         if (hitGround) {
             accumulatedSignalLoss += 1.0
             if (log.isTraceEnabled()) {
-                log.trace("\t\t\tSignal has hit the ground! Adding extra signal loss! New value: $accumulatedSignalLoss")
+                log.trace("\t\t\tVision has hit the ground! Adding extra signal loss! New value: $accumulatedSignalLoss")
             }
         }
         remainingTiles--
