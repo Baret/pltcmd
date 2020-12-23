@@ -112,7 +112,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     /**
      * @return a [Maybe] containing the first [ElementEntity] found at the given location.
      */
-    fun firstElementAt(location: Coordinate): Maybe<GameEntity<ElementType>> =
+    fun firstElementAt(location: Coordinate): Maybe<ElementEntity> =
             allEntities.firstElementAt(location)
 
 }
