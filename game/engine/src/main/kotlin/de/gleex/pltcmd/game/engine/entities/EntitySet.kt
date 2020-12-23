@@ -28,53 +28,61 @@ class EntitySet<T : EntityType>(initialEntities: Iterable<GameEntity<T>> = empty
      * Filters these entities for the given [EntityType] and casts them to [GameEntity]<S>.
      *
      * @param S the [EntityType] that the entities in the resulting [EntitySet] should have.
+     * @param predicate optional predicate to further filter the cast entities.
      * @return a new [EntitySet] with entities of type [S]
      */
-    inline fun <reified S : EntityType> ofType(): EntitySet<S> {
-        return filter { entity -> entity.type is S }
+    inline fun <reified S : EntityType> filterTyped(noinline predicate: (GameEntity<S>) -> Boolean = { true }): EntitySet<S> {
+        return asSequence()
+                .filter { entity -> entity.type is S }
                 .map {
                     @Suppress("UNCHECKED_CAST")
                     it as GameEntity<S>
                 }
+                .filter(predicate)
                 .toEntitySet()
     }
 
     /**
+     * Filters these entities by type [ElementType]. An optional [predicate] can be passed to further filter
+     * the elements.
+     *
+     * @param predicate to filter the elements, defaults to "always true" (aka no filter)
+     *
      * @return a new [EntitySet] containing only [GameEntity]s of type [ElementType].
      *
-     * @see [ofType]
+     * @see [filterTyped]
      */
-    fun allElements(): EntitySet<ElementType> = ofType()
+    fun filterElements(predicate: (GameEntity<ElementType>) -> Boolean = { true }): EntitySet<ElementType> =
+            filterTyped(predicate)
 
     /**
-     * @return all entities of type [ElementType] at the given [location].
+     * Shorthand version for `filterElements{ it.currentPosition == location }`
+     *
+     * @return a new [EntitySet] containing all these entities of type [ElementType] at the given [location].
      */
     fun elementsAt(location: Coordinate): EntitySet<ElementType> =
-            allElements()
-                    .filter { it.currentPosition == location }
-                    .toEntitySet()
+            filterElements { it.currentPosition == location }
 
     /**
      * @return a [Maybe] containing the first [GameEntity] of type [ElementType] found at the given [location]
      *  or an empty [Maybe] if no elements are present.
      */
     fun firstElementAt(location: Coordinate): Maybe<ElementEntity> =
-            // This should be faster than using elementsAt.first() because not the whole list needs to be filtered
-            Maybe.ofNullable(allElements().firstOrNull { it.currentPosition == location })
+            Maybe.ofNullable(filterElements { it.currentPosition == location }.firstOrNull())
 
     /**
+     * Shorthand version for `filterTyped { it.currentPosition in area }`
+     *
      * @return all [GameEntity]s that are currently in the given [CoordinateArea]. This means they all need to be
      *  of type [Positionable], so a new [EntitySet] with [EntityType] [Positionable] is returned.
      */
     fun inArea(area: CoordinateArea): EntitySet<Positionable> =
-            ofType<Positionable>()
-                    .filter { it.currentPosition in area }
-                    .toEntitySet()
+            filterTyped { it.currentPosition in area }
 
     /**
      * @param entities the entities to exclude
      *
-     * @return a new [EntitySet] containing all the entitie of this one except [entities].
+     * @return a new [EntitySet] containing all the entities of this one except [entities].
      */
     fun without(vararg entities: GameEntity<T>): EntitySet<T> =
             allEntities
@@ -109,6 +117,13 @@ class EntitySet<T : EntityType>(initialEntities: Iterable<GameEntity<T>> = empty
 
     override fun isEmpty(): Boolean =
             allEntities.isEmpty()
+}
+
+/**
+ * Creates a new [EntitySet] with the [GameEntity] of this [Sequence].
+ */
+fun <E : GameEntity<T>, T : EntityType> Sequence<E>.toEntitySet(): EntitySet<T> {
+    return EntitySet(this.toSet())
 }
 
 /**

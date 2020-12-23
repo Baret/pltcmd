@@ -104,7 +104,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
             allEntities.elementsAt(location)
         }
         if (log.isTraceEnabled()) {
-            log.trace("Finding ${elements.size} of ${allEntities.allElements().size} elements at $location took ${duration.inMilliseconds} ms")
+            log.trace("Finding ${elements.size} of ${allEntities.filterElements().size} elements at $location took ${duration.inMilliseconds} ms")
         }
         return elements
     }
