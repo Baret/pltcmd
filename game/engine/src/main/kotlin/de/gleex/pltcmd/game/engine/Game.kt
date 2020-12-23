@@ -68,7 +68,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
         val entityName: String = if(entity.type == ElementType) {
             (entity as ElementEntity).callsign.toString()
         } else {
-            entity.toString()
+            entity.name
         }
         log.debug("Removing entity $entityName from game")
         allEntities.remove(entity)
