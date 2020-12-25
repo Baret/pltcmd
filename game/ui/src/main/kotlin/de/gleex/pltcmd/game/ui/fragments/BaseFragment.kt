@@ -9,5 +9,5 @@ interface BaseFragment: Fragment {
     /**
      * the width for the root Component to use
      */
-    val width: Int
+    val fragmentWidth: Int
 }

@@ -1,6 +1,6 @@
-package de.gleex.pltcmd.game.ui
+package de.gleex.pltcmd.game.ui.mapgeneration
 
-import de.gleex.pltcmd.game.ui.mapgeneration.PreviewGenerationListener
+import de.gleex.pltcmd.game.ui.views.GeneratingView
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.ProgressListener
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import java.util.concurrent.Executors

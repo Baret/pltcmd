@@ -1,17 +1,22 @@
-package de.gleex.pltcmd.game.ui
+package de.gleex.pltcmd.game.ui.views
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.options.UiOptions.MAP_VIEW_HEIGHT
+import de.gleex.pltcmd.game.options.UiOptions.MAP_VIEW_WIDTH
+import de.gleex.pltcmd.game.options.UiOptions.WINDOW_HEIGHT
+import de.gleex.pltcmd.game.options.UiOptions.WINDOW_WIDTH
 import de.gleex.pltcmd.game.sound.speech.Speaker
 import de.gleex.pltcmd.game.ticks.Ticker
+import de.gleex.pltcmd.game.ui.components.CustomComponent
+import de.gleex.pltcmd.game.ui.components.InfoSidebar
+import de.gleex.pltcmd.game.ui.components.InputSidebar
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.game.ui.fragments.*
 import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
-import de.gleex.pltcmd.game.ui.renderers.RadioSignalVisualizer
 import de.gleex.pltcmd.model.radio.BroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
@@ -23,8 +28,8 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
-import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.component.LogArea
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
@@ -39,45 +44,53 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
 
     companion object {
         private val log = LoggerFactory.getLogger(GameView::class)
+
+        private const val LOG_AREA_HEIGHT = WINDOW_HEIGHT - MAP_VIEW_HEIGHT
+        private const val LOG_AREA_WIDTH = WINDOW_WIDTH
+        private const val SIDEBAR_HEIGHT = WINDOW_HEIGHT - LOG_AREA_HEIGHT
     }
 
     override fun onDock() {
-        val sidebar = Components.vbox().
-                withSpacing(2).
-                withSize(UiOptions.INTERFACE_PANEL_WIDTH, UiOptions.INTERFACE_PANEL_HEIGHT).
-                withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT).
-                withDecorations(ComponentDecorations.halfBlock()).
-                build()
 
-        val mainPart = Components.panel().
-                withSize(UiOptions.MAP_VIEW_WDTH, UiOptions.MAP_VIEW_HEIGHT).
-                withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT).
-                withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld)).
-                build().apply {
+        val logArea = Components.logArea()
+                .withSize(LOG_AREA_WIDTH, LOG_AREA_HEIGHT)
+                .withPosition(Position.create(0, 0))
+                .withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log"))
+                .build()
+                .also {
+                    it.logRadioCalls()
+                }
+
+        val leftSidebar = InputSidebar(SIDEBAR_HEIGHT, game, commandingElement, elementsToCommand, gameWorld)
+
+        val leftSidebarComponent = CustomComponent(leftSidebar, Position.bottomLeftOf(logArea))
+
+        val mainPart = Components.panel()
+                .withSize(MAP_VIEW_WIDTH, MAP_VIEW_HEIGHT)
+                .withPosition(Position.topRightOf(leftSidebarComponent))
+                .withDecorations(MapGridDecorationRenderer(), MapCoordinateDecorationRenderer(gameWorld))
+                .build()
+                .apply {
                     // redraw MapCoordinateDecorationRenderer
                     gameWorld.visibleOffsetValue.onChange { asInternalComponent().render() }
                 }
 
-        val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>().
-                withGameArea(gameWorld).
-                withSize(gameWorld.visibleSize.to2DSize()).
-                withAlignmentWithin(mainPart, ComponentAlignment.CENTER).
-                build()
+        val map = GameComponents.newGameComponentBuilder<Tile, GameBlock>()
+                .withGameArea(gameWorld)
+                .withSize(gameWorld.visibleSize.to2DSize())
+                .build()
 
         mainPart.addComponent(map)
         // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
         map.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
 
-        val logArea = Components.logArea().
-                withSize(UiOptions.LOG_AREA_WIDTH, UiOptions.LOG_AREA_HEIGHT).
-                withAlignmentWithin(screen, ComponentAlignment.BOTTOM_LEFT).
-                withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
-                build().
-                also {
-                    it.logRadioCalls()
-                }
+        val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT, gameWorld, game)
 
-        screen.addComponents(sidebar, logArea, mainPart)
+        screen.addComponents(
+                logArea,
+                leftSidebarComponent,
+                mainPart,
+                CustomComponent(rightSidebar, Position.topRightOf(mainPart)))
 
         log.debug("Created map view with size ${map.size}, content size ${map.contentSize} and position ${map.position}")
         log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
@@ -102,36 +115,24 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                         gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.KEY_Q -> {
+                    KeyCode.KEY_Q                     -> {
                         GameOptions.displayRadioSignals.value = GameOptions.displayRadioSignals.value.not()
                         log.debug("Toggled radio signal display to ${if (GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
                         Processed
                     }
-                    else          -> Pass
+                    KeyCode.KEY_P, KeyCode.SPACE -> {
+                        Ticker.togglePause()
+                        Processed
+                    }
+                    else                              -> Pass
                 }
             } else {
                 Pass
             }
         }
-
-        // playing around with stuff...
-        val sidebarWidth = sidebar.contentSize.width
-        sidebar.addFragment(CoordinateAtMousePosition(sidebarWidth, map, gameWorld))
-
-        val commandFragment = ElementCommandFragment(sidebarWidth, gameWorld, commandingElement, elementsToCommand, map.absolutePosition, game)
-        sidebar.addFragment(commandFragment)
-        map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, commandFragment)
-
-        sidebar.addFragment(TickFragment(sidebarWidth))
-
-        if (GameOptions.displayRadioSignals.value) {
-            val radioSignalFragment = RadioSignalFragment(sidebarWidth)
-            map.handleMouseEvents(MouseEventType.MOUSE_CLICKED, RadioSignalVisualizer(gameWorld, radioSignalFragment.selectedStrength, radioSignalFragment.selectedRange, map.absolutePosition))
-            sidebar.addFragment(radioSignalFragment)
-        }
-
-        sidebar.addFragment(ThemeSelectorFragment(sidebarWidth, screen))
-        sidebar.addFragment(TilesetSelectorFragment(sidebarWidth, map, sidebar))
+        // connect parts that depend on each other
+        leftSidebar.connectTo(map)
+        rightSidebar.connectTo(map)
     }
 
     private fun LogArea.logRadioCalls() {

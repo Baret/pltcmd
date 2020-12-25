@@ -1,17 +1,41 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
+    <jmxConfigurator/>
+
+    <timestamp key="bySecond" datePattern="yyyyMMdd_HHmmss"/>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
+    <appender name="ELEMENTS_PERFORMANCE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/allElements-${bySecond}.log</file>
+        <append>false</append>
+        <immediateFlush>false</immediateFlush>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>TRACE</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <encoder>
+            <pattern>[%d{HH:mm:ss.SSS}] [%thread] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <logger name="org.hexworks.zircon" level="WARN"/>
     <logger name="org.hexworks.cobalt" level="WARN"/>
-<!--    <logger name="org.hexworks.amethyst.api.entity.Entity" level="DEBUG"/>-->
+    <!--    <logger name="org.hexworks.amethyst.api.entity.Entity" level="DEBUG"/>-->
 
     <logger name="de.gleex.pltcmd.game.application" level="DEBUG"/>
     <logger name="de.gleex.pltcmd.game.ui" level="DEBUG"/>
+<!--    <logger name="de.gleex.pltcmd.game.engine.systems" level="DEBUG"/>-->
+
+    <logger name="de.gleex.pltcmd.game.engine.Game" level="TRACE" additivity="false">
+        <appender-ref ref="ELEMENTS_PERFORMANCE"/>
+    </logger>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

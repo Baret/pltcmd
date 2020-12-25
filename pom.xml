@@ -178,6 +178,11 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<args>
+						<arg>-Xopt-in=kotlin.RequiresOptIn</arg>
+					</args>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

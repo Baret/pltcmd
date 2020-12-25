@@ -1,0 +1,46 @@
+template: |
+  # v$RESOLVED_VERSION is here!
+  ## "Fighting elements"
+
+  _Very descriptive text for this release_. Will be updated... soon...
+
+  ## Changelog
+
+  $CHANGES
+name-template: 'v$RESOLVED_VERSION Fighting elements'
+tag-template: 'pltcmd-$RESOLVED_VERSION'
+no-changes-template: '### Nothing included yet'
+change-template: '- $TITLE [PR #$NUMBER]'
+categories:
+  - title: 'UI improvements'
+    labels:
+      - 'UI'
+  - title: 'New and improved Features'
+    labels:
+      - 'feature'
+      - 'enhancement'
+  - title: 'Bug Fixes'
+    labels:
+      - 'bug'
+  - title: 'Other changes'
+    labels:
+      - 'misc'
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'feature'
+  patch:
+    labels:
+      - 'bug'
+      - 'enhancement'
+  default: patch
+replacers:
+# resolving/closing keywords
+  - search: '/(close(s|d)?|fix(es|ed)?|resolve(s|d)?)\s*#\d*:?/gi'
+    replace: ''
+# direct issue references
+  - search: '/issue ?#?\d+ ?/gi'
+    replace: ''
