@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.signals.radio
 
+import de.gleex.pltcmd.model.signals.core.SignalStrength
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
@@ -34,8 +35,10 @@ class RadioSignalPropagatorTest : WordSpec({
                     row(-0.0000000000000000000004, 0.0),
                     row(Double.MIN_VALUE, 0.0)
             ) { signalPower, expectedPercent ->
-                signalPower.convertToSignalStrength().strength shouldBeExactly expectedPercent
+                signalPower.convertToSignalStrength() shouldBeExactly expectedPercent
             }
         }
     }
 })
+
+private infix fun SignalStrength.shouldBeExactly(expected: Double) = this.strength shouldBeExactly expected
