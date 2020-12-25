@@ -24,7 +24,7 @@ data class BroadcastEvent(
 
     /** @return true if this broadcast may be received at the given location */
     fun isReceivedAt(location: Coordinate): Boolean {
-        return signal.at(location) != SignalStrength.NONE
+        return signal.at(location).isAny()
     }
 }
 
