@@ -22,7 +22,7 @@ data class BroadcastEvent(
         val transmission: Transmission
 ) : Event {
 
-    /** @return true if this transmission may be received at the given location */
+    /** @return true if this broadcast may be received at the given location */
     fun isReceivedAt(location: Coordinate): Boolean {
         return signal.at(location) != SignalStrength.NONE
     }
