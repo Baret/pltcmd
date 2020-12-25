@@ -17,8 +17,9 @@ import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
+import de.gleex.pltcmd.model.signals.vision.VisionPower
+import de.gleex.pltcmd.model.signals.vision.initialVision
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.newEntityOfType
 import org.hexworks.amethyst.api.system.Behavior
@@ -33,11 +34,16 @@ object EntityFactory {
             affiliation: Affiliation = Affiliation.Unknown,
             radioSender: RadioSender
     ): ElementEntity {
+        val visualRange = if(element.kind == ElementKind.Aerial) {
+            VisionPower(25.0)
+        } else {
+            VisionPower(10.0)
+        }
         val attributes: MutableList<Attribute> = mutableListOf(
                 CommandersIntent(),
                 ElementAttribute(element, affiliation),
                 PositionAttribute(initialPosition),
-                VisibleAreaAttribute(initialPosition.value, CoordinateArea.empty),
+                VisionAttribute(initialVision, visualRange),
                 // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
                 RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
                 ShootersAttribute(element),
@@ -64,6 +70,7 @@ object EntityFactory {
         }
 
         val facets: MutableList<Facet<GameContext>> = mutableListOf(
+                Detects,
                 PathFinding,
                 ExecuteOrder,
                 ConversationSender,

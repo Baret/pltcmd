@@ -2,27 +2,25 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
-import de.gleex.pltcmd.game.engine.attributes.VisibleAreaAttribute
+import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
+import de.gleex.pltcmd.game.engine.commands.DetectEntities
+import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
-import de.gleex.pltcmd.model.world.WorldMap
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
-import de.gleex.pltcmd.model.world.coordinate.fillCircle
+import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.model.signals.vision.builder.visionAt
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
-/** Behavior of an entity that updates the [VisibleAreaAttribute] each tick. **/
+/** Behavior of an entity that updates the [VisionAttribute] each tick. **/
 object LookingAround :
         BaseBehavior<GameContext>(
                 PositionAttribute::class,
-                VisibleAreaAttribute::class
+                VisionAttribute::class
         ) {
 
     private val log = LoggerFactory.getLogger(LookingAround::class)
-    private const val MAX_RANGE = 30
 
     // implements only type checking
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
@@ -30,43 +28,29 @@ object LookingAround :
             return false
         }
         @Suppress("UNCHECKED_CAST")
-        return updateVisibleArea(entity as SeeingEntity, context)
+        return lookForEntities(entity as SeeingEntity, context)
     }
 
-    /**
-     * Calculates and stores the visible area of the entity if necessary.
-     */
-    fun updateVisibleArea(entity: SeeingEntity, context: GameContext): Boolean {
-        val currentPosition = entity.currentPosition
-        if (currentPosition != entity.lookingFrom || entity.visibleTiles.isEmpty) {
-            // position changed or view was reset
-            val visibleTiles = lookAround(currentPosition, context.world)
-            log.debug("Updating vision of ${(entity as ElementEntity).callsign} to $visibleTiles")
-            entity.updateVision(currentPosition, visibleTiles)
+    private suspend fun lookForEntities(entity: SeeingEntity, context: GameContext): Boolean {
+        if (entity.hasMoved()) {
+            entity.visionMutable = context.world.visionAt(entity.currentPosition, entity.visualRange)
+        }
+        val visibleEntities: EntitySet<Positionable> =
+                context.entities
+                        .without(entity)
+                        .inArea(entity.visibleTiles)
+
+        // FIXME: Just for playing around, logging will be removed eventually
+        val element = entity as ElementEntity
+        if(element.callsign.name == "Bravo" && element.affiliation == Affiliation.Friendly) {
+            log.debug("${visibleEntities.size}/${context.entities.size} (${context.entities.filterTyped<Positionable>().size} positionable) visible")
+        }
+        if (visibleEntities.isNotEmpty()) {
+            entity.executeCommand(DetectEntities(visibleEntities, context, entity))
         }
         return true
     }
 
-    private fun lookAround(from: Coordinate, world: WorldMap): CoordinateArea {
-        val visible = from.fillCircle(MAX_RANGE)
-        visible.removeIf { !it.isVisibleFrom(from, world) }
-        return CoordinateArea(visible)
-    }
+    private fun SeeingEntity.hasMoved() = vision.origin != currentPosition
 
-}
-
-/** @return true if no higher terrain is on the direct line between the two tiles */
-fun Coordinate.isVisibleFrom(from: Coordinate, world: WorldMap): Boolean {
-    val fromHeight = world[from].height.value
-    val targetHeight = world[this].height.value
-    val deltaHeight = targetHeight - fromHeight
-    val distance = from.distanceTo(this)
-    val /* m = */ heightPerDistance = deltaHeight / distance
-    // the function that describes the line between the two terrain heights and provides the height at each coordinate:
-    // f(x) = m*x + b
-    val lineOfSight: (Coordinate) -> Double = { location -> from.distanceTo(location) * heightPerDistance + /* b = */ fromHeight  }
-    // stop when the terrain height blocks the direct line
-    return CoordinatePath.line(from, this)
-            .dropWhile { lineOfSight.invoke(it) >= world[it].height.value }
-            .isEmpty()
 }

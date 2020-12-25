@@ -119,7 +119,7 @@ private fun createContext(): GameContext {
 
     val context = mockk<GameContext>()
     every { context.random } returns Random(123L)
-    every { context.findElementAt(any()) } returns Maybe.empty()
+    every { context.firstElementAt(any()) } returns Maybe.empty()
 
     return context
 }
@@ -135,7 +135,7 @@ fun createTargets(attackerPosition: Coordinate, context: GameContext, vararg ele
         val offsetFromAttacker = (neighborPosition - attackerPosition)
         val targetPosition = neighborPosition.movedBy(offsetFromAttacker.eastingFromLeft * 2, offsetFromAttacker.northingFromBottom * 2)
         val target = createCombatant(targetPosition, Affiliation.Hostile, element)
-        every { context.findElementAt(neighborPosition) } returns Maybe.of(target)
+        every { context.firstElementAt(neighborPosition) } returns Maybe.of(target)
         return@mapIndexed target
     }
 }

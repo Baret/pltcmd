@@ -142,6 +142,12 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         val minusOne = Coordinate(-1, -1)
 
         /**
+         * A [Coordinate] with Int.MAX_VALUE values. Rather a placeholder for an "invalid coordinate" than
+         * a normally used [Coordinate].
+         */
+        val maximum = Coordinate(Int.MAX_VALUE, Int.MAX_VALUE)
+
+        /**
          * The separator used in the string representation.
          */
         const val SEPARATOR = "|"
@@ -153,6 +159,16 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
 
         private const val FORMAT_POSITIVE = "%03d"
         private const val FORMAT_NEGATIVE = "%04d"
+
+        fun compareByDistanceFrom(center: Coordinate) = Comparator { c1: Coordinate, c2: Coordinate ->
+            val distanceDiff = c1.distanceTo(center)
+                    .compareTo(c2.distanceTo(center))
+            if (distanceDiff != 0) {
+                distanceDiff
+            } else {
+                c1.compareTo(c2)
+            }
+        }
 
         /**
          *  Parses the given string and tries to extract a Coordinate. The string needs to be in the format (123|-456)

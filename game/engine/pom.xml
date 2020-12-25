@@ -31,11 +31,16 @@
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
-            <artifactId>radio</artifactId>
+            <artifactId>communication</artifactId>
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>world</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model.signals</groupId>
+            <artifactId>signals-all</artifactId>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.hexworks.amethyst</groupId>

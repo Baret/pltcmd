@@ -11,6 +11,8 @@
 
     <artifactId>combat</artifactId>
 
+    <name>Combat model</name>
+
     <dependencies>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>

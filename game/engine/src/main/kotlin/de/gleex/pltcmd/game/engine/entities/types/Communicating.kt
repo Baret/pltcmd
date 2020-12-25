@@ -6,6 +6,7 @@ import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
+import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.datatypes.Maybe
@@ -23,6 +24,12 @@ private val log = LoggerFactory.getLogger(Communicating::class)
 
 internal val CommunicatingEntity.communicator: RadioCommunicator
     get() = getAttribute(RadioAttribute::class).communicator
+
+/**
+ * The current [RadioSignal] of this entity.
+ */
+val CommunicatingEntity.radioSignal: RadioSignal
+    get() = communicator.currentSignal
 
 /** TODO is visible as a debug feature for the test UI, might be removed later */
 val CommunicatingEntity.inConversationWith: ObservableValue<Maybe<CallSign>>

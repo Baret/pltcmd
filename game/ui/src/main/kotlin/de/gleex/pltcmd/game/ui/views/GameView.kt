@@ -117,7 +117,7 @@ class GameView(private val gameWorld: GameWorld, tileGrid: TileGrid, private val
                         log.debug("Toggled radio signal display to ${if (GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
                         Processed
                     }
-                    KeyCode.KEY_P, KeyCode.SPACE -> {
+                    KeyCode.KEY_P -> {
                         Ticker.togglePause()
                         Processed
                     }

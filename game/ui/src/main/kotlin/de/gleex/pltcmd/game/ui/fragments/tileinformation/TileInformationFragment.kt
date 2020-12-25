@@ -10,6 +10,8 @@ import org.hexworks.zircon.internal.behavior.Observable
  * Fragments extending this class have the purpose to show one information about a tile in the world. This tile is
  * an [Observable] that changes by user input. A fragment may be locked/unlocked which preserves updating
  * when the observed tile changes.
+ *
+ * Use [currentInfoTile] to listen for changes of the observed tile.
  */
 abstract class TileInformationFragment(
         currentTile: ObservableValue<Coordinate>

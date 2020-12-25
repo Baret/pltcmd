@@ -28,7 +28,7 @@ internal object Fighting : BaseBehavior<GameContext>(ShootersAttribute::class, P
     fun attackNearbyEnemies(attacker: ElementEntity, context: GameContext) {
         val currentPosition = attacker.currentPosition
         val enemyToAttack = currentPosition.neighbors()
-                .map(context::findElementAt)
+                .map(context::firstElementAt)
                 .filter { it.isEnemy() }
                 .map(Maybe<ElementEntity>::get)
                 .firstOrNull()
