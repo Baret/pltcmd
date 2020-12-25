@@ -5,7 +5,6 @@ import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import de.gleex.pltcmd.model.signals.radio.builder.radioSignalAt
-import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.events.globalEventBus
@@ -19,7 +18,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * @param power with which broadcasts are sent over the map
  * @param map the terrain over which broadcasts are sent
  */
-class RadioSender(private val location: ObservableValue<Coordinate>, val power: RadioPower, private val map: WorldMap) {
+class RadioSender(private val location: ObservableValue<Coordinate>, private val power: RadioPower, private val map: WorldMap) {
 
     companion object {
         private val log = LoggerFactory.getLogger(RadioSender::class)
@@ -33,16 +32,12 @@ class RadioSender(private val location: ObservableValue<Coordinate>, val power: 
                 map.radioSignalAt(currentLocation, power)
             }
 
-    // visible for tests
-    internal val reachableTiles: WorldArea
-        get() = signal.area
-
     /** Sends out the given transmission. */
     fun transmit(transmission: Transmission) {
         globalEventBus.publishTransmission(createBroadcast(), transmission)
     }
 
-    /** copy of the current state that persists mutable values like [currentLocation] and the resulting [reachableTiles] */
+    /** copy of the current state that persists mutable values. */
     private fun createBroadcast() = Broadcast(currentLocation, signal)
 
 }
