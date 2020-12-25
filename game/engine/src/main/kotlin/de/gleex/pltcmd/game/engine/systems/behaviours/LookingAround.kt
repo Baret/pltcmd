@@ -33,7 +33,7 @@ object LookingAround :
 
     private suspend fun lookForEntities(entity: SeeingEntity, context: GameContext): Boolean {
         if (entity.hasMoved()) {
-            entity.vision = context.world.visionAt(entity.currentPosition, entity.visualRange)
+            entity.visionMutable = context.world.visionAt(entity.currentPosition, entity.visualRange)
         }
         val visibleEntities: EntitySet<Positionable> =
                 context.entities

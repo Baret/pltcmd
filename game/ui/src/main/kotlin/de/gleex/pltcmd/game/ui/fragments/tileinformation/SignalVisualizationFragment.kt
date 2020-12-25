@@ -29,7 +29,7 @@ class SignalVisualizationFragment(
     private val namedActions: Map<String, (ElementEntity) -> Unit> = mapOf(
             "None" to { visualizer.deactivate() },
             "Vision" to { seeingEntity: SeeingEntity ->
-                visualizer.activateWith(seeingEntity.visionImmutable)
+                visualizer.activateWith(seeingEntity.vision)
             },
             "Radio" to { communicatingEntity: CommunicatingEntity ->
                 visualizer.activateWith(communicatingEntity.radioSignal)

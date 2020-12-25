@@ -21,7 +21,7 @@ typealias SeeingEntity = GameEntity<Seeing>
 private val SeeingEntity.visionAttribute: VisionAttribute
     get() = getAttribute(VisionAttribute::class)
 
-internal var SeeingEntity.vision: Vision
+internal var SeeingEntity.visionMutable: Vision
     get() = visionAttribute.vision
     set(value) {
         visionAttribute.vision = value
@@ -31,8 +31,8 @@ internal var SeeingEntity.vision: Vision
  * The [Vision] of this entity.
  */
 // visible for the UI
-val SeeingEntity.visionImmutable: Vision
-    get() = vision
+val SeeingEntity.vision: Vision
+    get() = visionMutable
 
 internal val SeeingEntity.visibleTiles: WorldArea
     get() = vision.area
