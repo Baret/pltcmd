@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.radio
 
+// TODO re-enable tests afer #129 is done
 /*
 class RadioSenderTest : StringSpec() {
     private val map = WorldMap.create(setOf(sectorAtWithTerrain(Coordinate(0, 0)) {

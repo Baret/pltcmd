@@ -4,6 +4,8 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 
+// TODO re-enable tests afer #129 is done
+
 //class RadioSignalTest: WordSpec() {
 //    init
 //    {

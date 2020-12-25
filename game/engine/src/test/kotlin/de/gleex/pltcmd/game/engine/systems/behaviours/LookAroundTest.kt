@@ -12,6 +12,8 @@ import java.util.*
 
 class LookAroundTest : StringSpec({
 
+    // TODO re-enable tests afer #129 is done
+
     // rows with different heights:
     //     #
     //     ##
