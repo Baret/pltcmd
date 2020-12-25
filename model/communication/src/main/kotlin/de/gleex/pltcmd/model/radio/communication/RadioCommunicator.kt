@@ -44,6 +44,7 @@ class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
     val inConversationWith: ObservableValue<Maybe<CallSign>>
         get() = state._inConversationWith
 
+    // TODO is visible as a debug feature for the UI, might be removed later
     val currentSignal: RadioSignal
         get() = sender.radio.signal
 
@@ -110,9 +111,10 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
     private fun onBroadcast(event: BroadcastEvent) {
         val radioLocation = radioContext.currentLocation
         if (event.isReceivedAt(radioLocation)) {
-            // decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me"
-            val (strength, receivedTransmission) = event.receivedAt(radioLocation)
-            log.debug("$callSign received with strength $strength the transmission ${receivedTransmission.message}")
+            // TODO decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me" (#85)
+            val strength = event.signal.at(radioLocation)
+            val receivedTransmission = event.transmission
+            log.debug("$callSign received with strength $strength the transmission '${receivedTransmission.message}'")
             if (strength.isAny() && receivedTransmission.isSentBySomeoneElse()) {
                 if (receivedTransmission.isForMe()) {
                     respondTo(receivedTransmission)
