@@ -32,7 +32,7 @@ object Detects : BaseFacet<GameContext>(
                 }
                 val seeingElement = detectCommand.source as ElementEntity
                 detectCommand.visibleEntities.forEach { seen ->
-                    // TODO: Implement actual behavior of detecting things and reacting to them (i.e. do a contact report)
+                    // TODO: Implement actual behavior of detecting things and reacting to them (i.e. do a contact report) (#130)
                     if (seeingElement.affiliation == Affiliation.Friendly) {
                         val seenElement = seen as ElementEntity
                         val targetLocation = seenElement.currentPosition
