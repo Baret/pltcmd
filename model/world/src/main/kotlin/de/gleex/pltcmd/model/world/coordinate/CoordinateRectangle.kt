@@ -6,7 +6,7 @@ package de.gleex.pltcmd.model.world.coordinate
 class CoordinateRectangle(
         val bottomLeftCoordinate: Coordinate,
         val topRightCoordinate: Coordinate) :
-        CoordinateArea({ (bottomLeftCoordinate..topRightCoordinate).toSortedSet() }) {
+        CoordinateArea(bottomLeftCoordinate..topRightCoordinate) {
 
     constructor(bottomLeftCoordinate: Coordinate, width: Int, height: Int) :
             this(bottomLeftCoordinate, bottomLeftCoordinate.movedBy(width - 1, height - 1))
