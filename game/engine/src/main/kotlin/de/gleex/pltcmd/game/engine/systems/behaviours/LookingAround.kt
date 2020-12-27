@@ -13,7 +13,10 @@ import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
-/** Behavior of an entity that updates the [VisionAttribute] each tick. **/
+/**
+ * Behavior of an entity that updates the [VisionAttribute] each tick if needed. It also
+ * sends a [DetectEntities] command if anything is present in the vision.
+ **/
 object LookingAround :
         BaseBehavior<GameContext>(
                 PositionAttribute::class,
