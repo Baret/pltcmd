@@ -1,13 +1,12 @@
 package de.gleex.pltcmd.game.engine
 
 import de.gleex.pltcmd.game.engine.entities.EntitySet
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.ticks.TickId
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Context
 import org.hexworks.amethyst.api.entity.EntityType
-import org.hexworks.cobalt.datatypes.Maybe
 import kotlin.random.Random
 
 /**
@@ -28,7 +27,7 @@ data class GameContext(
     /**
      * Shorthand version for [EntitySet.firstElementAt] on [entities].
      */
-    fun firstElementAt(location: Coordinate): Maybe<ElementEntity> =
-            entities.firstElementAt(location)
+    fun elementsAt(location: Coordinate): EntitySet<ElementType> =
+            entities.elementsAt(location)
 
 }

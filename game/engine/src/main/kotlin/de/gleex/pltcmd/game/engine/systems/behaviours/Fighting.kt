@@ -8,7 +8,6 @@ import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.model.elements.Affiliation
 import org.hexworks.amethyst.api.base.BaseBehavior
-import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /** Attacks nearby enemies. */
@@ -26,19 +25,18 @@ internal object Fighting : BaseBehavior<GameContext>(ShootersAttribute::class, P
     }
 
     fun attackNearbyEnemies(attacker: ElementEntity, context: GameContext) {
-        val currentPosition = attacker.currentPosition
-        val enemyToAttack = currentPosition.neighbors()
-                .map(context::firstElementAt)
-                .filter { it.isEnemy() }
-                .map(Maybe<ElementEntity>::get)
-                .firstOrNull()
-        if (enemyToAttack != null) {
-            log.info("${attacker.callsign} attacks ${enemyToAttack.callsign}")
-            attacker.attack(enemyToAttack, context.random)
-        }
+        attacker
+                .currentPosition
+                .neighbors()
+                .flatMap(context::elementsAt)
+                .firstOrNull { it.isEnemy() }
+                ?.let { enemyToAttack ->
+                    log.info("${attacker.callsign} attacks ${enemyToAttack.callsign}")
+                    attacker.attack(enemyToAttack, context.random)
+                }
     }
 
-    private fun Maybe<ElementEntity>.isEnemy(): Boolean =
-            filter { entity -> entity.affiliation == Affiliation.Hostile && entity.isAbleToFight }.isPresent
+    private fun ElementEntity.isEnemy(): Boolean =
+            isAbleToFight && affiliation == Affiliation.Hostile
 
 }
