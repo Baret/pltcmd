@@ -49,7 +49,7 @@ object LookingAround :
             log.debug("${visibleEntities.size}/${context.entities.size} (${context.entities.filterTyped<Positionable>().size} positionable) visible")
         }
         if (visibleEntities.isNotEmpty()) {
-            entity.executeCommand(DetectEntities(visibleEntities, context, entity))
+            entity.executeCommand(DetectEntities(visibleEntities, entity, context))
         }
         return true
     }

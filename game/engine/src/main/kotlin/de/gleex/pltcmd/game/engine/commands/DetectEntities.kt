@@ -13,5 +13,5 @@ import org.hexworks.amethyst.api.Command
  * @param source the [SeeingEntity] that might need to react to the detection of other entities.
  */
 data class DetectEntities(val visibleEntities: EntitySet<Positionable>,
-                          override val context: GameContext,
-                          override val source: SeeingEntity) : Command<Positionable, GameContext>
+                          override val source: SeeingEntity,
+                          override val context: GameContext) : Command<Positionable, GameContext>

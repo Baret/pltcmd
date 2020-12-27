@@ -26,12 +26,12 @@ object Detects : BaseFacet<GameContext>(
     private val log = LoggerFactory.getLogger(Detects::class)
 
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>): Response =
-            command.responseWhenCommandIs<GameContext, DetectEntities> { detectCommand ->
-                if (detectCommand.visibleEntities.isEmpty()) {
+            command.responseWhenCommandIs<GameContext, DetectEntities> { (visibleEntities, source) ->
+                if (visibleEntities.isEmpty()) {
                     Pass
                 }
-                val seeingElement = detectCommand.source as ElementEntity
-                detectCommand.visibleEntities.forEach { seen ->
+                val seeingElement = source as ElementEntity
+                visibleEntities.forEach { seen ->
                     // TODO: Implement actual behavior of detecting things and reacting to them (i.e. do a contact report) (#130)
                     if (seeingElement.affiliation == Affiliation.Friendly) {
                         val seenElement = seen as ElementEntity
