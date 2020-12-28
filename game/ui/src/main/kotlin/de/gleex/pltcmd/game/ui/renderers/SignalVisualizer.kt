@@ -18,6 +18,7 @@ class SignalVisualizer(val world: GameWorld) {
 
     companion object {
         private val log = LoggerFactory.getLogger(SignalVisualizer::class)
+        private val visualizerScope = CoroutineScope(Dispatchers.Default)
     }
 
     private var currentJob: Job? = null
@@ -31,15 +32,17 @@ class SignalVisualizer(val world: GameWorld) {
             log.debug("Cancelling job")
             it.cancel()
         }
-        clear()
+        val blocksToClear = currentBlocks
+        currentBlocks = mutableSetOf()
+        clear(blocksToClear)
         currentJob = null
     }
 
-    private fun clear() {
-        currentBlocks.forEach { block ->
+    private fun clear(blocksToClear: MutableSet<GameBlock>) {
+        blocksToClear.forEach { block ->
             block.resetOverlay()
         }
-        currentBlocks.clear()
+        blocksToClear.clear()
     }
 
     /**
@@ -55,11 +58,11 @@ class SignalVisualizer(val world: GameWorld) {
         currentJob = signal.all
                 .onEach { (coordinate, signalStrength) ->
                     world.fetchBlockAt(coordinate)
-                            .ifPresent { block ->
-                                block.setOverlay(TileRepository.forSignal(signalStrength))
-                                currentBlocks.add(block)
-                            }
+                        .ifPresent { block ->
+                            block.setOverlay(TileRepository.forSignal(signalStrength))
+                            currentBlocks.add(block)
+                        }
                 }
-                .launchIn(CoroutineScope(Dispatchers.Default))
+                .launchIn(visualizerScope)
     }
 }
