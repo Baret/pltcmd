@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.engine.commands
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.Positionable
+import de.gleex.pltcmd.game.engine.entities.types.Seeing
 import de.gleex.pltcmd.game.engine.entities.types.SeeingEntity
 import org.hexworks.amethyst.api.Command
 
@@ -14,4 +15,4 @@ import org.hexworks.amethyst.api.Command
  */
 data class DetectEntities(val visibleEntities: EntitySet<Positionable>,
                           override val source: SeeingEntity,
-                          override val context: GameContext) : Command<Positionable, GameContext>
+                          override val context: GameContext) : Command<Seeing, GameContext>

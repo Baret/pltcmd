@@ -4,11 +4,16 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
 import de.gleex.pltcmd.game.engine.commands.DetectEntities
+import de.gleex.pltcmd.game.engine.commands.DetectedElement
+import de.gleex.pltcmd.game.engine.commands.DetectedUnknown
 import de.gleex.pltcmd.game.engine.entities.types.*
-import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.model.signals.core.SignalStrength
+import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Command
 import org.hexworks.amethyst.api.Consumed
-import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
 import org.hexworks.amethyst.api.entity.EntityType
@@ -20,28 +25,58 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * visibility using source's vision.
  */
 object Detects : BaseFacet<GameContext>(
-        VisionAttribute::class,
-        PositionAttribute::class
+    VisionAttribute::class,
+    PositionAttribute::class
 ) {
     private val log = LoggerFactory.getLogger(Detects::class)
 
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>): Response =
-            command.responseWhenCommandIs<GameContext, DetectEntities> { (visibleEntities, source) ->
-                if (visibleEntities.isEmpty()) {
-                    Pass
-                }
-                val seeingElement = source as ElementEntity
-                visibleEntities.forEach { seen ->
-                    // TODO: Implement actual behavior of detecting things and reacting to them (i.e. do a contact report) (#130)
-                    if (seeingElement.affiliation == Affiliation.Friendly) {
-                        val seenElement = seen as ElementEntity
-                        val targetLocation = seenElement.currentPosition
-                        log.debug("${seeingElement.callsign.name.padEnd(25)} sees ${seenElement.callsign.name.padEnd(25)} at ${
-                            targetLocation.toString()
-                                    .padEnd(12)
-                        } with signal strength \t${seeingElement.vision.at(targetLocation)}")
+        command.responseWhenCommandIs<GameContext, DetectEntities> { (visibleEntities, seeing) ->
+            runBlocking {
+                val handleCommands = produce {
+                    visibleEntities.forEach { seen ->
+                        var handleCommand: Command<Seeing, GameContext>? = null
+                        // basic information is always available
+                        val seenType = seen.type
+                        val seenPosition = seen.currentPosition
+
+                        // details of the entity type are only available if seen is clearly visible
+                        val visibility: SignalStrength = seeing.vision.at(seenPosition)
+                        if (visibility.strength >= 0.4) {
+                            when (seenType) {
+                                ElementType -> {
+                                    val seenElement = seen as ElementEntity
+                                    logSeen(seeing, seenPosition, visibility) { seenElement.callsign.name.padEnd(25) }
+                                    handleCommand = DetectedElement(seenElement, seeing, command.context)
+                                }
+                                else        -> log.warn("Detected entity type '$seenType' is not handled!")
+                            }
+                        } else {
+                            logSeen(seeing, seenPosition, visibility) { "something" }
+                            handleCommand = DetectedUnknown(seen, seeing, command.context)
+                        }
+                        handleCommand?.let { send(it) }
                     }
                 }
-                Consumed
+                handleCommands.consumeEach { seeing.executeCommand(it) }
             }
+            Consumed
+        }
+
+    private fun logSeen(
+        seeing: SeeingEntity,
+        seenPosition: Coordinate,
+        visibility: SignalStrength,
+        seenText: () -> String
+    ) {
+        if (log.isDebugEnabled() && seeing.type == ElementType) {
+            log.debug(
+                "${(seeing as ElementEntity).callsign.name.padEnd(25)} sees $seenText at ${
+                    seenPosition.toString()
+                        .padEnd(12)
+                } with signal strength \t${visibility}"
+            )
+        }
+    }
+
 }
