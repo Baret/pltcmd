@@ -51,7 +51,7 @@ object Detects : BaseFacet<GameContext>(
                                 }
                                 else        -> log.warn("Detected entity type '$seenType' is not handled!")
                             }
-                        } else {
+                        } else if (visibility.isAny()) {
                             logSeen(seeing, seenPosition, visibility) { "something" }
                             handleCommand = DetectedUnknown(seen, seeing, command.context)
                         }
