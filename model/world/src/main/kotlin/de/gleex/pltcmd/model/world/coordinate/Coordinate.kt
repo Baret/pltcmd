@@ -74,13 +74,13 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
      * Sort from most south-west to most north-east. Going line wise first east and then north.
      * Example: 2|2, 3|2, 1|3
      */
-    override fun compareTo(other: Coordinate): Int {
-        val northDiff = northingFromBottom - other.northingFromBottom
-        if (northDiff == 0) {
-            return eastingFromLeft - other.eastingFromLeft
-        }
-        return northDiff
-    }
+    override fun compareTo(other: Coordinate): Int =
+            compareCoordinateComponents(
+                    northingFromBottom,
+                    eastingFromLeft,
+                    other.northingFromBottom,
+                    other.eastingFromLeft
+            )
 
     /** Provides all coordinates in the rectangle between the two points */
     operator fun rangeTo(other: Coordinate): Progression {
@@ -142,6 +142,12 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         val minusOne = Coordinate(-1, -1)
 
         /**
+         * A [Coordinate] with Int.MAX_VALUE values. Rather a placeholder for an "invalid coordinate" than
+         * a normally used [Coordinate].
+         */
+        val maximum = Coordinate(Int.MAX_VALUE, Int.MAX_VALUE)
+
+        /**
          * The separator used in the string representation.
          */
         const val SEPARATOR = "|"
@@ -153,6 +159,16 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
 
         private const val FORMAT_POSITIVE = "%03d"
         private const val FORMAT_NEGATIVE = "%04d"
+
+        fun compareByDistanceFrom(center: Coordinate) = Comparator { c1: Coordinate, c2: Coordinate ->
+            val distanceDiff = c1.distanceTo(center)
+                    .compareTo(c2.distanceTo(center))
+            if (distanceDiff != 0) {
+                distanceDiff
+            } else {
+                c1.compareTo(c2)
+            }
+        }
 
         /**
          *  Parses the given string and tries to extract a Coordinate. The string needs to be in the format (123|-456)

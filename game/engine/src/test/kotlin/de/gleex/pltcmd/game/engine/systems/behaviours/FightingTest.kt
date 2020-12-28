@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
+import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.units.Unit
@@ -20,7 +21,6 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import org.hexworks.amethyst.api.newEntityOfType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
-import org.hexworks.cobalt.datatypes.Maybe
 import kotlin.random.Random
 
 class FightingTest : StringSpec({
@@ -119,7 +119,7 @@ private fun createContext(): GameContext {
 
     val context = mockk<GameContext>()
     every { context.random } returns Random(123L)
-    every { context.findElementAt(any()) } returns Maybe.empty()
+    every { context.elementsAt(any()) } returns EntitySet()
 
     return context
 }
@@ -135,7 +135,7 @@ fun createTargets(attackerPosition: Coordinate, context: GameContext, vararg ele
         val offsetFromAttacker = (neighborPosition - attackerPosition)
         val targetPosition = neighborPosition.movedBy(offsetFromAttacker.eastingFromLeft * 2, offsetFromAttacker.northingFromBottom * 2)
         val target = createCombatant(targetPosition, Affiliation.Hostile, element)
-        every { context.findElementAt(neighborPosition) } returns Maybe.of(target)
+        every { context.elementsAt(neighborPosition) } returns EntitySet(listOf(target))
         return@mapIndexed target
     }
 }

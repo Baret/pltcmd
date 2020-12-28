@@ -4,7 +4,7 @@ import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CommandingElement
-import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
+import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
@@ -34,12 +34,14 @@ object TileRepository {
             }
 
         private fun platoonTile(representation: Char, colorForeground: TileColor, colorBackground: TileColor) =
-                Tile.newBuilder().
-                withForegroundColor(colorForeground).
-                withBackgroundColor(colorBackground).
-                withCharacter(representation).
-                withModifiers(BorderBuilder.newBuilder().withBorderColor(colorBackground).build()).
-                buildCharacterTile()
+                Tile.newBuilder()
+                        .withForegroundColor(colorForeground)
+                        .withBackgroundColor(colorBackground)
+                        .withCharacter(representation)
+                        .withModifiers(BorderBuilder.newBuilder()
+                                .withBorderColor(colorBackground)
+                                .build())
+                        .buildCharacterTile()
 
         fun marker(element: CommandingElement, affiliation: Affiliation): Tile {
             // TODO: cache the tiles, because they are immutable (#101)
@@ -52,22 +54,21 @@ object TileRepository {
     fun createTerrainTile(terrain: Terrain): Tile = createTerrainTile(terrain.height, terrain.type)
 
     fun createTerrainTile(terrainHeight: TerrainHeight?, terrainType: TerrainType?): Tile =
-            Tile.
-                newBuilder().
-                withForegroundColor(ColorRepository.forType(terrainType)).
-                withBackgroundColor(ColorRepository.forHeight(terrainHeight)).
-                withCharacter(terrainType.char()).
-                buildCharacterTile()
+            Tile.newBuilder()
+                    .withForegroundColor(ColorRepository.forType(terrainType))
+                    .withBackgroundColor(ColorRepository.forHeight(terrainHeight))
+                    .withCharacter(terrainType.char())
+                    .buildCharacterTile()
 
     fun Tile.withGridBorder(borders: Set<BorderPosition>): Tile {
         return if (borders.isEmpty()) {
             this
         } else {
-            withModifiers(BorderBuilder.newBuilder().
-                    withBorderPositions(borders).
-                    withBorderType(BorderType.DASHED).
-                    withBorderColor(ColorRepository.GRID_COLOR).
-                    build())
+            withModifiers(BorderBuilder.newBuilder()
+                    .withBorderPositions(borders)
+                    .withBorderType(BorderType.DASHED)
+                    .withBorderColor(ColorRepository.GRID_COLOR)
+                    .build())
         }
     }
 
@@ -84,6 +85,9 @@ object TileRepository {
 
     fun empty() = Tile.empty()
 
+    /**
+     * Returns a [Tile] to display the given signal strength.
+     */
     fun forSignal(signalStrength: SignalStrength): Tile {
         val signalColor = ColorRepository.radioColor(signalStrength)
         val tileBuilder = Tile.newBuilder()
@@ -93,23 +97,21 @@ object TileRepository {
 
         when {
             signalStrength.isNone() -> {
-                tileBuilder.
-                        withCharacter(Symbols.SINGLE_LINE_CROSS).
-                        withModifiers(
-                            BorderBuilder.newBuilder().
-                                    withBorderType(BorderType.SOLID).
-                                    withBorderWidth(2).
-                                    withBorderColor(ColorRepository.SIGNAL_EMPTY).
-                                    build())
+                tileBuilder.withCharacter(Symbols.BLOCK_SPARSE)
+                        .withModifiers(
+                                BorderBuilder.newBuilder()
+                                        .withBorderType(BorderType.SOLID)
+                                        .withBorderWidth(2)
+                                        .withBorderColor(ColorRepository.SIGNAL_EMPTY)
+                                        .build())
             }
             signalStrength.isFull() -> {
-                tileBuilder.
-                        withModifiers(
-                            BorderBuilder.newBuilder().
-                                    withBorderType(BorderType.SOLID).
-                                    withBorderWidth(2).
-                                    withBorderColor(ColorRepository.SIGNAL_FULL_HIGHLIGHT).
-                                    build())
+                tileBuilder.withModifiers(
+                        BorderBuilder.newBuilder()
+                                .withBorderType(BorderType.SOLID)
+                                .withBorderWidth(2)
+                                .withBorderColor(ColorRepository.SIGNAL_FULL_HIGHLIGHT)
+                                .build())
             }
         }
 

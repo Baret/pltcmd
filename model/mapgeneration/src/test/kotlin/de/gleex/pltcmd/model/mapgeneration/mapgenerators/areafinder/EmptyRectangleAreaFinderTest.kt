@@ -4,6 +4,7 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
@@ -45,9 +46,9 @@ class EmptyRectangleAreaFinderTest : WordSpec()
 private suspend fun WordSpecShouldScope.testFilledOrigin(underTest: EmptyRectangleAreaFinder, testWorld: MutableWorld, origin: Coordinate) {
     val result = underTest.findAll(testWorld)
     "find rectangle beside origin to the end of the world" {
-        result shouldContain CoordinateArea(origin.withRelativeEasting(1)..testWorld.topRightCoordinate)
+        result shouldContain CoordinateRectangle(origin.withRelativeEasting(1), testWorld.topRightCoordinate)
     }
     "find column above origin" {
-        result shouldContain CoordinateArea(origin.withRelativeNorthing(1)..origin.withRelativeNorthing(Sector.TILE_COUNT - 1))
+        result shouldContain CoordinateRectangle(origin.withRelativeNorthing(1), origin.withRelativeNorthing(Sector.TILE_COUNT - 1))
     }
 }

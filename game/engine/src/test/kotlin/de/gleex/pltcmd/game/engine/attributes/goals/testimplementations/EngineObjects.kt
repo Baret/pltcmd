@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.engine.attributes.goals.testimplementations
 
 import de.gleex.pltcmd.game.engine.GameContext
+import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.ticks.TickId
@@ -16,6 +17,6 @@ val goalTestEntity: ElementEntity = newEntityOfType(ElementType) {
 val testGameContext: GameContext = GameContext(
         currentTick = TickId(12),
         world = mockkClass(WorldMap::class),
-        allElements = setOf(),
+        entities = EntitySet(),
         random = Random
 )
