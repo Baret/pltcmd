@@ -80,14 +80,17 @@ class Signal<P : SignalPower>(
      * from [origin] to [target] and calls [along].
      */
     private fun calculateSignalStrengthAt(target: Coordinate): SignalStrength {
+        var start: Long? = null
         if (log.isTraceEnabled()) {
+            start = System.currentTimeMillis()
             log.trace(" - - - calculating signal from $origin to $target")
         }
         val terrainList = area[CoordinatePath.line(origin, target)]
                 .map { it.terrain }
         return along(terrainList).also {
             if (log.isTraceEnabled()) {
-                log.trace(" - - - Finished calculating signal from $origin to $target. Result: $it")
+                val duration = System.currentTimeMillis() - start!!
+                log.trace(" - - - Finished calculating signal from $origin to $target in $duration ms. Result: $it")
             }
         }
     }
