@@ -30,8 +30,9 @@ class ContactsAttribute : Attribute {
         atKey.add(entity)
     }
 
-    operator fun get(position: Coordinate): Sequence<PositionableEntity> {
-        return getAllAt(position).asSequence()
-    }
+    // reduce type to Set so the internal EntitySet cannot be modified
+    operator fun get(position: Coordinate): Set<PositionableEntity> = getAllAt(position)
+
+    fun isKnown(entity: PositionableEntity): Boolean = this[entity.currentPosition].contains(entity)
 
 }
