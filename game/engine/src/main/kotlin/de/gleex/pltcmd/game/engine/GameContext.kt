@@ -25,7 +25,7 @@ data class GameContext(
 ) : Context {
 
     /**
-     * Shorthand version for [EntitySet.firstElementAt] on [entities].
+     * Shorthand version for [EntitySet.elementsAt] on [entities].
      */
     fun elementsAt(location: Coordinate): EntitySet<ElementType> =
             entities.elementsAt(location)
