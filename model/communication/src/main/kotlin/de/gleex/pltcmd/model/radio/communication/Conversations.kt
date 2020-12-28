@@ -93,6 +93,15 @@ object Conversations {
                         }
                     }
                 }
+
+        fun contact(sender: CallSign, receiver: CallSign, what: String, where: Coordinate, wither: String? = null) =
+            conversation(sender, receiver) {
+                establishComms {
+                    request("we have contact with %s at %s %s", { what }, { where }, { wither ?: "" }) {
+                        terminatingResponse("copy that")
+                    }
+                }
+            }
     }
 
     /**

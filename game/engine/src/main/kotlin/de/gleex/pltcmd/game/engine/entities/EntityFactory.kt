@@ -74,7 +74,8 @@ object EntityFactory {
                 PathFinding,
                 ExecuteOrder,
                 ConversationSender,
-                PositionChanging
+                PositionChanging,
+                ReportContacts
         )
         if(element.kind == ElementKind.Infantry) {
             facets.add(0, MakesSecurityHalts)
