@@ -74,13 +74,13 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
      * Sort from most south-west to most north-east. Going line wise first east and then north.
      * Example: 2|2, 3|2, 1|3
      */
-    override fun compareTo(other: Coordinate): Int {
-        val northDiff = northingFromBottom - other.northingFromBottom
-        if (northDiff == 0) {
-            return eastingFromLeft - other.eastingFromLeft
-        }
-        return northDiff
-    }
+    override fun compareTo(other: Coordinate): Int =
+            compareCoordinateComponents(
+                    northingFromBottom,
+                    eastingFromLeft,
+                    other.northingFromBottom,
+                    other.eastingFromLeft
+            )
 
     /** Provides all coordinates in the rectangle between the two points */
     operator fun rangeTo(other: Coordinate): Progression {
