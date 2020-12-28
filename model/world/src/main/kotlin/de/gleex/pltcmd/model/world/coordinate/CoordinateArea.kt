@@ -8,7 +8,6 @@ import java.util.*
  */
 open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Iterable<Coordinate> {
     constructor(coordinates: SortedSet<Coordinate>) : this({ coordinates })
-    constructor(coordinates: Coordinate.Progression) : this(coordinates::toSortedSet)
 
     companion object {
         val EMPTY = CoordinateArea(Collections.emptySortedSet())
