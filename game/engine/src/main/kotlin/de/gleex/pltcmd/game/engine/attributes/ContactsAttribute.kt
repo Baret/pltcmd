@@ -4,7 +4,6 @@ import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.Positionable
 import de.gleex.pltcmd.game.engine.entities.types.PositionableEntity
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
-import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Attribute
 
@@ -17,22 +16,17 @@ class ContactsAttribute : Attribute {
 
     fun add(entity: PositionableEntity) {
         val key = entity.currentPosition
-        val atKey = getAllAt(key)
-        // add listener only once!
-        if (atKey.contains(entity)) {
-            return
-        }
-        entity.position.onChange { (oldPosition, newPosition, _, _, _, _) ->
-            getAllAt(oldPosition).remove(entity)
-            getAllAt(newPosition).add(entity)
-        }
+        getAllAt(key).add(entity)
+    }
 
-        atKey.add(entity)
+    fun remove(entity: PositionableEntity) {
+        contactsAt.values.forEach { it.remove(entity) }
     }
 
     // reduce type to Set so the internal EntitySet cannot be modified
     operator fun get(position: Coordinate): Set<PositionableEntity> = getAllAt(position)
 
+    /** @return true if the given entity is known at its current position */
     fun isKnown(entity: PositionableEntity): Boolean = this[entity.currentPosition].contains(entity)
 
 }

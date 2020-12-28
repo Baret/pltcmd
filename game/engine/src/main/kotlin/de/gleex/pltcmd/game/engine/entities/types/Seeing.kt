@@ -50,5 +50,10 @@ internal fun SeeingEntity.isKnownContact(entity: PositionableEntity): Boolean {
 }
 
 internal fun SeeingEntity.rememberContact(entity: PositionableEntity) {
+    forgetContact(entity)
     return contacts.add(entity)
+}
+
+internal fun SeeingEntity.forgetContact(entity: PositionableEntity) {
+    return contacts.remove(entity)
 }
