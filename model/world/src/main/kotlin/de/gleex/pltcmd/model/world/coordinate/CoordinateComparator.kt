@@ -9,13 +9,12 @@ package de.gleex.pltcmd.model.world.coordinate
  *
  * @return The difference of [northing] to [otherNorthing] or if that is 0, the difference of [easting]
  * to [otherEasting].
- *
- * @see CoordinateComparator
  */
 internal fun compareCoordinateComponents(northing: Int, easting: Int, otherNorthing: Int, otherEasting: Int): Int {
     val northDiff = northing - otherNorthing
-    if (northDiff == 0) {
-        return easting - otherEasting
+    return if (northDiff == 0) {
+        easting - otherEasting
+    } else {
+        northDiff
     }
-    return northDiff
 }
