@@ -44,6 +44,7 @@ object EntityFactory {
                 ElementAttribute(element, affiliation),
                 PositionAttribute(initialPosition),
                 VisionAttribute(initialVision, visualRange),
+                ContactsAttribute(),
                 // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
                 RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
                 ShootersAttribute(element),
