@@ -28,27 +28,29 @@ object ReportContacts : BaseFacet<GameContext>() {
         }
         val communicating = command.source as CommunicatingEntity
         val context = command.context
-        when (command) {
+        return when (command) {
             is DetectedUnknown -> reportUnknown(communicating, command.entity, context)
             is DetectedElement -> reportElement(communicating, command.element, context)
+            else               -> Pass
         }
-        return Consumed
     }
 
-    suspend fun reportUnknown(reporter: CommunicatingEntity, toReport: PositionableEntity, context: GameContext) {
+    suspend fun reportUnknown(reporter: CommunicatingEntity, toReport: PositionableEntity, context: GameContext): Response {
         if (isNew(reporter as SeeingEntity, toReport)) {
             sendReport(reporter, "unknown", toReport.currentPosition, context)
             // TODO should be put in a separate facet that is run at the end after all others got the new contacts
             (reporter as SeeingEntity).rememberContact(toReport)
         }
+        return Consumed
     }
 
-    suspend fun reportElement(reporter: CommunicatingEntity, toReport: ElementEntity, context: GameContext) {
+    suspend fun reportElement(reporter: CommunicatingEntity, toReport: ElementEntity, context: GameContext): Response {
         if (isNew(reporter as SeeingEntity, toReport)) {
             sendReport(reporter, toReport.element.description, toReport.currentPosition, context)
             // TODO should be put in a separate facet that is run at the end after all others got the new contacts
             (reporter as SeeingEntity).rememberContact(toReport)
         }
+        return Consumed
     }
 
     fun isNew(reporter: SeeingEntity, toReport: PositionableEntity) = !reporter.isKnownContact(toReport)
