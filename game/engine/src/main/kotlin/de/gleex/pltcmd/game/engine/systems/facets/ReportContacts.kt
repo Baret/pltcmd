@@ -54,7 +54,7 @@ object ReportContacts : BaseFacet<GameContext>() {
     fun isNew(reporter: SeeingEntity, toReport: PositionableEntity) = !reporter.isKnownContact(toReport)
 
     suspend fun sendReport(reporter: CommunicatingEntity, what: String, at: Coordinate, context: GameContext) {
-        // TODO where does the receiver call sign come from? Is it the fixed superior element? Remembered from last conversation?
+        // TODO where does the receiver call sign come from? Is it the fixed superior element (of the faction #62)? Remembered from last conversation?
         if ((reporter as ElementEntity).affiliation != Affiliation.Friendly) {
             return
         }
