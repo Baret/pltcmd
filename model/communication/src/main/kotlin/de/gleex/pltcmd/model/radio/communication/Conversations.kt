@@ -94,9 +94,9 @@ object Conversations {
                     }
                 }
 
-        fun contact(sender: CallSign, receiver: CallSign, what: String, where: Coordinate, wither: String? = null) =
+        fun contact(sender: CallSign, receiver: CallSign, what: String, where: Coordinate, whither: String? = null) =
             conversation(sender, receiver) {
-                openingTransmission = request("we have contact with %s at %s %s", { what }, { where }, { wither ?: "" }) {
+                openingTransmission = request("we have contact with %s at %s %s", { what }, { where }, { whither ?: "" }) {
                     terminatingResponse("copy that")
                 }
             }
