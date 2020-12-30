@@ -45,22 +45,13 @@ internal val SeeingEntity.visualRange: VisionPower
 private val SeeingEntity.contacts: ContactsAttribute
     get() = getAttribute(ContactsAttribute::class)
 
-internal infix fun SeeingEntity.hasNewContact(toReport: PositionableEntity) = !knowsContact(toReport)
-
-internal infix fun SeeingEntity.knowsContact(entity: PositionableEntity): Boolean {
-    return contacts.isKnown(entity)
-}
-
-/** @return true if the contact is new or false if is already known */
-internal infix fun SeeingEntity.rememberContact(entity: PositionableEntity): Boolean {
-    if (this knowsContact entity) {
-        return false
-    }
-    forgetContact(entity)
+internal infix fun SeeingEntity.rememberContact(entity: PositionableEntity) {
     contacts.add(entity)
-    return true
 }
 
-internal infix fun SeeingEntity.forgetContact(entity: PositionableEntity) {
-    return contacts.remove(entity)
+/** Forgets all known contacts and returns them. */
+internal fun SeeingEntity.forgetAll(): Set<PositionableEntity> {
+    val lastSeen = contacts.getAll()
+    contacts.clear()
+    return lastSeen
 }

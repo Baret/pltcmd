@@ -29,8 +29,9 @@ object Detects : BaseFacet<GameContext>(
 
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>): Response =
         command.responseWhenCommandIs<GameContext, DetectEntities> { (visibleEntities, seeing, context) ->
+            val lastSeen: Set<PositionableEntity> = seeing.forgetAll()
             visibleEntities
-                .mapNotNull { seen -> createDetectedCommand(seen, seeing, context) }
+                .mapNotNull { seen -> createDetectedCommand(seen, seeing, lastSeen, context) }
                 .apply {
                     runBlocking {
                         forEach {
@@ -41,12 +42,18 @@ object Detects : BaseFacet<GameContext>(
             Consumed
         }
 
-    private fun createDetectedCommand(seen: PositionableEntity, seeing: SeeingEntity, context: GameContext): DetectedEntity? {
+    private fun createDetectedCommand(
+        seen: PositionableEntity,
+        seeing: SeeingEntity,
+        lastSeen: Set<PositionableEntity>,
+        context: GameContext
+    ): DetectedEntity? {
         val seenPosition = seen.currentPosition
         val visibility: SignalStrength = seeing.vision.at(seenPosition)
         return if (visibility.isAny()) {
             logSeen(seeing, seen, visibility)
-            val isNewContact = seeing rememberContact seen
+            val isNewContact = lastSeen.contains(seen).not()
+            seeing rememberContact seen
             DetectedEntity(seen, visibility, isNewContact, seeing, context)
         } else {
             null
