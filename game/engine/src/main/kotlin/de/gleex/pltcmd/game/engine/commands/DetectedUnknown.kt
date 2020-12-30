@@ -10,7 +10,7 @@ import org.hexworks.amethyst.api.Command
 /**
  * Command that [source] has contact with another unknown [GameEntity].
  *
- * @param entity entity that are in the visible range of [source] but cannot be identified further.
+ * @param entity entity that is in the visible range of [source] but cannot be identified further.
  * @param source the [SeeingEntity] that might need to react to the detection of other entities.
  */
 data class DetectedUnknown(val entity: PositionableEntity,
