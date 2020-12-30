@@ -45,7 +45,9 @@ internal val SeeingEntity.visualRange: VisionPower
 private val SeeingEntity.contacts: ContactsAttribute
     get() = getAttribute(ContactsAttribute::class)
 
-internal fun SeeingEntity.isKnownContact(entity: PositionableEntity): Boolean {
+internal infix fun SeeingEntity.hasNewContact(toReport: PositionableEntity) = !knowsContact(toReport)
+
+internal infix fun SeeingEntity.knowsContact(entity: PositionableEntity): Boolean {
     return contacts.isKnown(entity)
 }
 

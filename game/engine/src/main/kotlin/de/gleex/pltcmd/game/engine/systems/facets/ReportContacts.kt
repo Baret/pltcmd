@@ -36,7 +36,7 @@ object ReportContacts : BaseFacet<GameContext>() {
     }
 
     suspend fun reportUnknown(reporter: CommunicatingEntity, toReport: PositionableEntity, context: GameContext): Response {
-        if (isNew(reporter as SeeingEntity, toReport)) {
+        if ((reporter as SeeingEntity) hasNewContact toReport) {
             sendReport(reporter, "unknown", toReport.currentPosition, context)
             // TODO should be put in a separate facet that is run at the end after all others got the new contacts
             (reporter as SeeingEntity).rememberContact(toReport)
@@ -45,15 +45,13 @@ object ReportContacts : BaseFacet<GameContext>() {
     }
 
     suspend fun reportElement(reporter: CommunicatingEntity, toReport: ElementEntity, context: GameContext): Response {
-        if (isNew(reporter as SeeingEntity, toReport)) {
+        if ((reporter as SeeingEntity) hasNewContact toReport) {
             sendReport(reporter, toReport.element.description, toReport.currentPosition, context)
             // TODO should be put in a separate facet that is run at the end after all others got the new contacts
             (reporter as SeeingEntity).rememberContact(toReport)
         }
         return Consumed
     }
-
-    fun isNew(reporter: SeeingEntity, toReport: PositionableEntity) = !reporter.isKnownContact(toReport)
 
     suspend fun sendReport(reporter: CommunicatingEntity, what: String, at: Coordinate, context: GameContext) {
         // TODO where does the receiver call sign come from? Is it the fixed superior element (of the faction #62)? Remembered from last conversation?
