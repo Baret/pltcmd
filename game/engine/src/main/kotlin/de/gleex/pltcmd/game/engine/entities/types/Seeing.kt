@@ -51,11 +51,16 @@ internal infix fun SeeingEntity.knowsContact(entity: PositionableEntity): Boolea
     return contacts.isKnown(entity)
 }
 
-internal fun SeeingEntity.rememberContact(entity: PositionableEntity) {
+/** @return true if the contact is new or false if is already known */
+internal infix fun SeeingEntity.rememberContact(entity: PositionableEntity): Boolean {
+    if (this knowsContact entity) {
+        return false
+    }
     forgetContact(entity)
-    return contacts.add(entity)
+    contacts.add(entity)
+    return true
 }
 
-internal fun SeeingEntity.forgetContact(entity: PositionableEntity) {
+internal infix fun SeeingEntity.forgetContact(entity: PositionableEntity) {
     return contacts.remove(entity)
 }
