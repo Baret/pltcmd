@@ -46,7 +46,7 @@ object Detects : BaseFacet<GameContext>(
                             when (seenType) {
                                 ElementType -> {
                                     val seenElement = seen as ElementEntity
-                                    logSeen(seeing, seenPosition, visibility) { seenElement.callsign.name.padEnd(25) }
+                                    logSeen(seeing, seenPosition, visibility) { seenElement.callsign.name }
                                     handleCommand = DetectedElement(seenElement, seeing, command.context)
                                 }
                                 else        -> log.warn("Detected entity type '$seenType' is not handled!")
@@ -70,12 +70,11 @@ object Detects : BaseFacet<GameContext>(
         seenText: () -> String
     ) {
         if (log.isDebugEnabled() && seeing.type == ElementType) {
-            log.debug(
-                "${(seeing as ElementEntity).callsign.name.padEnd(25)} sees $seenText at ${
-                    seenPosition.toString()
-                        .padEnd(12)
-                } with signal strength \t${visibility}"
-            )
+            val who = (seeing as ElementEntity).callsign.name.padEnd(12)
+            val what = seenText().padEnd(12)
+            val where = seenPosition.toString().padEnd(12)
+            val how = visibility.asRatio()
+            log.debug("$who sees $what at $where with signal strength $how")
         }
     }
 
