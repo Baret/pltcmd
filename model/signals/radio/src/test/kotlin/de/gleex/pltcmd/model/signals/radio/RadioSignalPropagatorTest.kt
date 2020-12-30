@@ -41,4 +41,4 @@ class RadioSignalPropagatorTest : WordSpec({
     }
 })
 
-private infix fun SignalStrength.shouldBeExactly(expected: Double) = this.strength shouldBeExactly expected
+private infix fun SignalStrength.shouldBeExactly(expected: Double) = asRatio() shouldBeExactly expected

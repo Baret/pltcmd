@@ -11,7 +11,7 @@ data class SignalStrength(
          * @see MIN_ALLOWED_VALUE
          * @see MAX_ALLOWED_VALUE
          */
-        val strength: Double): Comparable<SignalStrength> {
+        private val strength: Double): Comparable<SignalStrength> {
     companion object {
         /**
          * The minimum that [SignalStrength.strength] may have.
@@ -46,7 +46,7 @@ data class SignalStrength(
     fun isFull() = strength >= MAX_ALLOWED_VALUE
 
     /**
-     * Returns true if no signal is left (it is 0.0).
+     * Returns true if no signal is left (it is less or equal to [MIN_ALLOWED_VALUE]).
      */
     fun isNone() = strength <= MIN_ALLOWED_VALUE
 
@@ -56,6 +56,13 @@ data class SignalStrength(
     fun isAny() = strength > MIN_ALLOWED_VALUE
 
     override fun compareTo(other: SignalStrength): Int = strength.compareTo(other.strength)
+    operator fun compareTo(other: Double): Int = strength.compareTo(other)
+
+    /**
+     * This strength as ratio between [MIN_ALLOWED_VALUE] and [MAX_ALLOWED_VALUE].
+     * @return number between 0.0 and 1.0 (inclusive)
+     */
+    fun asRatio(): Double = strength
 }
 
 /**

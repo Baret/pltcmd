@@ -42,7 +42,7 @@ object Detects : BaseFacet<GameContext>(
 
                         // details of the entity type are only available if seen is clearly visible
                         val visibility: SignalStrength = seeing.vision.at(seenPosition)
-                        if (visibility.strength >= 0.4) {
+                        if (visibility >= 0.4) {
                             when (seenType) {
                                 ElementType -> {
                                     val seenElement = seen as ElementEntity
