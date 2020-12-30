@@ -7,10 +7,9 @@ import de.gleex.pltcmd.game.engine.commands.DetectEntities
 import de.gleex.pltcmd.game.engine.commands.DetectedElement
 import de.gleex.pltcmd.game.engine.commands.DetectedUnknown
 import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Command
 import org.hexworks.amethyst.api.Consumed
@@ -31,37 +30,53 @@ object Detects : BaseFacet<GameContext>(
     private val log = LoggerFactory.getLogger(Detects::class)
 
     override suspend fun executeCommand(command: Command<out EntityType, GameContext>): Response =
-        command.responseWhenCommandIs<GameContext, DetectEntities> { (visibleEntities, seeing) ->
-            runBlocking {
-                val handleCommands = produce {
-                    visibleEntities.forEach { seen ->
-                        var handleCommand: Command<Seeing, GameContext>? = null
-                        // basic information is always available
-                        val seenType = seen.type
-                        val seenPosition = seen.currentPosition
-
-                        // details of the entity type are only available if seen is clearly visible
-                        val visibility: SignalStrength = seeing.vision.at(seenPosition)
-                        if (visibility >= 0.4) {
-                            when (seenType) {
-                                ElementType -> {
-                                    val seenElement = seen as ElementEntity
-                                    logSeen(seeing, seenPosition, visibility) { seenElement.callsign.name }
-                                    handleCommand = DetectedElement(seenElement, seeing, command.context)
-                                }
-                                else        -> log.warn("Detected entity type '$seenType' is not handled!")
-                            }
-                        } else if (visibility.isAny()) {
-                            logSeen(seeing, seenPosition, visibility) { "something" }
-                            handleCommand = DetectedUnknown(seen, seeing, command.context)
+        command.responseWhenCommandIs<GameContext, DetectEntities> { (visibleEntities, seeing, context) ->
+            visibleEntities
+                .mapNotNull { seen -> createDetectedCommand(seen, seeing, context) }
+                .apply {
+                    runBlocking {
+                        forEach {
+                            seeing.executeCommand(it)
                         }
-                        handleCommand?.let { send(it) }
                     }
                 }
-                handleCommands.consumeEach { seeing.executeCommand(it) }
-            }
             Consumed
         }
+
+    private fun createDetectedCommand(
+        seen: GameEntity<Positionable>,
+        seeing: SeeingEntity,
+        context: GameContext
+    ): Command<Seeing, GameContext>? {
+        val seenType = seen.type
+        val seenPosition = seen.currentPosition
+
+        val visibility: SignalStrength = seeing.vision.at(seenPosition)
+        return when {
+            // details of the entity type are only available if seen is clearly visible
+            visibility >= 0.4  -> {
+                when (seenType) {
+                    ElementType -> {
+                        val seenElement = seen as ElementEntity
+                        logSeen(seeing, seenPosition, visibility) { seenElement.callsign.name }
+                        DetectedElement(seenElement, seeing, context)
+                    }
+                    else        -> {
+                        log.warn("Detected entity type '$seenType' is not handled!")
+                        null
+                    }
+                }
+            }
+            // basic information is always available
+            visibility.isAny() -> {
+                logSeen(seeing, seenPosition, visibility) { "something" }
+                DetectedUnknown(seen, seeing, context)
+            }
+            else               -> {
+                null
+            }
+        }
+    }
 
     private fun logSeen(
         seeing: SeeingEntity,
