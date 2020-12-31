@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.ui.entities
 
 import de.gleex.pltcmd.model.elements.Affiliation
-import de.gleex.pltcmd.model.radio.broadcasting.SignalStrength
+import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import org.hexworks.zircon.api.color.TileColor
@@ -83,9 +83,9 @@ object ColorRepository {
     fun radioColor(signalStrength: SignalStrength): TileColor {
         val signalColor = SIGNAL_EMPTY.interpolateTo(SIGNAL_FULL).getColorAtRatio(signalStrength.strength)
         return if (signalStrength.isNone()) {
-                signalColor.withAlpha(0)
-            } else {
-                signalColor
-            }
+            signalColor.withAlpha(0)
+        } else {
+            signalColor
+        }
     }
 }

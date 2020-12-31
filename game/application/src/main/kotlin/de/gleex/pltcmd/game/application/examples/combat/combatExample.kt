@@ -5,13 +5,13 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.toEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.element
-import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.radio.RadioSender
+import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -55,7 +55,7 @@ class CombatMain : Main() {
     fun addHostile(position: Coordinate, map: WorldMap, element: CommandingElement = Elements.rifleSquad.new()): ElementEntity {
         val affiliation = Affiliation.Hostile
         val elementPosition = position.toProperty()
-        val radioSender = RadioSender(elementPosition, GameOptions.defaultRadioPower, map)
+        val radioSender = RadioSender(elementPosition, RadioPower(), map)
         return element.toEntity(elementPosition, affiliation, radioSender)
     }
 }

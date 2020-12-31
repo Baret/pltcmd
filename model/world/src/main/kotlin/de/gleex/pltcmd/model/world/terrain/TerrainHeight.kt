@@ -44,6 +44,7 @@ enum class TerrainHeight(val value: Int) : Comparable<TerrainHeight> {
     operator fun minus(valueToSubtract: Int): TerrainHeight =
             ofValue(value - valueToSubtract) ?: MIN
 
+    fun toDouble(): Double = value.toDouble()
 }
 
 /** Return the average height of all given terrain heights. If the given list is empty no height is provided. */
