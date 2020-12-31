@@ -6,7 +6,6 @@ import de.gleex.pltcmd.game.ui.renderers.SignalVisualizer
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.databinding.internal.binding.ComputedDualBinding
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Fragments
 
 /**
@@ -43,7 +42,6 @@ class SignalVisualizationFragment(
     init {
         // React to updates of currentInfoTile as well as new selection of the multiselect
         ComputedDualBinding(currentInfoTile, select.selectedValue) { coordinate, (_, drawSignal) ->
-            log.debug(" - - - Redrawing at $coordinate")
             game
                 .firstElementAt(coordinate)
                 .fold(
@@ -54,9 +52,5 @@ class SignalVisualizationFragment(
 
         componentsContainer
             .addFragment(select)
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(SignalVisualizationFragment::class)
     }
 }
