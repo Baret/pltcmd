@@ -15,15 +15,11 @@ class MapCoordinateDecorationRenderer(private val world: GameWorld) : ComponentD
     override val offset = Position.offset1x1()
 
     override fun render(tileGraphics: TileGraphics, context: ComponentDecorationRenderContext) {
-        val size = tileGraphics.size
-        val style = context.currentStyle
         val coordinates = MapCoordinates(
             world,
-            size,
+            tileGraphics.size,
             context.component.contentOffset
         )
-        tileGraphics.applyStyle(style)
-        tileGraphics.tileset = context.component.tileset
         tileGraphics.draw(coordinates.tileMap)
     }
 }
