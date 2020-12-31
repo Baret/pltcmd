@@ -10,8 +10,11 @@ import org.hexworks.zircon.api.game.base.BaseGameArea
 import org.hexworks.zircon.api.modifier.BorderPosition
 
 /**
- * A [GameArea] that shows a map with holes. It uses [IncompleteMapBlock] for that.
+ * A [GameArea] that shows a map with holes for ungenerated terrain. It uses [IncompleteMapBlock] for that.
  * The full map is visible and can be altered.
+ *
+ * This game area creates a 3D model of the map which means it puts the blocks at [TerrainHeight].
+ * By that it is possible to display this game area in a projection mode different than TOP_DOWN.
  */
 class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
         BaseGameArea<Tile, IncompleteMapBlock>(
