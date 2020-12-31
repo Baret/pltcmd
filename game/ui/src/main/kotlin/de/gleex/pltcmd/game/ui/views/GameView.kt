@@ -74,12 +74,9 @@ class GameView(
                 mapComponent,
                 CustomComponent(rightSidebar, Position.topRightOf(mapComponent)))
 
-        // strangely the tileset can not be set in the builder as the .addComponent() above seems to overwrite it
-        map.root.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
-
         // connect parts that depend on each other
-        leftSidebar.connectTo(map.root)
-        rightSidebar.connectTo(map.root)
+        leftSidebar.connectTo(map.mapPanel)
+        rightSidebar.connectTo(map.mapPanel)
 
         log.debug("Created map view with size ${mapComponent.size}, content size ${mapComponent.contentSize} and position ${mapComponent.position}")
         log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")

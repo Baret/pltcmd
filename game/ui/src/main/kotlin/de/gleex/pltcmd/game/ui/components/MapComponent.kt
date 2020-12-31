@@ -7,7 +7,6 @@ import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
-import org.hexworks.zircon.api.component.Component
 import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.data.Tile
@@ -19,12 +18,23 @@ class MapComponent(gameWorld: GameWorld) : Fragment {
 
     private val mapRenderer = GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(gameWorld)
 
-    override val root: Component = Components.panel()
+    override val root: Panel = Components.panel()
         .withSize(UiOptions.MAP_VIEW_WIDTH, UiOptions.MAP_VIEW_HEIGHT)
         .withDecorations(
             MapGridDecorationRenderer(),
             MapCoordinateDecorationRenderer(gameWorld)
         )
+        .build()
+
+    /**
+     * This panel contains the game area rendering the [GameWorld].
+     */
+    val mapPanel: Panel = Components.panel()
+        .withSize(root.contentSize)
         .withComponentRenderer(mapRenderer)
         .build()
+        .also {
+            root.addComponent(it)
+            it.tileset = UiOptions.MAP_TILESET
+        }
 }
