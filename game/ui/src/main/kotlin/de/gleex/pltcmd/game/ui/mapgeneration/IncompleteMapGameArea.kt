@@ -15,14 +15,14 @@ import org.hexworks.zircon.api.modifier.BorderPosition
  */
 class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
         BaseGameArea<Tile, IncompleteMapBlock>(
-                initialVisibleSize = Size3D.from2DSize(size, blocksHeight),
-                initialActualSize = Size3D.from2DSize(size, blocksHeight),
+                initialVisibleSize = Size3D.from2DSize(size, BLOCKS_HEIGHT),
+                initialActualSize = Size3D.from2DSize(size, BLOCKS_HEIGHT),
                 initialContents = BlocksWithGrid(size, worldSizeInTiles).create(),
                 initialFilters = emptyList()) {
 
     companion object {
-        private val blocksHeight = TerrainHeight.values().size
-        private val averageZLevel: Int = 0
+        private val BLOCKS_HEIGHT = TerrainHeight.values().size
+        private const val Z_LEVEL_DEFAULT: Int = 0
     }
 
     init {
@@ -39,9 +39,9 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
                 TerrainHeight.values()
                     .indexOf(terrainHeight)
             } else {
-                averageZLevel
+                Z_LEVEL_DEFAULT
             }
-        List(blocksHeight) { toPosition3D(it) }
+        List(BLOCKS_HEIGHT) { toPosition3D(it) }
                 .forEach { position3D ->
                     fetchBlockAt(position3D)
                             .ifPresent { block ->
@@ -61,7 +61,7 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
 
         fun create() = size.fetchPositions()
                 .map { position ->
-                    List(blocksHeight) { index ->
+                    List(BLOCKS_HEIGHT) { index ->
                         position.toPosition3D(index)
                     }
                 }
