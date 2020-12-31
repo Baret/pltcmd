@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.engine.attributes
 
 import de.gleex.pltcmd.game.engine.entities.EntitySet
+import de.gleex.pltcmd.game.engine.entities.toEntitySet
 import de.gleex.pltcmd.game.engine.entities.types.Positionable
 import de.gleex.pltcmd.game.engine.entities.types.PositionableEntity
 import org.hexworks.amethyst.api.Attribute
@@ -9,9 +10,9 @@ import org.hexworks.amethyst.api.Attribute
 class ContactsAttribute : Attribute {
     private val visibleEntities: EntitySet<Positionable> = EntitySet()
 
-    fun getAll(): Set<PositionableEntity> {
+    fun getAll(): EntitySet<Positionable> {
         // create copy so changes are not visible
-        return visibleEntities.toSet()
+        return visibleEntities.toEntitySet()
     }
 
     fun add(entity: PositionableEntity) {

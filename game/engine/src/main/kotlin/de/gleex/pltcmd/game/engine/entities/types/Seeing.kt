@@ -55,3 +55,5 @@ internal fun SeeingEntity.forgetAll(): Set<PositionableEntity> {
     contacts.clear()
     return lastSeen
 }
+
+internal fun SeeingEntity.visibleEntities() = contacts.getAll()

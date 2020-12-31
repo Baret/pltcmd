@@ -26,10 +26,10 @@ internal object Fighting : BaseBehavior<GameContext>(ShootersAttribute::class, P
 
     fun attackNearbyEnemies(attacker: ElementEntity, context: GameContext) {
         attacker
-                .currentPosition
-                .neighbors()
-                .flatMap(context::elementsAt)
-                .firstOrNull { it.isEnemy() }
+                .visibleEntities()
+                // TODO also check if it is in attack range
+                .filterElements { it.isEnemy() }
+                .firstOrNull()
                 ?.let { enemyToAttack ->
                     log.info("${attacker.callsign} attacks ${enemyToAttack.callsign}")
                     attacker.attack(enemyToAttack, context.random)
