@@ -2,12 +2,10 @@ package de.gleex.pltcmd.game.ui.renderers
 
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import org.hexworks.zircon.api.builder.graphics.TileGraphicsBuilder
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
-import org.hexworks.zircon.api.graphics.StyleSet
-import org.hexworks.zircon.api.graphics.TileGraphics
-import org.hexworks.zircon.api.resource.TilesetResource
+import org.hexworks.zircon.api.data.Tile
+import org.hexworks.zircon.api.graphics.TileComposite
 
 /**
  * Draws a border around a rectangle with a grid indicator every five tiles. Every second tile has a highlight color to see the main coordinates.
@@ -15,20 +13,17 @@ import org.hexworks.zircon.api.resource.TilesetResource
  * @param mapOffset The difference from this graphics to the drawn map. Needed for aligning the coordinates at the visible map grid.
  */
 class MapCoordinates(
-        world: GameWorld,
-        size: Size,
-        mapOffset: Position,
-        styleSet: StyleSet,
-        tileset: TilesetResource,
-        private val backend: TileGraphics = TileGraphicsBuilder.newBuilder()
-                .withTileset(tileset)
-                .withSize(size)
-                .build())
-    : TileGraphics by backend {
+    world: GameWorld,
+    private val size: Size,
+    mapOffset: Position
+) {
+
+    private val tileMapMutable: MutableMap<Position, Tile> = mutableMapOf()
+
+    val tileMap: Map<Position, Tile>
+        get() = tileMapMutable
 
     init {
-        applyStyle(styleSet)
-
         val topLeftCoordinate = world.visibleTopLeftCoordinate()
         val topLeftPos = size.fetchTopLeftPosition()
         drawGridCoordinates(topLeftCoordinate, topLeftPos, mapOffset)
@@ -69,11 +64,18 @@ class MapCoordinates(
         val textStartPosition = coordinateTiles.getStartPositionToCenterOn(center)
         val textEndPosition = coordinateTiles.getEndPositionToCenterOn(center)
         // prevent truncated text
-        if (backend.size.containsPosition(textStartPosition) && backend.size.containsPosition(textEndPosition)) {
-            draw(coordinateTiles, textStartPosition)
+        if (size.containsPosition(textStartPosition) && size.containsPosition(textEndPosition)) {
+            drawToMap(coordinateTiles, textStartPosition)
         }
     }
 
-    override fun toString() = "MapCoordinates $backend"
+    private fun drawToMap(composite: TileComposite, position: Position) {
+        val movedTiles = composite
+            .tiles
+            .mapKeys { it.key + position }
+        tileMapMutable.putAll(movedTiles)
+    }
+
+    override fun toString() = "MapCoordinates $size"
 
 }

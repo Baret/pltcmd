@@ -14,6 +14,7 @@ import de.gleex.pltcmd.game.ui.components.InfoSidebar
 import de.gleex.pltcmd.game.ui.components.InputSidebar
 import de.gleex.pltcmd.game.ui.entities.GameBlock
 import de.gleex.pltcmd.game.ui.entities.GameWorld
+import de.gleex.pltcmd.game.ui.renderers.MapCoordinateDecorationRenderer
 import de.gleex.pltcmd.game.ui.renderers.MapGridDecorationRenderer
 import de.gleex.pltcmd.model.radio.BroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
@@ -68,7 +69,7 @@ class GameView(
 
         val leftSidebarComponent = CustomComponent(leftSidebar, Position.bottomLeftOf(logArea))
 
-        val map = GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(gameWorld)
+        val mapRenderer = GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(gameWorld)
 
         val mainPart = Components.panel()
                 .withSize(MAP_VIEW_WIDTH, MAP_VIEW_HEIGHT)
@@ -76,9 +77,9 @@ class GameView(
                 // FIXME!
                 .withDecorations(
                         MapGridDecorationRenderer(),
-//                        MapCoordinateDecorationRenderer(gameWorld)
+                        MapCoordinateDecorationRenderer(gameWorld)
                 )
-                .withComponentRenderer(map)
+                .withComponentRenderer(mapRenderer)
                 .build()
 
         val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT, gameWorld, game)
