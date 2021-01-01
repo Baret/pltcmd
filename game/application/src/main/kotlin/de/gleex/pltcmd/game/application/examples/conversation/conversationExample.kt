@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.application.examples.conversation
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.commands.ConversationCommand
+import de.gleex.pltcmd.game.engine.commands.ConversationMessage
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.callsign
@@ -55,7 +55,7 @@ fun main() {
             toSortedSet()
     val sector = Sector(origin, tiles)
     val map = WorldMap.create(setOf(sector))
-    val game = Game(Engine.default(), map, Random(GameOptions.MAP_SEED))
+    val game = Game(Engine.create(), map, Random(GameOptions.MAP_SEED))
     val context = game.context()
 
     globalEventBus.subscribeToBroadcasts { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
@@ -89,7 +89,7 @@ fun main() {
     runBlocking {
         println("creating SITREP from $hqRadio to $bravoRadio")
 
-        hqEntity.sendCommand(ConversationCommand(
+        hqEntity.sendCommand(ConversationMessage(
                 Conversations.Reports.sitrep(
                         sender = hqCallSign,
                         receiver = bravoCallSign
@@ -100,7 +100,7 @@ fun main() {
 
         println("creating move to from $hqRadio to $charlieRadio")
 
-        hqEntity.sendCommand(ConversationCommand(
+        hqEntity.sendCommand(ConversationMessage(
                 Conversations.Orders.MoveTo.create(
                         sender = hqCallSign,
                         receiver = charlieCallSign,
@@ -112,7 +112,7 @@ fun main() {
 
         println("creating engage from $hqRadio to $bravoRadio")
 
-        hqEntity.sendCommand(ConversationCommand(
+        hqEntity.sendCommand(ConversationMessage(
                 Conversations.Orders.EngageEnemyAt.create(
                         sender = hqCallSign,
                         receiver = bravoCallSign,
@@ -124,7 +124,7 @@ fun main() {
 
         println("creating report position from $bravoRadio to $charlieRadio")
 
-        bravoEntity.sendCommand(ConversationCommand(
+        bravoEntity.sendCommand(ConversationMessage(
                 Conversations.Reports.reportPosition(
                         sender = bravoCallSign,
                         receiver = charlieCallSign

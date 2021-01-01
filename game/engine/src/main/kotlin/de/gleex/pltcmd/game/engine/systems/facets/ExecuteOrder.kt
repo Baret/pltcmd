@@ -7,24 +7,21 @@ import de.gleex.pltcmd.game.engine.attributes.goals.HaltGoal
 import de.gleex.pltcmd.game.engine.attributes.goals.PatrolAreaGoal
 import de.gleex.pltcmd.game.engine.attributes.goals.RadioGoal
 import de.gleex.pltcmd.game.engine.attributes.goals.ReachDestination
-import de.gleex.pltcmd.game.engine.commands.OrderCommand
-import de.gleex.pltcmd.game.engine.entities.types.callsign
-import de.gleex.pltcmd.game.engine.entities.types.commandersIntent
+import de.gleex.pltcmd.game.engine.commands.OrderMessage
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.*
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import kotlinx.coroutines.runBlocking
-import org.hexworks.amethyst.api.Command
 import org.hexworks.amethyst.api.Consumed
+import org.hexworks.amethyst.api.Message
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 internal object ExecuteOrder : BaseFacet<GameContext>(ElementAttribute::class, CommandersIntent::class) {
     private val log = LoggerFactory.getLogger(ExecuteOrder::class)
 
-    override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
-            command.responseWhenCommandIs(OrderCommand::class) { (order, orderedBy, orderedTo, _, entity) ->
+    override suspend fun executeCommand(command: Message<GameContext>) =
+            command.responseWhenCommandIs(OrderMessage::class) { (order, orderedBy, orderedTo, _, entity) ->
                 runBlocking {
                     when (order) {
                         MoveTo        -> {

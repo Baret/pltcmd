@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import org.hexworks.amethyst.api.Command
+import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -41,13 +41,13 @@ abstract class Goal(vararg subGoals: Goal) {
      *
      * The default implementation simply advances the sub-goals by calling [stepSubGoals].
      */
-    open fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> =
+    open fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> =
             stepSubGoals(element, context)
 
     /**
      * Calls [step] on the next unfinished sub-goal. All finished sub-goals are removed first.
      */
-    protected fun stepSubGoals(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
+    protected fun stepSubGoals(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         removeUpcomingSubGoalsThatAreFinished(element)
         return subGoals
                 .firstOrNull()

@@ -10,11 +10,9 @@ import de.gleex.pltcmd.game.engine.entities.types.currentSpeedInKph
 import de.gleex.pltcmd.game.engine.entities.types.movementPath
 import de.gleex.pltcmd.game.options.GameConstants
 import de.gleex.pltcmd.game.ticks.Ticker
-import de.gleex.pltcmd.model.world.toSectorOrigin
-import org.hexworks.amethyst.api.Command
+import org.hexworks.amethyst.api.Message
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
@@ -24,7 +22,7 @@ object MakesSecurityHalts : BaseFacet<GameContext>() {
 
     private val log = LoggerFactory.getLogger(MakesSecurityHalts::class)
 
-    override suspend fun executeCommand(command: Command<out EntityType, GameContext>) =
+    override suspend fun executeCommand(command: Message<GameContext>) =
             command.responseWhenCommandIs(UpdatePosition::class) {
                 if (it.oldPosition.toSectorOrigin() != it.newPosition.toSectorOrigin()) {
                     val entity: MovableEntity = it.source

@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.ui.fragments
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.commands.ConversationCommand
+import de.gleex.pltcmd.game.engine.commands.ConversationMessage
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
@@ -108,7 +108,7 @@ class ElementCommandFragment(
     private fun sendConversation(conversation: Conversation) {
         log.debug("Sending conversation to ${conversation.receiver}: $conversation")
         runBlocking {
-            hq.sendCommand(ConversationCommand(conversation, game.context(), hq))
+            hq.sendCommand(ConversationMessage(conversation, game.context(), hq))
         }
     }
 

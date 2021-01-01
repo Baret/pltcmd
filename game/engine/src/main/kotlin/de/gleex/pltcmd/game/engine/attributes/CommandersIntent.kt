@@ -7,7 +7,7 @@ import de.gleex.pltcmd.game.engine.attributes.goals.Goal
 import de.gleex.pltcmd.game.engine.attributes.goals.RootGoal
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.ticks.Ticker
-import org.hexworks.amethyst.api.Command
+import org.hexworks.amethyst.api.Message
 import org.hexworks.amethyst.api.base.BaseAttribute
 import org.hexworks.cobalt.datatypes.Maybe
 
@@ -20,7 +20,7 @@ internal class CommandersIntent : BaseAttribute() {
     /**
      * Proceeds with the current goal. If the given element currently has no goal an empty [Maybe] will be returned.
      */
-    fun proceed(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
+    fun proceed(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         return commandersIntent.step(element, context)
     }
 

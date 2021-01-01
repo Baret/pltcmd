@@ -6,12 +6,11 @@ import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
 import de.gleex.pltcmd.game.engine.commands.DetectEntities
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.Affiliation
-import org.hexworks.amethyst.api.Command
 import org.hexworks.amethyst.api.Consumed
+import org.hexworks.amethyst.api.Message
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.amethyst.api.extensions.responseWhenCommandIs
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -25,7 +24,7 @@ object Detects : BaseFacet<GameContext>(
 ) {
     private val log = LoggerFactory.getLogger(Detects::class)
 
-    override suspend fun executeCommand(command: Command<out EntityType, GameContext>): Response =
+    override suspend fun executeCommand(command: Message<GameContext>): Response =
             command.responseWhenCommandIs<GameContext, DetectEntities> { (visibleEntities, source) ->
                 if (visibleEntities.isEmpty()) {
                     Pass

@@ -3,7 +3,7 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
-import de.gleex.pltcmd.game.engine.commands.OrderCommand
+import de.gleex.pltcmd.game.engine.commands.OrderMessage
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.engine.entities.types.communicator
@@ -50,7 +50,7 @@ class ElementRadioContext(private val element: ElementEntity, private val contex
         // TODO use own scope for sending commands async!?
         runBlocking {
             // executed on next tick!
-            element.sendCommand(OrderCommand(order, orderedBy, orderedTo, context, element))
+            element.sendCommand(OrderMessage(order, orderedBy, orderedTo, context, element))
         }
     }
 
