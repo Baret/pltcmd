@@ -37,7 +37,7 @@ internal object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, M
         if (movable.hasNoDestination && context.random.nextDouble() < MOVEMENT_PROBABILITY) {
             val destination = context.world.neighborsOf(movable.currentPosition)
                     .random(context.random)
-            val moveResponse = movable.executeCommand(MoveTo(destination, context, movable))
+            val moveResponse = movable.receiveMessage(MoveTo(destination, context, movable))
             return Consumed == moveResponse
         }
         return false

@@ -50,7 +50,7 @@ class ElementRadioContext(private val element: ElementEntity, private val contex
         // TODO use own scope for sending commands async!?
         runBlocking {
             // executed on next tick!
-            element.sendCommand(OrderMessage(order, orderedBy, orderedTo, context, element))
+            element.sendMessage(OrderMessage(order, orderedBy, orderedTo, context, element))
         }
     }
 

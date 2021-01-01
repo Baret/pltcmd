@@ -42,7 +42,7 @@ object MovingForOneMinute :
             while (entity.movementProgress.hasTilesToAdvance() && entity.movementPath.isNotEmpty()) {
                 val oldPosition = entity.position.value
                 val newPosition = entity.movementPath.pop()
-                entity.executeCommand(UpdatePosition(oldPosition, newPosition, context, entity))
+                entity.receiveMessage(UpdatePosition(oldPosition, newPosition, context, entity))
                 if(oldPosition != entity.position.value) {
                     log.debug("${entity.callsign} successfully moved from $oldPosition to ${entity.position}")
                     entity.movementProgress.advance()

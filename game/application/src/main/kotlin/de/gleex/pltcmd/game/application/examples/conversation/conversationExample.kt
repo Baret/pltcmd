@@ -89,7 +89,7 @@ fun main() {
     runBlocking {
         println("creating SITREP from $hqRadio to $bravoRadio")
 
-        hqEntity.sendCommand(ConversationMessage(
+        hqEntity.sendMessage(ConversationMessage(
                 Conversations.Reports.sitrep(
                         sender = hqCallSign,
                         receiver = bravoCallSign
@@ -100,7 +100,7 @@ fun main() {
 
         println("creating move to from $hqRadio to $charlieRadio")
 
-        hqEntity.sendCommand(ConversationMessage(
+        hqEntity.sendMessage(ConversationMessage(
                 Conversations.Orders.MoveTo.create(
                         sender = hqCallSign,
                         receiver = charlieCallSign,
@@ -112,7 +112,7 @@ fun main() {
 
         println("creating engage from $hqRadio to $bravoRadio")
 
-        hqEntity.sendCommand(ConversationMessage(
+        hqEntity.sendMessage(ConversationMessage(
                 Conversations.Orders.EngageEnemyAt.create(
                         sender = hqCallSign,
                         receiver = bravoCallSign,
@@ -124,7 +124,7 @@ fun main() {
 
         println("creating report position from $bravoRadio to $charlieRadio")
 
-        bravoEntity.sendCommand(ConversationMessage(
+        bravoEntity.sendMessage(ConversationMessage(
                 Conversations.Reports.reportPosition(
                         sender = bravoCallSign,
                         receiver = charlieCallSign

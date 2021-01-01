@@ -108,7 +108,7 @@ class ElementCommandFragment(
     private fun sendConversation(conversation: Conversation) {
         log.debug("Sending conversation to ${conversation.receiver}: $conversation")
         runBlocking {
-            hq.sendCommand(ConversationMessage(conversation, game.context(), hq))
+            hq.sendMessage(ConversationMessage(conversation, game.context(), hq))
         }
     }
 

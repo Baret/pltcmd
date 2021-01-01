@@ -18,7 +18,7 @@ object IntentPursuing : BaseBehavior<GameContext>(CommandersIntent::class) {
             val element = entity as ElementEntity
             val commandToExecute = element.commandersIntent.proceed(element, context)
             if (commandToExecute.isPresent) {
-                element.executeCommand(commandToExecute.get())
+                element.receiveMessage(commandToExecute.get())
             }
             commandToExecute.isPresent
         } else {
