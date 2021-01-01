@@ -58,12 +58,11 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
         private val tilesPerMainCoordinateY = size.height / (worldSizeInTiles.height.toDouble() / MainCoordinate.TILE_COUNT)
 
         fun create() = size.fetchPositions()
-                .map { position ->
+                .flatMap { position ->
                     List(BLOCKS_HEIGHT) { index ->
                         position.toPosition3D(index)
                     }
                 }
-                .flatten()
                 .associateWith {
                     IncompleteMapBlock(it.getBorders())
                 }
