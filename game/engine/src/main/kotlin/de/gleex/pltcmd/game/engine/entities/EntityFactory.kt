@@ -69,7 +69,7 @@ object EntityFactory {
             behaviors.add(0, StopsWhileTransmitting)
         }
 
-        val facets: MutableList<Facet<GameContext>> = mutableListOf(
+        val facets: MutableList<Facet<GameContext, *>> = mutableListOf(
                 Detects,
                 PathFinding,
                 ExecuteOrder,

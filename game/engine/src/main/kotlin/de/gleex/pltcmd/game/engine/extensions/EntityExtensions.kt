@@ -32,7 +32,7 @@ internal fun <T: Behavior<GameContext>> AnyGameEntity.hasBehavior(behavior: KCla
 /**
  * Checks if this entity has the given facet (shorthand version for findFacet).
  */
-internal fun <T: Facet<GameContext>> AnyGameEntity.hasFacet(facet: KClass<T>): Boolean =
+internal fun <T: Facet<GameContext, *>> AnyGameEntity.hasFacet(facet: KClass<T>): Boolean =
         findFacet(facet).isPresent
 
 /**
@@ -56,7 +56,7 @@ internal inline fun <reified B : Behavior<GameContext>> AnyGameEntity.addIfMissi
 /**
  * Adds the given facet if no attribute of type [F] is present.
  */
-internal inline fun <reified F : Facet<GameContext>> AnyGameEntity.addIfMissing(facet: F) {
+internal inline fun <reified F : Facet<GameContext, *>> AnyGameEntity.addIfMissing(facet: F) {
     if(findFacet(F::class).isEmpty()) {
         asMutableEntity().addFacet(facet)
     }
