@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.engine.systems.facets
+package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
