@@ -68,7 +68,6 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
                 .hbox()
                 .withSpacing(spacing)
                 .withSize(screen.size.width, 1)
-                .withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER)
                 .build()
         hBox.addComponents(toggle, header)
         return hBox
