@@ -26,6 +26,9 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
     companion object {
         private val BLOCKS_HEIGHT = TerrainHeight.values().size
         private const val Z_LEVEL_DEFAULT: Int = 0
+
+        val Position.verticalPositions: List<Position3D>
+            get() = List(BLOCKS_HEIGHT) { toPosition3D(it) }
     }
 
     init {
@@ -39,7 +42,7 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
 
     private fun Position.setTerrain(terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         val terrainZLevel = terrainHeight?.ordinal ?: Z_LEVEL_DEFAULT
-        List(BLOCKS_HEIGHT) { toPosition3D(it) }
+        verticalPositions
                 .forEach { position3D ->
                     fetchBlockAt(position3D)
                             .ifPresent { block ->
@@ -58,11 +61,7 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
         private val tilesPerMainCoordinateY = size.height / (worldSizeInTiles.height.toDouble() / MainCoordinate.TILE_COUNT)
 
         fun create() = size.fetchPositions()
-                .flatMap { position ->
-                    List(BLOCKS_HEIGHT) { index ->
-                        position.toPosition3D(index)
-                    }
-                }
+                .flatMap { it.verticalPositions }
                 .associateWith {
                     IncompleteMapBlock(it.getBorders())
                 }
