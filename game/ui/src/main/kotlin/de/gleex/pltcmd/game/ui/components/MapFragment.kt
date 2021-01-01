@@ -12,9 +12,9 @@ import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.data.Tile
 
 /**
- * The main component of the game view. It displays the map with its decorations.
+ * The main fragment of the game view. It displays the map with its decorations.
  */
-class MapComponent(gameWorld: GameWorld) : Fragment {
+class MapFragment(gameWorld: GameWorld) : Fragment {
 
     private val mapRenderer = GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(gameWorld)
 
@@ -33,8 +33,8 @@ class MapComponent(gameWorld: GameWorld) : Fragment {
         .withSize(root.contentSize)
         .withComponentRenderer(mapRenderer)
         .build()
-        .also {
-            root.addComponent(it)
-            it.tileset = UiOptions.MAP_TILESET
+        .apply {
+            root.addComponent(this)
+            tileset = UiOptions.MAP_TILESET
         }
 }

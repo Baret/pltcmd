@@ -11,7 +11,7 @@ import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.components.CustomComponent
 import de.gleex.pltcmd.game.ui.components.InfoSidebar
 import de.gleex.pltcmd.game.ui.components.InputSidebar
-import de.gleex.pltcmd.game.ui.components.MapComponent
+import de.gleex.pltcmd.game.ui.components.MapFragment
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.radio.BroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
@@ -63,7 +63,7 @@ class GameView(
 
         val leftSidebarComponent = CustomComponent(leftSidebar, Position.bottomLeftOf(logArea))
 
-        val map = MapComponent(gameWorld)
+        val map = MapFragment(gameWorld)
         val mapComponent = CustomComponent(map, Position.topRightOf(leftSidebarComponent))
 
         val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT, gameWorld, game)
