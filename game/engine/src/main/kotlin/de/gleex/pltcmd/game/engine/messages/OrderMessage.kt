@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.engine.commands
+package de.gleex.pltcmd.game.engine.messages
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity

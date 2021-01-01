@@ -3,11 +3,11 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
 import de.gleex.pltcmd.game.engine.attributes.goals.SecurityHalt
-import de.gleex.pltcmd.game.engine.commands.UpdatePosition
 import de.gleex.pltcmd.game.engine.entities.types.MovableEntity
 import de.gleex.pltcmd.game.engine.entities.types.baseSpeedInKph
 import de.gleex.pltcmd.game.engine.entities.types.currentSpeedInKph
 import de.gleex.pltcmd.game.engine.entities.types.movementPath
+import de.gleex.pltcmd.game.engine.messages.UpdatePosition
 import de.gleex.pltcmd.game.options.GameConstants
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.model.world.toSectorOrigin

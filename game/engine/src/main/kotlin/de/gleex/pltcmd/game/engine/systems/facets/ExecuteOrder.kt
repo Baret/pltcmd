@@ -7,9 +7,9 @@ import de.gleex.pltcmd.game.engine.attributes.goals.HaltGoal
 import de.gleex.pltcmd.game.engine.attributes.goals.PatrolAreaGoal
 import de.gleex.pltcmd.game.engine.attributes.goals.RadioGoal
 import de.gleex.pltcmd.game.engine.attributes.goals.ReachDestination
-import de.gleex.pltcmd.game.engine.commands.OrderMessage
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.commandersIntent
+import de.gleex.pltcmd.game.engine.messages.OrderMessage
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.*
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
@@ -28,7 +28,7 @@ internal object ExecuteOrder :
         return runBlocking {
             when (order) {
                 MoveTo        -> {
-                    log.debug("Sending MoveTo command for destination $orderedTo")
+                    log.debug("Sending MoveTo message for destination $orderedTo")
                     entity.commandersIntent
                         .setTo(ReachDestination(orderedTo!!))
                         .andThen(RadioGoal(Conversations.Messages.destinationReached(entity.callsign, orderedBy)))

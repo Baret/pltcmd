@@ -3,8 +3,8 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
-import de.gleex.pltcmd.game.engine.commands.DetectEntities
 import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.messages.DetectEntities
 import de.gleex.pltcmd.model.elements.Affiliation
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
@@ -13,7 +13,7 @@ import org.hexworks.amethyst.api.base.BaseFacet
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
- * Handles the [DetectEntities] command. It gets a set of possibly visible entities and calculates the actual
+ * Handles the [DetectEntities] message. It gets a set of possibly visible entities and calculates the actual
  * visibility using source's vision.
  */
 object Detects : BaseFacet<GameContext, DetectEntities>(

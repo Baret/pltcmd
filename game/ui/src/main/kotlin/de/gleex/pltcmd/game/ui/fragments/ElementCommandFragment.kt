@@ -1,10 +1,10 @@
 package de.gleex.pltcmd.game.ui.fragments
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.commands.ConversationMessage
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
+import de.gleex.pltcmd.game.engine.messages.ConversationMessage
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
@@ -25,7 +25,7 @@ import org.hexworks.zircon.api.uievent.*
 /**
  * Displays a list of entities and makes it possible to send them a command from `hq`.
  * Currently they get a move command sent by the given `hq`. For now this fragment is just a debug/playaround
- * feature. But it may be used as the base for the UI element used to send radio commands to elements.
+ * feature. But it may be used as the base for the UI element used to send radio messages to elements.
  */
 class ElementCommandFragment(
         override val fragmentWidth: Int,

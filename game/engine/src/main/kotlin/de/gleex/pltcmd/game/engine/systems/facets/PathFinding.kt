@@ -1,10 +1,10 @@
 package de.gleex.pltcmd.game.engine.systems.facets
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.commands.MoveTo
 import de.gleex.pltcmd.game.engine.entities.types.destination
 import de.gleex.pltcmd.game.engine.entities.types.movementPath
 import de.gleex.pltcmd.game.engine.entities.types.position
+import de.gleex.pltcmd.game.engine.messages.MoveTo
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import org.hexworks.amethyst.api.Consumed
