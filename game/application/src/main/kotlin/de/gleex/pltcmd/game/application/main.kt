@@ -68,7 +68,7 @@ open class Main {
         // ui
         val gameWorld = GameWorld(generatedMap)
         // model
-        val game = Game(Engine.default(), generatedMap, random)
+        val game = Game(Engine.create(), generatedMap, random)
 
         val (elementsToCommand, hq) = prepareGame(game, gameWorld)
 
