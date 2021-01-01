@@ -27,8 +27,12 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
         private val BLOCKS_HEIGHT = TerrainHeight.values().size
         private const val Z_LEVEL_DEFAULT: Int = 0
 
-        val Position.verticalPositions: List<Position3D>
-            get() = List(BLOCKS_HEIGHT) { toPosition3D(it) }
+        val Position.verticalPositions: Sequence<Position3D>
+            get() = sequence {
+                repeat(BLOCKS_HEIGHT) { zIndex ->
+                    yield(toPosition3D(zIndex))
+                }
+            }
     }
 
     init {
