@@ -38,7 +38,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
 
     init {
         globalEventBus.subscribeToTicks {
-            engine.update(context())
+            engine.start(context())
         }
     }
 
