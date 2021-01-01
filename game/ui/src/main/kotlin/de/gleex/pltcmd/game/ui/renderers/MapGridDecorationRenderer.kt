@@ -13,8 +13,10 @@ class MapGridDecorationRenderer : ComponentDecorationRenderer {
     override val offset = Position.offset1x1()
 
     override fun render(tileGraphics: TileGraphics, context: ComponentDecorationRenderContext) {
-        val size = tileGraphics.size
-        val grid = MapGrid(size, context.component.tileset)
+        val grid = MapGrid(
+            tileGraphics.size,
+            context.component.tileset
+        )
         tileGraphics.draw(grid)
     }
 

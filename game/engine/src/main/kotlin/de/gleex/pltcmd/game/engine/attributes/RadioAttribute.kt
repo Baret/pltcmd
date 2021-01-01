@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.engine.attributes
 
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
-import org.hexworks.amethyst.api.Attribute
+import org.hexworks.amethyst.api.base.BaseAttribute
 
 
 /**
@@ -11,4 +11,4 @@ import org.hexworks.amethyst.api.Attribute
  **/
 internal class RadioAttribute(
         val communicator: RadioCommunicator
-) : Attribute
+) : BaseAttribute()

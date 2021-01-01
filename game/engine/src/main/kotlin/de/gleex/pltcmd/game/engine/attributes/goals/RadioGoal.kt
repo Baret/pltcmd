@@ -4,7 +4,7 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.startConversation
 import de.gleex.pltcmd.model.radio.communication.Conversation
-import org.hexworks.amethyst.api.Command
+import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**
@@ -17,7 +17,7 @@ class RadioGoal(private val conversationToStart: Conversation) : Goal() {
         return conversationStarted
     }
 
-    override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
+    override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         element.startConversation(conversationToStart)
         conversationStarted = true
         return Maybe.empty()

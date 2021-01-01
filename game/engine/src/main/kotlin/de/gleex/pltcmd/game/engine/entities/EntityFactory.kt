@@ -21,9 +21,9 @@ import de.gleex.pltcmd.model.signals.vision.VisionPower
 import de.gleex.pltcmd.model.signals.vision.initialVision
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Attribute
+import org.hexworks.amethyst.api.extensions.FacetWithContext
 import org.hexworks.amethyst.api.newEntityOfType
 import org.hexworks.amethyst.api.system.Behavior
-import org.hexworks.amethyst.api.system.Facet
 import org.hexworks.cobalt.databinding.api.property.Property
 
 object EntityFactory {
@@ -69,7 +69,7 @@ object EntityFactory {
             behaviors.add(0, StopsWhileTransmitting)
         }
 
-        val facets: MutableList<Facet<GameContext>> = mutableListOf(
+        val facets: MutableList<FacetWithContext<GameContext>> = mutableListOf(
                 Detects,
                 PathFinding,
                 ExecuteOrder,

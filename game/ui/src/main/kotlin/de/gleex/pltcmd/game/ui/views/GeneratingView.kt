@@ -3,13 +3,15 @@ package de.gleex.pltcmd.game.ui.views
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.mapgeneration.IncompleteMapBlock
 import de.gleex.pltcmd.game.ui.mapgeneration.IncompleteMapGameArea
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.*
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.game.GameComponent
+import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.grid.TileGrid
+import org.hexworks.zircon.api.uievent.ComponentEventType
 import org.hexworks.zircon.api.view.base.BaseView
 
 /**
@@ -22,6 +24,7 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
     private val footer = createFooter()
     private val footerHandle: AttachedComponent
     private val progressBar = createProgressBar()
+    private val projectionMode = ProjectionMode.TOP_DOWN.toProperty()
     private val header = createHeader()
     private val usedLines = progressBar.height + header.height
     private var confirmCallback: () -> Unit = {}
@@ -33,7 +36,7 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
 
         footerHandle = footer.addComponent(progressBar)
 
-        screen.addComponents(header, mainPart, footer)
+        screen.addComponents(createHeaderPanel(), mainPart, footer)
         mainPart.tilesetProperty.updateValue(UiOptions.MAP_TILESET)
     }
 
@@ -44,15 +47,40 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
     private fun createHeader(): Header {
         return Components.header()
                 .withText("Generating world...")
-                .withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER)
                 .build()
     }
 
-    private fun createMainPart(): GameComponent<Tile, IncompleteMapBlock> {
-        return GameComponents.newGameComponentBuilder<Tile, IncompleteMapBlock>()
-                .withGameArea(incompleteWorld)
+    private fun createHeaderPanel(): HBox {
+        val toggle = Components.toggleButton()
+                .withIsSelected(false)
+                .withText("3D")
+                .build()
+        toggle.processComponentEvents(ComponentEventType.ACTIVATED) {
+            val newProjectionMode = if(projectionMode.value == ProjectionMode.TOP_DOWN) {
+                ProjectionMode.TOP_DOWN_OBLIQUE_FRONT
+            } else {
+                ProjectionMode.TOP_DOWN
+            }
+            projectionMode.updateValue(newProjectionMode)
+        }
+        val spacing = (screen.size.width - toggle.size.width - header.size.width) / 2
+        val hBox = Components
+                .hbox()
+                .withSpacing(spacing)
+                .withSize(screen.size.width, 1)
+                .build()
+        hBox.addComponents(toggle, header)
+        return hBox
+    }
+
+    private fun createMainPart(): Panel {
+        val renderer = GameComponents.newGameAreaComponentRenderer<Panel, Tile, IncompleteMapBlock>(incompleteWorld,
+                projectionMode = projectionMode
+        )
+        return Components.panel()
                 .withSize(screen.width, screen.height - usedLines)
                 .withPosition(0, header.height)
+                .withComponentRenderer(renderer)
                 .build()
     }
 

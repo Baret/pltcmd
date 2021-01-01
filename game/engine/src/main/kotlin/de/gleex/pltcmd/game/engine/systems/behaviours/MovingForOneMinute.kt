@@ -5,9 +5,9 @@ import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
-import de.gleex.pltcmd.game.engine.commands.UpdatePosition
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
+import de.gleex.pltcmd.game.engine.messages.UpdatePosition
 import de.gleex.pltcmd.game.options.GameConstants
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -15,7 +15,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 /**
  * Advances the [MovementProgress] of a [MovableEntity] according to its [currentSpeedInKph].
  *
- * When the progress is > 1.0 the entity executes a [UpdatePosition] command.
+ * When the progress is > 1.0 the entity executes a [UpdatePosition] message.
  */
 object MovingForOneMinute :
         BaseBehavior<GameContext>(
@@ -42,7 +42,7 @@ object MovingForOneMinute :
             while (entity.movementProgress.hasTilesToAdvance() && entity.movementPath.isNotEmpty()) {
                 val oldPosition = entity.position.value
                 val newPosition = entity.movementPath.pop()
-                entity.executeCommand(UpdatePosition(oldPosition, newPosition, context, entity))
+                entity.receiveMessage(UpdatePosition(oldPosition, newPosition, context, entity))
                 if(oldPosition != entity.position.value) {
                     log.debug("${entity.callsign} successfully moved from $oldPosition to ${entity.position}")
                     entity.movementProgress.advance()
