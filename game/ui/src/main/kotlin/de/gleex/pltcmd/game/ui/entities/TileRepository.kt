@@ -73,7 +73,8 @@ object TileRepository {
                 .newBuilder()
                 .withForegroundColor(lowerColor)
                 .withBackgroundColor(higherColor)
-                .withCharacter(Symbols.LOWER_HALF_BLOCK).buildCharacterTile()
+                .withCharacter(Symbols.LOWER_HALF_BLOCK)
+                .buildCharacterTile()
     }
 
     fun Tile.withGridBorder(borders: Set<BorderPosition>): Tile {
