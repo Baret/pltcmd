@@ -8,9 +8,11 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.graphics.TileComposite
 
 /**
- * Draws a border around a rectangle with a grid indicator every five tiles. Every second tile has a highlight color to see the main coordinates.
+ * Draws the coordinates in the first line and column around a rectangle. Every [MapGrid.GRID_WIDTH] tiles the text will be centered around the grid position.
  *
  * @param mapOffset The difference from this graphics to the drawn map. Needed for aligning the coordinates at the visible map grid.
+ * @see CoordinateTileString
+ * @see VerticalCoordinateTileString
  */
 class MapCoordinates(
     world: GameWorld,
