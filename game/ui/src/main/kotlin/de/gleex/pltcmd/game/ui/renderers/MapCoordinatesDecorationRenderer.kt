@@ -20,6 +20,6 @@ class MapCoordinateDecorationRenderer(private val world: GameWorld) : ComponentD
             tileGraphics.size,
             context.component.contentOffset
         )
-        tileGraphics.draw(coordinates.tileMap)
+        tileGraphics.draw(coordinates.tiles)
     }
 }

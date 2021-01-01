@@ -20,10 +20,9 @@ class MapCoordinates(
     mapOffset: Position
 ) {
 
-    private val tileMapMutable: MutableMap<Position, Tile> = mutableMapOf()
+    private val _tiles: MutableMap<Position, Tile> = mutableMapOf()
 
-    val tileMap: Map<Position, Tile>
-        get() = tileMapMutable
+    val tiles: Map<Position, Tile> = _tiles
 
     init {
         val topLeftCoordinate = world.visibleTopLeftCoordinate()
@@ -75,7 +74,7 @@ class MapCoordinates(
         val movedTiles = composite
             .tiles
             .mapKeys { it.key + position }
-        tileMapMutable.putAll(movedTiles)
+        _tiles.putAll(movedTiles)
     }
 
     override fun toString() = "MapCoordinates $size"
