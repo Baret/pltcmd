@@ -13,7 +13,6 @@ import de.gleex.pltcmd.game.engine.messages.OrderMessage
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.*
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
-import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
@@ -25,8 +24,7 @@ internal object ExecuteOrder :
 
     override suspend fun receive(message: OrderMessage): Response {
         val (order, orderedBy, orderedTo, _, entity) = message
-        return runBlocking {
-            when (order) {
+        return when (order) {
                 MoveTo        -> {
                     log.debug("Sending MoveTo message for destination $orderedTo")
                     entity.commandersIntent
@@ -59,7 +57,6 @@ internal object ExecuteOrder :
                         .andThen(PatrolAreaGoal(CoordinateRectangle(orderedTo.movedBy(-5, -5), 10, 10)))
                     Consumed
                 }
-            }
         }
     }
 
