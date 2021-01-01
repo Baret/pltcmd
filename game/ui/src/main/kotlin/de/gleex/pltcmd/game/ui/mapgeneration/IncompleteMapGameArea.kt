@@ -38,12 +38,7 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
     }
 
     private fun Position.setTerrain(terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
-        val terrainZLevel = if (terrainHeight != null) {
-                TerrainHeight.values()
-                    .indexOf(terrainHeight)
-            } else {
-                Z_LEVEL_DEFAULT
-            }
+        val terrainZLevel = terrainHeight?.ordinal ?: Z_LEVEL_DEFAULT
         List(BLOCKS_HEIGHT) { toPosition3D(it) }
                 .forEach { position3D ->
                     fetchBlockAt(position3D)
