@@ -8,6 +8,8 @@ import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.DetectEntities
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.model.signals.core.SignalStrength
+import de.gleex.pltcmd.model.signals.vision.Visibility
+import de.gleex.pltcmd.model.signals.vision.visibility
 import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
@@ -47,11 +49,12 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
         context: GameContext
     ): DetectedEntity? {
         val seenPosition = seen.currentPosition
-        val visibility: SignalStrength = seeing.vision.at(seenPosition)
-        return if (visibility.isAny()) {
-            logSeen(seeing, seen, visibility)
+        val visionStrength = seeing.vision.at(seenPosition)
+        val visibility = visionStrength.visibility
+        return if (visibility != Visibility.NONE) {
+            logSeen(seeing, seen, visionStrength)
             val isNewContact = lastSeen.contains(seen).not()
-            seeing rememberContact seen
+            seeing.rememberContact(seen, visibility)
             DetectedEntity(seen, visibility, isNewContact, seeing, context)
         } else {
             null

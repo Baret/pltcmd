@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.attributes.ContactsAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
+import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.signals.vision.Vision
 import de.gleex.pltcmd.model.signals.vision.VisionPower
 import de.gleex.pltcmd.model.world.WorldArea
@@ -45,8 +46,8 @@ internal val SeeingEntity.visualRange: VisionPower
 private val SeeingEntity.contacts: ContactsAttribute
     get() = getAttribute(ContactsAttribute::class)
 
-internal infix fun SeeingEntity.rememberContact(entity: PositionableEntity) {
-    contacts.add(entity)
+internal fun SeeingEntity.rememberContact(entity: PositionableEntity, visibility: Visibility) {
+    contacts.add(entity, visibility)
 }
 
 /** Forgets all known contacts and returns them. */

@@ -4,7 +4,7 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.PositionableEntity
 import de.gleex.pltcmd.game.engine.entities.types.SeeingEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
-import de.gleex.pltcmd.model.signals.core.SignalStrength
+import de.gleex.pltcmd.model.signals.vision.Visibility
 import org.hexworks.amethyst.api.Message
 
 /**
@@ -18,7 +18,7 @@ import org.hexworks.amethyst.api.Message
  */
 data class DetectedEntity(
     val entity: PositionableEntity,
-    val visibility: SignalStrength,
+    val visibility: Visibility,
     val isNew: Boolean,
     override val source: SeeingEntity,
     override val context: GameContext

@@ -11,6 +11,7 @@ import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.new
+import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
@@ -137,7 +138,7 @@ fun createTargets(attacker: ElementEntity, context: GameContext, vararg elements
         val offsetFromAttacker = (neighborPosition - attackerPosition)
         val targetPosition = neighborPosition.movedBy(offsetFromAttacker.eastingFromLeft * 2, offsetFromAttacker.northingFromBottom * 2)
         val target = createCombatant(targetPosition, Affiliation.Hostile, element)
-        attacker.rememberContact(target)
+        attacker.rememberContact(target, Visibility.GOOD)
         return@mapIndexed target
     }
 }

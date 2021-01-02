@@ -7,6 +7,7 @@ import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
+import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
@@ -26,13 +27,12 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
             Pass
         } else {
             val communicating = detected.source as CommunicatingEntity
-            val visibility = detected.visibility
-            when {
+            when (detected.visibility) {
                 // details of the entity type are only available if seen is clearly visible
-                visibility >= 0.4  -> reportContact(communicating, detected.entity, detected.context)
+                Visibility.GOOD -> reportContact(communicating, detected.entity, detected.context)
                 // basic information is always available
-                visibility.isAny() -> reportUnknown(communicating, detected.entity, detected.context)
-                else               -> Pass
+                Visibility.POOR -> reportUnknown(communicating, detected.entity, detected.context)
+                Visibility.NONE -> Pass
             }
         }
     }
