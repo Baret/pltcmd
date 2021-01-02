@@ -4,13 +4,13 @@ import de.gleex.pltcmd.model.combat.attack.WeaponStats
 import de.gleex.pltcmd.model.combat.attack.weapon
 import de.gleex.pltcmd.model.combat.defense.UnitFightingState
 import de.gleex.pltcmd.model.elements.Element
-import org.hexworks.amethyst.api.Attribute
+import org.hexworks.amethyst.api.base.BaseAttribute
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /** The offensive part of the given element. */
-internal class ShootersAttribute(weapons: Iterable<WeaponStats>) : Attribute {
+internal class ShootersAttribute(weapons: Iterable<WeaponStats>) : BaseAttribute() {
     constructor(element: Element) : this(element.allUnits.map { it.blueprint.weapon })
 
     companion object {

@@ -1,18 +1,17 @@
-package de.gleex.pltcmd.game.engine.commands
+package de.gleex.pltcmd.game.engine.messages
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import org.hexworks.amethyst.api.Command
+import org.hexworks.amethyst.api.Message
 
-/** Command to give an element an order **/
-data class OrderCommand(
+/** Message to give an element an order **/
+data class OrderMessage(
         val order: Conversations.Orders,
         val orderedBy: CallSign,
         val orderedTo: Coordinate?,
         override val context: GameContext,
         override val source: ElementEntity
-) : Command<ElementType, GameContext>
+) : Message<GameContext>

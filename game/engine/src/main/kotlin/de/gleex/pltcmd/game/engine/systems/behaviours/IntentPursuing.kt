@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.engine.systems.facets
+package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
@@ -16,11 +16,11 @@ object IntentPursuing : BaseBehavior<GameContext>(CommandersIntent::class) {
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         return if (entity.type == ElementType) {
             val element = entity as ElementEntity
-            val commandToExecute = element.commandersIntent.proceed(element, context)
-            if (commandToExecute.isPresent) {
-                element.executeCommand(commandToExecute.get())
+            val messageToExecute = element.commandersIntent.proceed(element, context)
+            if (messageToExecute.isPresent) {
+                element.receiveMessage(messageToExecute.get())
             }
-            commandToExecute.isPresent
+            messageToExecute.isPresent
         } else {
             false
         }

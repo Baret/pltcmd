@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import org.hexworks.amethyst.api.Command
+import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**
@@ -22,7 +22,7 @@ open class TimeoutGoal(
     override fun isFinished(element: ElementEntity): Boolean =
             ticksRemaining <= 0 || goal.isFinished(element)
 
-    override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
+    override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         ticksRemaining--
         return goal.step(element, context)
                 .also {

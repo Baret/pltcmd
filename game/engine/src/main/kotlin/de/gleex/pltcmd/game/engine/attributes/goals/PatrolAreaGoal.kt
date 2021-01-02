@@ -3,7 +3,7 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import org.hexworks.amethyst.api.Command
+import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**
@@ -13,7 +13,7 @@ import org.hexworks.cobalt.datatypes.Maybe
  * This goal is an [EndlessGoal]!
  */
 data class PatrolAreaGoal(private val patrolAt: CoordinateArea) : EndlessGoal() {
-    override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
+    override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         if (hasSubGoals().not()) {
             val randomDestination = context
                     .world

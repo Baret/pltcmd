@@ -2,14 +2,14 @@ package de.gleex.pltcmd.game.engine.attributes.stats
 
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.units.Unit
-import org.hexworks.amethyst.api.Attribute
+import org.hexworks.amethyst.api.base.BaseAttribute
 
 /**
  * A stat for an element. As an element consists of several [Unit]s implementations of this class
  * map a value to each unit. It can then use the average, minimum or maximum value from that mapping as "the value
  * for the whole element" (which is [value]).
  */
-abstract class ElementStat(element: CommandingElement) : Attribute {
+abstract class ElementStat(element: CommandingElement) : BaseAttribute() {
     /**
      * The internal map that holds a value for each unit of the element.
      *

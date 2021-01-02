@@ -60,6 +60,23 @@ object TileRepository {
                     .withCharacter(terrainType.char())
                     .buildCharacterTile()
 
+    /**
+     * Creates a tile with a gradient from the given terrain height to the next lower terrain height.
+     * This tile may be used as the front of blocks.
+     */
+    fun createTerrainSideTile(terrainHeight: TerrainHeight?): Tile {
+        val lowerColor = ColorRepository.forHeight(terrainHeight?.minus(1))
+        val higherColor = lowerColor
+                .interpolateTo(ColorRepository.forHeight(terrainHeight))
+                .getColorAtRatio(.5)
+        return Tile
+                .newBuilder()
+                .withForegroundColor(lowerColor)
+                .withBackgroundColor(higherColor)
+                .withCharacter(Symbols.LOWER_HALF_BLOCK)
+                .buildCharacterTile()
+    }
+
     fun Tile.withGridBorder(borders: Set<BorderPosition>): Tile {
         return if (borders.isEmpty()) {
             this

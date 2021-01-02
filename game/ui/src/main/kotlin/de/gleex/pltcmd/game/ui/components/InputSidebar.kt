@@ -15,7 +15,7 @@ import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.uievent.MouseEventType
 
 /**
- * The sidebar for the main user input. It contains the fragments used to select elements and send them commands.
+ * The sidebar for the main user input. It contains the fragments used to select elements and send them messages.
  */
 class InputSidebar(
         // TODO: Clean up this constructor's parameter list

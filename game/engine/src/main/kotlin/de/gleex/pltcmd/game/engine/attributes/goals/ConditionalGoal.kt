@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import org.hexworks.amethyst.api.Command
+import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -25,7 +25,7 @@ data class ConditionalGoal(private val whenTrue: Goal, private val whenFalse: Go
     override fun isFinished(element: ElementEntity): Boolean =
             whenTrue.isFinished(element) && whenFalse.isFinished(element)
 
-    override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
+    override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         if (conditionWasTrue.not() && condition.invoke()) {
             log.debug(" - - - - - - - - -CONDITION WAS TRUE! SWITCHING GOAL - - - - - - - - -")
             conditionWasTrue = true

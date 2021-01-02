@@ -76,7 +76,7 @@ class RootGoalTest : WordSpec() {
                 repeat(expectedValues.size * 2) {
                     rootGoal.step(goalTestEntity, testGameContext)
                             .ifPresent {
-                                actualValues.add((it as TestCommand).value)
+                                actualValues.add((it as TestMessage).value)
                             }
                 }
                 actualValues shouldContainExactly expectedValues

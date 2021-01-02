@@ -3,9 +3,10 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
-import de.gleex.pltcmd.game.engine.commands.DetectEntities
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.messages.DetectEntities
+import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.signals.vision.builder.visionAt
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
@@ -14,7 +15,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Behavior of an entity that updates the [VisionAttribute] each tick if needed. It also
- * sends a [DetectEntities] command if anything is present in the vision.
+ * sends a [DetectEntities] message if anything is present in the vision.
  **/
 object LookingAround :
         BaseBehavior<GameContext>(
@@ -42,8 +43,13 @@ object LookingAround :
                         .without(entity)
                         .inArea(entity.visibleTiles)
 
+        // FIXME: Just for playing around, logging will be removed eventually
+        val element = entity as ElementEntity
+        if(element.callsign.name == "Bravo" && element.affiliation == Affiliation.Friendly) {
+            log.debug("${visibleEntities.size}/${context.entities.size} (${context.entities.filterTyped<Positionable>().size} positionable) visible")
+        }
         if (visibleEntities.isNotEmpty()) {
-            entity.executeCommand(DetectEntities(visibleEntities, entity, context))
+            entity.receiveMessage(DetectEntities(visibleEntities, entity, context))
         }
         return true
     }
