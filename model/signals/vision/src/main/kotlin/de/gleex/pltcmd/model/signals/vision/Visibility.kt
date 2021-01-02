@@ -4,11 +4,12 @@ import de.gleex.pltcmd.model.signals.core.SignalStrength
 
 /**
  * Different states that describe how well something is visible. At large distances no details are visible.
+ * Ordered from least to most visible.
  */
 enum class Visibility {
-    GOOD,
+    NONE,
     POOR,
-    NONE
+    GOOD
 }
 
 val SignalStrength.visibility: Visibility

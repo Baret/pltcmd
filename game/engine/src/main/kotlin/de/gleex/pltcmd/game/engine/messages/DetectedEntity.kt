@@ -13,13 +13,16 @@ import org.hexworks.amethyst.api.Message
  *
  * @param entity entity that is in the visible range of [source].
  * @param visibility how well the contact can be identified
- * @param isNew false if same contact was already made last update tick, true if this time it is the first contact
+ * @param previousVisibility if same contact was already made last update tick, then the old value else [Visibility.NONE]
  * @param source the [SeeingEntity] that might need to react to the detection of other entities.
  */
 data class DetectedEntity(
     val entity: PositionableEntity,
     val visibility: Visibility,
-    val isNew: Boolean,
+    val previousVisibility: Visibility,
     override val source: SeeingEntity,
     override val context: GameContext
-) : Message<GameContext>
+) : Message<GameContext> {
+
+    val increasedVisibility = visibility > previousVisibility
+}

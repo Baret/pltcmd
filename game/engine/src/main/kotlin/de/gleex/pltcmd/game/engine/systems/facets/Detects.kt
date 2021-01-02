@@ -29,7 +29,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
 
     override suspend fun receive(message: DetectEntities): Response {
         val (visibleEntities, seeing, context) = message
-        val lastSeen: Set<PositionableEntity> = seeing.forgetAll()
+        val lastSeen: Map<PositionableEntity, Visibility> = seeing.forgetAll()
         visibleEntities
             .mapNotNull { seen -> createDetectedCommand(seen, seeing, lastSeen, context) }
             .apply {
@@ -45,29 +45,34 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
     private fun createDetectedCommand(
         seen: PositionableEntity,
         seeing: SeeingEntity,
-        lastSeen: Set<PositionableEntity>,
+        lastSeen: Map<PositionableEntity, Visibility>,
         context: GameContext
     ): DetectedEntity? {
         val seenPosition = seen.currentPosition
         val visionStrength = seeing.vision.at(seenPosition)
         val visibility = visionStrength.visibility
         return if (visibility != Visibility.NONE) {
-            logSeen(seeing, seen, visionStrength)
-            val isNewContact = lastSeen.contains(seen).not()
+            val previousVisibility = lastSeen[seen] ?: Visibility.NONE
+            logSeen(seeing, seen, visionStrength, previousVisibility)
             seeing.rememberContact(seen, visibility)
-            DetectedEntity(seen, visibility, isNewContact, seeing, context)
+            DetectedEntity(seen, visibility, previousVisibility, seeing, context)
         } else {
             null
         }
     }
 
-    private fun logSeen(seeing: SeeingEntity, seen: PositionableEntity, visibility: SignalStrength) {
+    private fun logSeen(
+        seeing: SeeingEntity,
+        seen: PositionableEntity,
+        visibility: SignalStrength,
+        previousVisibility: Visibility
+    ) {
         if (log.isDebugEnabled()) {
             val who = seeing.logIdentifier.padEnd(12)
             val what = seen.logIdentifier.padEnd(12)
             val where = seen.currentPosition.toString().padEnd(12)
             val how = visibility.asRatio()
-            log.debug("$who sees $what at $where with signal strength $how")
+            log.debug("$who sees $what at $where with signal strength $how (last visibility was $previousVisibility)")
         }
     }
 

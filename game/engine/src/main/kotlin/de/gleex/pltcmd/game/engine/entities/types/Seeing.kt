@@ -2,6 +2,8 @@ package de.gleex.pltcmd.game.engine.entities.types
 
 import de.gleex.pltcmd.game.engine.attributes.ContactsAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
+import de.gleex.pltcmd.game.engine.entities.EntitySet
+import de.gleex.pltcmd.game.engine.entities.toEntitySet
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.signals.vision.Visibility
@@ -51,10 +53,10 @@ internal fun SeeingEntity.rememberContact(entity: PositionableEntity, visibility
 }
 
 /** Forgets all known contacts and returns them. */
-internal fun SeeingEntity.forgetAll(): Set<PositionableEntity> {
+internal fun SeeingEntity.forgetAll(): Map<PositionableEntity, Visibility> {
     val lastSeen = contacts.getAll()
     contacts.clear()
     return lastSeen
 }
 
-internal fun SeeingEntity.visibleEntities() = contacts.getAll()
+internal fun SeeingEntity.visibleEntities(): EntitySet<Positionable> = contacts.getAll().keys.toEntitySet()
