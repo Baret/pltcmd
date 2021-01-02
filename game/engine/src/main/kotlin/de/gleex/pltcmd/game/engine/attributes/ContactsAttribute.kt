@@ -4,10 +4,10 @@ import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.toEntitySet
 import de.gleex.pltcmd.game.engine.entities.types.Positionable
 import de.gleex.pltcmd.game.engine.entities.types.PositionableEntity
-import org.hexworks.amethyst.api.Attribute
+import org.hexworks.amethyst.api.base.BaseAttribute
 
 /** The remembered contacts */
-class ContactsAttribute : Attribute {
+class ContactsAttribute : BaseAttribute() {
     private val visibleEntities: EntitySet<Positionable> = EntitySet()
 
     fun getAll(): EntitySet<Positionable> {

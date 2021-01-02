@@ -3,44 +3,42 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
-import de.gleex.pltcmd.game.engine.commands.DetectEntities
-import de.gleex.pltcmd.game.engine.commands.DetectedEntity
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
+import de.gleex.pltcmd.game.engine.messages.DetectEntities
+import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import kotlinx.coroutines.runBlocking
-import org.hexworks.amethyst.api.Command
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.amethyst.api.entity.EntityType
-import org.hexworks.amethyst.api.extensions.responseWhenCommandIs
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Handles the [DetectEntities] command. It gets a set of possibly visible entities and calculates the actual
  * visibility using source's vision.
  */
-object Detects : BaseFacet<GameContext>(
+object Detects : BaseFacet<GameContext, DetectEntities>(
+    DetectEntities::class,
     VisionAttribute::class,
     PositionAttribute::class
 ) {
     private val log = LoggerFactory.getLogger(Detects::class)
 
-    override suspend fun executeCommand(command: Command<out EntityType, GameContext>): Response =
-        command.responseWhenCommandIs<GameContext, DetectEntities> { (visibleEntities, seeing, context) ->
-            val lastSeen: Set<PositionableEntity> = seeing.forgetAll()
-            visibleEntities
-                .mapNotNull { seen -> createDetectedCommand(seen, seeing, lastSeen, context) }
-                .apply {
-                    runBlocking {
-                        forEach {
-                            seeing.executeCommand(it)
-                        }
+    override suspend fun receive(message: DetectEntities): Response {
+        val (visibleEntities, seeing, context) = message
+        val lastSeen: Set<PositionableEntity> = seeing.forgetAll()
+        visibleEntities
+            .mapNotNull { seen -> createDetectedCommand(seen, seeing, lastSeen, context) }
+            .apply {
+                runBlocking {
+                    forEach {
+                        seeing.receiveMessage(it)
                     }
                 }
-            Consumed
-        }
+            }
+        return Consumed
+    }
 
     private fun createDetectedCommand(
         seen: PositionableEntity,

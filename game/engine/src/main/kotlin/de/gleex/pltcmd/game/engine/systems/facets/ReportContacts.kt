@@ -1,44 +1,41 @@
 package de.gleex.pltcmd.game.engine.systems.facets
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.commands.DetectedEntity
 import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import org.hexworks.amethyst.api.Command
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Sends a contact report to the hq when something is detected.
  */
-object ReportContacts : BaseFacet<GameContext>() {
+object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::class) {
 
     private val log = LoggerFactory.getLogger(ReportContacts::class)
 
-    override suspend fun executeCommand(command: Command<out EntityType, GameContext>): Response =
-        command.responseWhenCommandIs(DetectedEntity::class) { detected ->
-            if (!detected.isNew || detected.source.type !is Communicating) {
-                Pass
-            } else {
-                val communicating = detected.source as CommunicatingEntity
-                val visibility = detected.visibility
-                when {
-                    // details of the entity type are only available if seen is clearly visible
-                    visibility >= 0.4  -> reportContact(communicating, detected.entity, detected.context)
-                    // basic information is always available
-                    visibility.isAny() -> reportUnknown(communicating, detected.entity, detected.context)
-                    else               -> Pass
-                }
+    override suspend fun receive(detected: DetectedEntity): Response {
+        return if (!detected.isNew || detected.source.type !is Communicating) {
+            Pass
+        } else {
+            val communicating = detected.source as CommunicatingEntity
+            val visibility = detected.visibility
+            when {
+                // details of the entity type are only available if seen is clearly visible
+                visibility >= 0.4  -> reportContact(communicating, detected.entity, detected.context)
+                // basic information is always available
+                visibility.isAny() -> reportUnknown(communicating, detected.entity, detected.context)
+                else               -> Pass
             }
         }
+    }
 
     fun reportContact(reporter: CommunicatingEntity, toReport: PositionableEntity, context: GameContext): Response {
         return when (toReport.type) {
