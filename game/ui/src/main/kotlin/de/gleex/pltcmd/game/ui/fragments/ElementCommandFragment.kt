@@ -1,9 +1,7 @@
 package de.gleex.pltcmd.game.ui.fragments
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.callsign
-import de.gleex.pltcmd.game.engine.entities.types.currentPosition
+import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.messages.ConversationMessage
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.elements.CallSign
@@ -30,7 +28,7 @@ import org.hexworks.zircon.api.uievent.*
 class ElementCommandFragment(
         override val fragmentWidth: Int,
         private val world: GameWorld,
-        val hq: ElementEntity,
+        private val hq: FOBEntity,
         elements: List<ElementEntity>,
         private val mapOffset: Property<Position>,
         private val game: Game
@@ -78,7 +76,7 @@ class ElementCommandFragment(
                         .build()
                         .apply {
                             onActivated {
-                                sendConversation(Halt.create(hq.callsign, selectedCallsign.value))
+                                sendConversation(Halt.create(hq.callSign, selectedCallsign.value))
                             }
                         })
                 addComponent(Components.button()
@@ -103,7 +101,7 @@ class ElementCommandFragment(
             }
 
     private fun sendOrder(order: Conversations.Orders) =
-            sendConversation(order.create(hq.callsign, selectedCallsign.value, selectedDestination.value))
+            sendConversation(order.create(hq.callSign, selectedCallsign.value, selectedDestination.value))
 
     private fun sendConversation(conversation: Conversation) {
         log.debug("Sending conversation to ${conversation.receiver}: $conversation")

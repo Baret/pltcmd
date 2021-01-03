@@ -55,9 +55,7 @@ object EntityFactory {
             )
             facets(
                 ConversationSender,
-                Detects,
-                // Forward bases other than the main base may receive orders like "secure your sector"
-                ExecuteOrder
+                Detects
             )
         }
     }

@@ -1,12 +1,9 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.ElementType
-import de.gleex.pltcmd.game.engine.entities.types.communicator
-import de.gleex.pltcmd.game.engine.entities.types.currentPosition
+import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.entities.types.Communicating
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.messages.OrderMessage
 import de.gleex.pltcmd.model.elements.CallSign
@@ -18,18 +15,34 @@ import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.base.BaseBehavior
 import kotlin.random.Random
 
-internal object Communicating : BaseBehavior<GameContext>(ElementAttribute::class, RadioAttribute::class) {
+internal object Communicating : BaseBehavior<GameContext>(RadioAttribute::class) {
 
+    @Suppress("UNCHECKED_CAST")
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        if (entity.type !is ElementType) {
+        if (entity.type !is Communicating) {
             return false
         }
-        @Suppress("UNCHECKED_CAST")
-        val elementEntity = entity as ElementEntity
-        val radioCommunicator = elementEntity.communicator
-        radioCommunicator.radioContext = ElementRadioContext(elementEntity, context)
+        val radioCommunicator = (entity as CommunicatingEntity).communicator
+        radioCommunicator.radioContext = when(entity.type) {
+            ElementType -> ElementRadioContext(entity as ElementEntity, context)
+            FOBType     -> BaseRadioContext(entity as FOBEntity)
+            else        -> return false
+        }
         radioCommunicator.proceedWithConversation()
         return true
+    }
+
+}
+
+class BaseRadioContext(base: FOBEntity) : RadioContext {
+    override val currentLocation: Coordinate = base.currentPosition
+
+    override fun newTransmissionContext(): TransmissionContext {
+        return TransmissionContext(currentLocation, 0, 0, 0)
+    }
+
+    override fun executeOrder(order: Conversations.Orders, orderedBy: CallSign, orderedTo: Coordinate?) {
+        throw IllegalStateException("FOB can not execute any order.")
     }
 
 }

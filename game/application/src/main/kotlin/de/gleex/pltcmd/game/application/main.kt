@@ -1,10 +1,8 @@
 package de.gleex.pltcmd.game.application
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.baseSpeedInKph
-import de.gleex.pltcmd.game.engine.entities.types.callsign
-import de.gleex.pltcmd.game.engine.entities.types.element
+import de.gleex.pltcmd.game.engine.entities.EntityFactory
+import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -86,7 +84,7 @@ open class Main {
      *
      * @return the elements to command in the UI and the HQ entity for sending messages from the UI.
      */
-    protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, ElementEntity> {
+    protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
         val visibleSector = game.world.sectors.first {
             it.origin == gameWorld.visibleTopLeftCoordinate()
                     .toSectorOrigin()
@@ -124,19 +122,12 @@ open class Main {
      * @return the element that sends out the messages to the controlled elements.
      * @see createElementsToCommand
      */
-    protected open fun createHq(visibleSector: Sector, game: Game, gameWorld: GameWorld): ElementEntity {
-        val hq = visibleSector.createFriendly(
-                Elements.riflePlatoon.new()
-                        .apply { callSign = CallSign("HQ") },
-                game,
-                gameWorld,
-                visibleSector.origin.movedBy(
-                        Sector.TILE_COUNT / 2,
-                        Sector.TILE_COUNT / 2
-                ),
-                Affiliation.Self
+    protected open fun createHq(visibleSector: Sector, game: Game, gameWorld: GameWorld): FOBEntity {
+        val position = visibleSector.origin.movedBy(
+            Sector.TILE_COUNT / 2,
+            Sector.TILE_COUNT / 2
         )
-        return hq
+        return EntityFactory.newBaseAt(position, game.world)
     }
 
     /**

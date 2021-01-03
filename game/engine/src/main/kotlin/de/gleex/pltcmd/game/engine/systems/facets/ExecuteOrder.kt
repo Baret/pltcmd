@@ -2,7 +2,6 @@ package de.gleex.pltcmd.game.engine.systems.facets
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
-import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.goals.HaltGoal
 import de.gleex.pltcmd.game.engine.attributes.goals.PatrolAreaGoal
 import de.gleex.pltcmd.game.engine.attributes.goals.RadioGoal
@@ -19,7 +18,7 @@ import org.hexworks.amethyst.api.base.BaseFacet
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 internal object ExecuteOrder :
-    BaseFacet<GameContext, OrderMessage>(OrderMessage::class, ElementAttribute::class, CommandersIntent::class) {
+    BaseFacet<GameContext, OrderMessage>(OrderMessage::class, CommandersIntent::class) {
     private val log = LoggerFactory.getLogger(ExecuteOrder::class)
 
     override suspend fun receive(message: OrderMessage): Response {

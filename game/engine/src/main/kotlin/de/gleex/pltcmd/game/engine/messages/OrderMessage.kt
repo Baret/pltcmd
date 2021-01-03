@@ -13,5 +13,8 @@ data class OrderMessage(
         val orderedBy: CallSign,
         val orderedTo: Coordinate?,
         override val context: GameContext,
+        /**
+         * The [ElementEntity] that has to execute this order.
+         */
         override val source: ElementEntity
 ) : Message<GameContext>
