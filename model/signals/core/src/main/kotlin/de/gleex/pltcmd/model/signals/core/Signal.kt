@@ -25,7 +25,7 @@ import kotlin.math.floor
 class Signal<P : SignalPower>(
         val origin: Coordinate,
         val area: WorldArea,
-        private val power: P
+        val power: P
 ) {
 
     companion object {

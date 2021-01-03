@@ -25,7 +25,7 @@ import java.util.*
  * is called and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [globalEventBus].
  */
 // technically this is a facade that delegates to RadioTransmitter and RadioReceiver which share the same state
-class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
+class RadioCommunicator(val callSign: CallSign, radio: RadioSender) {
     private val state: CommunicatorState = CommunicatorState()
     private val sender = SendingCommunicator(callSign, state, radio)
     private val receiver = ReceivingCommunicator(callSign, state, sender)

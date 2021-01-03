@@ -16,8 +16,8 @@ typealias Vision = Signal<VisionPower>
  * An "empty vision signal" at an invalid location. Can be used as placeholder when no [WorldArea] can be
  * created.
  */
-val initialVision = Vision(
+fun initialVision(power: VisionPower) = Vision(
         Coordinate.maximum,
         WorldArea(sortedSetOf(WorldTile(Coordinate.maximum, Terrain.random(Random)))),
-        VisionPower.MIN
+        power
 )
