@@ -26,13 +26,15 @@ object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class)
             entity.findAttribute(Transmitting::class)
                     .fold(whenEmpty = {
                         if (entity.isTransmitting) {
-                            log.debug("${(entity as ElementEntity).callsign} is transmitting, adding attribute.")
+                            // TODO: Use logIdentifier
+                            log.debug("${entity.whenElement({ it.callsign }, { it.name })} is transmitting, adding attribute.")
                             entity.addIfMissing(Transmitting)
                             updated = true
                         }
                     }, whenPresent = {
                         if (entity.isTransmitting.not()) {
-                            log.debug("${(entity as ElementEntity).callsign} stopped transmitting, removing attribute.")
+                            // TODO: Use logIdentifier
+                            log.debug("${entity.whenElement({ it.callsign }, { it.name })} stopped transmitting, removing attribute.")
                             entity.asMutableEntity()
                                     .removeAttribute(Transmitting)
                             updated = true

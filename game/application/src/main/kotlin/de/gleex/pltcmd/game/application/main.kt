@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.application
 
 import de.gleex.pltcmd.game.engine.Game
-import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
@@ -86,11 +85,10 @@ open class Main {
      */
     protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
         val visibleSector = game.world.sectors.first {
-            it.origin == gameWorld.visibleTopLeftCoordinate()
-                    .toSectorOrigin()
+            it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin()
         }
         val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
-        val hq = createHq(visibleSector, game, gameWorld)
+        val hq = game.newHQIn(visibleSector)
         addHostiles(game, gameWorld)
         return Pair(elementsToCommand, hq)
     }
@@ -116,18 +114,6 @@ open class Main {
             add(charlie)
         }
         return elementsToCommand
-    }
-
-    /**
-     * @return the element that sends out the messages to the controlled elements.
-     * @see createElementsToCommand
-     */
-    protected open fun createHq(visibleSector: Sector, game: Game, gameWorld: GameWorld): FOBEntity {
-        val position = visibleSector.origin.movedBy(
-            Sector.TILE_COUNT / 2,
-            Sector.TILE_COUNT / 2
-        )
-        return EntityFactory.newBaseAt(position, game.world)
     }
 
     /**

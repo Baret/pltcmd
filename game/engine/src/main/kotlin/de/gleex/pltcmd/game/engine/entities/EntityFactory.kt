@@ -41,8 +41,8 @@ object EntityFactory {
     /**
      * Creates a new base (aka FOB = Forward operating base)
      */
-    fun newBaseAt(position: Coordinate, map: WorldMap, callSign: CallSign = CallSign("HQ")): FOBEntity {
-        return newEntityOfType(FOBType) {
+    fun newBaseAt(position: Coordinate, map: WorldMap, callSign: CallSign = CallSign("HQ")): FOBEntity =
+        newEntityOfType(FOBType) {
             val positionProperty = position.toProperty()
             attributes(
                 PositionAttribute(positionProperty),
@@ -58,7 +58,6 @@ object EntityFactory {
                 Detects
             )
         }
-    }
 
     /**
      * Creates a new entity representing a [CommandingElement] in the game world.
