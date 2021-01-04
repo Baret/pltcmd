@@ -47,7 +47,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
             },
             whenOther = {
                 // TODO: Use logIdentifier
-                log.debug("${source.name} is not an element entity!")
+                log.debug("${source.name} is not an element entity and thus not detecting anything!")
             }
         )
         return Consumed
