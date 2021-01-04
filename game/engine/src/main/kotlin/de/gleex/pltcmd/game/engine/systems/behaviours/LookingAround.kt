@@ -10,7 +10,6 @@ import de.gleex.pltcmd.model.signals.vision.builder.visionAt
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Behavior of an entity that updates the [VisionAttribute] each tick if needed. It also
@@ -22,9 +21,6 @@ object LookingAround :
                 VisionAttribute::class
         ) {
 
-    private val log = LoggerFactory.getLogger(LookingAround::class)
-
-    // implements only type checking
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
         return entity.invokeWhenSeeing {
             lookForEntities(it, context)

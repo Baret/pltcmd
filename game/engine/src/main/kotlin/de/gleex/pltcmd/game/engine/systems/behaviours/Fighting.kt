@@ -22,9 +22,7 @@ internal object Fighting :
                 attackNearbyEnemies(it, context)
                 true
             },
-            whenOther = {
-                false
-            }
+            whenOther = { false }
         )
     }
 
