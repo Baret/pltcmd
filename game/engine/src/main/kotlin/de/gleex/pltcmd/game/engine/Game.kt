@@ -62,7 +62,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
 
     @Suppress("UNCHECKED_CAST")
     private fun removeEntity(entity: AnyGameEntity) {
-        val entityName: String = entity.whenElement(
+        val entityName: String = entity.asElementEntity(
             { it.callsign.name },
             { it.name })
         log.debug("Removing entity $entityName from game")

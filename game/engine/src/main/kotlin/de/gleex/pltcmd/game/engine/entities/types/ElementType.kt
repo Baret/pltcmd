@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.castTo
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
@@ -36,12 +37,8 @@ internal val ElementEntity.commandersIntent
  *
  * @param whenElement will be invoked when this entity is an [ElementEntity]
  */
-fun AnyGameEntity.asElementEntity(whenElement: (ElementEntity) -> Unit) {
-    if(type is ElementType) {
-        @Suppress("UNCHECKED_CAST")
-        whenElement(this as ElementEntity)
-    }
-}
+fun AnyGameEntity.asElementEntity(whenElement: (ElementEntity) -> Unit) =
+    castTo<ElementEntity, ElementType>(whenElement)
 
 /**
  * Invokes [whenTrue] if this entity is an [ElementEntity]. When the type is not [ElementType],
@@ -49,11 +46,5 @@ fun AnyGameEntity.asElementEntity(whenElement: (ElementEntity) -> Unit) {
  *
  * @param R the type that is returned by [whenTrue] or [whenFalse]
  */
-fun <R> AnyGameEntity.whenElement(whenTrue: (ElementEntity) -> R, whenFalse: (AnyGameEntity) -> R): R {
-    return if(type is ElementType) {
-        @Suppress("UNCHECKED_CAST")
-        whenTrue(this as ElementEntity)
-    } else {
-        whenFalse(this)
-    }
-}
+fun <R> AnyGameEntity.asElementEntity(whenTrue: (ElementEntity) -> R, whenFalse: (AnyGameEntity) -> R): R =
+    castTo<ElementEntity, ElementType, R>(whenTrue, whenFalse)

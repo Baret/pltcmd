@@ -45,6 +45,6 @@ val CommunicatingEntity.isTransmitting
 // TODO: Instantly start the conversation if possible. Currently it takes 2 ticks until the conversation actually starts
 internal fun CommunicatingEntity.startConversation(conversation: Conversation) {
     // TODO: Use logIdentifier
-    log.debug("${whenElement({ it.callsign }, { it.name })} starting conversation $conversation")
+    log.debug("${asElementEntity({ it.callsign }, { it.name })} starting conversation $conversation")
     communicator.startConversation(conversation)
 }

@@ -2,10 +2,13 @@ package de.gleex.pltcmd.game.engine.extensions
 
 import de.gleex.pltcmd.game.engine.GameContext
 import org.hexworks.amethyst.api.Attribute
+import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.amethyst.api.extensions.FacetWithContext
 import org.hexworks.amethyst.api.system.Behavior
+import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.reflect.KClass
 
+private val log = LoggerFactory.getLogger("AnyGameEntity")
 
 /**
  * Gets the [Attribute] of given type or throws an [IllegalStateException] if no attribute of this type is present.
@@ -61,3 +64,45 @@ internal inline fun <reified F : FacetWithContext<GameContext>> AnyGameEntity.ad
         asMutableEntity().addFacet(facet)
     }
 }
+
+/**
+ * Casts this entity to [E] when it's type is [T] an provides it to [whenTrue]. Else it is provided
+ * to [whenFalse] as is.
+ *
+ * **This functions should not be used directly!** Instead every entity type/typealias should
+ * have its own `asSomeEntity()` function!
+ *
+ * **This function does an unchecked cast!**
+ *
+ * @param E the type this entity is cast to
+ * @param T when this entity has this [EntityType] it will be cast without checking
+ * @param R the return type of [whenTrue] and [whenFalse]
+ * @param whenTrue invoked with this entity as parameter when the type matches [T]
+ * @param whenFalse invoked with this entity as parameter when the type does not match [T]
+ */
+internal inline fun <E: AnyGameEntity, reified T: EntityType, R> AnyGameEntity.castTo(whenTrue: (E) -> R, whenFalse: (AnyGameEntity) -> R): R {
+    return if(type is T) {
+        @Suppress("UNCHECKED_CAST")
+        whenTrue(this as E)
+    } else {
+        whenFalse(this)
+    }
+}
+
+/**
+ * Casts this entity to [E] when it's type is [T] and provides it to [invocation]. When the type does
+ * not match a warning will be logged because when calling this function you should be rather sure that
+ * this entity has the correct type.
+ *
+ * **This functions should not be used directly!** Instead every entity type/typealias should
+ * have its own `asSomeEntity()` function!
+ *
+ * **This function does an unchecked cast!**
+ */
+internal inline fun <E: AnyGameEntity, reified T: EntityType> AnyGameEntity.castTo(invocation: (E) -> Unit) =
+    if(type is T) {
+        @Suppress("UNCHECKED_CAST")
+        invocation(this as E)
+    } else {
+        log.warn("$this can not be cast to an entity of type ${T::class} because it has type ${type::class}")
+    }

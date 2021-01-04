@@ -28,7 +28,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
         if (visibleEntities.isEmpty()) {
             Pass
         }
-        source.whenElement(
+        source.asElementEntity(
             whenTrue = { seeingElement ->
                 visibleEntities.forEach { seen ->
                     // TODO: Implement actual behavior of detecting things and reacting to them (i.e. do a contact report) (#130)

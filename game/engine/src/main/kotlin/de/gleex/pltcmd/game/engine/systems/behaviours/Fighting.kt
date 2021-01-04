@@ -17,7 +17,7 @@ internal object Fighting :
     private val log = LoggerFactory.getLogger(Fighting::class)
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        return entity.whenElement(
+        return entity.asElementEntity(
             whenTrue = {
                 attackNearbyEnemies(it, context)
                 true
