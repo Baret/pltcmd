@@ -4,7 +4,6 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
 import de.gleex.pltcmd.game.engine.attributes.flags.Transmitting
 import de.gleex.pltcmd.game.engine.entities.types.*
-import de.gleex.pltcmd.game.engine.entities.types.Communicating
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.addIfMissing
 import org.hexworks.amethyst.api.base.BaseBehavior
@@ -19,29 +18,41 @@ object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class)
     private val log = LoggerFactory.getLogger(StopsWhileTransmitting::class)
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        var updated = false
-        if (entity.type is Communicating) {
-            @Suppress("UNCHECKED_CAST")
-            entity as CommunicatingEntity
-            entity.findAttribute(Transmitting::class)
+        return entity.asCommunicatingEntity(
+            whenCommunicating = { communicating ->
+                var updated = false
+                communicating.findAttribute(Transmitting::class)
                     .fold(whenEmpty = {
-                        if (entity.isTransmitting) {
+                        if (communicating.isTransmitting) {
                             // TODO: Use logIdentifier
-                            log.debug("${entity.asElementEntity({ it.callsign }, { it.name })} is transmitting, adding attribute.")
-                            entity.addIfMissing(Transmitting)
+                            log.debug(
+                                "${
+                                    communicating.asElementEntity(
+                                        { it.callsign },
+                                        { it.name })
+                                } is transmitting, adding attribute."
+                            )
+                            communicating.addIfMissing(Transmitting)
                             updated = true
                         }
                     }, whenPresent = {
-                        if (entity.isTransmitting.not()) {
+                        if (communicating.isTransmitting.not()) {
                             // TODO: Use logIdentifier
-                            log.debug("${entity.asElementEntity({ it.callsign }, { it.name })} stopped transmitting, removing attribute.")
-                            entity.asMutableEntity()
-                                    .removeAttribute(Transmitting)
+                            log.debug(
+                                "${
+                                    communicating.asElementEntity(
+                                        { it.callsign },
+                                        { it.name })
+                                } stopped transmitting, removing attribute."
+                            )
+                            communicating.asMutableEntity()
+                                .removeAttribute(Transmitting)
                             updated = true
                         }
                     })
-        }
-        return updated
+                updated
+            },
+            whenOther = { false })
     }
 
 }

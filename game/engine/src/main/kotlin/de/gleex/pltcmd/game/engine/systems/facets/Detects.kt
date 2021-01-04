@@ -29,7 +29,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
             Pass
         }
         source.asElementEntity(
-            whenTrue = { seeingElement ->
+            whenElement = { seeingElement ->
                 visibleEntities.forEach { seen ->
                     // TODO: Implement actual behavior of detecting things and reacting to them (i.e. do a contact report) (#130)
                     if (seeingElement.affiliation == Affiliation.Friendly) {
@@ -45,7 +45,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
                     }
                 }
             },
-            whenFalse = {
+            whenOther = {
                 // TODO: Use logIdentifier
                 log.debug("${source.name} is not an element entity!")
             }

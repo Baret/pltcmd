@@ -41,10 +41,10 @@ fun AnyGameEntity.asElementEntity(whenElement: (ElementEntity) -> Unit) =
     castTo<ElementEntity, ElementType>(whenElement)
 
 /**
- * Invokes [whenTrue] if this entity is an [ElementEntity]. When the type is not [ElementType],
- * [whenFalse] is invoked instead.
+ * Invokes [whenElement] if this entity is an [ElementEntity]. When the type is not [ElementType],
+ * [whenOther] is invoked instead.
  *
- * @param R the type that is returned by [whenTrue] or [whenFalse]
+ * @param R the type that is returned by [whenElement] or [whenOther]
  */
-fun <R> AnyGameEntity.asElementEntity(whenTrue: (ElementEntity) -> R, whenFalse: (AnyGameEntity) -> R): R =
-    castTo<ElementEntity, ElementType, R>(whenTrue, whenFalse)
+fun <R> AnyGameEntity.asElementEntity(whenElement: (ElementEntity) -> R, whenOther: (AnyGameEntity) -> R): R =
+    castTo<ElementEntity, ElementType, R>(whenElement, whenOther)

@@ -28,11 +28,8 @@ object MovingForOneMinute :
     private val log = LoggerFactory.getLogger(MovingForOneMinute::class)
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        return if (entity.type is Movable) {
-            @Suppress("UNCHECKED_CAST")
-            move(entity as MovableEntity, context)
-        } else {
-            false
+        return entity.invokeWhenMovable {
+            move(it, context)
         }
     }
 

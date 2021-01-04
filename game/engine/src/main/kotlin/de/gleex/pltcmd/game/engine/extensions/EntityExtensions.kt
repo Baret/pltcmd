@@ -18,31 +18,31 @@ private val log = LoggerFactory.getLogger("AnyGameEntity")
  * @see hasAttribute
  */
 internal fun <T : Attribute> AnyGameEntity.getAttribute(attribute: KClass<T>) =
-        findAttribute(attribute).orElseThrow { IllegalStateException("Entity $this does not have an attribute of type $attribute") }
+    findAttribute(attribute).orElseThrow { IllegalStateException("Entity $this does not have an attribute of type $attribute") }
 
 /**
  * Checks if this entity has the given attribute (shorthand version for findAttribute).
  */
 internal fun <T : Attribute> AnyGameEntity.hasAttribute(attribute: KClass<T>): Boolean =
-        findAttribute(attribute).isPresent
+    findAttribute(attribute).isPresent
 
 /**
  * Checks if this entity has the given behavior (shorthand version for findBehavior).
  */
-internal fun <T: Behavior<GameContext>> AnyGameEntity.hasBehavior(behavior: KClass<T>): Boolean =
-        findBehavior(behavior).isPresent
+internal fun <T : Behavior<GameContext>> AnyGameEntity.hasBehavior(behavior: KClass<T>): Boolean =
+    findBehavior(behavior).isPresent
 
 /**
  * Checks if this entity has the given facet (shorthand version for findFacet).
  */
-internal fun <T: FacetWithContext<GameContext>> AnyGameEntity.hasFacet(facet: KClass<T>): Boolean =
-        findFacet(facet).isPresent
+internal fun <T : FacetWithContext<GameContext>> AnyGameEntity.hasFacet(facet: KClass<T>): Boolean =
+    findFacet(facet).isPresent
 
 /**
  * Adds the given attribute if no attribute of type [A] is present.
  */
 internal inline fun <reified A : Attribute> AnyGameEntity.addIfMissing(attribute: A) {
-    if(findAttribute(A::class).isEmpty()) {
+    if (findAttribute(A::class).isEmpty()) {
         asMutableEntity().addAttribute(attribute)
     }
 }
@@ -51,7 +51,7 @@ internal inline fun <reified A : Attribute> AnyGameEntity.addIfMissing(attribute
  * Adds the given behavior if no attribute of type [B] is present.
  */
 internal inline fun <reified B : Behavior<GameContext>> AnyGameEntity.addIfMissing(behavior: B) {
-    if(findBehavior(B::class).isEmpty()) {
+    if (findBehavior(B::class).isEmpty()) {
         asMutableEntity().addBehavior(behavior)
     }
 }
@@ -60,7 +60,7 @@ internal inline fun <reified B : Behavior<GameContext>> AnyGameEntity.addIfMissi
  * Adds the given facet if no attribute of type [F] is present.
  */
 internal inline fun <reified F : FacetWithContext<GameContext>> AnyGameEntity.addIfMissing(facet: F) {
-    if(findFacet(F::class).isEmpty()) {
+    if (findFacet(F::class).isEmpty()) {
         asMutableEntity().addFacet(facet)
     }
 }
@@ -80,8 +80,11 @@ internal inline fun <reified F : FacetWithContext<GameContext>> AnyGameEntity.ad
  * @param whenTrue invoked with this entity as parameter when the type matches [T]
  * @param whenFalse invoked with this entity as parameter when the type does not match [T]
  */
-internal inline fun <E: AnyGameEntity, reified T: EntityType, R> AnyGameEntity.castTo(whenTrue: (E) -> R, whenFalse: (AnyGameEntity) -> R): R {
-    return if(type is T) {
+internal inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity.castTo(
+    whenTrue: (E) -> R,
+    whenFalse: (AnyGameEntity) -> R
+): R {
+    return if (type is T) {
         @Suppress("UNCHECKED_CAST")
         whenTrue(this as E)
     } else {
@@ -99,10 +102,36 @@ internal inline fun <E: AnyGameEntity, reified T: EntityType, R> AnyGameEntity.c
  *
  * **This function does an unchecked cast!**
  */
-internal inline fun <E: AnyGameEntity, reified T: EntityType> AnyGameEntity.castTo(invocation: (E) -> Unit) =
-    if(type is T) {
+internal inline fun <E : AnyGameEntity, reified T : EntityType> AnyGameEntity.castTo(invocation: (E) -> Unit) =
+    if (type is T) {
         @Suppress("UNCHECKED_CAST")
         invocation(this as E)
     } else {
         log.warn("$this can not be cast to an entity of type ${T::class} because it has type ${type::class}")
+    }
+
+/**
+ * This function is handy for [Behavior]s that send messages to the entity. It works like [castTo] except
+ * that it gets a suspend function as parameter. [invocation] may call
+ * [org.hexworks.amethyst.api.entity.Entity.receiveMessage] without leaving the current coroutine context.
+ *
+ * **This functions should not be used directly!** Instead every entity type/typealias should
+ * have its own `asSomeEntity()` function!
+ *
+ * **This function does an unchecked cast!**
+ *
+ * @return false when this entity is NOT of type [T]. The result of [invocation] otherwise.
+ *
+ * @see castTo
+ */
+internal suspend inline fun <E : AnyGameEntity, reified T : EntityType>
+        AnyGameEntity.castToSuspending(
+            crossinline invocation: suspend (E) -> Boolean
+        ): Boolean =
+    if (type is T) {
+        @Suppress("UNCHECKED_CAST")
+        invocation(this as E)
+    } else {
+        log.warn("$this can not be cast to an entity of type ${T::class} because it has type ${type::class}")
+        false
     }

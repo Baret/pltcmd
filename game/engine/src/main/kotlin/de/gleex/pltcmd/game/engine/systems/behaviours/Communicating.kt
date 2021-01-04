@@ -3,7 +3,6 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
-import de.gleex.pltcmd.game.engine.entities.types.Communicating
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.messages.OrderMessage
 import de.gleex.pltcmd.model.elements.CallSign
@@ -17,19 +16,22 @@ import kotlin.random.Random
 
 internal object Communicating : BaseBehavior<GameContext>(RadioAttribute::class) {
 
-    @Suppress("UNCHECKED_CAST")
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        if (entity.type !is Communicating) {
-            return false
-        }
-        val radioCommunicator = (entity as CommunicatingEntity).communicator
-        radioCommunicator.radioContext = when(entity.type) {
-            ElementType -> ElementRadioContext(entity as ElementEntity, context)
-            FOBType     -> BaseRadioContext(entity as FOBEntity)
-            else        -> return false
-        }
-        radioCommunicator.proceedWithConversation()
-        return true
+        return entity.asCommunicatingEntity(
+            whenCommunicating = {
+                val radioCommunicator = it.communicator
+                @Suppress("UNCHECKED_CAST")
+                radioCommunicator.radioContext = when (entity.type) {
+                    ElementType -> ElementRadioContext(entity as ElementEntity, context)
+                    FOBType     -> BaseRadioContext(entity as FOBEntity)
+                    else        -> return@asCommunicatingEntity false
+                }
+                radioCommunicator.proceedWithConversation()
+                true
+            },
+            whenOther = {
+                false
+            })
     }
 
 }

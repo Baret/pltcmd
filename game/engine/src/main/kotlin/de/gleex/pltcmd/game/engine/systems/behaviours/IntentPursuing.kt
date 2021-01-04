@@ -12,21 +12,21 @@ import org.hexworks.amethyst.api.base.BaseBehavior
  * This behavior simply [CommandersIntent.proceed]s the commander's intent.
  */
 object IntentPursuing : BaseBehavior<GameContext>(CommandersIntent::class) {
-    @Suppress("UNCHECKED_CAST")
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        return entity.asElementEntity({ element ->
-            val messageToExecute = element.commandersIntent.proceed(element, context)
-            if (messageToExecute.isPresent) {
-                // FIXME: Use surrounding coroutine context (something like entity.receiveWhenElement{ ... }?)
-                runBlocking {
-                    element.receiveMessage(messageToExecute.get())
+        return entity.asElementEntity(
+            whenElement = { element ->
+                val messageToExecute = element.commandersIntent.proceed(element, context)
+                if (messageToExecute.isPresent) {
+                    // FIXME: Use surrounding coroutine context (something like entity.receiveWhenElement{ ... }?)
+                    runBlocking {
+                        element.receiveMessage(messageToExecute.get())
+                    }
                 }
-            }
-            messageToExecute.isPresent
-        },
-            {
-            false
-        })
+                messageToExecute.isPresent
+            },
+            whenOther = {
+                false
+            })
 
     }
 }

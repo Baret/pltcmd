@@ -26,11 +26,9 @@ object LookingAround :
 
     // implements only type checking
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
-        if (entity.type !is Seeing) {
-            return false
+        return entity.invokeWhenSeeing {
+            lookForEntities(it, context)
         }
-        @Suppress("UNCHECKED_CAST")
-        return lookForEntities(entity as SeeingEntity, context)
     }
 
     private suspend fun lookForEntities(entity: SeeingEntity, context: GameContext): Boolean {

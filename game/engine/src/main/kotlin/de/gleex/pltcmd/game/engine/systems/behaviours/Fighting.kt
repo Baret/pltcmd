@@ -18,11 +18,11 @@ internal object Fighting :
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         return entity.asElementEntity(
-            whenTrue = {
+            whenElement = {
                 attackNearbyEnemies(it, context)
                 true
             },
-            whenFalse = {
+            whenOther = {
                 false
             }
         )
