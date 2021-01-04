@@ -89,6 +89,7 @@ open class Main {
         }
         val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
         val hq = game.newHQIn(visibleSector)
+            .also { gameWorld.showBase(it) }
         addHostiles(game, gameWorld)
         return Pair(elementsToCommand, hq)
     }
