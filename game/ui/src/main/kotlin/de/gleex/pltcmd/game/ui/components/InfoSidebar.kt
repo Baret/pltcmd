@@ -6,6 +6,7 @@ import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.GameTimeFragment
 import de.gleex.pltcmd.game.ui.fragments.tileinformation.*
+import de.gleex.pltcmd.game.ui.renderers.SignalVisualizer
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
 import org.hexworks.cobalt.databinding.api.extension.toProperty
@@ -81,7 +82,8 @@ class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : F
                 CurrentCoordinateFragment(observedTile),
                 TerrainDetailsFragment(observedTile, game.world),
                 MarkersFragment(observedTile),
-                ElementInfoFragment(observedTile, game)
+                ElementInfoFragment(observedTile, game),
+                SignalVisualizationFragment(observedTile, game, SignalVisualizer(gameWorld))
         )
 
         lockIntelPanel.onChange { valueChanged: ObservableValueChanged<Boolean> ->

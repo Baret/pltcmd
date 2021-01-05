@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.engine.attributes.movement
 
-import org.hexworks.amethyst.api.Attribute
+import org.hexworks.amethyst.api.base.BaseAttribute
 
 /**
  * The movement progress holds the status of when an entity changes its tile.
@@ -17,7 +17,7 @@ import org.hexworks.amethyst.api.Attribute
  *
  * @param tilesToAdvance the current number of tiles that still needs to be advanced this tick.
  */
-internal class MovementProgress(private var tilesToAdvance: Double = 0.0) : Attribute {
+internal class MovementProgress(private var tilesToAdvance: Double = 0.0) : BaseAttribute() {
     /**
      * Adds the given number of tiles that need to be moved along.
      */

@@ -8,7 +8,7 @@ import kotlin.random.Random
 /**
  * A sector has 50 by 50 [WorldTile]s (it is a square).
  */
-data class Sector(val origin: Coordinate, val tiles: SortedSet<WorldTile>) : Comparable<Sector> {
+class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<Sector>, WorldArea(tiles) {
     companion object {
         /** edge length of a sector (in each directon of the map rectangle) */
         const val TILE_COUNT = 50
@@ -41,7 +41,7 @@ data class Sector(val origin: Coordinate, val tiles: SortedSet<WorldTile>) : Com
                         origin.northingFromBottom, origin.northingFromBottom + TILE_COUNT))
     }
 
-    operator fun contains(coordinate: Coordinate): Boolean {
+    override operator fun contains(coordinate: Coordinate): Boolean {
         // because this sector contains all coordinates
         return origin == coordinate.toSectorOrigin()
     }
@@ -51,11 +51,7 @@ data class Sector(val origin: Coordinate, val tiles: SortedSet<WorldTile>) : Com
         if (!contains(coordinate)) {
             return null
         }
-        return get(coordinate)!!.terrain
-    }
-
-    operator fun get(coordinate: Coordinate): WorldTile? {
-        return tiles.find { it.coordinate == coordinate }
+        return get(coordinate).get().terrain
     }
 
     /** sorted by origin */
@@ -65,6 +61,22 @@ data class Sector(val origin: Coordinate, val tiles: SortedSet<WorldTile>) : Com
 
     override fun toString(): String {
         return "Sector at $origin"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Sector) return false
+        if (!super.equals(other)) return false
+
+        if (origin != other.origin) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + origin.hashCode()
+        return result
     }
 }
 

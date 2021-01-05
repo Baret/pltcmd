@@ -5,13 +5,13 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import kotlinx.collections.immutable.persistentMapOf
+import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.base.BaseGameArea
-import org.hexworks.zircon.internal.game.impl.TopDownProjectionStrategy
 
 /**
  * The game world contains all [GameBlock]s representing the map. It has a visible part and can scroll from [Sector] to sector.
@@ -29,14 +29,7 @@ class GameWorld(private val worldMap: WorldMap) :
                 initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
                 initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
                 initialContents = persistentMapOf(),
-                projectionStrategy = TopDownProjectionStrategy()) {
-    /**
-     * Returns all currently visible blocks.
-     *
-     * @see GameWorld.fetchBlocksAt
-     */
-    val visibleBlocks
-        get() = fetchBlocksAt(visibleOffset, visibleSize)
+                initialFilters = emptyList()) {
 
     companion object {
         private val log = LoggerFactory.getLogger(GameWorld::class)
@@ -85,7 +78,7 @@ class GameWorld(private val worldMap: WorldMap) :
         currentPosition.hideUnit()
     }
 
-        private fun Coordinate.hideUnit() {
+    private fun Coordinate.hideUnit() {
         val position = toPosition()
         fetchBlockAt(position).ifPresent {
             it.resetUnit()
@@ -97,21 +90,8 @@ class GameWorld(private val worldMap: WorldMap) :
         return visibleOffset.toCoordinate()
     }
 
-    /**
-     * Make the given coordinate and ascending ones visible.
-     * If the visible area has the size of a [Sector] and the origin of a [Sector] is given, the full sector will be visible.
-     */
-    fun scrollToCoordinate(bottomLeft: Coordinate) {
-        val bottomLeftPos = bottomLeft.toPosition()
-        val visibleTopLeftPos = bottomLeftPos.withRelativeY(-getMaxVisibleY())
-        scrollTo(visibleTopLeftPos)
-    }
-
     // model size
     private fun getMaxY() = actualSize.yLength - 1 // -1 because y is zero-based
-
-    // ui size
-    private fun getMaxVisibleY() = visibleSize.yLength - 1 // -1 because y is zero-based
 
     /**
      * Returns the difference between the origin of the world and the absolute origin (0, 0).
@@ -121,6 +101,12 @@ class GameWorld(private val worldMap: WorldMap) :
         // use origin of world (minimal numeric value of coordinate) to calculate the offset
         return Position.create(-origin.eastingFromLeft, -origin.northingFromBottom)
     }
+
+    /**
+     * @return the [GameBlock] at the given [Coordinate] if it is contained in this world.
+     */
+    fun fetchBlockAt(coordinate: Coordinate): Maybe<GameBlock> =
+            fetchBlockAt(coordinate.toPosition())
 
     private fun Coordinate.toPosition(): Position3D {
         // translate to 0,0 based grid then invert y axis
@@ -145,8 +131,10 @@ class GameWorld(private val worldMap: WorldMap) :
      * Returns the [Coordinate] at the currently visible position
      * @see fetchBlockAtVisiblePosition
      */
-    fun coordinateAtVisiblePosition(position: Position) = position.toVisiblePosition3D()
-            .toCoordinate()
+    fun coordinateAtVisiblePosition(position: Position) =
+            position
+                    .toVisiblePosition3D()
+                    .toCoordinate()
 
     private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.to3DPosition(0))
 }

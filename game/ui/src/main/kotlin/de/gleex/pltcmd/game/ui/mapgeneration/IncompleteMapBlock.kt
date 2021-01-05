@@ -15,11 +15,17 @@ class IncompleteMapBlock(
 ) : BaseBlock<Tile>(emptyTile = TileRepository.empty(), tiles = persistentMapOf()) {
 
     init {
-        setTerrain(null, null)
+        setAir()
     }
 
     fun setTerrain(terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
         top = TileRepository.createTerrainTile(terrainHeight, terrainType)
                 .withGridBorder(borders)
+        front = TileRepository.createTerrainSideTile(terrainHeight)
+    }
+
+    fun setAir() {
+        top = TileRepository.empty()
+        front = TileRepository.empty()
     }
 }

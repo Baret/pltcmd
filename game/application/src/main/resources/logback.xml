@@ -27,7 +27,6 @@
 
     <logger name="org.hexworks.zircon" level="WARN"/>
     <logger name="org.hexworks.cobalt" level="WARN"/>
-    <!--    <logger name="org.hexworks.amethyst.api.entity.Entity" level="DEBUG"/>-->
 
     <logger name="de.gleex.pltcmd.game.application" level="DEBUG"/>
     <logger name="de.gleex.pltcmd.game.ui" level="DEBUG"/>

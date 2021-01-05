@@ -3,12 +3,12 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
-import de.gleex.pltcmd.game.engine.commands.MoveTo
 import de.gleex.pltcmd.game.engine.entities.types.Movable
 import de.gleex.pltcmd.game.engine.entities.types.MovableEntity
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.entities.types.hasNoDestination
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
+import de.gleex.pltcmd.game.engine.messages.MoveTo
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.base.BaseBehavior
 
@@ -37,7 +37,7 @@ internal object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, M
         if (movable.hasNoDestination && context.random.nextDouble() < MOVEMENT_PROBABILITY) {
             val destination = context.world.neighborsOf(movable.currentPosition)
                     .random(context.random)
-            val moveResponse = movable.executeCommand(MoveTo(destination, context, movable))
+            val moveResponse = movable.receiveMessage(MoveTo(destination, context, movable))
             return Consumed == moveResponse
         }
         return false

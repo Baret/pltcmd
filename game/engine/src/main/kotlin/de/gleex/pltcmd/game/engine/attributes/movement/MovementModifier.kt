@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.engine.attributes.movement
 
-import org.hexworks.amethyst.api.Attribute
+import org.hexworks.amethyst.api.base.BaseAttribute
 import kotlin.math.min
 
 /**
@@ -8,7 +8,7 @@ import kotlin.math.min
  *
  * It is [invoke]d with a speed value in km/h and returns the modified value.
  */
-sealed class MovementModifier : Attribute {
+sealed class MovementModifier : BaseAttribute() {
 
     /**
      * Takes a speed value in km/h and returns a possibly modified value.

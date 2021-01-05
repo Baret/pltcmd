@@ -75,7 +75,7 @@ open class Main {
         // ui
         val gameWorld = GameWorld(generatedMap)
         // model
-        val game = Game(Engine.default(), generatedMap, random)
+        val game = Game(Engine.create(), generatedMap, random)
 
         val (elementsToCommand, hq) = prepareGame(game, gameWorld)
 
@@ -91,7 +91,7 @@ open class Main {
      * This implementation adds some elements in the visible [Sector] including a headquarter. Hostiles will be placed
      * all over the map.
      *
-     * @return the elements to command in the UI and the HQ entity for sending commands from the UI.
+     * @return the elements to command in the UI and the HQ entity for sending messages from the UI.
      */
     protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, ElementEntity> {
         val visibleSector = game.world.sectors.first {
@@ -128,7 +128,7 @@ open class Main {
     }
 
     /**
-     * @return the element that sends out the commands to the controlled elements.
+     * @return the element that sends out the messages to the controlled elements.
      * @see createElementsToCommand
      */
     protected open fun createHq(visibleSector: Sector, game: Game, gameWorld: GameWorld): ElementEntity {

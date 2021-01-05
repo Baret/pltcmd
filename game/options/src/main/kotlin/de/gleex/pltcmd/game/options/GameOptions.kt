@@ -15,9 +15,6 @@ object GameOptions {
      */
     val displayRadioSignals: Property<Boolean> = createPropertyFrom(false)
 
-    /** The strength of a radio if not specified. */
-    const val defaultRadioPower = 5000.0
-
     /**
      * The amount of time between each tick.
      */

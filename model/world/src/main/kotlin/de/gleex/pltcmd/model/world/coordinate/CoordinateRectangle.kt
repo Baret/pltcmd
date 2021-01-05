@@ -6,7 +6,7 @@ package de.gleex.pltcmd.model.world.coordinate
 class CoordinateRectangle(
         val bottomLeftCoordinate: Coordinate,
         val topRightCoordinate: Coordinate) :
-        CoordinateArea(bottomLeftCoordinate..topRightCoordinate) {
+        CoordinateArea({ (bottomLeftCoordinate..topRightCoordinate).toSortedSet() }) {
 
     constructor(bottomLeftCoordinate: Coordinate, width: Int, height: Int) :
             this(bottomLeftCoordinate, bottomLeftCoordinate.movedBy(width - 1, height - 1))
@@ -15,6 +15,12 @@ class CoordinateRectangle(
         get() = topRightCoordinate.eastingFromLeft - bottomLeftCoordinate.eastingFromLeft + 1 // 1 = include start
     val height: Int
         get() = topRightCoordinate.northingFromBottom - bottomLeftCoordinate.northingFromBottom + 1 // 1 = include start
+
+    override val size: Int
+        get() = width * height
+
+    override val isEmpty: Boolean
+        get() = size == 0
 
     /** Return true if this rectangle is not smaller than the given size. */
     fun hasMinimumSize(minWidth: Int, minHeight: Int): Boolean {

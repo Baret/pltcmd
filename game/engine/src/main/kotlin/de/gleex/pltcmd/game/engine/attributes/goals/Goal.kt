@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import org.hexworks.amethyst.api.Command
+import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -10,7 +10,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * An element may have a _goal_ that is an abstraction layer on top of the basic capabilities of "a bunch of soldiers".
  *
  * It gets [step]ped until it [isFinished]. Goals may contain sub-goals so each goal can represent any
- * level of abstraction until it breaks down to a [Command] that needs to be executed by the entity at the lowest level.
+ * level of abstraction until it breaks down to a [Message] that needs to be executed by the entity at the lowest level.
  *
  * Sub-goals work like an ordered queue. The head of the queue  is the currently active sub-goal and is removed as soon
  * as it is finished. Then the next queued goal with [appendSubGoals] gets active (FIFO, first-in-first-out).
@@ -35,19 +35,19 @@ abstract class Goal(vararg subGoals: Goal) {
     }
 
     /**
-     * Advances this goal by one step. It may return a command that needs to be executed by the element.
+     * Advances this goal by one step. It may return a message that needs to be executed by the element.
      *
-     * It should not call execute/sendCommand directly. At most this method might set attributes.
+     * It should not call receive/sendMessage directly. At most this method might set attributes.
      *
      * The default implementation simply advances the sub-goals by calling [stepSubGoals].
      */
-    open fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> =
+    open fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> =
             stepSubGoals(element, context)
 
     /**
      * Calls [step] on the next unfinished sub-goal. All finished sub-goals are removed first.
      */
-    protected fun stepSubGoals(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
+    protected fun stepSubGoals(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         removeUpcomingSubGoalsThatAreFinished(element)
         return subGoals
                 .firstOrNull()

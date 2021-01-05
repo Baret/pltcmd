@@ -26,7 +26,9 @@ object UiOptions {
      */
     const val SIDEBAR_WIDTH = 33
 
+    /** visible map width + decorations */
     const val MAP_VIEW_WIDTH = 53
+    /** visible map height + decorations */
     const val MAP_VIEW_HEIGHT = 53
 
     const val WINDOW_WIDTH = MAP_VIEW_WIDTH + (2 * SIDEBAR_WIDTH)

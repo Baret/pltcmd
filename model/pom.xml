@@ -17,9 +17,10 @@
     <modules>
         <module>elements</module>
         <module>mapgeneration</module>
-        <module>radio</module>
+        <module>communication</module>
         <module>world</module>
         <module>combat</module>
+        <module>signals</module>
     </modules>
 
     <dependencyManagement>
@@ -42,12 +43,17 @@
             </dependency>
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
-                <artifactId>radio</artifactId>
+                <artifactId>communication</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
                 <artifactId>world</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model.signals</groupId>
+                <artifactId>radio</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- other internal projects -->

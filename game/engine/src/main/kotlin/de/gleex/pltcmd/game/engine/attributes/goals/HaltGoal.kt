@@ -5,7 +5,7 @@ import de.gleex.pltcmd.game.engine.attributes.flags.Halted
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.extensions.addIfMissing
 import de.gleex.pltcmd.game.engine.extensions.hasAttribute
-import org.hexworks.amethyst.api.Command
+import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**
@@ -28,7 +28,7 @@ class HaltGoal : Goal() {
             started && element.hasAttribute(Halted::class)
                     .not()
 
-    override fun step(element: ElementEntity, context: GameContext): Maybe<Command<*, GameContext>> {
+    override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         started = true
         element.addIfMissing(Halted)
         return Maybe.empty()
