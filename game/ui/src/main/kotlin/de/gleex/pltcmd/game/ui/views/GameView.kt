@@ -7,6 +7,7 @@ import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.options.UiOptions.MAP_VIEW_HEIGHT
 import de.gleex.pltcmd.game.options.UiOptions.WINDOW_HEIGHT
 import de.gleex.pltcmd.game.options.UiOptions.WINDOW_WIDTH
+import de.gleex.pltcmd.game.sound.speech.Speaker
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.components.CustomComponent
 import de.gleex.pltcmd.game.ui.components.InfoSidebar
@@ -18,6 +19,8 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpenin
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.util.events.globalEventBus
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -120,12 +123,17 @@ class GameView(
 
     private fun LogArea.logRadioCalls() {
         globalEventBus.subscribeToBroadcasts { event: BroadcastEvent ->
-            val transmission = event.transmission
-            val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
-            if (transmission.isOpening) {
-                addHeader(message, false)
-            } else {
-                addParagraph(message, false, 5)
+            runBlocking {
+                val transmission = event.transmission
+                val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
+                launch {
+                    Speaker.say(transmission.message)
+                }
+                if (transmission.isOpening) {
+                    addHeader(message, false)
+                } else {
+                    addParagraph(message, false, 5)
+                }
             }
         }
     }

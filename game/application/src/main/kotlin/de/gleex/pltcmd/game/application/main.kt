@@ -7,6 +7,7 @@ import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.element
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.sound.speech.Speaker
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.mapgeneration.MapGenerationProgressController
@@ -22,6 +23,7 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.toSectorOrigin
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.SwingApplications
@@ -32,9 +34,11 @@ import org.hexworks.zircon.api.screen.Screen
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
+@ExperimentalCoroutinesApi
 private val log = LoggerFactory.getLogger(::main::class)
 private val random = Random(GameOptions.MAP_SEED)
 
+@ExperimentalCoroutinesApi
 fun main() {
     Main().run()
 }
@@ -42,6 +46,7 @@ fun main() {
 /**
  * Setups, starts and runs the game.
  */
+@ExperimentalCoroutinesApi
 open class Main {
 
     /**
@@ -49,6 +54,8 @@ open class Main {
      */
     open fun run() {
         val application = SwingApplications.startApplication(UiOptions.buildAppConfig())
+
+        Speaker.startup()
 
         val tileGrid = application.tileGrid
         val screen = tileGrid.toScreen()

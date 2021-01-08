@@ -1,6 +1,10 @@
 target/
 logs/
 
+log/
+logs/
+*.wav
+
 # IntelliJ
 .DS_Store
 .idea
