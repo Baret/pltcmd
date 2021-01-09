@@ -39,6 +39,10 @@ val CommunicatingEntity.inConversationWith: ObservableValue<Maybe<CallSign>>
 val CommunicatingEntity.isTransmitting
     get() = communicator.inConversationWith.value.isPresent
 
+/** The name under which this entity identifies itself when communicating by radio */
+val CommunicatingEntity.radioCallSign: CallSign
+    get() = communicator.callSign
+
 /**
  * Queues the given conversation.
  */

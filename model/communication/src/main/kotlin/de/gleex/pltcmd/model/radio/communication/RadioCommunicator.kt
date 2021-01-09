@@ -37,6 +37,8 @@ class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
             receiver.radioContext = value
         }
 
+    val callSign = sender.callSign
+
     /**
      * This property is used if multiple transmissions are received to separate the active and delayed conversations.
      * TODO is visible as a debug feature for the test UI, might be reduced later
