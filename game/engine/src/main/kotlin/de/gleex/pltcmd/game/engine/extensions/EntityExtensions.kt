@@ -104,12 +104,10 @@ internal inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity
  * **This function does an unchecked cast!**
  */
 internal inline fun <E : AnyGameEntity, reified T : EntityType> AnyGameEntity.castTo(invocation: (E) -> Unit) =
-    if (type is T) {
-        @Suppress("UNCHECKED_CAST")
-        invocation(this as E)
-    } else {
-        log.warn("$this can not be cast to an entity of type ${T::class} because it has type ${type::class}")
-    }
+    castTo<E, T, Unit>(
+        invocation,
+        { log.warn("$it can not be cast to an entity of type ${T::class} because it has type ${it.type::class}") }
+    )
 
 /**
  * This function is handy for [Behavior]s that send messages to the entity. It works like [castTo] except
@@ -136,7 +134,6 @@ internal suspend inline fun <E : AnyGameEntity, reified T : EntityType>
         log.warn("$this can not be cast to an entity of type ${T::class} because it has type ${type::class}")
         false
     }
-
 
 /** The unique name of the entity if it has one or something else to identify the object in the logs */
 internal val AnyGameEntity.logIdentifier: String
