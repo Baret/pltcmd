@@ -73,7 +73,7 @@ internal inline fun <reified F : FacetWithContext<GameContext>> AnyGameEntity.ad
  * **This functions should not be used directly!** Instead every entity type/typealias should
  * have its own `asSomeEntity()` function!
  *
- * **This function does an unchecked cast!**
+ * This function does a cast based on the entity type. **So make sure that [E] is an entity with [EntityType] [T]!**
  *
  * @param E the type this entity is cast to
  * @param T when this entity has this [EntityType] it will be cast without checking
@@ -101,7 +101,11 @@ internal inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity
  * **This functions should not be used directly!** Instead every entity type/typealias should
  * have its own `asSomeEntity()` function!
  *
- * **This function does an unchecked cast!**
+ * This function does a cast based on the entity type. **So make sure that [E] is an entity with [EntityType] [T]!**
+ *
+ * @param E the type this entity is cast to
+ * @param T when this entity has this [EntityType] it will be cast without checking
+ * @param invocation invoked with this entity as parameter when the type matches [T]
  */
 internal inline fun <E : AnyGameEntity, reified T : EntityType> AnyGameEntity.castTo(invocation: (E) -> Unit) =
     castTo<E, T, Unit>(
@@ -117,7 +121,7 @@ internal inline fun <E : AnyGameEntity, reified T : EntityType> AnyGameEntity.ca
  * **This functions should not be used directly!** Instead every entity type/typealias should
  * have its own `asSomeEntity()` function!
  *
- * **This function does an unchecked cast!**
+ * This function does a cast based on the entity type. **So make sure that [E] is an entity with [EntityType] [T]!**
  *
  * @return false when this entity is NOT of type [T]. The result of [invocation] otherwise.
  *
