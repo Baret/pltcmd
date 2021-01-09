@@ -76,7 +76,7 @@ class ElementCommandFragment(
                         .build()
                         .apply {
                             onActivated {
-                                sendConversation(Halt.create(hq.callSign, selectedCallsign.value))
+                                sendConversation(Halt.create(hq.radioCallSign, selectedCallsign.value))
                             }
                         })
                 addComponent(Components.button()
@@ -101,7 +101,7 @@ class ElementCommandFragment(
             }
 
     private fun sendOrder(order: Conversations.Orders) =
-            sendConversation(order.create(hq.callSign, selectedCallsign.value, selectedDestination.value))
+            sendConversation(order.create(hq.radioCallSign, selectedCallsign.value, selectedDestination.value))
 
     private fun sendConversation(conversation: Conversation) {
         log.debug("Sending conversation to ${conversation.receiver}: $conversation")
