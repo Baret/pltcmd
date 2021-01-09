@@ -1,9 +1,7 @@
 package de.gleex.pltcmd.game.engine.extensions
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.ElementType
-import de.gleex.pltcmd.game.engine.entities.types.callsign
+import de.gleex.pltcmd.game.engine.entities.types.*
 import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.amethyst.api.extensions.FacetWithContext
@@ -142,8 +140,9 @@ internal suspend inline fun <E : AnyGameEntity, reified T : EntityType>
 
 /** The unique name of the entity if it has one or something else to identify the object in the logs */
 internal val AnyGameEntity.logIdentifier: String
-// hopefully this generic top level code will not produce a dependency loop on the specific sub types ¯\_(ツ)_/¯
+    // hopefully this generic top level code will not produce a dependency loop on the specific sub types ¯\_(ツ)_/¯
     get() = when (type) {
-        ElementType -> (this as ElementEntity).callsign.name
-        else        -> type.name + System.identityHashCode(this)
+        is ElementType   -> (this as ElementEntity).callsign.name
+        is Communicating -> (this as CommunicatingEntity).radioCallSign.name
+        else             -> type.name + System.identityHashCode(this)
     }
