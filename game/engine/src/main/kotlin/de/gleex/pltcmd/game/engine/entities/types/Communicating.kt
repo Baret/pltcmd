@@ -1,10 +1,7 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
-import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
-import de.gleex.pltcmd.game.engine.extensions.castTo
-import de.gleex.pltcmd.game.engine.extensions.getAttribute
+import de.gleex.pltcmd.game.engine.extensions.*
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
@@ -46,8 +43,7 @@ val CommunicatingEntity.isTransmitting
  */
 // TODO: Instantly start the conversation if possible. Currently it takes 2 ticks until the conversation actually starts
 internal fun CommunicatingEntity.startConversation(conversation: Conversation) {
-    // TODO: Use logIdentifier
-    log.debug("${asElementEntity({ it.callsign }, { it.name })} starting conversation $conversation")
+    log.debug("$logIdentifier starting conversation $conversation")
     communicator.startConversation(conversation)
 }
 

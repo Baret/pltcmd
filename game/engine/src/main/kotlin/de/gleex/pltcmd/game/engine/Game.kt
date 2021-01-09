@@ -3,9 +3,13 @@ package de.gleex.pltcmd.game.engine
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.toEntity
-import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.FOBEntity
+import de.gleex.pltcmd.game.engine.entities.types.asElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.onDefeat
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.Affiliation
@@ -61,10 +65,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     }
 
     private fun removeEntity(entity: AnyGameEntity) {
-        val entityName: String = entity.asElementEntity(
-            { it.callsign.name },
-            { it.name })
-        log.debug("Removing entity $entityName from game")
+        log.debug("Removing entity ${entity.logIdentifier} from game")
         allEntities.remove(entity)
         engine.removeEntity(entity)
     }

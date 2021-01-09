@@ -7,6 +7,7 @@ import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
+import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.UpdatePosition
 import de.gleex.pltcmd.game.options.GameConstants
 import org.hexworks.amethyst.api.base.BaseBehavior
@@ -38,31 +39,22 @@ object MovingForOneMinute :
         context: GameContext
     ): Boolean {
         return if (entity.canNotMove) {
-            entity.asElementEntity { element ->
-                log.debug("${element.callsign} can not move currently! The current speed is even ${entity.currentSpeedInKph} km/h")
-            }
+            log.debug("${entity.logIdentifier} can not move currently! The current speed is even ${entity.currentSpeedInKph} km/h")
             return false
         } else if (entity.movementPath.isNotEmpty()) {
             // TODO: Might be more accurate by re-calculating currentSpeedInKph after each tile (we might be slower there)
             val travelDistanceInTiles = entity.currentSpeedInKph / GameConstants.Speed.speedForOneTileInOneTickInKph
             entity.movementProgress += travelDistanceInTiles
-            // TODO: Use logIdentifier
-            entity.asElementEntity { element ->
-                log.debug("${element.callsign} travels $travelDistanceInTiles tiles/tick with a base speed of ${element.baseSpeedInKph} and current speed of ${element.currentSpeedInKph} km/h. New progress: ${element.movementProgress}")
-            }
+            log.debug("${entity.logIdentifier} travels $travelDistanceInTiles tiles/tick with a base speed of ${entity.baseSpeedInKph} and current speed of ${entity.currentSpeedInKph} km/h. New progress: ${entity.movementProgress}")
             while (entity.movementProgress.hasTilesToAdvance() && entity.movementPath.isNotEmpty()) {
                 val oldPosition = entity.position.value
                 val newPosition = entity.movementPath.pop()
                 entity.receiveMessage(UpdatePosition(oldPosition, newPosition, context, entity))
                 if (oldPosition != entity.position.value) {
-                    entity.asElementEntity { element ->
-                        log.debug("${element.callsign} successfully moved from $oldPosition to ${entity.position}")
-                    }
+                    log.debug("${entity.logIdentifier} successfully moved from $oldPosition to ${entity.position}")
                     entity.movementProgress.advance()
                 } else {
-                    entity.asElementEntity { element ->
-                        log.debug("${element.callsign} was stopped by something! Progress left: ${entity.movementProgress}")
-                    }
+                    log.debug("${entity.logIdentifier} was stopped by something! Progress left: ${entity.movementProgress}")
                     break
                 }
             }

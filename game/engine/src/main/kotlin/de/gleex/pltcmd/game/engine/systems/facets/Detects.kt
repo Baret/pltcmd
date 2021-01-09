@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.DetectEntities
 import de.gleex.pltcmd.model.elements.Affiliation
 import org.hexworks.amethyst.api.Consumed
@@ -46,8 +47,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
                 }
             },
             whenOther = {
-                // TODO: Use logIdentifier
-                log.debug("${source.name} is not an element entity and thus not detecting anything!")
+                log.debug("${source.logIdentifier} is not an element entity and thus not detecting anything!")
             }
         )
         return Consumed

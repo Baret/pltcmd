@@ -3,9 +3,12 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
 import de.gleex.pltcmd.game.engine.attributes.flags.Transmitting
-import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.engine.entities.types.CommunicatingEntity
+import de.gleex.pltcmd.game.engine.entities.types.asCommunicatingEntity
+import de.gleex.pltcmd.game.engine.entities.types.isTransmitting
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.addIfMissing
+import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -24,27 +27,13 @@ object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class)
                 communicating.findAttribute(Transmitting::class)
                     .fold(whenEmpty = {
                         if (communicating.isTransmitting) {
-                            // TODO: Use logIdentifier
-                            log.debug(
-                                "${
-                                    communicating.asElementEntity(
-                                        { it.callsign },
-                                        { it.name })
-                                } is transmitting, adding attribute."
-                            )
+                            log.debug("${communicating.logIdentifier} is transmitting, adding attribute.")
                             communicating.addIfMissing(Transmitting)
                             updated = true
                         }
                     }, whenPresent = {
                         if (communicating.isTransmitting.not()) {
-                            // TODO: Use logIdentifier
-                            log.debug(
-                                "${
-                                    communicating.asElementEntity(
-                                        { it.callsign },
-                                        { it.name })
-                                } stopped transmitting, removing attribute."
-                            )
+                            log.debug("${communicating.logIdentifier} stopped transmitting, removing attribute.")
                             communicating.asMutableEntity()
                                 .removeAttribute(Transmitting)
                             updated = true
