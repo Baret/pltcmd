@@ -55,7 +55,7 @@ data class SignalStrength(
      */
     fun isAny() = strength > MIN_ALLOWED_VALUE
 
-    override fun compareTo(other: SignalStrength): Int = strength.compareTo(other.strength)
+    override fun compareTo(other: SignalStrength): Int = compareTo(other.strength)
     operator fun compareTo(other: Double): Int = strength.compareTo(other)
 
     /**
