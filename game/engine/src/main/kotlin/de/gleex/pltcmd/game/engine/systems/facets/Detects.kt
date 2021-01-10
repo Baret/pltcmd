@@ -17,7 +17,7 @@ import org.hexworks.amethyst.api.base.BaseFacet
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
- * Handles the [DetectEntities] command. It gets a set of possibly visible entities and calculates the actual
+ * Handles the [DetectEntities] message. It gets a set of possibly visible entities and calculates the actual
  * visibility using source's vision.
  */
 object Detects : BaseFacet<GameContext, DetectEntities>(
