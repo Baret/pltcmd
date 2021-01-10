@@ -54,9 +54,9 @@ internal fun SeeingEntity.rememberContact(entity: PositionableEntity, visibility
 
 /** Forgets all known contacts and returns them. */
 internal fun SeeingEntity.forgetAll(): Map<PositionableEntity, Visibility> {
-    val lastSeen = contacts.getAll()
+    val lastSeen = contacts.all
     contacts.clear()
     return lastSeen
 }
 
-internal fun SeeingEntity.visibleEntities(): EntitySet<Positionable> = contacts.getAll().keys.toEntitySet()
+internal fun SeeingEntity.visibleEntities(): EntitySet<Positionable> = contacts.all.keys.toEntitySet()

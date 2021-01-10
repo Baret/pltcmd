@@ -8,10 +8,9 @@ import org.hexworks.amethyst.api.base.BaseAttribute
 class ContactsAttribute : BaseAttribute() {
     private val visibleEntities = mutableMapOf<PositionableEntity, Visibility>()
 
-    fun getAll(): Map<PositionableEntity, Visibility> {
+    val all: Map<PositionableEntity, Visibility>
         // create copy so changes are not visible
-        return visibleEntities.toMap()
-    }
+        get() = visibleEntities.toMap()
 
     fun add(entity: PositionableEntity, visibility: Visibility) {
         visibleEntities[entity] = visibility
