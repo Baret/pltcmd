@@ -19,7 +19,7 @@ import org.hexworks.amethyst.api.Message
 data class DetectedEntity(
     val entity: PositionableEntity,
     val visibility: Visibility,
-    val previousVisibility: Visibility,
+    val previousVisibility: Visibility = Visibility.NONE,
     override val source: SeeingEntity,
     override val context: GameContext
 ) : Message<GameContext> {
