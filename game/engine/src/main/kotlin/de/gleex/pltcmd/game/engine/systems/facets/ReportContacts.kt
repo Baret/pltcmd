@@ -22,7 +22,8 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
 
     private val log = LoggerFactory.getLogger(ReportContacts::class)
 
-    override suspend fun receive(detected: DetectedEntity): Response {
+    override suspend fun receive(message: DetectedEntity): Response {
+        val detected = message
         return if (!detected.increasedVisibility || detected.source.type !is Communicating) {
             Pass
         } else {
