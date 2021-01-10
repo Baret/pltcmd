@@ -127,7 +127,7 @@ open class Main {
     protected open fun createHq(visibleSector: Sector, game: Game, gameWorld: GameWorld): ElementEntity {
         val hq = visibleSector.createFriendly(
                 Elements.riflePlatoon.new()
-                        .apply { callSign = CallSign("HQ") },
+                        .apply { callSign = CallSign(GameOptions.commandersCallSign) },
                 game,
                 gameWorld,
                 visibleSector.origin.movedBy(

@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity
+import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
@@ -68,11 +69,11 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
     }
 
     fun sendReport(reporter: CommunicatingEntity, what: String, at: Coordinate, context: GameContext) {
-        // TODO where does the receiver call sign come from? Is it the fixed superior element (of the faction #62)? Remembered from last conversation?
+        // TODO report to own faction #62 only. Does non player controlled elements need contact reports?
         if ((reporter as ElementEntity).affiliation != Affiliation.Friendly) {
             return
         }
-        val hq = CallSign("HQ")
+        val hq = CallSign(GameOptions.commandersCallSign)
         val report: Conversation = Conversations.Messages.contact(reporter.radioCallSign, hq, what, at)
         reporter.startConversation(report)
     }
