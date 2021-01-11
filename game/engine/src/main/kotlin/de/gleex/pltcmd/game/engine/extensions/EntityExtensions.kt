@@ -139,11 +139,13 @@ internal suspend inline fun <E : AnyGameEntity, reified T : EntityType>
         false
     }
 
-/** The unique name of the entity if it has one or something else to identify the object in the logs */
+/** The unique name of this entity if it has one or something else to identify the object in the logs */
+@Suppress("UNCHECKED_CAST")
 internal val AnyGameEntity.logIdentifier: String
     // hopefully this generic top level code will not produce a dependency loop on the specific sub types ¯\_(ツ)_/¯
     get() = when (type) {
-        is ElementType   -> (this as ElementEntity).callsign.name
+        is FOBType       -> "FOB ${(this as FOBEntity).radioCallSign}"
+        is ElementType   -> "Element ${(this as ElementEntity).callsign.name}"
         is Communicating -> (this as CommunicatingEntity).radioCallSign.name
-        else             -> type.name + System.identityHashCode(this)
+        else             -> "${type.name}_${System.identityHashCode(this)}"
     }
