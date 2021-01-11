@@ -114,10 +114,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
      * Creates a main base in the given sector.
      */
     fun newHQIn(sector: Sector): FOBEntity {
-        val center = sector.origin.movedBy(
-            Sector.TILE_COUNT / 2,
-            Sector.TILE_COUNT / 2
-        )
+        val center = sector.centerCoordinate
         // find the highest terrain in a 5*5 area in the center of the sector
         val centerArea = CoordinateRectangle(center.movedBy(-2, -2), 5, 5)
         val position: Coordinate = (sector intersect centerArea)

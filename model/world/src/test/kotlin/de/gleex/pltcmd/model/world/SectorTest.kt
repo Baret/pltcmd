@@ -34,6 +34,15 @@ class SectorTest : WordSpec() {
                     }
                 }
             }
+
+            val expectedCenter = Coordinate(175, 725)
+            "have $expectedCenter as center coordinate" {
+                sector.centerCoordinate shouldBe expectedCenter
+            }
+
+            "have the the correct center world tile" {
+                sector.center shouldBe sector[expectedCenter].get()
+            }
         }
 
         "A sector" should {

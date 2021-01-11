@@ -9,6 +9,7 @@ import kotlin.random.Random
  * A sector has 50 by 50 [WorldTile]s (it is a square).
  */
 class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<Sector>, WorldArea(tiles) {
+
     companion object {
         /** edge length of a sector (in each directon of the map rectangle) */
         const val TILE_COUNT = 50
@@ -29,6 +30,19 @@ class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<S
             throw IllegalArgumentException("All tiles must be part of the same sector! Given: $tiles")
         }
     }
+
+    /**
+     * The [Coordinate] in the center of this sector.
+     */
+    val centerCoordinate: Coordinate = origin.movedBy(
+        TILE_COUNT / 2,
+        TILE_COUNT / 2
+    )
+
+    /**
+     * The [WorldTile] at the [center].
+     */
+    val center: WorldTile = this[centerCoordinate].get()
 
     /**
      * Returns a random [Coordinate] that lies inside this sector.
