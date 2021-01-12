@@ -135,7 +135,7 @@ internal suspend inline fun <E : AnyGameEntity, reified T : EntityType>
         @Suppress("UNCHECKED_CAST")
         invocation(this as E)
     } else {
-        log.warn("$this can not be cast to an entity of type ${T::class} because it has type ${type::class}")
+        log.warn("$logIdentifier can not be cast to an entity of type ${T::class} because it has type ${type::class}")
         false
     }
 
