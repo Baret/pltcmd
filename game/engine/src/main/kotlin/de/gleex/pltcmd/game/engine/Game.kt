@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.engine
 
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.EntitySet
+import de.gleex.pltcmd.game.engine.entities.newBaseAt
 import de.gleex.pltcmd.game.engine.entities.toEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.FOBEntity
@@ -74,10 +75,10 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
      * Adds a new element in the given sector and returns it.
      */
     fun addElementInSector(
-            sector: Sector,
-            element: CommandingElement,
-            positionInSector: Coordinate = sector.randomCoordinate(random),
-            affiliation: Affiliation = Affiliation.Unknown
+        sector: Sector,
+        element: CommandingElement,
+        positionInSector: Coordinate = sector.randomCoordinate(random),
+        affiliation: Affiliation = Affiliation.Unknown
     ): ElementEntity {
         val elementPosition = positionInSector.toProperty()
         val radioSender = RadioSender(elementPosition, RadioPower(), world)
@@ -108,23 +109,28 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
      * @return a [Maybe] containing the first [ElementEntity] found at the given location.
      */
     fun firstElementAt(location: Coordinate): Maybe<ElementEntity> =
-            allEntities.firstElementAt(location)
+        allEntities.firstElementAt(location)
 
     /**
      * Creates a main base in the given sector.
      */
-    fun newHQIn(sector: Sector): FOBEntity {
-        val center = sector.centerCoordinate
-        // find the highest terrain in a 5*5 area in the center of the sector
-        val centerArea = CoordinateRectangle(center.movedBy(-2, -2), 5, 5)
-        val position: Coordinate = (sector intersect centerArea)
-            .tiles
-            .maxByOrNull { it.terrain.height }
-            ?.coordinate!!
-        return EntityFactory.newBaseAt(position, world)
+    fun newHQIn(sector: Sector): FOBEntity =
+        world
+            .newBaseAt(sector.bestFobLocation)
             .also {
                 addEntity(it)
             }
-    }
 
+    /**
+     * Finds the highest [Coordinate] in the center area of this sector.
+     */
+    private val Sector.bestFobLocation: Coordinate
+        get() {
+            // find the highest terrain in a 5*5 area in the center of the sector
+            val centerArea = CoordinateRectangle(centerCoordinate.movedBy(-2, -2), 5, 5)
+            return (this intersect centerArea)
+                .tiles
+                .maxByOrNull { it.terrain.height }
+                ?.coordinate!!
+        }
 }
