@@ -120,8 +120,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
         val position: Coordinate = (sector intersect centerArea)
             .tiles
             .maxByOrNull { it.terrain.height }
-            ?.coordinate
-            ?: center
+            ?.coordinate!!
         return EntityFactory.newBaseAt(position, world)
             .also {
                 addEntity(it)
