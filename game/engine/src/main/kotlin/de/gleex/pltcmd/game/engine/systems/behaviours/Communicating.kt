@@ -36,7 +36,7 @@ internal object Communicating : BaseBehavior<GameContext>(RadioAttribute::class)
 
 }
 
-class BaseRadioContext(base: FOBEntity) : RadioContext {
+private class BaseRadioContext(base: FOBEntity) : RadioContext {
     override val currentLocation: Coordinate = base.currentPosition
 
     override fun newTransmissionContext(): TransmissionContext {
@@ -44,13 +44,14 @@ class BaseRadioContext(base: FOBEntity) : RadioContext {
     }
 
     override fun executeOrder(order: Conversations.Orders, orderedBy: CallSign, orderedTo: Coordinate?) {
+        // TODO: Add the option to reject an order (check if the order can be executed)
         throw IllegalStateException("FOB can not execute any order.")
     }
 
 }
 
 /** [RadioContext] that uses an [ElementEntity] for interactions */
-class ElementRadioContext(private val element: ElementEntity, private val context: GameContext) : RadioContext {
+private class ElementRadioContext(private val element: ElementEntity, private val context: GameContext) : RadioContext {
     override val currentLocation: Coordinate
         get() = element.currentPosition
 
@@ -65,6 +66,8 @@ class ElementRadioContext(private val element: ElementEntity, private val contex
         // TODO use own scope for sending messages async!?
         runBlocking {
             // executed on next tick!
+            // TODO: The message contains a context from "last tick" when it is being processed. Maybe let the context create a "future" instance?
+            // ...or simply execute the message directly? A behaviour should not use sendMessage at all!
             element.sendMessage(OrderMessage(order, orderedBy, orderedTo, context, element))
         }
     }

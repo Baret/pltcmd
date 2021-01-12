@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.engine.messages
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.CommunicatingEntity
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -14,7 +14,7 @@ data class OrderMessage(
         val orderedTo: Coordinate?,
         override val context: GameContext,
         /**
-         * The [ElementEntity] that has to execute this order.
+         * The [CommunicatingEntity] that has to execute this order.
          */
-        override val source: ElementEntity
+        override val source: CommunicatingEntity
 ) : Message<GameContext>

@@ -55,7 +55,8 @@ object EntityFactory {
             )
             facets(
                 ConversationSender,
-                Detects
+                Detects,
+                ExecuteOrder,
             )
         }
 
@@ -63,54 +64,54 @@ object EntityFactory {
      * Creates a new entity representing a [CommandingElement] in the game world.
      */
     fun newElement(
-            element: CommandingElement,
-            initialPosition: Property<Coordinate>,
-            affiliation: Affiliation = Affiliation.Unknown,
-            radioSender: RadioSender
+        element: CommandingElement,
+        initialPosition: Property<Coordinate>,
+        affiliation: Affiliation = Affiliation.Unknown,
+        radioSender: RadioSender
     ): ElementEntity {
-        val visualRange = if(element.kind == ElementKind.Aerial) {
+        val visualRange = if (element.kind == ElementKind.Aerial) {
             VisionPower(25.0)
         } else {
             VisionPower(10.0)
         }
         val attributes: MutableList<Attribute> = mutableListOf(
-                CommandersIntent(),
-                ElementAttribute(element, affiliation),
-                PositionAttribute(initialPosition),
-                VisionAttribute(initialVision(visualRange)),
-                // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
-                RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
-                ShootersAttribute(element),
+            CommandersIntent(),
+            ElementAttribute(element, affiliation),
+            PositionAttribute(initialPosition),
+            VisionAttribute(initialVision(visualRange)),
+            // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
+            RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
+            ShootersAttribute(element),
 
-                MovementPath(),
-                MovementBaseSpeed(element),
-                MovementProgress()
+            MovementPath(),
+            MovementBaseSpeed(element),
+            MovementProgress()
         )
         // TODO: Make systems comparable so we do not need to make sure this if/else madness has the correct order
         // Lets say we have a speed limit for aerial elements (just for testing)
-        if(element.kind == ElementKind.Aerial) {
+        if (element.kind == ElementKind.Aerial) {
             attributes += MovementModifier.SpeedCap(18.0)
         }
 
         val behaviors: MutableList<Behavior<GameContext>> = mutableListOf(
-                IntentPursuing,
-                LookingAround,
-                MovingForOneMinute,
-                Communicating,
-                Fighting
+            IntentPursuing,
+            LookingAround,
+            MovingForOneMinute,
+            Communicating,
+            Fighting
         )
-        if(element.kind == ElementKind.Infantry) {
+        if (element.kind == ElementKind.Infantry) {
             behaviors.add(0, StopsWhileTransmitting)
         }
 
         val facets: MutableList<FacetWithContext<GameContext>> = mutableListOf(
-                Detects,
-                PathFinding,
-                ExecuteOrder,
-                ConversationSender,
-                PositionChanging
+            Detects,
+            PathFinding,
+            ExecuteOrder,
+            ConversationSender,
+            PositionChanging
         )
-        if(element.kind == ElementKind.Infantry) {
+        if (element.kind == ElementKind.Infantry) {
             facets.add(0, MakesSecurityHalts)
         }
         return newEntityOfType(ElementType) {
@@ -120,16 +121,25 @@ object EntityFactory {
         }
     }
 
-    fun newWanderingElement(element: CommandingElement, initialPosition: Property<Coordinate>, affiliation: Affiliation = Affiliation.Unknown, radioSender: RadioSender): ElementEntity =
-            newElement(element, initialPosition, affiliation, radioSender)
-                    .apply { addIfMissing(Wandering) }
+    fun newWanderingElement(
+        element: CommandingElement,
+        initialPosition: Property<Coordinate>,
+        affiliation: Affiliation = Affiliation.Unknown,
+        radioSender: RadioSender
+    ): ElementEntity =
+        newElement(element, initialPosition, affiliation, radioSender)
+            .apply { addIfMissing(Wandering) }
 
 }
 
 /**
  * Turns this [CommandingElement] into an entity using [EntityFactory.newElement].
  */
-fun CommandingElement.toEntity(elementPosition: Property<Coordinate>, affiliation: Affiliation, radioSender: RadioSender): ElementEntity {
+fun CommandingElement.toEntity(
+    elementPosition: Property<Coordinate>,
+    affiliation: Affiliation,
+    radioSender: RadioSender
+): ElementEntity {
     return EntityFactory.newElement(this, elementPosition, affiliation, radioSender)
 }
 
