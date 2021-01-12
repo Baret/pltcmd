@@ -110,7 +110,7 @@ internal inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity
 internal inline fun <E : AnyGameEntity, reified T : EntityType> AnyGameEntity.castTo(invocation: (E) -> Unit) =
     castTo<E, T, Unit>(
         invocation,
-        { log.warn("$it can not be cast to an entity of type ${T::class} because it has type ${it.type::class}") }
+        { log.warn("${it.logIdentifier} can not be cast to an entity of type ${T::class} because it has type ${it.type::class}") }
     )
 
 /**
