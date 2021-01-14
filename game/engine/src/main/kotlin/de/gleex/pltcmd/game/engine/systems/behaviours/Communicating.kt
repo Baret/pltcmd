@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
+import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.OrderMessage
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversations
@@ -36,7 +37,7 @@ internal object Communicating : BaseBehavior<GameContext>(RadioAttribute::class)
 
 }
 
-private class BaseRadioContext(base: FOBEntity) : RadioContext {
+private class BaseRadioContext(private val base: FOBEntity) : RadioContext {
     override val currentLocation: Coordinate = base.currentPosition
 
     override fun newTransmissionContext(): TransmissionContext {
@@ -45,7 +46,7 @@ private class BaseRadioContext(base: FOBEntity) : RadioContext {
 
     override fun executeOrder(order: Conversations.Orders, orderedBy: CallSign, orderedTo: Coordinate?) {
         // TODO: Add the option to reject an order (check if the order can be executed)
-        throw IllegalStateException("FOB can not execute any order.")
+        throw IllegalStateException("Communicating entity ${base.logIdentifier} is unable to execute orders.")
     }
 
 }
