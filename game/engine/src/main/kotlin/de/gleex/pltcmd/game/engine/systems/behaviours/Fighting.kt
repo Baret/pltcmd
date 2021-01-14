@@ -16,17 +16,13 @@ internal object Fighting :
 
     private val log = LoggerFactory.getLogger(Fighting::class)
 
-    override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        return entity.asElementEntity(
-            whenElement = {
-                attackNearbyEnemies(it, context)
-                true
-            },
-            whenOther = { false }
+    override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean =
+        entity.asElementEntity(
+            { attackNearbyEnemies(it, context) },
+            { false }
         )
-    }
 
-    fun attackNearbyEnemies(attacker: ElementEntity, context: GameContext) {
+    fun attackNearbyEnemies(attacker: ElementEntity, context: GameContext): Boolean =
         attacker
             .currentPosition
             .neighbors()
@@ -35,8 +31,9 @@ internal object Fighting :
             ?.let { enemyToAttack ->
                 log.info("${attacker.callsign} attacks ${enemyToAttack.callsign}")
                 attacker.attack(enemyToAttack, context.random)
+                true
             }
-    }
+            ?: false
 
     private fun ElementEntity.isEnemy(): Boolean =
         isAbleToFight && affiliation == Affiliation.Hostile
