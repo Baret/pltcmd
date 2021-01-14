@@ -19,12 +19,12 @@ internal object Communicating : BaseBehavior<GameContext>(RadioAttribute::class)
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         return entity.asCommunicatingEntity(
-            whenCommunicating = {
-                val radioCommunicator = it.communicator
+            whenCommunicating = { communicating ->
+                val radioCommunicator = communicating.communicator
                 @Suppress("UNCHECKED_CAST")
-                radioCommunicator.radioContext = when (entity.type) {
-                    ElementType -> ElementRadioContext(entity as ElementEntity, context)
-                    FOBType     -> BaseRadioContext(entity as FOBEntity)
+                radioCommunicator.radioContext = when (communicating.type) {
+                    ElementType -> ElementRadioContext(communicating as ElementEntity, context)
+                    FOBType     -> BaseRadioContext(communicating as FOBEntity)
                     else        -> return@asCommunicatingEntity false
                 }
                 radioCommunicator.proceedWithConversation()
