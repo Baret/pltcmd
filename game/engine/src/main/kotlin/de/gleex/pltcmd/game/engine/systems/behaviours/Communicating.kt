@@ -18,21 +18,19 @@ import kotlin.random.Random
 internal object Communicating : BaseBehavior<GameContext>(RadioAttribute::class) {
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        return entity.asCommunicatingEntity(
-            whenCommunicating = { communicating ->
-                val radioCommunicator = communicating.communicator
-                @Suppress("UNCHECKED_CAST")
-                radioCommunicator.radioContext = when (communicating.type) {
-                    ElementType -> ElementRadioContext(communicating as ElementEntity, context)
-                    FOBType     -> BaseRadioContext(communicating as FOBEntity)
-                    else        -> return@asCommunicatingEntity false
-                }
-                radioCommunicator.proceedWithConversation()
-                true
-            },
-            whenOther = {
-                false
-            })
+        return entity.asCommunicatingEntity { communicating ->
+            val radioCommunicator = communicating.communicator
+            @Suppress("UNCHECKED_CAST")
+            radioCommunicator.radioContext = when (communicating.type) {
+                ElementType -> ElementRadioContext(communicating as ElementEntity, context)
+                FOBType     -> BaseRadioContext(communicating as FOBEntity)
+                else        -> return@asCommunicatingEntity false
+            }
+            radioCommunicator.proceedWithConversation()
+            true
+        }.orElseGet {
+            false
+        }
     }
 
 }

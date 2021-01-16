@@ -57,5 +57,5 @@ internal fun CommunicatingEntity.startConversation(conversation: Conversation) {
  *
  * @param R the type that is returned by [whenCommunicating] or [whenOther]
  */
-fun <R> AnyGameEntity.asCommunicatingEntity(whenCommunicating: (CommunicatingEntity) -> R, whenOther: (AnyGameEntity) -> R): R =
-    castTo<CommunicatingEntity, Communicating, R>(whenCommunicating, whenOther)
+fun <R> AnyGameEntity.asCommunicatingEntity(whenCommunicating: (CommunicatingEntity) -> R): Maybe<R> =
+    tryCastTo<CommunicatingEntity, Communicating, R>(whenCommunicating)

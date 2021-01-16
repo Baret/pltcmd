@@ -21,27 +21,27 @@ object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class)
     private val log = LoggerFactory.getLogger(StopsWhileTransmitting::class)
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        return entity.asCommunicatingEntity(
-            whenCommunicating = { communicating ->
-                var updated = false
-                communicating.findAttribute(Transmitting::class)
-                    .fold(whenEmpty = {
-                        if (communicating.isTransmitting) {
-                            log.debug("${communicating.logIdentifier} is transmitting, adding attribute.")
-                            communicating.addIfMissing(Transmitting)
-                            updated = true
-                        }
-                    }, whenPresent = {
-                        if (communicating.isTransmitting.not()) {
-                            log.debug("${communicating.logIdentifier} stopped transmitting, removing attribute.")
-                            communicating.asMutableEntity()
-                                .removeAttribute(Transmitting)
-                            updated = true
-                        }
-                    })
-                updated
-            },
-            whenOther = { false })
+        return entity.asCommunicatingEntity { communicating ->
+            var updated = false
+            communicating.findAttribute(Transmitting::class)
+                .fold(whenEmpty = {
+                    if (communicating.isTransmitting) {
+                        log.debug("${communicating.logIdentifier} is transmitting, adding attribute.")
+                        communicating.addIfMissing(Transmitting)
+                        updated = true
+                    }
+                }, whenPresent = {
+                    if (communicating.isTransmitting.not()) {
+                        log.debug("${communicating.logIdentifier} stopped transmitting, removing attribute.")
+                        communicating.asMutableEntity()
+                            .removeAttribute(Transmitting)
+                        updated = true
+                    }
+                })
+            updated
+        }.orElseGet {
+            false
+        }
     }
 
 }

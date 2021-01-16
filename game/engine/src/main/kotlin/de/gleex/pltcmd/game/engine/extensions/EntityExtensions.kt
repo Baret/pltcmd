@@ -6,6 +6,7 @@ import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.amethyst.api.extensions.FacetWithContext
 import org.hexworks.amethyst.api.system.Behavior
+import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.reflect.KClass
 
@@ -67,8 +68,8 @@ internal inline fun <reified F : FacetWithContext<GameContext>> AnyGameEntity.ad
 }
 
 /**
- * Casts this entity to [E] when it's type is [T] an provides it to [whenTrue]. Else it is provided
- * to [whenFalse] as is.
+ * Casts this entity to [E] when it's type is [T] and provides it to [whenType]. Else return
+ * [Maybe.empty].
  *
  * **This functions should not be used directly!** Instead every entity type/typealias should
  * have its own `asSomeEntity()` function!
@@ -77,44 +78,20 @@ internal inline fun <reified F : FacetWithContext<GameContext>> AnyGameEntity.ad
  *
  * @param E the type this entity is cast to
  * @param T when this entity has this [EntityType] it will be cast without checking
- * @param R the return type of [whenTrue] and [whenFalse]
- * @param whenTrue invoked with this entity as parameter when the type matches [T]
- * @param whenFalse invoked with this entity as parameter when the type does not match [T]
+ * @param R the return type of [whenType]
+ * @param whenType invoked with this entity as parameter when the type matches [T]
  */
-internal inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity.castTo(
-    whenTrue: (E) -> R,
-    whenFalse: (AnyGameEntity) -> R
-): R {
-    return if (type is T) {
+internal inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity.tryCastTo(whenType: (E) -> R): Maybe<R> =
+    if (type is T) {
         @Suppress("UNCHECKED_CAST")
-        whenTrue(this as E)
+        val result = whenType(this as E)
+        Maybe.of(result)
     } else {
-        whenFalse(this)
+        Maybe.empty()
     }
-}
 
 /**
- * Casts this entity to [E] when it's type is [T] and provides it to [invocation]. When the type does
- * not match a warning will be logged because when calling this function you should be rather sure that
- * this entity has the correct type.
- *
- * **This functions should not be used directly!** Instead every entity type/typealias should
- * have its own `asSomeEntity()` function!
- *
- * This function does a cast based on the entity type. **So make sure that [E] is an entity with [EntityType] [T]!**
- *
- * @param E the type this entity is cast to
- * @param T when this entity has this [EntityType] it will be cast without checking
- * @param invocation invoked with this entity as parameter when the type matches [T]
- */
-internal inline fun <E : AnyGameEntity, reified T : EntityType> AnyGameEntity.castTo(invocation: (E) -> Unit) =
-    castTo<E, T, Unit>(
-        invocation,
-        { log.warn("${it.logIdentifier} can not be cast to an entity of type ${T::class} because it has type ${it.type::class}") }
-    )
-
-/**
- * This function is handy for [Behavior]s that send messages to the entity. It works like [castTo] except
+ * This function is handy for [Behavior]s that send messages to the entity. It works like [tryCastTo] except
  * that it gets a suspend function as parameter. [invocation] may call
  * [org.hexworks.amethyst.api.entity.Entity.receiveMessage] without leaving the current coroutine context.
  *
@@ -125,18 +102,16 @@ internal inline fun <E : AnyGameEntity, reified T : EntityType> AnyGameEntity.ca
  *
  * @return false when this entity is NOT of type [T]. The result of [invocation] otherwise.
  *
- * @see castTo
+ * @see tryCastTo
  */
-internal suspend inline fun <E : AnyGameEntity, reified T : EntityType>
-        AnyGameEntity.castToSuspending(
-            crossinline invocation: suspend (E) -> Boolean
-        ): Boolean =
+internal suspend inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity.castToSuspending(crossinline invocation: suspend (E) -> R): Maybe<R> =
     if (type is T) {
         @Suppress("UNCHECKED_CAST")
-        invocation(this as E)
+        val result = invocation(this as E)
+        Maybe.of(result)
     } else {
         log.warn("$logIdentifier can not be cast to an entity of type ${T::class} because it has type ${type::class}")
-        false
+        Maybe.empty()
     }
 
 /** The unique name of this entity if it has one or something else to identify the object in the logs */

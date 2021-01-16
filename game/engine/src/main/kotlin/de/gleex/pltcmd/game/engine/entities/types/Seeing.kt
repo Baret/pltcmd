@@ -45,4 +45,5 @@ internal val SeeingEntity.visualRange: VisionPower
  * @return the result of [whenSeeing] when this entity is a [SeeingEntity]. False otherwise.
  */
 suspend fun AnyGameEntity.invokeWhenSeeing(whenSeeing: suspend (SeeingEntity) -> Boolean): Boolean =
-    castToSuspending<SeeingEntity, Seeing>(whenSeeing)
+    castToSuspending<SeeingEntity, Seeing, Boolean>(whenSeeing)
+        .orElse(false)

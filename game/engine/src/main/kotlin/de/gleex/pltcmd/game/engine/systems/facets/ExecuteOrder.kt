@@ -37,7 +37,7 @@ private object ExecuteOrderWithCommandersIntent :
 
     override suspend fun receive(message: OrderMessage): Response {
         val (order, orderedBy, orderedTo, _, entity) = message
-        return entity.asElementEntity({ element ->
+        return entity.asElementEntity<Response> { element ->
             when (order) {
                 MoveTo        -> {
                     log.debug("Sending MoveTo message for destination $orderedTo")
@@ -72,7 +72,9 @@ private object ExecuteOrderWithCommandersIntent :
                     Consumed
                 }
             }
-        }, { Pass })
+        }.orElseGet {
+            Pass
+        }
     }
 }
 

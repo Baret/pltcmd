@@ -86,4 +86,5 @@ val MovableEntity.canNotMove: Boolean
  * @return the result of [whenMovable] when this entity is a [MovableEntity]. False otherwise.
  */
 suspend fun AnyGameEntity.invokeWhenMovable(whenMovable: suspend (MovableEntity) -> Boolean): Boolean =
-    castToSuspending<MovableEntity, Movable>(whenMovable)
+    castToSuspending<MovableEntity, Movable, Boolean>(whenMovable)
+        .orElse(false)

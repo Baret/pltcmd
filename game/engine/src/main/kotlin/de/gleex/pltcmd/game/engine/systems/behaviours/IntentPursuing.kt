@@ -13,20 +13,17 @@ import org.hexworks.amethyst.api.base.BaseBehavior
  */
 object IntentPursuing : BaseBehavior<GameContext>(CommandersIntent::class) {
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        return entity.asElementEntity(
-            whenElement = { element ->
-                val messageToExecute = element.commandersIntent.proceed(element, context)
-                if (messageToExecute.isPresent) {
-                    // FIXME: Use surrounding coroutine context (something like entity.receiveWhenElement{ ... }?)
-                    runBlocking {
-                        element.receiveMessage(messageToExecute.get())
-                    }
+        return entity.asElementEntity { element ->
+            val messageToExecute = element.commandersIntent.proceed(element, context)
+            if (messageToExecute.isPresent) {
+                // FIXME: Use surrounding coroutine context (something like entity.receiveWhenElement{ ... }?)
+                runBlocking {
+                    element.receiveMessage(messageToExecute.get())
                 }
-                messageToExecute.isPresent
-            },
-            whenOther = {
-                false
-            })
-
+            }
+            messageToExecute.isPresent
+        }.orElseGet {
+            false
+        }
     }
 }
