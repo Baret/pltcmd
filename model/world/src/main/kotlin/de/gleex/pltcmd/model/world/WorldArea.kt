@@ -45,6 +45,18 @@ open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
     open operator fun contains(worldTile: WorldTile) =
             super.contains(worldTile.coordinate)
 
+    /**
+     * @return a new [WorldArea] containing all tiles of this area that are contained in [otherArea].
+     *
+     * @see CoordinateArea.intersect
+     */
+    override infix fun intersect(otherArea: CoordinateArea): WorldArea {
+        return WorldArea(
+            tiles
+                .filter { it.coordinate in otherArea }
+                .toSortedSet())
+    }
+
     override fun toString(): String {
         return "WorldArea(${tiles.size} tiles)"
     }

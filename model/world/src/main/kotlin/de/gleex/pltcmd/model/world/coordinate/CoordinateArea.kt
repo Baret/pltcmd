@@ -48,6 +48,19 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     open operator fun contains(mainCoordinate: MainCoordinate) = mainCoordinates.contains(mainCoordinate)
 
     /**
+     * Creates a new [CoordinateArea] containing all [Coordinate]s that are present in this and [otherArea].
+     *
+     * The resulting area might be empty.
+     *
+     * @see Iterable.intersect
+     */
+    open infix fun intersect(otherArea: CoordinateArea): CoordinateArea {
+        return CoordinateArea {
+            (coordinates intersect otherArea).toSortedSet()
+        }
+    }
+
+    /**
      * Returns an ordered sequence of all [Coordinate]s in this area.
      */
     open fun asSequence() = coordinates.asSequence()

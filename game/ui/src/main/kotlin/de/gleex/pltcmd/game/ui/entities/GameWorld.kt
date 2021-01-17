@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.ui.entities
 
 import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -59,6 +60,12 @@ class GameWorld(private val worldMap: WorldMap) :
             element.showOnMap()
         }
         element onDefeat { element.hide() }
+    }
+
+    /** adds a friendly marker for this FOB */
+    fun showBase(base: FOBEntity) {
+        val fobTile = TileRepository.createFobTile(Affiliation.Self)
+        base.currentPosition.setUnit(fobTile)
     }
 
     private fun ElementEntity.showOnMap() {

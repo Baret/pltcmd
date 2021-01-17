@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.ui.components
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.FOBEntity
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.fragments.ElementCommandFragment
@@ -19,11 +20,11 @@ import org.hexworks.zircon.api.uievent.MouseEventType
  */
 class InputSidebar(
         // TODO: Clean up this constructor's parameter list
-        height: Int,
-        game: Game,
-        commandingElement: ElementEntity,
-        elementsToCommand: List<ElementEntity>,
-        gameWorld: GameWorld
+    height: Int,
+    game: Game,
+    hq: FOBEntity,
+    elementsToCommand: List<ElementEntity>,
+    gameWorld: GameWorld
 ) : Fragment {
     override val root =
             Components.vbox()
@@ -34,7 +35,7 @@ class InputSidebar(
 
     // property for lazy initialization of offset
     private val mapOffset = Position.zero().toProperty()
-    private val commandFragment = ElementCommandFragment(root.contentSize.width, gameWorld, commandingElement, elementsToCommand, mapOffset, game)
+    private val commandFragment = ElementCommandFragment(root.contentSize.width, gameWorld, hq, elementsToCommand, mapOffset, game)
 
     init {
         root.addFragment(commandFragment)

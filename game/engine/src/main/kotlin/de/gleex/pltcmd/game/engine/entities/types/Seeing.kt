@@ -1,8 +1,7 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
-import de.gleex.pltcmd.game.engine.extensions.getAttribute
+import de.gleex.pltcmd.game.engine.extensions.*
 import de.gleex.pltcmd.model.signals.vision.Vision
 import de.gleex.pltcmd.model.signals.vision.VisionPower
 import de.gleex.pltcmd.model.world.WorldArea
@@ -39,3 +38,12 @@ internal val SeeingEntity.visibleTiles: WorldArea
 
 internal val SeeingEntity.visualRange: VisionPower
     get() = visionAttribute.visualRange
+
+/**
+ * Invokes the given suspend function when this entity is of type [Seeing].
+ *
+ * @return the result of [whenSeeing] when this entity is a [SeeingEntity]. False otherwise.
+ */
+suspend fun AnyGameEntity.invokeWhenSeeing(whenSeeing: suspend (SeeingEntity) -> Boolean): Boolean =
+    castToSuspending<SeeingEntity, Seeing, Boolean>(whenSeeing)
+        .orElse(false)

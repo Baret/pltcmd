@@ -2,13 +2,15 @@ package de.gleex.pltcmd.game.engine
 
 import de.gleex.pltcmd.game.engine.entities.EntityFactory
 import de.gleex.pltcmd.game.engine.entities.EntitySet
+import de.gleex.pltcmd.game.engine.entities.newBaseAt
 import de.gleex.pltcmd.game.engine.entities.toEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.ElementType
-import de.gleex.pltcmd.game.engine.entities.types.callsign
+import de.gleex.pltcmd.game.engine.entities.types.FOBEntity
+import de.gleex.pltcmd.game.engine.entities.types.asElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.onDefeat
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.Affiliation
@@ -18,6 +20,7 @@ import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.entity.EntityType
@@ -53,9 +56,8 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     fun <T : EntityType> addEntity(entity: GameEntity<T>) = entity.also {
         engine.addEntity(it)
         allEntities.add(it)
-        if (it.type is ElementType) {
-            @Suppress("UNCHECKED_CAST")
-            removeOnDefeat(it as ElementEntity)
+        entity.asElementEntity { element ->
+            removeOnDefeat(element)
         }
     }
 
@@ -63,13 +65,8 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
         element onDefeat { removeEntity(element) }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun removeEntity(entity: AnyGameEntity) {
-        var entityName: String = entity.name
-        if(entity.type == ElementType) {
-            entityName += " (${(entity as ElementEntity).callsign.name})"
-        }
-        log.debug("Removing entity $entityName from game")
+        log.debug("Removing entity ${entity.logIdentifier} from game")
         allEntities.remove(entity)
         engine.removeEntity(entity)
     }
@@ -78,10 +75,10 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
      * Adds a new element in the given sector and returns it.
      */
     fun addElementInSector(
-            sector: Sector,
-            element: CommandingElement,
-            positionInSector: Coordinate = sector.randomCoordinate(random),
-            affiliation: Affiliation = Affiliation.Unknown
+        sector: Sector,
+        element: CommandingElement,
+        positionInSector: Coordinate = sector.randomCoordinate(random),
+        affiliation: Affiliation = Affiliation.Unknown
     ): ElementEntity {
         val elementPosition = positionInSector.toProperty()
         val radioSender = RadioSender(elementPosition, RadioPower(), world)
@@ -112,6 +109,28 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
      * @return a [Maybe] containing the first [ElementEntity] found at the given location.
      */
     fun firstElementAt(location: Coordinate): Maybe<ElementEntity> =
-            allEntities.firstElementAt(location)
+        allEntities.firstElementAt(location)
 
+    /**
+     * Creates a main base in the given sector.
+     */
+    fun newHQIn(sector: Sector): FOBEntity =
+        world
+            .newBaseAt(sector.bestFobLocation)
+            .also {
+                addEntity(it)
+            }
+
+    /**
+     * Finds the highest [Coordinate] in the center area of this sector.
+     */
+    private val Sector.bestFobLocation: Coordinate
+        get() {
+            // find the highest terrain in a 5*5 area in the center of the sector
+            val centerArea = CoordinateRectangle(centerCoordinate.movedBy(-2, -2), 5, 5)
+            return (this intersect centerArea)
+                .tiles
+                .maxByOrNull { it.terrain.height }
+                ?.coordinate!!
+        }
 }

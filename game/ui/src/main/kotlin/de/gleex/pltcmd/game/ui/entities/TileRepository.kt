@@ -134,4 +134,16 @@ object TileRepository {
 
         return tileBuilder.buildCharacterTile()
     }
+
+    /**
+     * Creates a [Tile] representing a base/FOB.
+     */
+    fun createFobTile(affiliation: Affiliation): Tile {
+        val (foreground, background) = ColorRepository.forAffiliation(affiliation)
+        return Tile.newBuilder()
+            .withForegroundColor(foreground)
+            .withBackgroundColor(background)
+            .withCharacter(Symbols.SOLAR_SYMBOL)
+            .buildCharacterTile()
+    }
 }
