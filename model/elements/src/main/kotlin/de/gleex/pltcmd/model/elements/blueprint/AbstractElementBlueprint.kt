@@ -135,5 +135,5 @@ class CommandingElementBlueprint(
 
 internal operator fun Int.times(blueprint: AbstractElementBlueprint<*>) = blueprint * this
 
-internal fun Collection<AbstractElementBlueprint<*>>.new(): Set<Element> = map { it.new() }.toSet()
+fun Collection<AbstractElementBlueprint<*>>.new(): Set<Element> = map { it.new() }.toSet()
 
