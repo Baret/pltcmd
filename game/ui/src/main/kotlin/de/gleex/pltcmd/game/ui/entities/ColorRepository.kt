@@ -1,6 +1,9 @@
 package de.gleex.pltcmd.game.ui.entities
 
 import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.model.elements.Corps
+import de.gleex.pltcmd.model.elements.ElementKind
+import de.gleex.pltcmd.model.elements.Rung
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
@@ -28,11 +31,11 @@ object ColorRepository {
     /**
      * Returns the foreground and background color for the given [Affiliation] as [Pair] (forgreound, background)
      */
-    fun forAffiliation(affiliation: Affiliation) = when(affiliation) {
+    fun forAffiliation(affiliation: Affiliation) = when (affiliation) {
         Affiliation.Friendly -> FRIENDLY to FRIENDLY_TRANSPARENT
-        Affiliation.Hostile -> HOSTILE to HOSTILE_TRANSPARENT
-        Affiliation.Self -> HQ to HQ_TRANSPARENT
-        else -> UNKNOWN to UNKNOWN_TRANSPARENT
+        Affiliation.Hostile  -> HOSTILE to HOSTILE_TRANSPARENT
+        Affiliation.Self     -> HQ to HQ_TRANSPARENT
+        else                 -> UNKNOWN to UNKNOWN_TRANSPARENT
     }
 
     val GRID_COLOR = TileColor.defaultForegroundColor()
@@ -78,6 +81,31 @@ object ColorRepository {
             TerrainType.WATER_DEEP    -> TileColor.create(0, 0, 102)
             TerrainType.WATER_SHALLOW -> TileColor.create(40, 109, 222)
         }
+    }
+
+    fun forCorps(corps: Corps): TileColor =
+        when (corps) {
+            Corps.Fighting       -> TileColor.create(217, 0, 0)
+            Corps.Logistics      -> TileColor.create(217, 255, 102)
+            Corps.CombatSupport  -> TileColor.create(255, 102, 51)
+            Corps.Reconnaissance -> TileColor.create(255, 204, 51)
+        }
+
+    fun forKind(kind: ElementKind): TileColor =
+        when (kind) {
+            ElementKind.Infantry           -> TileColor.create(0, 102, 0)
+            ElementKind.MotorizedInfantry  -> TileColor.create(0, 204, 0)
+            ElementKind.MechanizedInfantry -> TileColor.create(0, 217, 217)
+            ElementKind.Armored            -> TileColor.create(102, 82, 51)
+            ElementKind.Aerial             -> TileColor.create(0, 108, 217)
+        }
+
+    fun forRung(rung: Rung): TileColor {
+        val ratio = rung.ordinal.toDouble() / (Rung.values().size - 1).toDouble()
+        return TileColor
+            .create(77, 77, 77)
+            .interpolateTo(TileColor.create(191, 191, 191))
+            .getColorAtRatio(ratio)
     }
 
     fun radioColor(signalStrength: SignalStrength): TileColor {
