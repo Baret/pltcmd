@@ -8,10 +8,10 @@ import de.gleex.pltcmd.model.elements.units.new
  * Base class for the element blueprints.
  */
 sealed class AbstractElementBlueprint<T : Element>(
-        internal val corps: Corps,
-        internal val kind: ElementKind,
-        internal val rung: Rung,
-        internal val units: List<Units>
+        val corps: Corps,
+        val kind: ElementKind,
+        val rung: Rung,
+        val units: List<Units>
 ) : Blueprint<T> {
 
     abstract operator fun times(i: Int): List<AbstractElementBlueprint<T>>
@@ -99,7 +99,7 @@ class CommandingElementBlueprint(
         kind: ElementKind,
         rung: Rung,
         units: List<Units>,
-        internal val subordinates: List<AbstractElementBlueprint<*>>
+        val subordinates: List<AbstractElementBlueprint<*>>
 ) : AbstractElementBlueprint<CommandingElement>(corps, kind, rung, units) {
 
     override fun new() = CommandingElement(corps, kind, rung, units.new(), subordinates.new())

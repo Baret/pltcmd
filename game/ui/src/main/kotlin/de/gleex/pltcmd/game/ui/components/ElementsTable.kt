@@ -2,16 +2,19 @@ package de.gleex.pltcmd.game.ui.components
 
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
+import de.gleex.pltcmd.model.elements.Corps
+import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.elements.Elements
+import de.gleex.pltcmd.model.elements.Rung
 import de.gleex.pltcmd.model.elements.blueprint.CommandingElementBlueprint
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.component.AttachedComponent
-import org.hexworks.zircon.api.component.Fragment
-import org.hexworks.zircon.api.component.Panel
-import org.hexworks.zircon.api.component.VBox
+import org.hexworks.zircon.api.component.*
 import org.hexworks.zircon.api.data.Size
 
+/**
+ * A filterable table listing the given element blueprints.
+ */
 class ElementsTable(
     val size: Size,
     private val allElements: List<CommandingElementBlueprint> = Elements.allCommandingElements().values.toList()
@@ -23,13 +26,16 @@ class ElementsTable(
         private val columnConfig: Map<String, Format> = mapOf(
             "Name" to Format.SIDEBAR,
             "Corps" to Format.SHORT5,
-            "Type" to Format.SHORT5,
+            "Kind" to Format.SHORT5,
             "Rung" to Format.SHORT5,
+            "Subs" to Format.SHORT5,
             "Units" to Format.SHORT5,
             "Sold." to Format.SHORT5
         )
 
         private val COLUMN_SPACING = 1
+        private val ROW_SPACING = 1
+        private val ROW_HEIGHT = 1
     }
 
     init {
@@ -50,7 +56,7 @@ class ElementsTable(
 
     private val headerPanel = Components
         .hbox()
-        .withSize(size.width, 1)
+        .withSize(size.width, 2)
         .withSpacing(COLUMN_SPACING)
         .build()
         .apply {
@@ -70,7 +76,7 @@ class ElementsTable(
 
     private val tableVBox: VBox = Components
         .vbox()
-        .withSpacing(0)
+        .withSpacing(ROW_SPACING)
         .withSize(size.width, size.height - filterPanel.size.height - headerPanel.size.height)
         .build()
 
@@ -88,7 +94,8 @@ class ElementsTable(
         root.addComponents(
             filterPanel,
             headerPanel,
-            tableVBox)
+            tableVBox
+        )
         fillTable(allElements)
     }
 
@@ -106,25 +113,47 @@ class ElementsTable(
         }
     }
 
-    private fun rowOf(elementBlueprint: CommandingElementBlueprint): Panel {
-        val row = Components
+    private fun rowOf(elementBlueprint: CommandingElementBlueprint): HBox =
+        Components
             .hbox()
-            .withSpacing(1)
-            .withSize(tableVBox.contentSize.width, 1)
+            .withSpacing(COLUMN_SPACING)
+            .withSize(tableVBox.contentSize.width, ROW_HEIGHT)
             .build()
-
-        return Components
-            .panel()
-            .withSize(tableVBox.contentSize.width, 1)
-            .build()
-            .also {
-                it.addComponent(
-                    Components
-                        .label()
-                        .withText("Element: ${Elements.nameOf(elementBlueprint)}")
+            .apply {
+                addComponents(
+                    nameCell(Elements.nameOf(elementBlueprint)!!),
+                    corpsCell(elementBlueprint.corps),
+                    kindCell(elementBlueprint.kind),
+                    rungCell(elementBlueprint.rung),
+                    numberCell(elementBlueprint.subordinates.size),
+                    numberCell(elementBlueprint.new().totalUnits),
+                    numberCell(elementBlueprint.new().totalSoldiers)
                 )
             }
-    }
+
+    private fun corpsCell(corps: Corps): Component =
+        cell(columnConfig["Corps"]!!, corps)
+
+    private fun kindCell(kind: ElementKind): Label =
+        cell(columnConfig["Kind"]!!, kind)
+
+    private fun rungCell(rung: Rung): Label =
+        cell(columnConfig["Rung"]!!, rung)
+
+    private fun numberCell(number: Int): Label =
+        with(Format.SHORT5) {
+            cell(this, "$number".padStart(length))
+        }
+
+    private fun nameCell(name: String): Label =
+        cell(columnConfig["Name"]!!, name)
+
+    private fun cell(format: Format, content: Any): Label =
+        Components
+            .label()
+            .withSize(format.length, ROW_HEIGHT)
+            .build()
+            .apply { withFrontendString(format, content) }
 
     private fun clearTable() {
         rows.forEach { it.detach() }
