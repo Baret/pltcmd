@@ -2,12 +2,10 @@ package de.gleex.pltcmd.game.ui.components
 
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.ColorRepository
+import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
-import de.gleex.pltcmd.model.elements.Corps
-import de.gleex.pltcmd.model.elements.ElementKind
-import de.gleex.pltcmd.model.elements.Elements
-import de.gleex.pltcmd.model.elements.Rung
+import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.blueprint.CommandingElementBlueprint
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
@@ -16,6 +14,7 @@ import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.component.*
 import org.hexworks.zircon.api.component.data.ComponentState
 import org.hexworks.zircon.api.data.Size
+import org.hexworks.zircon.api.data.Tile
 
 /**
  * A filterable table listing the given element blueprints.
@@ -29,6 +28,7 @@ class ElementsTable(
         private val log = LoggerFactory.getLogger(ElementsTable::class)
 
         private val columnConfig: Map<String, Format> = mapOf(
+            " " to Format.ICON,
             "Name" to Format.SIDEBAR,
             "Corps" to Format.SHORT5,
             "Kind" to Format.SHORT5,
@@ -125,16 +125,27 @@ class ElementsTable(
             .withSize(tableVBox.contentSize.width, ROW_HEIGHT)
             .build()
             .apply {
+                val elementInstance = elementBlueprint.new()
                 addComponents(
+                    iconCell(TileRepository.Elements.marker(elementInstance, Affiliation.Friendly)),
                     nameCell(Elements.nameOf(elementBlueprint)!!),
                     corpsCell(elementBlueprint.corps),
                     kindCell(elementBlueprint.kind),
                     rungCell(elementBlueprint.rung),
                     numberCell(elementBlueprint.subordinates.size),
-                    numberCell(elementBlueprint.new().totalUnits),
-                    numberCell(elementBlueprint.new().totalSoldiers)
+                    numberCell(elementInstance.totalUnits),
+                    numberCell(elementInstance.totalSoldiers)
                 )
             }
+
+    private fun nameCell(name: String): Label =
+        cell(columnConfig["Name"]!!, name)
+
+    private fun iconCell(icon: Tile): Icon =
+        Components
+            .icon()
+            .withIcon(icon)
+            .build()
 
     private fun corpsCell(corps: Corps): Component =
         cell(columnConfig["Corps"]!!, corps)
@@ -152,9 +163,6 @@ class ElementsTable(
         with(Format.SHORT5) {
             cell(this, "$number".padStart(length))
         }
-
-    private fun nameCell(name: String): Label =
-        cell(columnConfig["Name"]!!, name)
 
     private fun cell(format: Format, content: Any): Label {
         return Components

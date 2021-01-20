@@ -83,6 +83,9 @@ object ColorRepository {
         }
     }
 
+    /**
+     * Creates a [TileColor] for the given [Corps] to highlight and differentiate it in the UI.
+     */
     fun forCorps(corps: Corps): TileColor =
         when (corps) {
             Corps.Fighting       -> TileColor.create(217, 0, 0)
@@ -91,6 +94,9 @@ object ColorRepository {
             Corps.Reconnaissance -> TileColor.create(255, 204, 51)
         }
 
+    /**
+     * Creates a [TileColor] for the given [ElementKind] to highlight and differentiate it in the UI.
+     */
     fun forKind(kind: ElementKind): TileColor =
         when (kind) {
             ElementKind.Infantry           -> TileColor.create(0, 102, 0)
@@ -100,6 +106,9 @@ object ColorRepository {
             ElementKind.Aerial             -> TileColor.create(0, 108, 217)
         }
 
+    /**
+     * Creates a [TileColor] for the given [Rung] to highlight and differentiate it in the UI.
+     */
     fun forRung(rung: Rung): TileColor {
         val ratio = rung.ordinal.toDouble() / (Rung.values().size - 1).toDouble()
         return TileColor
