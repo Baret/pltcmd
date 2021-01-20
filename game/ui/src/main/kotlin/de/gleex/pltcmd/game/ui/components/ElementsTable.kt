@@ -20,13 +20,17 @@ import org.hexworks.zircon.api.data.Tile
  * A filterable table listing the given element blueprints.
  */
 class ElementsTable(
-    val size: Size,
+    val size: Size = MIN_SIZE,
     private val allElements: List<CommandingElementBlueprint> = Elements.allCommandingElements().values.toList()
 ) : Fragment {
 
     companion object {
         private val log = LoggerFactory.getLogger(ElementsTable::class)
 
+        /**
+         * Maps the column header name that will be displayed to the [Format] to be used in that column.
+         * The length of the format determines the width of the column.
+         */
         private val columnConfig: Map<String, Format> = mapOf(
             " " to Format.ICON,
             "Name" to Format.SIDEBAR,
@@ -41,13 +45,23 @@ class ElementsTable(
         private val COLUMN_SPACING = 1
         private val ROW_SPACING = 1
         private val ROW_HEIGHT = 1
+
+        private val MIN_WIDTH = columnConfig.values.sumBy { it.length } + (columnConfig.size * COLUMN_SPACING)
+        private const val MIN_HEIGHT = 6
+
+        /**
+         * The minimum [Size] this components needs.
+         */
+        val MIN_SIZE = Size.create(MIN_WIDTH, MIN_HEIGHT)
     }
 
     init {
-        val minWidth = columnConfig.values.sumBy { it.length } + (columnConfig.size * COLUMN_SPACING)
-        log.debug("Creating table with size $size, minWidth = $minWidth")
-        require(size.width >= minWidth) {
-            "ElementsTable needs a width of at least $minWidth"
+        log.debug("Creating table with size $size, minWidth = $MIN_WIDTH")
+        require(size.width >= MIN_WIDTH) {
+            "ElementsTable needs a width of at least $MIN_WIDTH"
+        }
+        require(size.height >= MIN_HEIGHT) {
+            "ElementsTable needs a height of at least $MIN_HEIGHT"
         }
     }
 
