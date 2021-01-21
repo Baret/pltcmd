@@ -32,15 +32,27 @@ enum class Format(val length: Int) {
     /**
      * With this format the string has no length restriction.
      */
-    FULL(Int.MAX_VALUE)
+    FULL(Int.MAX_VALUE);
+
+    companion object {
+        /**
+         * Returns the largest [Format] that fits into the given width.
+         */
+        fun forWidth(width: Int): Format {
+            return Format.values()
+                .filter { it.length <= width }
+                .maxByOrNull { it.length }
+                ?: Format.ICON
+        }
+    }
 }
 
 /**
  * Returns the shorter of both formats.
  */
 fun minOf(first: Format, second: Format) =
-        if (first.length <= second.length) {
-            first
-        } else {
-            second
-        }
+    if (first.length <= second.length) {
+        first
+    } else {
+        second
+    }

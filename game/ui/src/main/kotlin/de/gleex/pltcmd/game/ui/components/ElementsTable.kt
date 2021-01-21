@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.ui.components
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.ColorRepository
 import de.gleex.pltcmd.game.ui.entities.TileRepository
+import de.gleex.pltcmd.game.ui.fragments.table.TableFilterPanel
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
 import de.gleex.pltcmd.model.elements.*
@@ -42,9 +43,9 @@ class ElementsTable(
             "Sold." to Format.SHORT5
         )
 
-        private val COLUMN_SPACING = 1
-        private val ROW_SPACING = 1
-        private val ROW_HEIGHT = 1
+        const val COLUMN_SPACING = 1
+        const val ROW_SPACING = 1
+        private const val ROW_HEIGHT = 1
 
         private val MIN_WIDTH = columnConfig.values.sumBy { it.length } + (columnConfig.size * COLUMN_SPACING)
         private const val MIN_HEIGHT = 6
@@ -65,13 +66,7 @@ class ElementsTable(
         }
     }
 
-    private val filterPanel: Panel = Components
-        .panel()
-        .withSize(size.width, 1)
-        .build()
-        .also {
-            it.addComponent(Components.label().withText("Filters come here"))
-        }
+    private val filterPanel: TableFilterPanel = TableFilterPanel(size.width, columnConfig)
 
     private val headerPanel = Components
         .hbox()
@@ -110,8 +105,8 @@ class ElementsTable(
         .build()
 
     init {
+        root.addFragments(filterPanel)
         root.addComponents(
-            filterPanel,
             headerPanel,
             tableVBox
         )
