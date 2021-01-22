@@ -4,6 +4,8 @@ import de.gleex.pltcmd.game.ui.fragments.table.column.Column
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.*
+import org.hexworks.zircon.api.uievent.MouseEventType
+import org.hexworks.zircon.api.uievent.UIEventPhase
 
 class Table<M : Any>(
     private val columns: List<Column<M, *>>,
@@ -34,6 +36,13 @@ class Table<M : Any>(
                         .withSize(column.width, 1)
                         .withText(column.name)
                         .build()
+                        .apply {
+                            processMouseEvents(MouseEventType.MOUSE_CLICKED) { _, phase ->
+                                if(phase == UIEventPhase.TARGET) {
+                                    log.debug("Column header '${column.name}' has been clicked. A filter modal might have opened now :O")
+                                }
+                            }
+                        }
                 })
 
     private val rowPanel: VBox =

@@ -13,5 +13,7 @@ class NumberColumn<T : Any>(
     TextColumn<T, String>(
         name,
         format,
+        { null },
+        { null },
         { "${valueAccessor(it)}".padStart(format.length) }
     )

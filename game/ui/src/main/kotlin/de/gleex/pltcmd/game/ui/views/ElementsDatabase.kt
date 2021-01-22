@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.ui.views
 
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.components.ElementsTable
+import de.gleex.pltcmd.game.ui.entities.ColorRepository
 import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.game.ui.fragments.table.Table
 import de.gleex.pltcmd.game.ui.fragments.table.column.Column
@@ -35,9 +36,9 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
                     Components.icon().withIcon(TileRepository.Elements.marker(it.new(), Affiliation.Friendly)).build()
                 },
                 TextColumn("Name", SIDEBAR) { Elements.nameOf(it)!! },
-                TextColumn("Corps", SHORT5) { it.corps },
-                TextColumn("Kind", SHORT5) { it.kind },
-                TextColumn("Rung", SHORT5) { it.rung },
+                TextColumn("Corps", SHORT5, foregroundColorProvider = { ColorRepository.forCorps(it.corps) }) { it.corps },
+                TextColumn("Kind", SHORT5, foregroundColorProvider = { ColorRepository.forKind(it.kind) }) { it.kind },
+                TextColumn("Rung", SHORT5, foregroundColorProvider = { ColorRepository.forRung(it.rung) }) { it.rung },
                 NumberColumn("Subs", SHORT5) { it.subordinates.size },
                 NumberColumn("Units", SHORT5) { it.new().totalUnits },
                 NumberColumn("Sold.", SHORT5) { it.new().totalSoldiers }
