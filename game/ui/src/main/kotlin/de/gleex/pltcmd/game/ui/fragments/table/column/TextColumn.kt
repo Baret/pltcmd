@@ -18,20 +18,20 @@ open class TextColumn<T : Any, V : Any>(
     foregroundColorProvider: (T) -> TileColor? = { null },
     backgroundColorProvider: (T) -> TileColor? = { null },
     valueAccessor: (T) -> V
-) : Column<T, Label>(name, format, { cellValue ->
+) : Column<T, Label>(name, format, { rowElement: T ->
     Components
         .label()
         .withSize(format.length, 1)
         .withComponentRenderer(object : ComponentRenderer<Label> {
             override fun render(tileGraphics: TileGraphics, context: ComponentRenderContext<Label>) {
                 var newStyle = context.currentStyle
-                foregroundColorProvider(cellValue)
+                foregroundColorProvider(rowElement)
                     ?.let { fg -> newStyle = newStyle.withForegroundColor(fg) }
-                backgroundColorProvider(cellValue)
+                backgroundColorProvider(rowElement)
                     ?.let { bg -> newStyle = newStyle.withBackgroundColor(bg) }
                 tileGraphics.fillWithText(context.component.text, newStyle)
             }
         })
         .build()
-        .apply { withFrontendString(format, valueAccessor(cellValue)) }
+        .apply { withFrontendString(format, valueAccessor(rowElement)) }
 })
