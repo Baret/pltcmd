@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.FrontendString
 import de.gleex.pltcmd.game.ui.strings.Transformation
 import de.gleex.pltcmd.game.ui.strings.transformations.*
+import de.gleex.pltcmd.model.elements.Corps
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
@@ -43,6 +44,7 @@ private fun <T> transformationFor(value: T): Transformation<T> {
         is TerrainType -> terrainTypeTransformation
         is Terrain    -> terrainTransformation
         is ElementKind -> elementKindTransformation
+        is Corps       -> corpsTransformation
         else          -> defaultTransformation
     } as Transformation<T>
 }
