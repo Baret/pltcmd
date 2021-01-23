@@ -9,6 +9,7 @@ import de.gleex.pltcmd.game.ui.fragments.table.column.Column
 import de.gleex.pltcmd.game.ui.fragments.table.column.NumberColumn
 import de.gleex.pltcmd.game.ui.fragments.table.column.TextColumn
 import de.gleex.pltcmd.game.ui.strings.Format.*
+import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.elements.blueprint.CommandingElementBlueprint
@@ -35,7 +36,7 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
                 Column(" ", ICON) {
                     Components.icon().withIcon(TileRepository.Elements.marker(it.new(), Affiliation.Friendly)).build()
                 },
-                TextColumn("Name", SIDEBAR) { Elements.nameOf(it)!! },
+                TextColumn("Name", SIDEBAR) { it.toFrontendString(SIDEBAR) },
                 TextColumn("Corps", SHORT5, foregroundColorProvider = { ColorRepository.forCorps(it.corps) }) { it.corps },
                 TextColumn("Kind", SHORT5, foregroundColorProvider = { ColorRepository.forKind(it.kind) }) { it.kind },
                 TextColumn("Rung", SHORT5, foregroundColorProvider = { ColorRepository.forRung(it.rung) }) { it.rung },

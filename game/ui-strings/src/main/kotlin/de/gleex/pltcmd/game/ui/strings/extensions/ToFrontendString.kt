@@ -7,6 +7,7 @@ import de.gleex.pltcmd.game.ui.strings.transformations.*
 import de.gleex.pltcmd.model.elements.Corps
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.elements.Rung
+import de.gleex.pltcmd.model.elements.blueprint.AbstractElementBlueprint
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -47,6 +48,7 @@ private fun <T> transformationFor(value: T): Transformation<T> {
         is ElementKind -> elementKindTransformation
         is Corps       -> corpsTransformation
         is Rung        -> rungTransformation
+        is AbstractElementBlueprint<*> -> blueprintTransformation
         else           -> defaultTransformation
     } as Transformation<T>
 }
