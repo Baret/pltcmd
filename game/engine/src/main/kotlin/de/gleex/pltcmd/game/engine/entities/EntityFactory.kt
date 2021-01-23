@@ -48,6 +48,7 @@ object EntityFactory {
                 PositionAttribute(positionProperty),
                 RadioAttribute(RadioCommunicator(callSign, RadioSender(positionProperty, RadioPower.STATIONARY, map))),
                 VisionAttribute(map.visionAt(position, VisionPower(40.0))),
+                ContactsAttribute(),
                 CommandersIntent()
             )
             behaviors(
