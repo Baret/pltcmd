@@ -18,8 +18,8 @@ internal val elementKindTransformation: Transformation<ElementKind> = { format -
         Format.SHORT3  -> {
             when(this) {
                 ElementKind.Infantry           -> "INF"
-                ElementKind.MotorizedInfantry  -> "MOI"
-                ElementKind.MechanizedInfantry -> "MEI"
+                ElementKind.MotorizedInfantry  -> "MOT"
+                ElementKind.MechanizedInfantry -> "MEC"
                 ElementKind.Armored            -> "ARM"
                 ElementKind.Aerial             -> "AIR"
             }
