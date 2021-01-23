@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
+import de.gleex.pltcmd.game.engine.attributes.ContactsAttribute
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
@@ -10,6 +11,7 @@ import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.new
+import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
@@ -33,7 +35,7 @@ class FightingTest : StringSpec({
         val attackerPosition = Coordinate(123, 456)
         val attacker = createCombatant(attackerPosition, Affiliation.Friendly)
         val context = createContext()
-        val target = createTarget(attackerPosition, context)
+        val target = createTarget(attacker, context)
 
         Fighting.attackNearbyEnemies(attacker, context)
         assertCombatResult(attacker, target, 0, false)
@@ -48,7 +50,7 @@ class FightingTest : StringSpec({
         val attackerPosition = Coordinate(123, 456)
         val attacker = createCombatant(attackerPosition, Affiliation.Friendly)
         val context = createContext()
-        val (target1, target2, target3) = createTargets(attackerPosition, context, createInfantryElement(), createInfantryElement(), createInfantryElement())
+        val (target1, target2, target3) = createTargets(attacker, context, createInfantryElement(), createInfantryElement(), createInfantryElement())
         assertCombatResult(attacker, target1, 1, true)
         assertCombatResult(attacker, target2, 1, true)
         assertCombatResult(attacker, target3, 1, true)
@@ -73,7 +75,7 @@ class FightingTest : StringSpec({
         val attackerPosition = Coordinate(123, 456)
         val attacker = createCombatant(attackerPosition, Affiliation.Friendly, Elements.rifleSquad.new())
         val context = createContext()
-        val target = createTarget(attackerPosition, context, createInfantryElement((Units.Rifleman * 100).new()))
+        val target = createTarget(attacker, context, createInfantryElement((Units.Rifleman * 100).new()))
 
         Fighting.attackNearbyEnemies(attacker, context) // 38 dmg
         assertCombatResult(attacker, target, 62, true)
@@ -89,7 +91,7 @@ class FightingTest : StringSpec({
         val attackerPosition = Coordinate(123, 456)
         val attacker = createCombatant(attackerPosition, Affiliation.Friendly, Elements.rifleSquad.new())
         val context = createContext()
-        val target = createTarget(attackerPosition, context, createInfantryElement((Units.Rifleman * 100).new()))
+        val target = createTarget(attacker, context, createInfantryElement((Units.Rifleman * 100).new()))
         val singleRifleman = createCombatant(attackerPosition.movedBy(2,2), Affiliation.Hostile)
         singleRifleman.attack(attacker, context.random)
         val attacksAbleToFight = 4
@@ -124,10 +126,11 @@ private fun createContext(): GameContext {
     return context
 }
 
-fun createTarget(attackerPosition: Coordinate, context: GameContext, element: CommandingElement = createInfantryElement()): ElementEntity =
-        createTargets(attackerPosition, context, element).first()
+fun createTarget(attacker: ElementEntity, context: GameContext, element: CommandingElement = createInfantryElement()): ElementEntity =
+        createTargets(attacker, context, element).first()
 
-fun createTargets(attackerPosition: Coordinate, context: GameContext, vararg elements: CommandingElement): List<ElementEntity> {
+fun createTargets(attacker: ElementEntity, context: GameContext, vararg elements: CommandingElement): List<ElementEntity> {
+    val attackerPosition = attacker.currentPosition
     val neighbors = attackerPosition.neighbors()
     return elements.mapIndexed { index, element ->
         val neighborPosition = neighbors[index]
@@ -135,7 +138,7 @@ fun createTargets(attackerPosition: Coordinate, context: GameContext, vararg ele
         val offsetFromAttacker = (neighborPosition - attackerPosition)
         val targetPosition = neighborPosition.movedBy(offsetFromAttacker.eastingFromLeft * 2, offsetFromAttacker.northingFromBottom * 2)
         val target = createCombatant(targetPosition, Affiliation.Hostile, element)
-        every { context.elementsAt(neighborPosition) } returns EntitySet(listOf(target))
+        attacker.rememberContact(target, Visibility.GOOD)
         return@mapIndexed target
     }
 }
@@ -145,7 +148,8 @@ fun createCombatant(position: Coordinate, affiliation: Affiliation, element: Com
         attributes(
                 ElementAttribute(element, affiliation),
                 PositionAttribute(position.toProperty()),
-                ShootersAttribute(element)
+                ShootersAttribute(element),
+                ContactsAttribute()
         )
         behaviors(Fighting)
         facets()

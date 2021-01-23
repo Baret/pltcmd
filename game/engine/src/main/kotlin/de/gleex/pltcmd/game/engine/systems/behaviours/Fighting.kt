@@ -6,6 +6,7 @@ import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
+import de.gleex.pltcmd.game.engine.systems.behaviours.Fighting.isEnemy
 import de.gleex.pltcmd.model.elements.Affiliation
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -22,10 +23,10 @@ internal object Fighting :
 
     fun attackNearbyEnemies(attacker: ElementEntity, context: GameContext): Boolean =
         attacker
-            .currentPosition
-            .neighbors()
-            .flatMap(context::elementsAt)
-            .firstOrNull { it.isEnemy() }
+            .visibleEntities()
+            // TODO also check if it is in attack range
+            .filterElements { it.isEnemy() }
+            .firstOrNull()
             ?.let { enemyToAttack ->
                 log.info("${attacker.callsign} attacks ${enemyToAttack.callsign}")
                 attacker.attack(enemyToAttack, context.random)

@@ -81,7 +81,7 @@ object ColorRepository {
     }
 
     fun radioColor(signalStrength: SignalStrength): TileColor {
-        val signalColor = SIGNAL_EMPTY.interpolateTo(SIGNAL_FULL).getColorAtRatio(signalStrength.strength)
+        val signalColor = SIGNAL_EMPTY.interpolateTo(SIGNAL_FULL).getColorAtRatio(signalStrength.asRatio())
         return if (signalStrength.isNone()) {
             signalColor.withAlpha(0)
         } else {

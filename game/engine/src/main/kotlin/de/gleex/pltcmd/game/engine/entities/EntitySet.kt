@@ -103,6 +103,13 @@ class EntitySet<T : EntityType>(initialEntities: Iterable<GameEntity<T>> = empty
         allEntities = allEntities.remove(entity)
     }
 
+    /**
+     * Removes all [GameEntity]s from this [EntitySet].
+     */
+    fun clear() {
+        allEntities = allEntities.clear()
+    }
+
     override fun iterator(): Iterator<GameEntity<T>> = allEntities.iterator()
 
     override fun toString(): String {

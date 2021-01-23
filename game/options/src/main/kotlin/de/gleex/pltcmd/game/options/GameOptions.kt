@@ -10,6 +10,9 @@ import java.util.concurrent.TimeUnit
  */
 object GameOptions {
 
+    /** The name entity that is controlled by the player **/
+    val commandersCallSign = "HQ"
+
     /**
      * Option to turn on the RadioSignalVisualizer and corresponding UI elements.
      */
