@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.ui.views
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import de.gleex.pltcmd.game.engine.entities.types.FOBEntity
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.options.UiOptions.MAP_VIEW_HEIGHT
@@ -32,11 +33,11 @@ import org.hexworks.zircon.api.view.base.BaseView
  * The view to display the map, radio log and interaction panel
  */
 class GameView(
-        private val gameWorld: GameWorld,
-        tileGrid: TileGrid,
-        private val game: Game,
-        val commandingElement: ElementEntity,
-        val elementsToCommand: List<ElementEntity>
+    private val gameWorld: GameWorld,
+    tileGrid: TileGrid,
+    private val game: Game,
+    val hq: FOBEntity,
+    val elementsToCommand: List<ElementEntity>
 ) :
         BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
@@ -59,7 +60,7 @@ class GameView(
                     it.logRadioCalls()
                 }
 
-        val leftSidebar = InputSidebar(SIDEBAR_HEIGHT, game, commandingElement, elementsToCommand, gameWorld)
+        val leftSidebar = InputSidebar(SIDEBAR_HEIGHT, game, hq, elementsToCommand, gameWorld)
 
         val leftSidebarComponent = CustomComponent(leftSidebar, Position.bottomLeftOf(logArea))
 

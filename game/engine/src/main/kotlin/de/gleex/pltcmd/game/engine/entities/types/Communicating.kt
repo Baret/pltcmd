@@ -1,8 +1,7 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
-import de.gleex.pltcmd.game.engine.extensions.getAttribute
+import de.gleex.pltcmd.game.engine.extensions.*
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
@@ -48,6 +47,15 @@ val CommunicatingEntity.radioCallSign: CallSign
  */
 // TODO: Instantly start the conversation if possible. Currently it takes 2 ticks until the conversation actually starts
 internal fun CommunicatingEntity.startConversation(conversation: Conversation) {
-    log.debug("${(this as ElementEntity).callsign} starting conversation $conversation")
+    log.debug("$logIdentifier starting conversation $conversation")
     communicator.startConversation(conversation)
 }
+
+/**
+ * Invokes [whenCommunicating] if this entity is a [CommunicatingEntity]. When the type is not [Communicating],
+ * [whenOther] is invoked instead.
+ *
+ * @param R the type that is returned by [whenCommunicating] or [whenOther]
+ */
+fun <R> AnyGameEntity.asCommunicatingEntity(whenCommunicating: (CommunicatingEntity) -> R): Maybe<R> =
+    tryCastTo<CommunicatingEntity, Communicating, R>(whenCommunicating)

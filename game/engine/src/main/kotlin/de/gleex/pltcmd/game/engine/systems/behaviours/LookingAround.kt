@@ -6,12 +6,10 @@ import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.messages.DetectEntities
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.signals.vision.builder.visionAt
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Behavior of an entity that updates the [VisionAttribute] each tick if needed. It also
@@ -23,15 +21,10 @@ object LookingAround :
                 VisionAttribute::class
         ) {
 
-    private val log = LoggerFactory.getLogger(LookingAround::class)
-
-    // implements only type checking
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
-        if (entity.type !is Seeing) {
-            return false
+        return entity.invokeWhenSeeing {
+            lookForEntities(it, context)
         }
-        @Suppress("UNCHECKED_CAST")
-        return lookForEntities(entity as SeeingEntity, context)
     }
 
     private suspend fun lookForEntities(entity: SeeingEntity, context: GameContext): Boolean {
@@ -42,12 +35,6 @@ object LookingAround :
                 context.entities
                         .without(entity)
                         .inArea(entity.visibleTiles)
-
-        // FIXME: Just for playing around, logging will be removed eventually
-        val element = entity as ElementEntity
-        if(element.callsign.name == "Bravo" && element.affiliation == Affiliation.Friendly) {
-            log.debug("${visibleEntities.size}/${context.entities.size} (${context.entities.filterTyped<Positionable>().size} positionable) visible")
-        }
         if (visibleEntities.isNotEmpty()) {
             entity.receiveMessage(DetectEntities(visibleEntities, entity, context))
         }

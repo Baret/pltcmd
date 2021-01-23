@@ -3,10 +3,10 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
-import de.gleex.pltcmd.game.engine.entities.types.Movable
 import de.gleex.pltcmd.game.engine.entities.types.MovableEntity
 import de.gleex.pltcmd.game.engine.entities.types.currentPosition
 import de.gleex.pltcmd.game.engine.entities.types.hasNoDestination
+import de.gleex.pltcmd.game.engine.entities.types.invokeWhenMovable
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.messages.MoveTo
 import org.hexworks.amethyst.api.Consumed
@@ -26,11 +26,7 @@ internal object Wandering: BaseBehavior<GameContext>(PositionAttribute::class, M
     private const val MOVEMENT_PROBABILITY = 0.4
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        if (entity.type !is Movable) {
-            return false
-        }
-        @Suppress("UNCHECKED_CAST")
-        return moveToRandomDestination(entity as MovableEntity, context)
+        return entity.invokeWhenMovable { moveToRandomDestination(it, context) }
     }
 
     private suspend fun moveToRandomDestination(movable: MovableEntity, context: GameContext): Boolean {

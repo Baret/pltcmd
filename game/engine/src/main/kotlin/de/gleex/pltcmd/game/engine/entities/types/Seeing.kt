@@ -4,8 +4,7 @@ import de.gleex.pltcmd.game.engine.attributes.ContactsAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.toEntitySet
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
-import de.gleex.pltcmd.game.engine.extensions.getAttribute
+import de.gleex.pltcmd.game.engine.extensions.*
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.signals.vision.Vision
 import de.gleex.pltcmd.model.signals.vision.VisionPower
@@ -60,3 +59,12 @@ internal fun SeeingEntity.forgetAll(): Map<PositionableEntity, Visibility> {
 }
 
 internal fun SeeingEntity.visibleEntities(): EntitySet<Positionable> = contacts.all.keys.toEntitySet()
+
+/**
+ * Invokes the given suspend function when this entity is of type [Seeing].
+ *
+ * @return the result of [whenSeeing] when this entity is a [SeeingEntity]. False otherwise.
+ */
+suspend fun AnyGameEntity.invokeWhenSeeing(whenSeeing: suspend (SeeingEntity) -> Boolean): Boolean =
+    castToSuspending<SeeingEntity, Seeing, Boolean>(whenSeeing)
+        .orElse(false)

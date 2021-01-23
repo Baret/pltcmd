@@ -3,10 +3,12 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
 import de.gleex.pltcmd.game.engine.attributes.flags.Transmitting
-import de.gleex.pltcmd.game.engine.entities.types.*
-import de.gleex.pltcmd.game.engine.entities.types.Communicating
+import de.gleex.pltcmd.game.engine.entities.types.CommunicatingEntity
+import de.gleex.pltcmd.game.engine.entities.types.asCommunicatingEntity
+import de.gleex.pltcmd.game.engine.entities.types.isTransmitting
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.addIfMissing
+import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -19,27 +21,27 @@ object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class)
     private val log = LoggerFactory.getLogger(StopsWhileTransmitting::class)
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
-        var updated = false
-        if (entity.type is Communicating) {
-            @Suppress("UNCHECKED_CAST")
-            entity as CommunicatingEntity
-            entity.findAttribute(Transmitting::class)
-                    .fold(whenEmpty = {
-                        if (entity.isTransmitting) {
-                            log.debug("${(entity as ElementEntity).callsign} is transmitting, adding attribute.")
-                            entity.addIfMissing(Transmitting)
-                            updated = true
-                        }
-                    }, whenPresent = {
-                        if (entity.isTransmitting.not()) {
-                            log.debug("${(entity as ElementEntity).callsign} stopped transmitting, removing attribute.")
-                            entity.asMutableEntity()
-                                    .removeAttribute(Transmitting)
-                            updated = true
-                        }
-                    })
+        return entity.asCommunicatingEntity { communicating ->
+            var updated = false
+            communicating.findAttribute(Transmitting::class)
+                .fold(whenEmpty = {
+                    if (communicating.isTransmitting) {
+                        log.debug("${communicating.logIdentifier} is transmitting, adding attribute.")
+                        communicating.addIfMissing(Transmitting)
+                        updated = true
+                    }
+                }, whenPresent = {
+                    if (communicating.isTransmitting.not()) {
+                        log.debug("${communicating.logIdentifier} stopped transmitting, removing attribute.")
+                        communicating.asMutableEntity()
+                            .removeAttribute(Transmitting)
+                        updated = true
+                    }
+                })
+            updated
+        }.orElseGet {
+            false
         }
-        return updated
     }
 
 }
