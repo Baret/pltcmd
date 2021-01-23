@@ -47,7 +47,8 @@ object EntityFactory {
             attributes(
                 PositionAttribute(positionProperty),
                 RadioAttribute(RadioCommunicator(callSign, RadioSender(positionProperty, RadioPower.STATIONARY, map))),
-                VisionAttribute(map.visionAt(position, VisionPower(40.0)))
+                VisionAttribute(map.visionAt(position, VisionPower(40.0))),
+                CommandersIntent()
             )
             behaviors(
                 Communicating,
@@ -56,7 +57,7 @@ object EntityFactory {
             facets(
                 ConversationSender,
                 Detects,
-                ExecuteOrder,
+                ExecuteOrder
             )
         }
 
