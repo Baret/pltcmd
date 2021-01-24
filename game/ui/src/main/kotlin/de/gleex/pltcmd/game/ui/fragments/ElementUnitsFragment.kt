@@ -37,8 +37,8 @@ class ElementUnitsFragment(
             superOrdinate
                 .new()
                 .allUnits
-                .groupingBy { unit -> unit.blueprint }
-                .aggregate { _, accumulator: Int?, _, _ -> accumulator ?: 0 + 1 }
+                .groupBy { unit -> unit.blueprint }
+                .mapValues { it.value.size }
         }
 
     private val summaryItems: MutableList<AttachedComponent> = mutableListOf()
