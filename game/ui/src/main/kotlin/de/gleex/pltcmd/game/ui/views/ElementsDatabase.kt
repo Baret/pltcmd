@@ -69,7 +69,7 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
             .apply {
                 val halfSize = Size.create(contentSize.width, contentSize.height / 2)
                 // TODO: Get observable element from table
-                val firstElement = elements.first().toProperty()
+                val firstElement = elements[6].toProperty()
                 val hierarchyPanel = titledPanel("Hierarchy", halfSize)
                     .apply {
                         addFragment(
