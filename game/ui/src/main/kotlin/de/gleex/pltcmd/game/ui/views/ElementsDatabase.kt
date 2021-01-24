@@ -15,7 +15,6 @@ import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.elements.blueprint.CommandingElementBlueprint
-import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.Panel
@@ -69,12 +68,12 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
             .apply {
                 val halfSize = Size.create(contentSize.width, contentSize.height / 2)
                 // TODO: Get observable element from table
-                val firstElement = elements[6].toProperty()
+                val selectedElement = table.selectedRow
                 val hierarchyPanel = titledPanel("Hierarchy", halfSize)
                     .apply {
                         addFragment(
                             ElementHierarchyFragment(
-                                firstElement,
+                                selectedElement,
                                 contentSize.width,
                                 contentSize.height
                             )
@@ -84,7 +83,7 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
                     .apply {
                         addFragment(
                             ElementUnitsFragment(
-                                firstElement,
+                                selectedElement,
                                 contentSize.width,
                                 contentSize.height
                             )

@@ -83,14 +83,16 @@ class ElementUnitsFragment(
                 }
                 summaryMap
                     .forEach { (blueprint, count) ->
-                        vbox.addComponent(
-                            Components
-                                .label()
-                                .withSize(vbox.contentSize.withHeight(1))
-                                .build()
-                                .apply {
-                                    withFrontendString(format, "${count.toString().padStart(3)}x ", blueprint)
-                                }
+                        summaryItems.add(
+                            vbox.addComponent(
+                                Components
+                                    .label()
+                                    .withSize(vbox.contentSize.withHeight(1))
+                                    .build()
+                                    .apply {
+                                        withFrontendString(format, "${count.toString().padStart(3)}x ", blueprint)
+                                    }
+                            )
                         )
                     }
             }

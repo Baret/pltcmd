@@ -1,6 +1,9 @@
 package de.gleex.pltcmd.game.ui.fragments.table
 
 import de.gleex.pltcmd.game.ui.fragments.table.column.Column
+import org.hexworks.cobalt.databinding.api.extension.toProperty
+import org.hexworks.cobalt.databinding.api.property.Property
+import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.*
@@ -21,6 +24,10 @@ class Table<M : Any>(
         }
     }
 
+    private val selectedRowProperty: Property<M> = values.first().toProperty()
+
+    val selectedRow: ObservableValue<M> = selectedRowProperty
+
     private val width = columns.sumBy { it.format.length } + (columns.size * columnSpacing)
 
     init {
@@ -38,7 +45,7 @@ class Table<M : Any>(
                         .build()
                         .apply {
                             processMouseEvents(MouseEventType.MOUSE_CLICKED) { _, phase ->
-                                if(phase == UIEventPhase.TARGET) {
+                                if (phase == UIEventPhase.TARGET) {
                                     log.debug("Column header '${column.name}' has been clicked. A filter modal might have opened now :O")
                                 }
                             }
@@ -93,7 +100,16 @@ class Table<M : Any>(
     private fun newRowFor(value: M) =
         newRow(
             columns
-                .map { it.componentCreator(value) }
+                .map {
+                    it.componentCreator(value)
+                        .apply {
+                            processMouseEvents(MouseEventType.MOUSE_CLICKED) { event, phase ->
+                                if (phase == UIEventPhase.TARGET && event.button == 1) {
+                                    selectedRowProperty.updateValue(value)
+                                }
+                            }
+                        }
+                }
         )
 
     private fun newRow(components: List<Component>): HBox =
