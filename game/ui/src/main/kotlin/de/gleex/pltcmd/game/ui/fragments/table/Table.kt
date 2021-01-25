@@ -7,6 +7,7 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.*
+import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.uievent.MouseEventType
 import org.hexworks.zircon.api.uievent.UIEventPhase
 
@@ -29,10 +30,6 @@ class Table<M : Any>(
     val selectedRow: ObservableValue<M> = selectedRowProperty
 
     private val width = columns.sumBy { it.format.length } + (columns.size * columnSpacing)
-
-    init {
-        log.debug("Table width for ${columns.size} columns and columnSpacing=$columnSpacing: $width")
-    }
 
     private val headerPanel: HBox =
         newRow(
@@ -74,7 +71,7 @@ class Table<M : Any>(
     private val maxRows: Int = (rowPanel.height.toDouble() / (1 + rowSpacing)).toInt()
 
     init {
-        log.debug("Creating table with height $height. rowPanel.height = ${rowPanel.height}, maxRows = $maxRows, rowSpacing = $rowSpacing")
+        log.debug("Creating table with ${Size.create(height, width)} for ${columns.size} columns and ${values.size} values. rowPanel.height = ${rowPanel.height}, maxRows = $maxRows")
         fillTable(values)
     }
 
@@ -83,12 +80,10 @@ class Table<M : Any>(
         elements
             .asSequence()
             .map {
-                log.debug("Creating row for $it")
                 newRowFor(it)
             }
             .take(maxRows)
             .forEach {
-                log.debug("Adding row: $it")
                 rows.add(rowPanel.addComponent(it))
             }
     }
