@@ -7,7 +7,6 @@ import de.gleex.pltcmd.model.elements.blueprint.AbstractElementBlueprint
 import de.gleex.pltcmd.model.elements.blueprint.CommandingElementBlueprint
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.AttachedComponent
 import org.hexworks.zircon.api.component.Component
@@ -52,17 +51,14 @@ class ElementHierarchyFragment(
             .withSize(size)
             .withSpacing(0)
             .build()
-        log.debug("Built hierarchy panel with size $size")
         subsFirstLevel
             .bindTransform { newSubs ->
-                log.debug("Subs changed!")
                 with(content) {
                     forEach { it.detach() }
                     clear()
                 }
                 newSubs
                     .forEachIndexed { index, blueprint ->
-                        log.debug("Adding sub to vbox")
                         sub(1, blueprint, size.withHeight(1), index == newSubs.lastIndex, "")
                             .forEach { subLabel ->
                                 if (content.size < size.height) {
@@ -88,7 +84,6 @@ class ElementHierarchyFragment(
             .withSize(size)
             .build()
             .apply {
-                log.debug("Built label with size $size and prefix $hierarchySymbolsPrefix")
                 withFrontendString(format, hierarchySymbolsPrefix, elementBlueprint)
             }
         val labels: MutableList<Label> = mutableListOf(label)
@@ -127,9 +122,5 @@ class ElementHierarchyFragment(
             }
             .joinToString("")
         return "$prefix$treeSymbol"
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(ElementHierarchyFragment::class)
     }
 }
