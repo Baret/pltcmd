@@ -222,6 +222,12 @@ object Elements {
     val transportHelicopterPlatoon =
             a(Logistics, Aerial, Platoon) consistingOf HelicopterHMG commanding 3 * transportHelicopterSquad
 
+    /**
+     * This is rather a test element to have a very large one (a battalion).
+     */
+    val aerialTransportBattalion =
+        a(Logistics, Aerial, Battalion) consistingOf 2 * HelicopterHeavyLift + HelicopterHMG commanding 3 * transportHelicopterPlatoon
+
     // ######################
     // Recon corps
     // ######################
