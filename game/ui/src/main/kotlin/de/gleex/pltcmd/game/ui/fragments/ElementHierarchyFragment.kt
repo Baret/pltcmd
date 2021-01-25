@@ -61,20 +61,27 @@ class ElementHierarchyFragment(
                     clear()
                 }
                 newSubs
-                    .forEach {
+                    .forEachIndexed { index, blueprint ->
                         log.debug("Adding sub to vbox")
-                        sub(1, it, size.withHeight(1))
+                        sub(1, blueprint, size.withHeight(1), index == newSubs.lastIndex, "")
                             .forEach { subLabel ->
-                                content += vbox.addComponent(subLabel)
+                                if (content.size < size.height) {
+                                    content += vbox.addComponent(subLabel)
+                                }
                             }
                     }
             }
         return vbox
     }
 
-    private fun sub(level: Int, elementBlueprint: AbstractElementBlueprint<*>, size: Size): List<Label> {
-        val hierarchySymbolsPrefix =
-            "${Symbols.SINGLE_LINE_VERTICAL.toString().repeat(level - 1)}${Symbols.SINGLE_LINE_T_RIGHT} "
+    private fun sub(
+        level: Int,
+        elementBlueprint: AbstractElementBlueprint<*>,
+        size: Size,
+        isLast: Boolean,
+        parentPrefix: String
+    ): List<Label> {
+        val hierarchySymbolsPrefix = hierarchySymbols(level, isLast, parentPrefix)
         val label = Components
             .label()
             .withText("w00t")
@@ -88,12 +95,38 @@ class ElementHierarchyFragment(
         if (elementBlueprint is CommandingElementBlueprint) {
             elementBlueprint
                 .subordinates
-                .forEach { furtherSub ->
+                .forEachIndexed { index, furtherSub ->
                     labels
-                        .addAll(sub(level + 1, furtherSub, size))
+                        .addAll(
+                            sub(
+                                level + 1,
+                                furtherSub,
+                                size,
+                                index == elementBlueprint.subordinates.lastIndex,
+                                hierarchySymbolsPrefix
+                            )
+                        )
                 }
         }
         return labels
+    }
+
+    private fun hierarchySymbols(level: Int, isLast: Boolean, parentPrefix: String): String {
+        val treeSymbol = if (isLast) {
+            Symbols.SINGLE_LINE_BOTTOM_LEFT_CORNER
+        } else {
+            Symbols.SINGLE_LINE_T_RIGHT
+        }
+        val prefix = parentPrefix
+            .map {
+                if (it == Symbols.SINGLE_LINE_T_RIGHT || it == Symbols.SINGLE_LINE_VERTICAL) {
+                    Symbols.SINGLE_LINE_VERTICAL
+                } else {
+                    " "
+                }
+            }
+            .joinToString("")
+        return "$prefix$treeSymbol"
     }
 
     companion object {

@@ -183,6 +183,12 @@ object Elements {
     val engineerPlatoon =
             fightingInfantryPlatoonCommand withCorps Logistics commanding 4 * engineerSquad
 
+    /**
+     * This is rather a test element to have a very large one (a battalion).
+     */
+    val enigneerBattalion =
+        a(Logistics, Infantry, Battalion) consistingOf 3 * Officer + 2 * Medic + 1 * Rifleman commanding 3 * engineerPlatoon
+
     // ======================
     //      Motorized INF (MOT)
     // ======================
