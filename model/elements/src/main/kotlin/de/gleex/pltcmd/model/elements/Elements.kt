@@ -130,6 +130,43 @@ object Elements {
             fightingInfantryPlatoonCommand withKind MotorizedInfantry commanding 3 * motorizedInfantrySquad + motorizedTransportSquad
 
     // ######################
+    // Combat Support
+    // ######################
+
+    // ======================
+    //      Infantry (INF)
+    // ======================
+
+    val mortarTeam =
+        a(CombatSupport, Infantry, Fireteam) consistingOf MortarTeam
+
+    val mortarSquad =
+        a(CombatSupport, Infantry, Squad) consistingOf Officer commanding 2 * mortarTeam
+
+    // ======================
+    //      Motorized INF (MOT)
+    // ======================
+
+    val rocketTruck =
+        a(CombatSupport, MotorizedInfantry, Squad) consistingOf RocketTruck commanding noSubordinates
+
+    val rocketTruckPlatoon =
+        a(CombatSupport, MotorizedInfantry, Platoon) consistingOf RocketTruck commanding 2 * rocketTruck
+
+    // ======================
+    //      Armored (ARM)
+    // ======================
+
+    val selfPropelledArtillery =
+        a(CombatSupport, Armored, Fireteam) consistingOf Artillery
+
+    val artillerySquad =
+        a(CombatSupport, Armored, Squad) consistingOf Artillery commanding 1 * selfPropelledArtillery
+
+    val artilleryPlatoon =
+        a(CombatSupport, Armored, Platoon) consistingOf Artillery commanding 2 * artillerySquad
+
+    // ######################
     // Logistics corps
     // ######################
 
@@ -146,6 +183,12 @@ object Elements {
     val engineerPlatoon =
             fightingInfantryPlatoonCommand withCorps Logistics commanding 4 * engineerSquad
 
+    /**
+     * This is rather a test element to have a very large one (a battalion).
+     */
+    val enigneerBattalion =
+        a(Logistics, Infantry, Battalion) consistingOf 3 * Officer + 2 * Medic + 1 * Rifleman commanding 3 * engineerPlatoon
+
     // ======================
     //      Motorized INF (MOT)
     // ======================
@@ -160,6 +203,16 @@ object Elements {
             a(Logistics, MotorizedInfantry, Platoon) consistingOf platoonLead commanding 3 * transportTruckSquad
 
     // ======================
+    //      Mechanized INF (MEC)
+    // ======================
+
+    val apcSquad =
+        a(Logistics, MechanizedInfantry, Squad) consistingOf APC commanding noSubordinates
+
+    val apcPlatoon =
+        a(Logistics, MechanizedInfantry, Platoon) consistingOf APC commanding 2 * apcSquad
+
+    // ======================
     //      Aerial (AIR)
     // ======================
 
@@ -169,9 +222,38 @@ object Elements {
     val transportHelicopterPlatoon =
             a(Logistics, Aerial, Platoon) consistingOf HelicopterHMG commanding 3 * transportHelicopterSquad
 
+    /**
+     * This is rather a test element to have a very large one (a battalion).
+     */
+    val aerialTransportBattalion =
+        a(Logistics, Aerial, Battalion) consistingOf 2 * HelicopterHeavyLift + HelicopterHMG commanding 3 * transportHelicopterPlatoon
+
     // ######################
     // Recon corps
     // ######################
+
+    // ======================
+    //      Infantry (INF)
+    // ======================
+
+    val sniperTeam =
+        a(Reconnaissance, Infantry, Fireteam) consistingOf SniperTeam commanding noSubordinates
+
+    val scoutTeam =
+        a(Reconnaissance, Infantry, Fireteam) consistingOf 4 * Scout
+
+    val scoutSquad =
+        a(Reconnaissance, Infantry, Squad) consistingOf squadLead commanding 2 * scoutTeam
+
+    // ======================
+    //      Armored
+    // ======================
+
+    val scoutCar =
+        a(Reconnaissance, Armored, Fireteam) consistingOf ScoutCar
+
+    val scoutCarSquad =
+        a(Reconnaissance, Armored, Squad) consistingOf ScoutCar commanding 1 * scoutCar
 
     // ======================
     //      Aerial (AIR)

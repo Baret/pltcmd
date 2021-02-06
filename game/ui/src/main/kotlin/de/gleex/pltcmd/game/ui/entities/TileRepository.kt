@@ -25,13 +25,9 @@ object TileRepository {
      */
     object Elements {
         private val CommandingElement.character: Char
-            get() {
-                val mostUnits = allUnits
-                        .groupBy { it.blueprint }
-                        .maxByOrNull { it.value.size }!!
-                        .key
-                return mostUnits.toFrontendString(Format.ICON).value[0]
-            }
+            get() = kind
+                .toFrontendString(Format.ICON)
+                .value[0]
 
         private fun platoonTile(representation: Char, colorForeground: TileColor, colorBackground: TileColor) =
                 Tile.newBuilder()

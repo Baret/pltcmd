@@ -4,6 +4,10 @@ import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.FrontendString
 import de.gleex.pltcmd.game.ui.strings.Transformation
 import de.gleex.pltcmd.game.ui.strings.transformations.*
+import de.gleex.pltcmd.model.elements.Corps
+import de.gleex.pltcmd.model.elements.ElementKind
+import de.gleex.pltcmd.model.elements.Rung
+import de.gleex.pltcmd.model.elements.blueprint.AbstractElementBlueprint
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -35,12 +39,16 @@ fun <T : Any> T.toFrontendString(format: Format = Format.FULL): FrontendString<T
 @Suppress("UNCHECKED_CAST")
 private fun <T> transformationFor(value: T): Transformation<T> {
     return when (value) {
-        is Coordinate -> coordinateTransformation
-        is Units      -> unitsTransformation
-        is Unit       -> unitTransformation
+        is Coordinate  -> coordinateTransformation
+        is Units       -> unitsTransformation
+        is Unit        -> unitTransformation
         is TerrainHeight -> terrainHeightTransformation
         is TerrainType -> terrainTypeTransformation
-        is Terrain    -> terrainTransformation
-        else          -> defaultTransformation
+        is Terrain     -> terrainTransformation
+        is ElementKind -> elementKindTransformation
+        is Corps       -> corpsTransformation
+        is Rung        -> rungTransformation
+        is AbstractElementBlueprint<*> -> blueprintTransformation
+        else           -> defaultTransformation
     } as Transformation<T>
 }
