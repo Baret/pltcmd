@@ -3,7 +3,6 @@ package de.gleex.pltcmd.game.ui.components
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ui.entities.ColorRepository
 import de.gleex.pltcmd.game.ui.entities.TileRepository
-import de.gleex.pltcmd.game.ui.fragments.table.TableFilterPanel
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.extensions.withFrontendString
 import de.gleex.pltcmd.model.elements.*
@@ -66,8 +65,6 @@ class ElementsTable(
         }
     }
 
-    private val filterPanel: TableFilterPanel = TableFilterPanel(size.width, columnConfig)
-
     private val headerPanel = Components
         .hbox()
         .withSize(size.width, 2)
@@ -91,7 +88,7 @@ class ElementsTable(
     private val tableVBox: VBox = Components
         .vbox()
         .withSpacing(ROW_SPACING)
-        .withSize(size.width, size.height - filterPanel.size.height - headerPanel.size.height)
+        .withSize(size.width, size.height - headerPanel.size.height)
         .build()
 
     private val maxRows = tableVBox.contentSize.height
@@ -105,7 +102,6 @@ class ElementsTable(
         .build()
 
     init {
-        root.addFragments(filterPanel)
         root.addComponents(
             headerPanel,
             tableVBox
