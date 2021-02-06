@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.ui.views
 
 import de.gleex.pltcmd.game.options.UiOptions
-import de.gleex.pltcmd.game.ui.components.ElementsTable
 import de.gleex.pltcmd.game.ui.entities.ColorRepository
 import de.gleex.pltcmd.game.ui.entities.TileRepository
 import de.gleex.pltcmd.game.ui.fragments.ElementHierarchyFragment
@@ -29,12 +28,6 @@ import org.hexworks.zircon.api.view.base.BaseView
 class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME) {
     init {
         val decor = ComponentDecorations.shadow()
-        val panelSize = (ElementsTable.MIN_SIZE + decor.occupiedSize).withHeight(screen.height)
-        val tablePanel = Components
-            .panel()
-            .withDecorations(decor)
-            .withSize(panelSize)
-            .build()
 
         val elements = Elements.allCommandingElements().values.toList()
         val table = Table<CommandingElementBlueprint>(
@@ -54,8 +47,16 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
                 NumberColumn("Sold.", SHORT5) { it.new().totalSoldiers }
             ),
             elements,
-            height = tablePanel.contentSize.height
+            height = screen.height - decor.occupiedSize.height,
+            rowSpacing = 1
         )
+
+        val panelSize = (table.size + decor.occupiedSize).withHeight(screen.height)
+        val tablePanel = Components
+            .panel()
+            .withDecorations(decor)
+            .withSize(panelSize)
+            .build()
 
         tablePanel.addFragment(table)
 
@@ -67,7 +68,6 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
             .build()
             .apply {
                 val halfSize = Size.create(contentSize.width, contentSize.height / 2)
-                // TODO: Get observable element from table
                 val selectedElement = table.selectedRow
                 val hierarchyPanel = titledPanel("Hierarchy", halfSize)
                     .apply {

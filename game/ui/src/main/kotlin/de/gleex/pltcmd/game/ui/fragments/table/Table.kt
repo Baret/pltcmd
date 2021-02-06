@@ -38,6 +38,11 @@ class Table<M : Any>(
 
     private val width = columns.sumBy { it.format.length } + (columns.size * columnSpacing)
 
+    /**
+     * The actual size of this table.
+     */
+    val size: Size = Size.create(width, height)
+
     private val headerPanel: HBox =
         newRow(
             columns
