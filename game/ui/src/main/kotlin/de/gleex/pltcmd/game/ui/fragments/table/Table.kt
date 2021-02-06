@@ -11,6 +11,13 @@ import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.uievent.MouseEventType
 import org.hexworks.zircon.api.uievent.UIEventPhase
 
+/**
+ * A table lists values of type [M] in columns defined by [columns].
+ *
+ * @param columns the [Column] definitions of this table
+ * @param values each value is displayed in a table row
+ * @param M the type of the underlying model
+ */
 class Table<M : Any>(
     private val columns: List<Column<M, *>>,
     private val values: List<M>,

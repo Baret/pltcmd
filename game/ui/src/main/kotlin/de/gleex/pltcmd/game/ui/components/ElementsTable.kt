@@ -17,11 +17,11 @@ import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Tile
 
 /**
- * A filterable table listing the given element blueprints.
+ * A table listing the given element blueprints.
  */
 class ElementsTable(
     val size: Size = MIN_SIZE,
-    private val allElements: List<CommandingElementBlueprint> = Elements.allCommandingElements().values.toList()
+    allElements: List<CommandingElementBlueprint> = Elements.allCommandingElements().values.toList()
 ) : Fragment {
 
     companion object {
@@ -43,7 +43,7 @@ class ElementsTable(
         )
 
         const val COLUMN_SPACING = 1
-        const val ROW_SPACING = 1
+        const val ROW_SPACING = 0
         private const val ROW_HEIGHT = 1
 
         private val MIN_WIDTH = columnConfig.values.sumBy { it.length } + (columnConfig.size * COLUMN_SPACING)
