@@ -9,13 +9,13 @@ class FactionRelations(of: Faction) {
     private val related = mutableMapOf<Faction, Affiliation>()
 
     init {
-        related.put(of, Affiliation.Self)
+        update(of, Affiliation.Self)
     }
 
     fun update(other: Faction, state: Affiliation) {
         related[other] = state
     }
 
-    fun affiliationOf(other: Faction): Affiliation = related[other] ?: Affiliation.Neutral
+    fun affiliationOf(other: Faction): Affiliation = related[other] ?: Affiliation.Unknown
 
 }
