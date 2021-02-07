@@ -4,8 +4,8 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.game.options.GameOptions
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.signals.vision.Visibility

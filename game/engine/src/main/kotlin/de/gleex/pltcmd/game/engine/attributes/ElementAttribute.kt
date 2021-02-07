@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.engine.attributes
 
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CommandingElement
+import de.gleex.pltcmd.model.faction.Affiliation
 import org.hexworks.amethyst.api.base.BaseAttribute
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 

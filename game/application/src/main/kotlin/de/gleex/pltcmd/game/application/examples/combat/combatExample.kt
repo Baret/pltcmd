@@ -6,10 +6,10 @@ import de.gleex.pltcmd.game.engine.entities.toEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.element
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
+import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector

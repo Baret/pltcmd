@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.model.faction
 
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.faction.de.gleex.pltcmd.model.faction.Faction
 
 /**

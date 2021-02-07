@@ -11,9 +11,9 @@ import de.gleex.pltcmd.game.ui.fragments.table.column.NumberColumn
 import de.gleex.pltcmd.game.ui.fragments.table.column.TextColumn
 import de.gleex.pltcmd.game.ui.strings.Format.*
 import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.elements.blueprint.CommandingElementBlueprint
+import de.gleex.pltcmd.model.faction.Affiliation
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.Panel

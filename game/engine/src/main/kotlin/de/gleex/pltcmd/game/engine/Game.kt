@@ -13,8 +13,8 @@ import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CommandingElement
+import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector

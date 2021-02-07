@@ -11,6 +11,7 @@ import de.gleex.pltcmd.model.elements.*
 import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.new
+import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly

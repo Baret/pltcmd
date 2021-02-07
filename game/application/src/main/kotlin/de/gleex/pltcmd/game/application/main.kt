@@ -10,10 +10,10 @@ import de.gleex.pltcmd.game.ui.mapgeneration.MapGenerationProgressController
 import de.gleex.pltcmd.game.ui.views.GameView
 import de.gleex.pltcmd.game.ui.views.GeneratingView
 import de.gleex.pltcmd.game.ui.views.TitleView
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
+import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap

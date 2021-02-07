@@ -10,9 +10,9 @@ import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.fragments.GameTimeFragment
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.Elements
+import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts

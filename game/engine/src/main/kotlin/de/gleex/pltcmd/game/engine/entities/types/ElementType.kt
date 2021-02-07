@@ -6,9 +6,9 @@ import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.game.engine.extensions.tryCastTo
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
+import de.gleex.pltcmd.model.faction.Affiliation
 import org.hexworks.amethyst.api.base.BaseEntityType
 import org.hexworks.cobalt.datatypes.Maybe
 

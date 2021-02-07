@@ -1,9 +1,9 @@
 package de.gleex.pltcmd.game.ui.entities
 
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.Corps
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.elements.Rung
+import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType

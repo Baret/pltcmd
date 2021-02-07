@@ -12,11 +12,4 @@
     <artifactId>faction</artifactId>
     <description>The modeling of factions.</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>de.gleex.pltcmd.model</groupId>
-            <artifactId>elements</artifactId>
-        </dependency>
-    </dependencies>
-
 </project>

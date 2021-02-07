@@ -6,8 +6,7 @@ import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import de.gleex.pltcmd.game.engine.systems.behaviours.Fighting.isEnemy
-import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.model.faction.Affiliation
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.cobalt.logging.api.LoggerFactory
 

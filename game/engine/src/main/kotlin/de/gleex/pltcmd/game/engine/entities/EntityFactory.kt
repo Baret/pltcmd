@@ -14,10 +14,10 @@ import de.gleex.pltcmd.game.engine.entities.types.FOBType
 import de.gleex.pltcmd.game.engine.extensions.addIfMissing
 import de.gleex.pltcmd.game.engine.systems.behaviours.*
 import de.gleex.pltcmd.game.engine.systems.facets.*
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.ElementKind
+import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.signals.radio.RadioPower
