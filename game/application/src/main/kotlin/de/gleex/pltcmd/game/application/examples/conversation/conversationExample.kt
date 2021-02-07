@@ -14,6 +14,7 @@ import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.faction.Faction
+import de.gleex.pltcmd.model.faction.FactionRelations
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
@@ -60,8 +61,8 @@ fun main() {
     val commandFaction = Faction("player faction")
     val friends = Faction("friendly faction")
     val neutrals = Faction("civic")
-    commandFaction.relations[friends] = Affiliation.Friendly
-    commandFaction.relations[neutrals] = Affiliation.Neutral
+    FactionRelations[commandFaction, friends] = Affiliation.Friendly
+    FactionRelations[commandFaction, neutrals] = Affiliation.Neutral
 
     val game = Game(Engine.create(), map, commandFaction, Random(GameOptions.MAP_SEED))
     val context = game.context()

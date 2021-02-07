@@ -14,6 +14,7 @@ import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.faction.Faction
+import de.gleex.pltcmd.model.faction.FactionRelations
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
@@ -36,8 +37,7 @@ class FightingTest : StringSpec({
 
     val playerFaction = Faction("player faction")
     val opfor = Faction("opposing force")
-    playerFaction.relations[opfor] = Affiliation.Hostile
-    opfor.relations[playerFaction] = Affiliation.Hostile
+    FactionRelations[playerFaction, opfor] = Affiliation.Hostile
 
     "attackNearbyEnemies with single attacker against single enemy" {
         val attackerPosition = Coordinate(123, 456)

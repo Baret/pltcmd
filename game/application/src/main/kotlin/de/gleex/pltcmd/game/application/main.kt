@@ -15,6 +15,7 @@ import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.faction.Faction
+import de.gleex.pltcmd.model.faction.FactionRelations
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
@@ -125,8 +126,7 @@ open class Main {
      */
     protected open fun addHostiles(game: Game, gameWorld: GameWorld) {
         val opfor = Faction("opposing force")
-        opfor.relations[game.playerFaction] = Affiliation.Hostile
-        game.playerFaction.relations[opfor] = Affiliation.Hostile
+        FactionRelations[opfor, game.playerFaction] = Affiliation.Hostile
         // Adding some elements to every sector
         val elementsPerSector = 2
         game.world.sectors.forEach { sector ->

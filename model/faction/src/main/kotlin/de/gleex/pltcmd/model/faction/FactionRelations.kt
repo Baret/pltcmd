@@ -1,19 +1,28 @@
 package de.gleex.pltcmd.model.faction
 
 /**
- * Holds the [Affiliation] to other [Faction]s.
+ * Holds the [Affiliation] between [Faction]s.
  */
-class FactionRelations(of: Faction) {
-    private val related = mutableMapOf<Faction, Affiliation>()
+object FactionRelations {
+    private val related = mutableMapOf<Pair<Faction, Faction>, Affiliation>()
 
-    init {
-        this[of] = Affiliation.Self
+    operator fun set(faction1: Faction, faction2: Faction, state: Affiliation) {
+        val key = createKey(faction1, faction2)
+        related[key] = state
     }
 
-    operator fun set(other: Faction, state: Affiliation) {
-        related[other] = state
-    }
+    operator fun get(faction1: Faction, faction2: Faction): Affiliation =
+        if (faction1 == faction2) {
+            Affiliation.Self
+        } else {
+            val createKey = createKey(faction1, faction2)
+            related[createKey]
+                ?: Affiliation.Unknown
+        }
 
-    operator fun get(other: Faction): Affiliation = related[other] ?: Affiliation.Unknown
+    private fun createKey(faction1: Faction, faction2: Faction) =
+        if (faction1.name <= faction2.name) {
+            Pair(faction1, faction2)
+        } else Pair(faction2, faction1)
 
 }
