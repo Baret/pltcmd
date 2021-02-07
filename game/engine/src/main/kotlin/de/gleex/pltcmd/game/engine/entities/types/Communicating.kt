@@ -6,7 +6,6 @@ import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
-import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -16,7 +15,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  */
 
 /** Type marker for entities that have the [RadioAttribute] */
-interface Communicating : EntityType
+interface Communicating : Factionable
 typealias CommunicatingEntity = GameEntity<Communicating>
 
 private val log = LoggerFactory.getLogger(Communicating::class)
