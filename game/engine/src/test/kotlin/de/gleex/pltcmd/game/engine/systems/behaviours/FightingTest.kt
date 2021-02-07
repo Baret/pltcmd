@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.ContactsAttribute
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
+import de.gleex.pltcmd.game.engine.attributes.FactionAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.entities.EntitySet
@@ -153,7 +154,8 @@ fun createTargets(attacker: ElementEntity, opfor: Faction, vararg elements: Comm
 fun createCombatant(position: Coordinate, faction: Faction, element: CommandingElement = createInfantryElement()): ElementEntity {
     return newEntityOfType(ElementType) {
         attributes(
-                ElementAttribute(element, faction),
+                ElementAttribute(element),
+                FactionAttribute(faction),
                 PositionAttribute(position.toProperty()),
                 ShootersAttribute(element),
                 ContactsAttribute()

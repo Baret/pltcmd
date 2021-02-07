@@ -79,7 +79,8 @@ object EntityFactory {
         }
         val attributes: MutableList<Attribute> = mutableListOf(
             CommandersIntent(),
-            ElementAttribute(element, faction),
+            ElementAttribute(element),
+            FactionAttribute(faction),
             PositionAttribute(initialPosition),
             VisionAttribute(initialVision(visualRange)),
             ContactsAttribute(),

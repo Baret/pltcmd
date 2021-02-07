@@ -73,7 +73,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     }
 
     /**
-     * Adds a new element in the given sector and returns it. If [affiliationToPlayer] is not friendly the element will be wandering.
+     * Adds a new element in the given sector and returns it. If [playerControlled] is false the element will be wandering.
      */
     fun addElementInSector(
         sector: Sector,
