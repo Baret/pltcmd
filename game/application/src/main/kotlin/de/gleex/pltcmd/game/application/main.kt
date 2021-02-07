@@ -90,7 +90,7 @@ open class Main {
             it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin()
         }
         val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
-        val hq = game.newHQIn(visibleSector)
+        val hq = game.newHQIn(visibleSector, game.playerFaction)
             .also { gameWorld.showBase(it) }
         addHostiles(game, gameWorld)
         return Pair(elementsToCommand, hq)

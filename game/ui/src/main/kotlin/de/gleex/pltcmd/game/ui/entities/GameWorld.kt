@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.ui.entities
 
 import de.gleex.pltcmd.game.engine.entities.types.*
-import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
@@ -66,8 +65,8 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
 
     /** adds a friendly marker for this FOB */
     fun showBase(base: FOBEntity) {
-        // TODO FOBEntity needs Faction
-        val fobTile = TileRepository.createFobTile(Affiliation.Self)
+        val affiliation = base.affiliationTo(factionViewToPresent)
+        val fobTile = TileRepository.createFobTile(affiliation)
         base.currentPosition.setUnit(fobTile)
     }
 

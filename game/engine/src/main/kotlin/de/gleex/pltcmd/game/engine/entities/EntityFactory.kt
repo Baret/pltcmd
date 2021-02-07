@@ -42,10 +42,11 @@ object EntityFactory {
     /**
      * Creates a new base (aka FOB = Forward operating base)
      */
-    fun newBaseAt(position: Coordinate, map: WorldMap, callSign: CallSign): FOBEntity =
+    fun newBaseAt(position: Coordinate, map: WorldMap, faction: Faction, callSign: CallSign): FOBEntity =
         newEntityOfType(FOBType) {
             val positionProperty = position.toProperty()
             attributes(
+                FactionAttribute(faction),
                 PositionAttribute(positionProperty),
                 RadioAttribute(RadioCommunicator(callSign, RadioSender(positionProperty, RadioPower.STATIONARY, map))),
                 VisionAttribute(map.visionAt(position, VisionPower(40.0))),
@@ -155,5 +156,5 @@ fun CommandingElement.toEntity(
  * @param position a valid position inside this [WorldMap]
  * @param callSign the [CallSign] of this base, default "HQ" (a main base)
  */
-fun WorldMap.newBaseAt(position: Coordinate, callSign: CallSign = CallSign("HQ")) =
-    EntityFactory.newBaseAt(position, this, callSign)
+fun WorldMap.newBaseAt(position: Coordinate, faction: Faction, callSign: CallSign = CallSign("HQ")) =
+    EntityFactory.newBaseAt(position, this, faction, callSign)

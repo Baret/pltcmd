@@ -116,9 +116,9 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     /**
      * Creates a main base in the given sector.
      */
-    fun newHQIn(sector: Sector): FOBEntity =
+    fun newHQIn(sector: Sector, faction: Faction): FOBEntity =
         world
-            .newBaseAt(sector.bestFobLocation)
+            .newBaseAt(sector.bestFobLocation, faction)
             .also {
                 addEntity(it)
             }
