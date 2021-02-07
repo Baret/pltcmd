@@ -25,4 +25,8 @@ object FactionRelations {
             Pair(faction1, faction2)
         } else Pair(faction2, faction1)
 
+    fun reset() {
+        related.clear()
+    }
+
 }
