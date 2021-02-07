@@ -9,7 +9,7 @@ import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
-import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
@@ -33,14 +33,15 @@ class CombatMain : Main() {
     override fun createElementsToCommand(visibleSector: Sector, game: Game, gameWorld: GameWorld): List<ElementEntity> {
         val enemy1 = Elements.rifleSquad.new()
                 .apply { callSign = CallSign("Alpha") }
-        val alpha = visibleSector.createFriendly(enemy1, game, gameWorld, getBattlefield(game.world))
+        val alpha = visibleSector.createFriendly(enemy1, game.playerFaction, game, gameWorld, getBattlefield(game.world))
         return listOf(alpha)
     }
 
     override fun addHostiles(game: Game, gameWorld: GameWorld) {
+        val opfor = Faction("opposing force")
         val worldMap = game.world
         val position = getBattlefield(worldMap).movedBy(1, 0)
-        addHostile(position, worldMap)
+        addHostile(position, worldMap, opfor)
                 .also {
                     it.element.callSign = CallSign("Enemy rifle squad")
                     game.addEntity(it)
@@ -52,10 +53,9 @@ class CombatMain : Main() {
     private fun getBattlefield(generatedMap: WorldMap) =
             generatedMap.sectors.first().origin.movedBy(20, 30)
 
-    fun addHostile(position: Coordinate, map: WorldMap, element: CommandingElement = Elements.rifleSquad.new()): ElementEntity {
-        val affiliation = Affiliation.Hostile
+    fun addHostile(position: Coordinate, map: WorldMap, faction: Faction, element: CommandingElement = Elements.rifleSquad.new()): ElementEntity {
         val elementPosition = position.toProperty()
         val radioSender = RadioSender(elementPosition, RadioPower(), map)
-        return element.toEntity(elementPosition, affiliation, radioSender)
+        return element.toEntity(elementPosition, faction, radioSender)
     }
 }

@@ -12,6 +12,7 @@ import de.gleex.pltcmd.model.elements.units.Unit
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.assertions.assertSoftly
@@ -32,11 +33,16 @@ class FightingTest : StringSpec({
     mockkStatic("de.gleex.pltcmd.game.engine.entities.types.ElementTypeKt")
     mockkStatic("de.gleex.pltcmd.game.engine.entities.types.PositionableKt")
 
+    val playerFaction = Faction("player faction")
+    val opfor = Faction("opposing force")
+    playerFaction.relations[opfor] = Affiliation.Hostile
+    opfor.relations[playerFaction] = Affiliation.Hostile
+
     "attackNearbyEnemies with single attacker against single enemy" {
         val attackerPosition = Coordinate(123, 456)
-        val attacker = createCombatant(attackerPosition, Affiliation.Friendly)
+        val attacker = createCombatant(attackerPosition, playerFaction)
         val context = createContext()
-        val target = createTarget(attacker, context)
+        val target = createTarget(attacker, opfor)
 
         Fighting.attackNearbyEnemies(attacker, context)
         assertCombatResult(attacker, target, 0, false)
@@ -49,9 +55,9 @@ class FightingTest : StringSpec({
 
     "attackNearbyEnemies with single attacker against multiple single enemy soldiers" {
         val attackerPosition = Coordinate(123, 456)
-        val attacker = createCombatant(attackerPosition, Affiliation.Friendly)
+        val attacker = createCombatant(attackerPosition, playerFaction)
         val context = createContext()
-        val (target1, target2, target3) = createTargets(attacker, context, createInfantryElement(), createInfantryElement(), createInfantryElement())
+        val (target1, target2, target3) = createTargets(attacker, opfor, createInfantryElement(), createInfantryElement(), createInfantryElement())
         assertCombatResult(attacker, target1, 1, true)
         assertCombatResult(attacker, target2, 1, true)
         assertCombatResult(attacker, target3, 1, true)
@@ -74,9 +80,9 @@ class FightingTest : StringSpec({
 
     "attackNearbyEnemies with multiple shooters and single enemy with multiple soldiers" {
         val attackerPosition = Coordinate(123, 456)
-        val attacker = createCombatant(attackerPosition, Affiliation.Friendly, Elements.rifleSquad.new())
+        val attacker = createCombatant(attackerPosition, playerFaction, Elements.rifleSquad.new())
         val context = createContext()
-        val target = createTarget(attacker, context, createInfantryElement((Units.Rifleman * 100).new()))
+        val target = createTarget(attacker, opfor, createInfantryElement((Units.Rifleman * 100).new()))
 
         Fighting.attackNearbyEnemies(attacker, context) // 38 dmg
         assertCombatResult(attacker, target, 62, true)
@@ -90,10 +96,10 @@ class FightingTest : StringSpec({
 
     "attackNearbyEnemies with multiple wounded shooters and single enemy with multiple soldiers" {
         val attackerPosition = Coordinate(123, 456)
-        val attacker = createCombatant(attackerPosition, Affiliation.Friendly, Elements.rifleSquad.new())
+        val attacker = createCombatant(attackerPosition, playerFaction, Elements.rifleSquad.new())
         val context = createContext()
-        val target = createTarget(attacker, context, createInfantryElement((Units.Rifleman * 100).new()))
-        val singleRifleman = createCombatant(attackerPosition.movedBy(2,2), Affiliation.Hostile)
+        val target = createTarget(attacker, opfor, createInfantryElement((Units.Rifleman * 100).new()))
+        val singleRifleman = createCombatant(attackerPosition.movedBy(2,2), opfor)
         singleRifleman.attack(attacker, context.random)
         val attacksAbleToFight = 4
         attacker.combatReadyCount shouldBe attacksAbleToFight
@@ -127,10 +133,10 @@ private fun createContext(): GameContext {
     return context
 }
 
-fun createTarget(attacker: ElementEntity, context: GameContext, element: CommandingElement = createInfantryElement()): ElementEntity =
-        createTargets(attacker, context, element).first()
+fun createTarget(attacker: ElementEntity, opfor: Faction, element: CommandingElement = createInfantryElement()): ElementEntity =
+        createTargets(attacker, opfor, element).first()
 
-fun createTargets(attacker: ElementEntity, context: GameContext, vararg elements: CommandingElement): List<ElementEntity> {
+fun createTargets(attacker: ElementEntity, opfor: Faction, vararg elements: CommandingElement): List<ElementEntity> {
     val attackerPosition = attacker.currentPosition
     val neighbors = attackerPosition.neighbors()
     return elements.mapIndexed { index, element ->
@@ -138,16 +144,16 @@ fun createTargets(attacker: ElementEntity, context: GameContext, vararg elements
         // position further away for ranged combat at 300 m
         val offsetFromAttacker = (neighborPosition - attackerPosition)
         val targetPosition = neighborPosition.movedBy(offsetFromAttacker.eastingFromLeft * 2, offsetFromAttacker.northingFromBottom * 2)
-        val target = createCombatant(targetPosition, Affiliation.Hostile, element)
+        val target = createCombatant(targetPosition, opfor, element)
         attacker.rememberContact(target, Visibility.GOOD)
         return@mapIndexed target
     }
 }
 
-fun createCombatant(position: Coordinate, affiliation: Affiliation, element: CommandingElement = createInfantryElement()): ElementEntity {
+fun createCombatant(position: Coordinate, faction: Faction, element: CommandingElement = createInfantryElement()): ElementEntity {
     return newEntityOfType(ElementType) {
         attributes(
-                ElementAttribute(element, affiliation),
+                ElementAttribute(element, faction),
                 PositionAttribute(position.toProperty()),
                 ShootersAttribute(element),
                 ContactsAttribute()

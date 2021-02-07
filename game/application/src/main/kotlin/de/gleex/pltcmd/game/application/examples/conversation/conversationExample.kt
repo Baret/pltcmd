@@ -13,6 +13,7 @@ import de.gleex.pltcmd.game.ui.fragments.GameTimeFragment
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
@@ -55,7 +56,14 @@ fun main() {
             toSortedSet()
     val sector = Sector(origin, tiles)
     val map = WorldMap.create(setOf(sector))
-    val game = Game(Engine.create(), map, Random(GameOptions.MAP_SEED))
+
+    val commandFaction = Faction("player faction")
+    val friends = Faction("friendly faction")
+    val neutrals = Faction("civic")
+    commandFaction.relations[friends] = Affiliation.Friendly
+    commandFaction.relations[neutrals] = Affiliation.Neutral
+
+    val game = Game(Engine.create(), map, commandFaction, Random(GameOptions.MAP_SEED))
     val context = game.context()
 
     globalEventBus.subscribeToBroadcasts { println("RADIO ${Ticker.currentTimeString.value}: ${it.transmission.message}") }
@@ -74,10 +82,10 @@ fun main() {
     val bravoCallSign = CallSign("Bravo-2")
     val charlieCallSign = CallSign("Charlie-1")
 
-    val hqEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = hqCallSign }, hqLocation, Affiliation.Self, hqRadio)
-    val bravoEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = bravoCallSign }, bravoLocation, Affiliation.Friendly, bravoRadio)
-    val charlieEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = charlieCallSign }, charlieLocation, Affiliation.Friendly, charlieRadio)
-    val zuluEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = CallSign("Zulu-0") }, zuluLocation, Affiliation.Neutral, zuluRadio)
+    val hqEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = hqCallSign }, hqLocation, commandFaction, hqRadio)
+    val bravoEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = bravoCallSign }, bravoLocation, friends, bravoRadio)
+    val charlieEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = charlieCallSign }, charlieLocation, friends, charlieRadio)
+    val zuluEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = CallSign("Zulu-0") }, zuluLocation, neutrals, zuluRadio)
 
     game.addEntity(hqEntity)
     game.addEntity(bravoEntity)

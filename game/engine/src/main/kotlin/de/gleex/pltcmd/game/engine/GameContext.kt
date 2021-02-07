@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.engine
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.ElementType
 import de.gleex.pltcmd.game.ticks.TickId
+import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Context
@@ -14,12 +15,14 @@ import kotlin.random.Random
  *
  * @param currentTick the tick that is currently being simulated. May be used to trigger scheduled actions.
  * @param world the world map.
+ * @param playerFaction the faction that is controlled by the player
  * @param entities all entities currently present in the game. May be used to query for specific entities.
  * @param random to be used to generate random numbers.
  */
 data class GameContext(
         val currentTick: TickId,
         val world: WorldMap,
+        val playerFaction: Faction,
         val entities: EntitySet<EntityType>,
         val random: Random
 ) : Context {

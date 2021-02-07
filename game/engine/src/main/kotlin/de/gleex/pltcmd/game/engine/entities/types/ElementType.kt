@@ -9,6 +9,7 @@ import de.gleex.pltcmd.game.engine.extensions.tryCastTo
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.model.faction.Faction
 import org.hexworks.amethyst.api.base.BaseEntityType
 import org.hexworks.cobalt.datatypes.Maybe
 
@@ -22,6 +23,9 @@ typealias ElementEntity = GameEntity<ElementType>
 val ElementEntity.element: CommandingElement
     get() = getAttribute(ElementAttribute::class).element.value
 
+val ElementEntity.reportedFaction: Faction
+    get() = getAttribute(ElementAttribute::class).reportedFaction.value
+
 /**
  * The [CallSign] of the underlying [CommandingElement].
  *
@@ -32,10 +36,11 @@ val ElementEntity.callsign: CallSign
         return element.callSign
     }
 
-val ElementEntity.affiliation
-    get() = findAttribute(ElementAttribute::class)
-            .map { it.reportedAffiliation.value }
-            .orElse(Affiliation.Unknown)
+fun ElementEntity.affiliationTo(other: ElementEntity): Affiliation =
+    affiliationTo(other.reportedFaction)
+
+fun ElementEntity.affiliationTo(other: Faction): Affiliation =
+    reportedFaction.relations[other]
 
 internal val ElementEntity.commandersIntent
     get() = getAttribute(CommandersIntent::class)

@@ -24,7 +24,7 @@ internal object Fighting :
         attacker
             .visibleEntities()
             // TODO also check if it is in attack range
-            .filterElements { it.isEnemy() }
+            .filterElements { it.isEnemyFor(attacker) }
             .firstOrNull()
             ?.let { enemyToAttack ->
                 log.info("${attacker.callsign} attacks ${enemyToAttack.callsign}")
@@ -33,7 +33,7 @@ internal object Fighting :
             }
             ?: false
 
-    private fun ElementEntity.isEnemy(): Boolean =
-        isAbleToFight && affiliation == Affiliation.Hostile
+    private fun ElementEntity.isEnemyFor(other: ElementEntity): Boolean =
+        isAbleToFight && affiliationTo(other) == Affiliation.Hostile
 
 }

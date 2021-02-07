@@ -14,7 +14,8 @@ import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.CommandingElement
-import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.model.faction.Faction
+import de.gleex.pltcmd.model.faction.UNIDENTIFIED
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
@@ -31,7 +32,7 @@ import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random: Random) {
+data class Game(val engine: Engine<GameContext>, val world: WorldMap, val playerFaction: Faction, val random: Random) {
 
     private val allEntities: EntitySet<EntityType> = EntitySet()
 
@@ -48,7 +49,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     /**
      * Creates a [GameContext] for the current tick.
      */
-    fun context(): GameContext = GameContext(Ticker.currentTick, world, allEntities, random)
+    fun context(): GameContext = GameContext(Ticker.currentTick, world, playerFaction, allEntities, random)
 
     /**
      * Adds the given entity to the engine and returns it to make chained calls possible.
@@ -72,20 +73,21 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val random
     }
 
     /**
-     * Adds a new element in the given sector and returns it.
+     * Adds a new element in the given sector and returns it. If [affiliationToPlayer] is not friendly the element will be wandering.
      */
     fun addElementInSector(
         sector: Sector,
         element: CommandingElement,
         positionInSector: Coordinate = sector.randomCoordinate(random),
-        affiliation: Affiliation = Affiliation.Unknown
+        faction: Faction = UNIDENTIFIED,
+        playerControlled: Boolean = false
     ): ElementEntity {
         val elementPosition = positionInSector.toProperty()
         val radioSender = RadioSender(elementPosition, RadioPower(), world)
-        val elementEntity = if (affiliation == Affiliation.Friendly || affiliation == Affiliation.Self) {
-            element.toEntity(elementPosition, affiliation, radioSender)
+        val elementEntity = if (playerControlled) {
+            element.toEntity(elementPosition, faction, radioSender)
         } else {
-            EntityFactory.newWanderingElement(element, elementPosition, affiliation, radioSender)
+            EntityFactory.newWanderingElement(element, elementPosition, faction, radioSender)
         }
         log.debug("Adding ${element.description} with callsign ${element.callSign} to engine at position $positionInSector")
         return addEntity(elementEntity)

@@ -43,7 +43,8 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
         return when (toReport.type) {
             ElementType -> {
                 val elementToReport = toReport as ElementEntity
-                if (elementToReport.affiliation == Affiliation.Hostile) {
+                // FIXME CommunicatingEntity needs a Faction
+                if (elementToReport.affiliationTo(context.playerFaction) == Affiliation.Hostile) {
                     reportElement(reporter, elementToReport, context)
                     Consumed
                 } else {
@@ -70,7 +71,7 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
 
     fun sendReport(reporter: CommunicatingEntity, what: String, at: Coordinate, context: GameContext) {
         // TODO report to own faction #62 only. Does non player controlled elements need contact reports?
-        if ((reporter as ElementEntity).affiliation != Affiliation.Friendly) {
+        if ((reporter as ElementEntity).affiliationTo(context.playerFaction) != Affiliation.Friendly) {
             return
         }
         val hq = CallSign(GameOptions.commandersCallSign)

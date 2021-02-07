@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.ui.entities
 
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -24,8 +25,9 @@ import org.hexworks.zircon.api.game.base.BaseGameArea
  * - The element marker for the unit/element on that position
  * - An optional overlay, currently used for debug purposes (radio signal strength), but might later be used by the player to "paint on the map".
  *
+ * @param factionViewToPresent used to color element markers. See [ColorRepository.forAffiliation].
  */
-class GameWorld(private val worldMap: WorldMap) :
+class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent:Faction) :
         BaseGameArea<Tile, GameBlock>(
                 initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
                 initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
@@ -64,12 +66,13 @@ class GameWorld(private val worldMap: WorldMap) :
 
     /** adds a friendly marker for this FOB */
     fun showBase(base: FOBEntity) {
+        // TODO FOBEntity needs Faction
         val fobTile = TileRepository.createFobTile(Affiliation.Self)
         base.currentPosition.setUnit(fobTile)
     }
 
     private fun ElementEntity.showOnMap() {
-        val affiliation = affiliation
+        val affiliation = affiliationTo(factionViewToPresent)
         val elementTile = TileRepository.Elements.marker(element, affiliation)
         currentPosition.setUnit(elementTile)
     }

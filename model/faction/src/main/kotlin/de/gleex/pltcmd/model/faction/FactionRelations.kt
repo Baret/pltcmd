@@ -1,7 +1,5 @@
 package de.gleex.pltcmd.model.faction
 
-import de.gleex.pltcmd.model.faction.de.gleex.pltcmd.model.faction.Faction
-
 /**
  * Holds the [Affiliation] to other [Faction]s.
  */
@@ -9,13 +7,13 @@ class FactionRelations(of: Faction) {
     private val related = mutableMapOf<Faction, Affiliation>()
 
     init {
-        update(of, Affiliation.Self)
+        this[of] = Affiliation.Self
     }
 
-    fun update(other: Faction, state: Affiliation) {
+    operator fun set(other: Faction, state: Affiliation) {
         related[other] = state
     }
 
-    fun affiliationOf(other: Faction): Affiliation = related[other] ?: Affiliation.Unknown
+    operator fun get(other: Faction): Affiliation = related[other] ?: Affiliation.Unknown
 
 }

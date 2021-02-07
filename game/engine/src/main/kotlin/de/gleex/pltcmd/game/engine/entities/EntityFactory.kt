@@ -17,7 +17,8 @@ import de.gleex.pltcmd.game.engine.systems.facets.*
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.ElementKind
-import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.model.faction.Faction
+import de.gleex.pltcmd.model.faction.UNIDENTIFIED
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.signals.radio.RadioPower
@@ -68,7 +69,7 @@ object EntityFactory {
     fun newElement(
         element: CommandingElement,
         initialPosition: Property<Coordinate>,
-        affiliation: Affiliation = Affiliation.Unknown,
+        faction: Faction = UNIDENTIFIED,
         radioSender: RadioSender
     ): ElementEntity {
         val visualRange = if (element.kind == ElementKind.Aerial) {
@@ -78,7 +79,7 @@ object EntityFactory {
         }
         val attributes: MutableList<Attribute> = mutableListOf(
             CommandersIntent(),
-            ElementAttribute(element, affiliation),
+            ElementAttribute(element, faction),
             PositionAttribute(initialPosition),
             VisionAttribute(initialVision(visualRange)),
             ContactsAttribute(),
@@ -128,10 +129,10 @@ object EntityFactory {
     fun newWanderingElement(
         element: CommandingElement,
         initialPosition: Property<Coordinate>,
-        affiliation: Affiliation = Affiliation.Unknown,
+        faction: Faction = UNIDENTIFIED,
         radioSender: RadioSender
     ): ElementEntity =
-        newElement(element, initialPosition, affiliation, radioSender)
+        newElement(element, initialPosition, faction, radioSender)
             .apply { addIfMissing(Wandering) }
 
 }
@@ -141,10 +142,10 @@ object EntityFactory {
  */
 fun CommandingElement.toEntity(
     elementPosition: Property<Coordinate>,
-    affiliation: Affiliation,
+    faction: Faction,
     radioSender: RadioSender
 ): ElementEntity {
-    return EntityFactory.newElement(this, elementPosition, affiliation, radioSender)
+    return EntityFactory.newElement(this, elementPosition, faction, radioSender)
 }
 
 /**

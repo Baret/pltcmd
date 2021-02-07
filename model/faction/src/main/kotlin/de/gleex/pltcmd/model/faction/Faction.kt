@@ -1,6 +1,4 @@
-package de.gleex.pltcmd.model.faction.de.gleex.pltcmd.model.faction
-
-import de.gleex.pltcmd.model.faction.FactionRelations
+package de.gleex.pltcmd.model.faction
 
 /**
  * One party in a military conflict.
@@ -8,3 +6,5 @@ import de.gleex.pltcmd.model.faction.FactionRelations
 data class Faction(val name: String) {
     val relations: FactionRelations = FactionRelations(this)
 }
+
+val UNIDENTIFIED = Faction("unidentified")

@@ -14,6 +14,7 @@ import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
@@ -62,10 +63,11 @@ open class Main {
      * Then the [Ticker] runs the game.
      */
     protected open fun runGame(generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
-        // ui
-        val gameWorld = GameWorld(generatedMap)
         // model
-        val game = Game(Engine.create(), generatedMap, random)
+        val playerFaction = Faction("player faction")
+        val game = Game(Engine.create(), generatedMap, playerFaction, random)
+        // ui
+        val gameWorld = GameWorld(generatedMap, playerFaction)
 
         val (elementsToCommand, hq) = prepareGame(game, gameWorld)
 
@@ -98,15 +100,16 @@ open class Main {
      * @return the elements that should be controllable by the UI
      */
     protected open fun createElementsToCommand(visibleSector: Sector, game: Game, gameWorld: GameWorld): List<ElementEntity> {
+        val faction = game.playerFaction
         val elementsToCommand = mutableListOf<ElementEntity>()
         elementsToCommand.run {
 
             val alpha = visibleSector.createFriendly(Elements.transportHelicopterPlatoon.new()
-                    .apply { callSign = CallSign("Alpha") }, game, gameWorld)
+                    .apply { callSign = CallSign("Alpha") }, faction, game, gameWorld)
             val bravo = visibleSector.createFriendly(Elements.riflePlatoon.new()
-                    .apply { callSign = CallSign("Bravo") }, game, gameWorld)
+                    .apply { callSign = CallSign("Bravo") }, faction, game, gameWorld)
             val charlie = visibleSector.createFriendly(Elements.reconPlane.new()
-                    .apply { callSign = CallSign("Charlie") }, game, gameWorld)
+                    .apply { callSign = CallSign("Charlie") }, faction, game, gameWorld)
             listOf(alpha, bravo, charlie).forEach {
                 log.debug("${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeedInKph} kph.")
             }
@@ -121,11 +124,14 @@ open class Main {
      * Add elements to the game that are not controlled by the player. This implementation adds 2 rifle squads per [Sector].
      */
     protected open fun addHostiles(game: Game, gameWorld: GameWorld) {
+        val opfor = Faction("opposing force")
+        opfor.relations[game.playerFaction] = Affiliation.Hostile
+        game.playerFaction.relations[opfor] = Affiliation.Hostile
         // Adding some elements to every sector
         val elementsPerSector = 2
         game.world.sectors.forEach { sector ->
             repeat(elementsPerSector) {
-                game.addElementInSector(sector, Elements.rifleSquad.new(), affiliation = Affiliation.Hostile)
+                game.addElementInSector(sector, Elements.rifleSquad.new(), faction = opfor, playerControlled = false)
                         .also(gameWorld::trackUnit)
             }
         }
@@ -136,8 +142,8 @@ open class Main {
      * The position is random by default and the [Affiliation] is friendly. For other affiliations a wandering entity
      * will be added.
      */
-    protected fun Sector.createFriendly(element: CommandingElement, game: Game, gameWorld: GameWorld, position: Coordinate = this.randomCoordinate(random), affiliation: Affiliation = Affiliation.Friendly): ElementEntity {
-        return game.addElementInSector(this, element, position, affiliation)
+    protected fun Sector.createFriendly(element: CommandingElement, faction: Faction, game: Game, gameWorld: GameWorld, position: Coordinate = this.randomCoordinate(random)): ElementEntity {
+        return game.addElementInSector(this, element, position, faction, true)
                 .also(gameWorld::trackUnit)
     }
 
