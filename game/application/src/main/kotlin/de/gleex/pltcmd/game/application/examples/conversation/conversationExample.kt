@@ -60,7 +60,7 @@ fun main() {
 
     val commandFaction = Faction("player faction")
     val friends = Faction("friendly faction")
-    val neutrals = Faction("civic")
+    val neutrals = Faction("civilian")
     FactionRelations[commandFaction, friends] = Affiliation.Friendly
     FactionRelations[commandFaction, neutrals] = Affiliation.Neutral
 
