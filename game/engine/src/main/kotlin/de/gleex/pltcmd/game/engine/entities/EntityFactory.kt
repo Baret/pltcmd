@@ -14,10 +14,10 @@ import de.gleex.pltcmd.game.engine.entities.types.FOBType
 import de.gleex.pltcmd.game.engine.extensions.addIfMissing
 import de.gleex.pltcmd.game.engine.systems.behaviours.*
 import de.gleex.pltcmd.game.engine.systems.facets.*
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.ElementKind
+import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.signals.radio.RadioPower
@@ -41,10 +41,11 @@ object EntityFactory {
     /**
      * Creates a new base (aka FOB = Forward operating base)
      */
-    fun newBaseAt(position: Coordinate, map: WorldMap, callSign: CallSign): FOBEntity =
+    fun newBaseAt(position: Coordinate, map: WorldMap, faction: Faction, callSign: CallSign): FOBEntity =
         newEntityOfType(FOBType) {
             val positionProperty = position.toProperty()
             attributes(
+                FactionAttribute(faction),
                 PositionAttribute(positionProperty),
                 RadioAttribute(RadioCommunicator(callSign, RadioSender(positionProperty, RadioPower.STATIONARY, map))),
                 VisionAttribute(map.visionAt(position, VisionPower(40.0))),
@@ -68,7 +69,7 @@ object EntityFactory {
     fun newElement(
         element: CommandingElement,
         initialPosition: Property<Coordinate>,
-        affiliation: Affiliation = Affiliation.Unknown,
+        faction: Faction,
         radioSender: RadioSender
     ): ElementEntity {
         val visualRange = if (element.kind == ElementKind.Aerial) {
@@ -78,7 +79,8 @@ object EntityFactory {
         }
         val attributes: MutableList<Attribute> = mutableListOf(
             CommandersIntent(),
-            ElementAttribute(element, affiliation),
+            ElementAttribute(element),
+            FactionAttribute(faction),
             PositionAttribute(initialPosition),
             VisionAttribute(initialVision(visualRange)),
             ContactsAttribute(),
@@ -128,10 +130,10 @@ object EntityFactory {
     fun newWanderingElement(
         element: CommandingElement,
         initialPosition: Property<Coordinate>,
-        affiliation: Affiliation = Affiliation.Unknown,
+        faction: Faction,
         radioSender: RadioSender
     ): ElementEntity =
-        newElement(element, initialPosition, affiliation, radioSender)
+        newElement(element, initialPosition, faction, radioSender)
             .apply { addIfMissing(Wandering) }
 
 }
@@ -141,10 +143,10 @@ object EntityFactory {
  */
 fun CommandingElement.toEntity(
     elementPosition: Property<Coordinate>,
-    affiliation: Affiliation,
+    faction: Faction,
     radioSender: RadioSender
 ): ElementEntity {
-    return EntityFactory.newElement(this, elementPosition, affiliation, radioSender)
+    return EntityFactory.newElement(this, elementPosition, faction, radioSender)
 }
 
 /**
@@ -153,5 +155,5 @@ fun CommandingElement.toEntity(
  * @param position a valid position inside this [WorldMap]
  * @param callSign the [CallSign] of this base, default "HQ" (a main base)
  */
-fun WorldMap.newBaseAt(position: Coordinate, callSign: CallSign = CallSign("HQ")) =
-    EntityFactory.newBaseAt(position, this, callSign)
+fun WorldMap.newBaseAt(position: Coordinate, faction: Faction, callSign: CallSign = CallSign("HQ")) =
+    EntityFactory.newBaseAt(position, this, faction, callSign)

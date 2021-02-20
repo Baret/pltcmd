@@ -21,6 +21,7 @@
         <module>world</module>
         <module>combat</module>
         <module>signals</module>
+        <module>faction</module>
     </modules>
 
     <dependencyManagement>
@@ -34,6 +35,11 @@
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
                 <artifactId>elements</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>faction</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

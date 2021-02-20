@@ -2,7 +2,7 @@ package de.gleex.pltcmd.game.ui.fragments.tileinformation
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.affiliation
+import de.gleex.pltcmd.game.engine.entities.types.affiliationTo
 import de.gleex.pltcmd.game.engine.entities.types.callsign
 import de.gleex.pltcmd.game.engine.entities.types.element
 import de.gleex.pltcmd.game.ui.entities.TileRepository
@@ -51,16 +51,21 @@ class ElementInfoFragment(
                                     Components.icon()
                                             .withIcon(TileRepository.empty())
                                             .build()
-                                            .apply {
-                                                iconProperty.updateFrom(currentElement.bindTransform {
+                                        .apply {
+                                            iconProperty.updateFrom(
+                                                currentElement.bindTransform {
                                                     it.map { element ->
-                                                        TileRepository.Elements.marker(element.element, element.affiliation)
-                                                                .withBackgroundColor(ANSITileColor.BLACK)
+                                                        TileRepository.Elements.marker(
+                                                            element.element,
+                                                            element.affiliationTo(game.playerFaction)
+                                                        )
+                                                            .withBackgroundColor(ANSITileColor.BLACK)
                                                     }
-                                                            .orElse(TileRepository.empty())
+                                                        .orElse(TileRepository.empty())
                                                 },
-                                                        updateWhenBound = false)
-                                            },
+                                                updateWhenBound = false
+                                            )
+                                        },
                                     Components.header()
                                             .withSize(width - 3, 1)
                                             .build()

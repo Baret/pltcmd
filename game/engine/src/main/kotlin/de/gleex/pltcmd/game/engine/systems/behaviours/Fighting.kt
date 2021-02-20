@@ -6,8 +6,7 @@ import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import de.gleex.pltcmd.game.engine.systems.behaviours.Fighting.isEnemy
-import de.gleex.pltcmd.model.elements.Affiliation
+import de.gleex.pltcmd.model.faction.Affiliation
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -25,7 +24,7 @@ internal object Fighting :
         attacker
             .visibleEntities()
             // TODO also check if it is in attack range
-            .filterElements { it.isEnemy() }
+            .filterElements { it.isEnemyFor(attacker) }
             .firstOrNull()
             ?.let { enemyToAttack ->
                 log.info("${attacker.callsign} attacks ${enemyToAttack.callsign}")
@@ -34,7 +33,7 @@ internal object Fighting :
             }
             ?: false
 
-    private fun ElementEntity.isEnemy(): Boolean =
-        isAbleToFight && affiliation == Affiliation.Hostile
+    private fun ElementEntity.isEnemyFor(other: ElementEntity): Boolean =
+        isAbleToFight && affiliationTo(other) == Affiliation.Hostile
 
 }

@@ -4,8 +4,8 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.game.options.GameOptions
-import de.gleex.pltcmd.model.elements.Affiliation
 import de.gleex.pltcmd.model.elements.CallSign
+import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.signals.vision.Visibility
@@ -43,7 +43,7 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
         return when (toReport.type) {
             ElementType -> {
                 val elementToReport = toReport as ElementEntity
-                if (elementToReport.affiliation == Affiliation.Hostile) {
+                if (reporter.affiliationTo(elementToReport) == Affiliation.Hostile) {
                     reportElement(reporter, elementToReport, context)
                     Consumed
                 } else {
@@ -70,7 +70,7 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
 
     fun sendReport(reporter: CommunicatingEntity, what: String, at: Coordinate, context: GameContext) {
         // TODO report to own faction #62 only. Does non player controlled elements need contact reports?
-        if ((reporter as ElementEntity).affiliation != Affiliation.Friendly) {
+        if (reporter.affiliationTo(context.playerFaction) != Affiliation.Self) {
             return
         }
         val hq = CallSign(GameOptions.commandersCallSign)
