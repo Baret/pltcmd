@@ -15,7 +15,6 @@ import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ticks.subscribeToTicks
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.faction.Faction
-import de.gleex.pltcmd.model.faction.UNIDENTIFIED
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
@@ -79,7 +78,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
         sector: Sector,
         element: CommandingElement,
         positionInSector: Coordinate = sector.randomCoordinate(random),
-        faction: Faction = UNIDENTIFIED,
+        faction: Faction,
         playerControlled: Boolean = false
     ): ElementEntity {
         val elementPosition = positionInSector.toProperty()

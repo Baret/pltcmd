@@ -18,7 +18,6 @@ import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.faction.Faction
-import de.gleex.pltcmd.model.faction.UNIDENTIFIED
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.signals.radio.RadioPower
@@ -70,7 +69,7 @@ object EntityFactory {
     fun newElement(
         element: CommandingElement,
         initialPosition: Property<Coordinate>,
-        faction: Faction = UNIDENTIFIED,
+        faction: Faction,
         radioSender: RadioSender
     ): ElementEntity {
         val visualRange = if (element.kind == ElementKind.Aerial) {
@@ -131,7 +130,7 @@ object EntityFactory {
     fun newWanderingElement(
         element: CommandingElement,
         initialPosition: Property<Coordinate>,
-        faction: Faction = UNIDENTIFIED,
+        faction: Faction,
         radioSender: RadioSender
     ): ElementEntity =
         newElement(element, initialPosition, faction, radioSender)
