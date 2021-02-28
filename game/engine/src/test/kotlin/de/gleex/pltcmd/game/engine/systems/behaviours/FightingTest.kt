@@ -1,10 +1,10 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.attributes.ContactsAttribute
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.attributes.FactionAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
+import de.gleex.pltcmd.game.engine.attributes.SightedAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
@@ -146,7 +146,7 @@ fun createTargets(attacker: ElementEntity, opfor: Faction, vararg elements: Comm
         val offsetFromAttacker = (neighborPosition - attackerPosition)
         val targetPosition = neighborPosition.movedBy(offsetFromAttacker.eastingFromLeft * 2, offsetFromAttacker.northingFromBottom * 2)
         val target = createCombatant(targetPosition, opfor, element)
-        attacker.rememberContact(target, Visibility.GOOD)
+        attacker.sighted(target, Visibility.GOOD)
         return@mapIndexed target
     }
 }
@@ -158,7 +158,7 @@ fun createCombatant(position: Coordinate, faction: Faction, element: CommandingE
                 FactionAttribute(faction),
                 PositionAttribute(position.toProperty()),
                 ShootersAttribute(element),
-                ContactsAttribute()
+                SightedAttribute()
         )
         behaviors(Fighting)
         facets()

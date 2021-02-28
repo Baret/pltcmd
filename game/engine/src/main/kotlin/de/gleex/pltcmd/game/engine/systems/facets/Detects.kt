@@ -29,7 +29,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
 
     override suspend fun receive(message: DetectEntities): Response {
         val (visibleEntities, seeing, context) = message
-        val lastSeen: Map<PositionableEntity, Visibility> = seeing.forgetAll()
+        val lastSeen: Map<PositionableEntity, Visibility> = seeing.resetVision()
         visibleEntities
             .mapNotNull { seen -> createDetectedCommand(seen, seeing, lastSeen, context) }
             .apply {
@@ -54,7 +54,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
         return if (visibility != Visibility.NONE) {
             val previousVisibility = lastSeen[seen] ?: Visibility.NONE
             logSeen(seeing, seen, visionStrength, previousVisibility)
-            seeing.rememberContact(seen, visibility)
+            seeing.sighted(seen, visibility)
             DetectedEntity(seen, visibility, previousVisibility, seeing, context)
         } else {
             null

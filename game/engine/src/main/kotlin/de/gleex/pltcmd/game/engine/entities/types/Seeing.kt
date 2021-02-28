@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
-import de.gleex.pltcmd.game.engine.attributes.ContactsAttribute
+import de.gleex.pltcmd.game.engine.attributes.SightedAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.toEntitySet
@@ -43,22 +43,22 @@ internal val SeeingEntity.visibleTiles: WorldArea
 internal val SeeingEntity.visualRange: VisionPower
     get() = visionAttribute.visualRange
 
-////// ContactsAttribute
-private val SeeingEntity.contacts: ContactsAttribute
-    get() = getAttribute(ContactsAttribute::class)
+////// SightedAttribute stores all currently visible entities
+private val SeeingEntity.sighted: SightedAttribute
+    get() = getAttribute(SightedAttribute::class)
 
-internal fun SeeingEntity.rememberContact(entity: PositionableEntity, visibility: Visibility) {
-    contacts.add(entity, visibility)
+internal fun SeeingEntity.sighted(entity: PositionableEntity, visibility: Visibility) {
+    sighted.add(entity, visibility)
 }
 
-/** Forgets all known contacts and returns them. */
-internal fun SeeingEntity.forgetAll(): Map<PositionableEntity, Visibility> {
-    val lastSeen = contacts.all
-    contacts.clear()
+/** Forgets all sighted entities and returns them. */
+internal fun SeeingEntity.resetVision(): Map<PositionableEntity, Visibility> {
+    val lastSeen = sighted.all
+    sighted.clear()
     return lastSeen
 }
 
-internal fun SeeingEntity.visibleEntities(): EntitySet<Positionable> = contacts.all.keys.toEntitySet()
+internal fun SeeingEntity.visibleEntities(): EntitySet<Positionable> = sighted.all.keys.toEntitySet()
 
 /**
  * Invokes the given suspend function when this entity is of type [Seeing].
