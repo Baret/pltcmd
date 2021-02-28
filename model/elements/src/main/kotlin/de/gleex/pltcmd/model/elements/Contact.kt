@@ -13,4 +13,12 @@ data class Contact(
     val kind: Maybe<ElementKind>,
     val rung: Maybe<Rung>,
     val unitCount: Maybe<Int>
-)
+) {
+
+    /**
+     * A string containing this element's [corps], [kind] and [rung]. Can be used as relatively short
+     * descriptive summary of what this contact is.
+     */
+    open val description get() = "$corps $kind $rung of $faction ($unitCount units)"
+
+}

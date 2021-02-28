@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.game.engine.systems.facets
 
 import de.gleex.pltcmd.game.engine.GameContext
+import de.gleex.pltcmd.game.engine.attributes.knowledge.LocatedContact
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.game.options.GameOptions
@@ -9,7 +10,7 @@ import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.signals.vision.Visibility
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.WorldArea
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
@@ -31,50 +32,45 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
             val communicating = detected.source as CommunicatingEntity
             when (detected.visibility) {
                 // details of the entity type are only available if seen is clearly visible
-                Visibility.GOOD -> reportContact(communicating, detected.entity, detected.context)
+                Visibility.GOOD -> reportContact(communicating, detected.contact, detected.context)
                 // basic information is always available
-                Visibility.POOR -> reportUnknown(communicating, detected.entity, detected.context)
+                Visibility.POOR -> reportUnknown(communicating, detected.contact, detected.context)
                 Visibility.NONE -> Pass
             }
         }
     }
 
-    fun reportContact(reporter: CommunicatingEntity, toReport: PositionableEntity, context: GameContext): Response {
-        return when (toReport.type) {
-            ElementType -> {
-                val elementToReport = toReport as ElementEntity
-                if (reporter.affiliationTo(elementToReport) == Affiliation.Hostile) {
-                    reportElement(reporter, elementToReport, context)
-                    Consumed
-                } else {
-                    // neutral and friends are not reported over the radio
-                    Pass
-                }
-            }
-            else        -> {
-                log.warn("Not reporting entity type '${toReport.type}'!")
+    fun reportContact(reporter: CommunicatingEntity, toReport: LocatedContact, context: GameContext): Response {
+        return toReport.contact.faction.fold({
+            // unidentified faction
+            reportUnknown(reporter, toReport, context)
+        }, { faction ->
+            if (reporter.affiliationTo(faction) == Affiliation.Hostile) {
+                reportElement(reporter, toReport, context)
+            } else {
+                // neutral and friends are not reported over the radio
                 Pass
             }
-        }
+        })
     }
 
-    fun reportUnknown(reporter: CommunicatingEntity, toReport: PositionableEntity, context: GameContext): Response {
-        sendReport(reporter, "unknown", toReport.currentPosition, context)
+    fun reportUnknown(reporter: CommunicatingEntity, toReport: LocatedContact, context: GameContext): Response {
+        sendReport(reporter, "unknown ${toReport.contact.description}", toReport.roughLocation, context)
         return Consumed
     }
 
-    fun reportElement(reporter: CommunicatingEntity, toReport: ElementEntity, context: GameContext): Response {
-        sendReport(reporter, toReport.element.description, toReport.currentPosition, context)
+    fun reportElement(reporter: CommunicatingEntity, toReport: LocatedContact, context: GameContext): Response {
+        sendReport(reporter, toReport.contact.description, toReport.roughLocation, context)
         return Consumed
     }
 
-    fun sendReport(reporter: CommunicatingEntity, what: String, at: Coordinate, context: GameContext) {
-        // TODO report to own faction #62 only. Does non player controlled elements need contact reports?
+    fun sendReport(reporter: CommunicatingEntity, what: String, at: WorldArea, context: GameContext) {
+        // TODO Does non player controlled elements need contact reports?
         if (reporter.affiliationTo(context.playerFaction) != Affiliation.Self) {
             return
         }
         val hq = CallSign(GameOptions.commandersCallSign)
-        val report: Conversation = Conversations.Messages.contact(reporter.radioCallSign, hq, what, at)
+        val report: Conversation = Conversations.Messages.contact(reporter.radioCallSign, hq, what, at.description)
         reporter.startConversation(report)
     }
 
