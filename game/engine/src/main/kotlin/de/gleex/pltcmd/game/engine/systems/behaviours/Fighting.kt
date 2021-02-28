@@ -27,7 +27,7 @@ internal object Fighting :
             .filterElements { it.isEnemyFor(attacker) }
             .firstOrNull()
             ?.let { enemyToAttack ->
-                log.info("${attacker.callsign} attacks ${enemyToAttack.callsign}")
+                log.debug("${attacker.callsign} attacks ${enemyToAttack.callsign}")
                 attacker.attack(enemyToAttack, context.random)
                 true
             }

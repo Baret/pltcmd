@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.attributes.combat.Shooter
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
+import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.options.GameConstants
 import de.gleex.pltcmd.game.options.GameConstants.Time.secondsSimulatedPerTick
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -51,7 +52,7 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
                 .sum()
         val wounded = hitsPerTick * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
         target.shooters.wound(wounded)
-        log.debug("attack with $hitsPerTick hits resulted in ${target.shooters.combatReadyCount} combat-ready units of the target")
+        log.info("$logIdentifier attack with $hitsPerTick hits resulted in ${target.shooters.combatReadyCount} combat-ready units of ${target.logIdentifier}")
     }
 }
 
