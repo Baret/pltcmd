@@ -17,6 +17,7 @@ import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
+import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
@@ -58,7 +59,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
             val previousVisibility = lastSeen[seen] ?: Visibility.NONE
             logSeen(seeing, seen, visionStrength, previousVisibility)
             seeing.sighted(seen, visibility)
-            val contact = seen.toContact(context)
+            val contact = seen.toContact(visibility, context)
             DetectedEntity(contact, visibility, previousVisibility, seeing, context)
         } else {
             null
@@ -82,15 +83,22 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
 
 }
 
-fun PositionableEntity.toContact(context: GameContext): LocatedContact {
+fun PositionableEntity.toContact(visibility: Visibility, context: GameContext): LocatedContact {
+    // basic information is always available
     val location = CoordinateArea(currentPosition)
     val area = context.world.areaOf(location)
     val faction = asFactionEntity { it.reportedFaction.value }
-
     val corps = asElementEntity { it.element.corps }
     val kind = asElementEntity { it.element.kind }
-    val rung = asElementEntity { it.element.rung }
-    val unitCount = asElementEntity { it.element.totalUnits }
+
+    // details of the entity type are only available if seen is clearly visible
+    val rung = if (visibility == Visibility.GOOD) {
+        asElementEntity { it.element.rung }
+    } else Maybe.empty()
+    val unitCount = if (visibility == Visibility.GOOD) {
+        asElementEntity { it.element.totalUnits }
+    } else Maybe.empty()
+
     val contact = Contact(faction, corps, kind, rung, unitCount)
     return LocatedContact(area, contact)
 }

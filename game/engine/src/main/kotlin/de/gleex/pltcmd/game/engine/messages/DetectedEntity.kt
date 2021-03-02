@@ -18,8 +18,8 @@ import org.hexworks.amethyst.api.Message
  */
 data class DetectedEntity(
     val contact: LocatedContact,
-    val visibility: Visibility,
-    val previousVisibility: Visibility = Visibility.NONE,
+    private val visibility: Visibility,
+    private val previousVisibility: Visibility = Visibility.NONE,
     override val source: SeeingEntity,
     override val context: GameContext
 ) : Message<GameContext> {

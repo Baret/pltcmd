@@ -9,7 +9,6 @@ import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
-import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.world.WorldArea
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
@@ -30,13 +29,7 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
             Pass
         } else {
             val communicating = detected.source as CommunicatingEntity
-            when (detected.visibility) {
-                // details of the entity type are only available if seen is clearly visible
-                Visibility.GOOD -> reportContact(communicating, detected.contact, detected.context)
-                // basic information is always available
-                Visibility.POOR -> reportUnknown(communicating, detected.contact, detected.context)
-                Visibility.NONE -> Pass
-            }
+            reportContact(communicating, detected.contact, detected.context)
         }
     }
 
@@ -46,7 +39,7 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
             reportUnknown(reporter, toReport, context)
         }, { faction ->
             if (reporter.affiliationTo(faction) == Affiliation.Hostile) {
-                reportElement(reporter, toReport, context)
+                reportHostile(reporter, toReport, context)
             } else {
                 // neutral and friends are not reported over the radio
                 Pass
@@ -59,8 +52,8 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
         return Consumed
     }
 
-    fun reportElement(reporter: CommunicatingEntity, toReport: LocatedContact, context: GameContext): Response {
-        sendReport(reporter, toReport.contact.description, toReport.roughLocation, context)
+    fun reportHostile(reporter: CommunicatingEntity, toReport: LocatedContact, context: GameContext): Response {
+        sendReport(reporter, "hostile ${toReport.contact.description}", toReport.roughLocation, context)
         return Consumed
     }
 
