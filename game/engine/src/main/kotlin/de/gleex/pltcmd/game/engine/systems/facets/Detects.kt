@@ -9,9 +9,6 @@ import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.DetectEntities
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.model.elements.Contact
-import de.gleex.pltcmd.model.elements.Corps
-import de.gleex.pltcmd.model.elements.ElementKind
-import de.gleex.pltcmd.model.elements.Rung
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.signals.vision.visibility
@@ -20,7 +17,6 @@ import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
@@ -90,11 +86,11 @@ fun PositionableEntity.toContact(context: GameContext): LocatedContact {
     val location = CoordinateArea(currentPosition)
     val area = context.world.areaOf(location)
     val faction = asFactionEntity { it.reportedFaction.value }
-    // TODO
-    val corps: Maybe<Corps> = Maybe.empty()
-    val kind: Maybe<ElementKind> = Maybe.empty()
-    val rung: Maybe<Rung> = Maybe.empty()
-    val unitCount: Maybe<Int> = Maybe.empty()
+
+    val corps = asElementEntity { it.element.corps }
+    val kind = asElementEntity { it.element.kind }
+    val rung = asElementEntity { it.element.rung }
+    val unitCount = asElementEntity { it.element.totalUnits }
     val contact = Contact(faction, corps, kind, rung, unitCount)
     return LocatedContact(area, contact)
 }
