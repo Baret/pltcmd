@@ -60,6 +60,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
             logSeen(seeing, seen, visionStrength, previousVisibility)
             seeing.sighted(seen, visibility)
             val contact = seen.toContact(visibility, context)
+            seeing.asRememberingEntity { it.addContact(contact) }
             DetectedEntity(contact, visibility, previousVisibility, seeing, context)
         } else {
             null
