@@ -6,7 +6,8 @@ import org.hexworks.amethyst.api.base.BaseEntityType
 /**
  * The entity type for Forward Operating Bases (FOBs).
  */
-object FOBType : BaseEntityType("FOB", "A stationary forward operating base (FOB)."), Communicating, Factionable, Seeing
+object FOBType : BaseEntityType("FOB", "A stationary forward operating base (FOB)."), Communicating, Factionable,
+    Seeing, Remembering
 
 /**
  * An entity of type [FOBType].

@@ -1,21 +1,20 @@
 package de.gleex.pltcmd.game.engine.attributes.knowledge
 
 import de.gleex.pltcmd.model.elements.Contact
-import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.world.WorldArea
 import org.hexworks.amethyst.api.base.BaseAttribute
 
 /** The remembered contacts */
 class ContactsAttribute : BaseAttribute() {
-    private val contacts = mutableMapOf<LocatedContact, Visibility>()
+    private val contacts = mutableSetOf<LocatedContact>()
 
     /** current contacts (copy, not a reference) */
-    val all: Map<LocatedContact, Visibility>
+    val all: Set<LocatedContact>
         // create copy so changes are not visible
-        get() = contacts.toMap()
+        get() = contacts.toSet()
 
-    fun add(contact: LocatedContact, visibility: Visibility) {
-        contacts[contact] = visibility
+    fun add(contact: LocatedContact) {
+        contacts.add(contact)
     }
 
     fun remove(contact: LocatedContact) {

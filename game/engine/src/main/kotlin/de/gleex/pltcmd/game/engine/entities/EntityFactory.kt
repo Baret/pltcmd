@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.engine.entities
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.*
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
+import de.gleex.pltcmd.game.engine.attributes.knowledge.ContactsAttribute
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
@@ -50,6 +51,7 @@ object EntityFactory {
                 RadioAttribute(RadioCommunicator(callSign, RadioSender(positionProperty, RadioPower.STATIONARY, map))),
                 VisionAttribute(map.visionAt(position, VisionPower(40.0))),
                 SightedAttribute(),
+                ContactsAttribute(),
                 CommandersIntent()
             )
             behaviors(
@@ -84,6 +86,7 @@ object EntityFactory {
             PositionAttribute(initialPosition),
             VisionAttribute(initialVision(visualRange)),
             SightedAttribute(),
+            ContactsAttribute(),
             // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
             RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
             ShootersAttribute(element),
