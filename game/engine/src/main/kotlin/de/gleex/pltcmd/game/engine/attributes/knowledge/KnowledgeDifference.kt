@@ -7,5 +7,10 @@ enum class KnowledgeDifference {
     /** The new knowledge contains the same information as is already known */
     SAME,
     /** The new knowledge contains additional information to that already known */
-    MORE
+    MORE,
+    /** There was nothing known before */
+    NEW;
+
+    /** true if more knowledge is accumulated */
+    val isGain: Boolean by lazy { this > SAME }
 }

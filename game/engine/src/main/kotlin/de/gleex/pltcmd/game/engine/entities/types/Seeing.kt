@@ -51,11 +51,9 @@ internal fun SeeingEntity.sighted(entity: PositionableEntity, visibility: Visibi
     sighted.add(entity, visibility)
 }
 
-/** Forgets all sighted entities and returns them. */
-internal fun SeeingEntity.resetVision(): Map<PositionableEntity, Visibility> {
-    val lastSeen = sighted.all
+/** Forgets all sighted entities. */
+internal fun SeeingEntity.resetVision() {
     sighted.clear()
-    return lastSeen
 }
 
 internal fun SeeingEntity.visibleEntities(): EntitySet<Positionable> = sighted.all.keys.toEntitySet()
