@@ -9,10 +9,10 @@ import org.hexworks.cobalt.datatypes.Maybe
  */
 data class Contact(
     val faction: Maybe<Faction>,
-    val corps: Maybe<Corps>,
-    val kind: Maybe<ElementKind>,
-    val rung: Maybe<Rung>,
-    val unitCount: Maybe<Int>
+    val corps: Maybe<Corps> = Maybe.empty(),
+    val kind: Maybe<ElementKind> = Maybe.empty(),
+    val rung: Maybe<Rung> = Maybe.empty(),
+    val unitCount: Maybe<Int> = Maybe.empty()
 ) {
 
     /**

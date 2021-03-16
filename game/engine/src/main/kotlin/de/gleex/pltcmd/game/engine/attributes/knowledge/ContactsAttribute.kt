@@ -2,7 +2,6 @@ package de.gleex.pltcmd.game.engine.attributes.knowledge
 
 import de.gleex.pltcmd.model.elements.Contact
 import de.gleex.pltcmd.model.world.WorldArea
-import de.gleex.pltcmd.util.collections.filterUntilFound
 import org.hexworks.amethyst.api.base.BaseAttribute
 
 /** The remembered contacts */
@@ -52,7 +51,14 @@ class ContactsAttribute : BaseAttribute() {
 
         fun Collection<Contact>.getMatching(contact: LocatedContact): Set<Contact> {
             val matchers = matchersFor(contact.contact)
-            return filterUntilFound(*matchers)
+            val matchesAll: (Contact) -> Boolean =
+                { c ->
+                    matchers.fold(true) { result, matcher ->
+                        result && matcher(c)
+                    }
+                }
+            return filter(matchesAll)
+                .toSet()
         }
 
         fun Contact.knownDetails(): Int {
@@ -64,12 +70,11 @@ class ContactsAttribute : BaseAttribute() {
 
         /** @return list of matches from most generic to finest detail to compare matches */
         fun matchersFor(contact: Contact) = arrayOf<(Contact) -> Boolean>(
-            { it.faction == contact.faction },
-            { it.corps == contact.corps },
-            { it.kind == contact.kind },
-            { it.rung == contact.rung },
-            { it.unitCount == contact.unitCount },
-            { it == contact }
+            { contact.faction.isEmpty() || it.faction == contact.faction },
+            { contact.corps.isEmpty() || it.corps == contact.corps },
+            { contact.kind.isEmpty() || it.kind == contact.kind },
+            { contact.rung.isEmpty() || it.rung == contact.rung },
+            { contact.unitCount.isEmpty() || it.unitCount == contact.unitCount }
         )
     }
 }
