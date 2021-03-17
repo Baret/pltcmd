@@ -15,7 +15,7 @@ import de.gleex.pltcmd.model.world.WorldArea
  */
 
 /** Type marker for entities that are [Positionable] and can "see" (scan) their surroundings. */
-interface Seeing : Positionable
+interface Seeing : Positionable, Remembering
 /**
  * An entity of type [Seeing]
  */

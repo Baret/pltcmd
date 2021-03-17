@@ -46,6 +46,10 @@
             <groupId>org.hexworks.amethyst</groupId>
             <artifactId>amethyst.core-jvm</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>knowledge</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

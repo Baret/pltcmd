@@ -3,6 +3,8 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
+import de.gleex.pltcmd.game.engine.attributes.memory.KnownTerrain
+import de.gleex.pltcmd.game.engine.attributes.memory.Memory
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.messages.DetectEntities
@@ -18,27 +20,47 @@ import org.hexworks.amethyst.api.entity.EntityType
 object LookingAround :
         BaseBehavior<GameContext>(
                 PositionAttribute::class,
-                VisionAttribute::class
+                VisionAttribute::class,
+                Memory::class
         ) {
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
         return entity.invokeWhenSeeing {
-            lookForEntities(it, context)
+            it.updateVision(context)
+            it.remeberTerrain(context)
+            it.lookForEntities(context)
         }
     }
 
-    private suspend fun lookForEntities(entity: SeeingEntity, context: GameContext): Boolean {
-        if (entity.hasMoved()) {
-            entity.visionMutable = context.world.visionAt(entity.currentPosition, entity.visualRange)
+    private fun SeeingEntity.updateVision(context: GameContext) {
+        if (hasMoved()) {
+            visionMutable = context.world.visionAt(currentPosition, visualRange)
         }
+    }
+
+    private suspend fun SeeingEntity.lookForEntities(context: GameContext): Boolean {
         val visibleEntities: EntitySet<Positionable> =
                 context.entities
-                        .without(entity)
-                        .inArea(entity.visibleTiles)
+                        .without(this)
+                        .inArea(visibleTiles)
         if (visibleEntities.isNotEmpty()) {
-            entity.receiveMessage(DetectEntities(visibleEntities, entity, context))
+            receiveMessage(DetectEntities(
+                visibleEntities = visibleEntities,
+                source = this,
+                context = context
+            ))
         }
         return true
+    }
+
+    private fun SeeingEntity.remeberTerrain(context: GameContext) {
+        vision
+            .area
+            .tiles
+            .filter { vision.at(it.coordinate).isAny() }
+            .forEach {
+                memory.knownTerrain.update(KnownTerrain(it, true))
+            }
     }
 
     private fun SeeingEntity.hasMoved() = vision.origin != currentPosition
