@@ -9,5 +9,4 @@ import org.hexworks.amethyst.api.base.BaseAttribute
  */
 class Memory: BaseAttribute() {
     val knownTerrain: Knowledge<WorldTile> = Knowledge()
-
 }

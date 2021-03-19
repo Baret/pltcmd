@@ -7,6 +7,9 @@ import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.util.knowledge.Known
 import de.gleex.pltcmd.util.knowledge.KnownByBoolean
 
+/**
+ * Represents knowledge about a specific [WorldTile], or more exact: The terrain at its [Coordinate]
+ */
 class KnownTerrain(
     override val origin: WorldTile,
     isRevealed: Boolean = false
@@ -37,3 +40,11 @@ class KnownTerrain(
             }
         }
 }
+
+/**
+ * Wraps this [WorldTile] into a [KnownTerrain] that is not revealed.
+ */
+fun WorldTile.unknown() = KnownTerrain(
+    origin = this,
+    isRevealed = false
+)

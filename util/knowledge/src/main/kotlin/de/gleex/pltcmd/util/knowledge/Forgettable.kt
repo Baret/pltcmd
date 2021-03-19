@@ -8,19 +8,18 @@ abstract class Forgettable<T : Any>(private val forgettableKnown: Known<T>): Kno
     override val origin: T
         get() = forgettableKnown.origin
 
-    private var _isObsolete: Boolean = false
-
     /**
      * When true, marks this knowledge as "may be forgotten" because it is too old or for other reasons
      * not further relevant.
      */
-    abstract val isObsolete: Boolean
+    var isObsolete: Boolean = false
+        private set
 
     /**
      * Marks this known thing as [isObsolete].
      */
     fun markObsolete() {
-        _isObsolete = true
+        isObsolete = true
     }
 
     override fun mergeWith(other: Known<T>): Known<T> =

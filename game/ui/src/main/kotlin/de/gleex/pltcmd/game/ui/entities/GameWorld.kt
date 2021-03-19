@@ -1,11 +1,16 @@
 package de.gleex.pltcmd.game.ui.entities
 
+import de.gleex.pltcmd.game.engine.attributes.memory.KnownTerrain
+import de.gleex.pltcmd.game.engine.attributes.memory.unknown
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.knowledge.Knowledge
 import kotlinx.collections.immutable.persistentMapOf
+import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.data.Position
@@ -26,7 +31,10 @@ import org.hexworks.zircon.api.game.base.BaseGameArea
  *
  * @param factionViewToPresent used to color element markers. See [ColorRepository.forAffiliation].
  */
-class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent:Faction) :
+class GameWorld(
+    private val worldMap: WorldMap,
+    private val factionViewToPresent: Faction
+) :
         BaseGameArea<Tile, GameBlock>(
                 initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
                 initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
@@ -37,18 +45,32 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
         private val log = LoggerFactory.getLogger(GameWorld::class)
     }
 
+    /**
+     * The [Knowledge] that contains the information to display. May be updated later.
+     */
+    var knownTerrain: Knowledge<WorldTile> = Knowledge()
+        set(value) {
+            field = value
+            initWorld()
+        }
+
     private val topLeftOffset: Position
         get() = worldMap.getTopLeftOffset()
 
     init {
-        worldMap.sectors.forEach(::putSector)
+        initWorld()
         log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = $visibleSize")
+    }
+
+    private fun initWorld() {
+        worldMap.sectors.forEach(::putSector)
     }
 
     private fun putSector(sector: Sector) {
         sector.tiles.forEach {
             val position = it.coordinate.toPosition()
-            val block = GameBlock(it.terrain)
+            @Suppress("UNCHECKED_CAST")
+            val block = GameBlock(knownTerrain.observe(it.unknown()) as ObservableValue<KnownTerrain>)
             setBlockAt(position, block)
         }
     }
