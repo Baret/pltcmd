@@ -4,7 +4,6 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import de.gleex.pltcmd.util.knowledge.Known
 import de.gleex.pltcmd.util.knowledge.KnownByBoolean
 
 /**
@@ -13,10 +12,16 @@ import de.gleex.pltcmd.util.knowledge.KnownByBoolean
 class KnownTerrain(
     override val origin: WorldTile,
     isRevealed: Boolean = false
-): KnownByBoolean<WorldTile>(isRevealed) {
+): KnownByBoolean<WorldTile, KnownTerrain>(isRevealed) {
 
+    /**
+     * The [Coordinate] of this [KnownTerrain]. It is always "the truth".
+     */
     val coordinate: Coordinate = origin.coordinate
 
+    /**
+     * The currently known [TerrainHeight].
+     */
     val height: TerrainHeight?
         get() = if (revealed) {
             origin.terrain.height
@@ -24,20 +29,14 @@ class KnownTerrain(
             null
         }
 
+    /**
+     * The currently know [TerrainType].
+     */
     val type: TerrainType?
         get() = if (revealed) {
             origin.terrain.type
         } else {
             null
-        }
-
-    override fun mergeWith(other: Known<WorldTile>): Known<WorldTile> =
-        also {
-            if(other is KnownByBoolean) {
-                if(other.revealed) {
-                    reveal()
-                }
-            }
         }
 }
 

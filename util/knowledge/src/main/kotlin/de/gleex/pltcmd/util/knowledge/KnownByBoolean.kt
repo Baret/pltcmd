@@ -5,22 +5,37 @@ package de.gleex.pltcmd.util.knowledge
  *
  * @param [isRevealed] sets the initial state.
  */
-abstract class KnownByBoolean<T: Any>(isRevealed: Boolean): Known<T> {
-
-    private var _revealed: Boolean = isRevealed
+abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed: Boolean): Known<T, SELF> {
 
     /**
      * When true, [origin] is the source of information. What happens when [revealed] is false
      * is up to specific implementations.
      */
-    val revealed: Boolean
-        get() = _revealed
+    var revealed: Boolean = isRevealed
+        private set
 
     /**
      * Marks this [KnownByBoolean] as [revealed].
      */
     fun reveal() {
-        _revealed = true
+        revealed = true
     }
+
+    /**
+     * By default merging a revealed [KnownByBoolean] into another one [reveal]s it.
+     */
+    @Suppress("UNCHECKED_CAST")
+    override infix fun mergeWith(other: SELF): SELF =
+        also {
+            if (other.revealed) {
+                reveal()
+            }
+        } as SELF
+
+    /**
+     * By default a [KnownByBoolean] is richer than the other when it is revealed and the other one is not.
+     */
+    override infix fun isRicherThan(other: SELF): Boolean =
+        !revealed && other.revealed
 
 }

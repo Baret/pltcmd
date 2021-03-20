@@ -48,7 +48,7 @@ class GameWorld(
     /**
      * The [Knowledge] that contains the information to display. May be updated later.
      */
-    var knownTerrain: Knowledge<WorldTile> = Knowledge()
+    var knownTerrain: Knowledge<WorldTile, KnownTerrain> = Knowledge()
         set(value) {
             field = value
             initWorld()

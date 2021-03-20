@@ -54,13 +54,14 @@ object LookingAround :
     }
 
     private fun SeeingEntity.remeberTerrain(context: GameContext) {
-        vision
-            .area
-            .tiles
-            .filter { vision.at(it.coordinate).isAny() }
-            .forEach {
-                memory.knownTerrain.update(KnownTerrain(it, true))
-            }
+        if (hasMoved()) {
+            visibleTiles
+                .tiles
+                .filter { vision.at(it.coordinate).isAny() }
+                .forEach {
+                    memory.knownTerrain update KnownTerrain(it, true)
+                }
+        }
     }
 
     private fun SeeingEntity.hasMoved() = vision.origin != currentPosition

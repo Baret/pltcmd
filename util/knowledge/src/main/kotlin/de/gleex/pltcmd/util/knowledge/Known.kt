@@ -2,8 +2,11 @@ package de.gleex.pltcmd.util.knowledge
 
 /**
  * Marks something as _known_. It has an original object as core but may obscure single bits of it.
+ *
+ * @param T the type of the underlying [origin] (the "truth")
+ * @param SELF the actual type of an implementing class so that methods can return
  */
-interface Known<T: Any> {
+interface Known<T: Any, SELF: Known<T, SELF>> {
     /**
      * The underlying origin of this knowledge bit. When fully revealed, its values will be accessed directly.
      * Otherwise wrong or missing information may be returned.
@@ -18,6 +21,11 @@ interface Known<T: Any> {
      *
      * @return this object with updated information
      */
-    fun mergeWith(other: Known<T>): Known<T>
+    infix fun mergeWith(other: SELF): SELF
 
+    /**
+     * @return true when this [Known] has more or other information than [other]. The result may be
+     * used to determine if the two should be merged with [mergeWith]
+     */
+    infix fun isRicherThan(other: SELF): Boolean
 }
