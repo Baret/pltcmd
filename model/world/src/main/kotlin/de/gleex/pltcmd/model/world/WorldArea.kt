@@ -19,11 +19,19 @@ open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
         val EMPTY = WorldArea(emptySet<WorldTile>().toSortedSet())
     }
 
+    // just iterate once over all to find the coordinates
+    private val byCoordinate: Map<Coordinate, WorldTile> = tiles.associateBy { it.coordinate }
+
     override val size: Int
         get() = tiles.size
 
     override val isEmpty: Boolean
         get() = tiles.isEmpty()
+
+    // overwrites for performance
+    override fun contains(coordinate: Coordinate): Boolean {
+        return byCoordinate.containsKey(coordinate)
+    }
 
     /**
      * Gets the [WorldTile] with the given [Coordinate].
@@ -31,7 +39,7 @@ open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
      * @return a [Maybe] containing the tile if it present in this area or an empty [Maybe] otherwise.
      */
     open operator fun get(coordinate: Coordinate): Maybe<WorldTile> =
-            Maybe.ofNullable(tiles.find { it.coordinate == coordinate })
+        Maybe.ofNullable(byCoordinate[coordinate])
 
     /**
      * @return a list of [WorldTile]s along the given path that are present in this area.

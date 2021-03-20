@@ -22,6 +22,8 @@ import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.util.events.globalEventBus
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
@@ -39,9 +41,17 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
         private val log = LoggerFactory.getLogger(Game::class)
     }
 
+    private var previousUpdate: Job? = null
+
     init {
         globalEventBus.subscribeToTicks {
-            engine.start(context())
+            if (previousUpdate?.isActive == true) {
+                log.warn("processing of previous tick has not finished yet! Waiting before doing tick #${it.id}")
+                runBlocking {
+                    previousUpdate?.join()
+                }
+            }
+            previousUpdate = engine.start(context())
         }
     }
 
