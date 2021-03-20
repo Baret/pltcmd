@@ -19,6 +19,14 @@ data class Contact(
      * A string containing this element's [corps], [kind] and [rung]. Can be used as relatively short
      * descriptive summary of what this contact is.
      */
-    open val description get() = "$corps $kind $rung of $faction ($unitCount units)"
+    open val description
+        get() = "${corps.text()} ${kind.text()} ${rung.text()} of ${faction.text(Faction::name)} (${unitCount.text()} units)"
+            .replace(Regex(" +"), " ")
 
 }
+
+/**
+ * Returns a text from this [Maybe]. If no mapping function is provided `toString()` will be used on the value.
+ * An empty [String] is returned for an empty [Maybe].
+ **/
+fun <T : Any> Maybe<T>.text(toText: (T) -> String = Any::toString) = map(toText).orElse("")
