@@ -35,7 +35,7 @@ class MapGenerationProgressController(private val mapGenerator: WorldMapGenerato
     }
 
     private fun unregisterListeners() {
-        progressFinishedListener?.dispose()
+        progressFinishedListener.dispose()
         with(mapGenerator) {
             removeListener(progressListener)
             removeListener(previewListener)
