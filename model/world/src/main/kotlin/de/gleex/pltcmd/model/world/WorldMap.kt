@@ -31,7 +31,12 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
     /** Returns the height of this map in [WorldTile]s */
     val height = 1 + last.northingFromBottom - origin.northingFromBottom // 1 = origin itself
 
-    val sectors = originToSector.values.toSortedSet()
+    /**
+     * All sectors of the world.
+     */
+    val sectors: SortedSet<Sector> = originToSector.values.toSortedSet()
+
+    private val worldArea: WorldArea by lazy { areaOf(CoordinateArea((origin..last).toSortedSet())) }
 
     /**
      * Returns all neighbors of the given coordinate that are inside this world.
@@ -106,7 +111,15 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
      * @return the whole world as [WorldArea]
      */
     fun asWorldArea(): WorldArea =
-        areaOf(CoordinateArea((origin..last).toSortedSet()))
+        worldArea
+
+    /**
+     * @return the [Sector] containing the given [Coordinate]
+     */
+    fun sectorAt(position: Coordinate): Sector {
+        return sectors
+            .first { it.contains(position) }
+    }
 
     companion object {
         fun create(sectors: Iterable<Sector>): WorldMap = WorldMap(sectors.associateByTo(TreeMap(), Sector::origin))

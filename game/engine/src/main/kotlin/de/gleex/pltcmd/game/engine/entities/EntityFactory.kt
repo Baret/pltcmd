@@ -52,6 +52,7 @@ object EntityFactory {
                 ContactsAttribute(),
                 CommandersIntent(),
                 Memory(map)
+                    .also { it.knownWorld.reveal(map.sectorAt(position)) }
             )
             behaviors(
                 Communicating,
@@ -79,17 +80,19 @@ object EntityFactory {
         } else {
             VisionPower(10.0)
         }
+        val vision = VisionAttribute(world.visionAt(initialPosition.value, visualRange))
         val attributes: MutableList<Attribute> = mutableListOf(
             CommandersIntent(),
             ElementAttribute(element),
             FactionAttribute(faction),
             PositionAttribute(initialPosition),
-            VisionAttribute(world.visionAt(initialPosition.value, visualRange)),
+            vision,
             ContactsAttribute(),
             // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
             RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
             ShootersAttribute(element),
-            Memory(world),
+            Memory(world)
+                .also { it.knownWorld.reveal(vision.vision.area) },
 
             MovementPath(),
             MovementBaseSpeed(element),
