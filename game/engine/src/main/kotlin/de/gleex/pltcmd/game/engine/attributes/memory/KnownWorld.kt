@@ -7,6 +7,7 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.util.knowledge.Known
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import kotlin.system.measureTimeMillis
 
 /**
  * Knowledge about the [WorldArea] defining the whole [WorldMap]. It is initialized as completely unrevealed
@@ -16,6 +17,10 @@ class KnownWorld(world: WorldMap): Known<WorldArea, KnownWorld> {
 
     companion object {
         private val log = LoggerFactory.getLogger(KnownWorld::class)
+
+        // TODO: Remove. Just to observe performance improvements
+        private var avg: Double = 0.0
+        private var values: Int = 0
     }
 
     init {
@@ -77,9 +82,17 @@ class KnownWorld(world: WorldMap): Known<WorldArea, KnownWorld> {
      * Reveals the complete [WorldArea].
      */
     fun reveal(areaToReveal: WorldArea) {
-        areaToReveal
-            .tiles
-            .forEach { reveal(it.coordinate) }
+        log.trace("Revealing ${areaToReveal.size} tiles...")
+        val revealTime = measureTimeMillis {
+            areaToReveal
+                .tiles
+                .forEach { reveal(it.coordinate) }
+        }
+        log.trace("Done revealing. It took $revealTime ms. ${unrevealed.size} tiles left to uncover.")
+        val sum = (avg * values) + revealTime
+        values++
+        avg = sum / values
+        log.trace("Average time after $values: $avg")
     }
 
     override fun mergeWith(other: KnownWorld): KnownWorld =
