@@ -52,7 +52,7 @@ object EntityFactory {
                 VisionAttribute(map.visionAt(position, VisionPower(40.0))),
                 ContactsAttribute(),
                 CommandersIntent(),
-                Memory()
+                Memory(map)
             )
             behaviors(
                 Communicating,
@@ -72,7 +72,8 @@ object EntityFactory {
         element: CommandingElement,
         initialPosition: Property<Coordinate>,
         faction: Faction,
-        radioSender: RadioSender
+        radioSender: RadioSender,
+        world: WorldMap
     ): ElementEntity {
         val visualRange = if (element.kind == ElementKind.Aerial) {
             VisionPower(25.0)
@@ -89,7 +90,7 @@ object EntityFactory {
             // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
             RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
             ShootersAttribute(element),
-            Memory(),
+            Memory(world),
 
             MovementPath(),
             MovementBaseSpeed(element),
@@ -134,9 +135,10 @@ object EntityFactory {
         element: CommandingElement,
         initialPosition: Property<Coordinate>,
         faction: Faction,
-        radioSender: RadioSender
+        radioSender: RadioSender,
+        world: WorldMap
     ): ElementEntity =
-        newElement(element, initialPosition, faction, radioSender)
+        newElement(element, initialPosition, faction, radioSender, world)
             .apply { addIfMissing(Wandering) }
 
 }
@@ -147,9 +149,10 @@ object EntityFactory {
 fun CommandingElement.toEntity(
     elementPosition: Property<Coordinate>,
     faction: Faction,
-    radioSender: RadioSender
+    radioSender: RadioSender,
+    world: WorldMap
 ): ElementEntity {
-    return EntityFactory.newElement(this, elementPosition, faction, radioSender)
+    return EntityFactory.newElement(this, elementPosition, faction, radioSender, world)
 }
 
 /**

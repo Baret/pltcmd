@@ -72,8 +72,6 @@ open class Main {
 
         val (elementsToCommand, hq) = prepareGame(game, gameWorld)
 
-        gameWorld.knownTerrain = elementsToCommand.first().memory.knownTerrain
-
         screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
         Ticker.start()
