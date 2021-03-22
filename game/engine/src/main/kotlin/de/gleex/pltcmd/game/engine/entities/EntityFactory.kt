@@ -23,7 +23,6 @@ import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.signals.vision.VisionPower
-import de.gleex.pltcmd.model.signals.vision.builder.initialVision
 import de.gleex.pltcmd.model.signals.vision.builder.visionAt
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -85,7 +84,7 @@ object EntityFactory {
             ElementAttribute(element),
             FactionAttribute(faction),
             PositionAttribute(initialPosition),
-            VisionAttribute(initialVision(visualRange)),
+            VisionAttribute(world.visionAt(initialPosition.value, visualRange)),
             ContactsAttribute(),
             // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
             RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
