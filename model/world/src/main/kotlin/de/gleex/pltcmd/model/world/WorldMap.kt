@@ -102,6 +102,12 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
                 .toSortedSet())
     }
 
+    /**
+     * @return the whole world as [WorldArea]
+     */
+    fun asWorldArea(): WorldArea =
+        areaOf(CoordinateArea((origin..last).toSortedSet()))
+
     companion object {
         fun create(sectors: Iterable<Sector>): WorldMap = WorldMap(sectors.associateByTo(TreeMap(), Sector::origin))
     }

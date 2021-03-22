@@ -3,7 +3,6 @@ package de.gleex.pltcmd.game.engine.systems.behaviours
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
-import de.gleex.pltcmd.game.engine.attributes.memory.KnownTerrain
 import de.gleex.pltcmd.game.engine.attributes.memory.Memory
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
@@ -57,9 +56,10 @@ object LookingAround :
         if (hasMoved()) {
             visibleTiles
                 .tiles
-                .filter { vision.at(it.coordinate).isAny() }
+                .map { it.coordinate }
+                .filter { vision.at(it).isAny() }
                 .forEach {
-                    memory.knownTerrain update KnownTerrain(it, true)
+                    memory.knownWorld.reveal(it)
                 }
         }
     }

@@ -61,6 +61,13 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     }
 
     /**
+     * @return true when this area completely covers the other area. This is the case when this area
+     * contains at least every [Coordinate] of the other area.
+     */
+    open infix fun covers(otherArea: CoordinateArea): Boolean =
+        coordinates.containsAll(otherArea.coordinates)
+
+    /**
      * Returns an ordered sequence of all [Coordinate]s in this area.
      */
     open fun asSequence() = coordinates.asSequence()
