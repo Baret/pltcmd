@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.model.world.coordinate
 
-import de.gleex.pltcmd.model.world.toSectorOrigin
+import de.gleex.pltcmd.model.world.sectorOrigin
 import java.util.*
 
 /**
@@ -35,7 +35,7 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
      */
     open val sectorOrigins: SortedSet<Coordinate> =
             coordinates
-                    .map { it.toSectorOrigin() }
+                    .map { it.sectorOrigin }
                     .toSortedSet()
 
     /**

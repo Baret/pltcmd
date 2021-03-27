@@ -20,7 +20,7 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.toSectorOrigin
+import de.gleex.pltcmd.model.world.sectorOrigin
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.SwingApplications
@@ -88,7 +88,7 @@ open class Main {
      */
     protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
         val visibleSector = game.world.sectors.first {
-            it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin()
+            it.origin == gameWorld.visibleTopLeftCoordinate().sectorOrigin
         }
         val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
         val hq = game.newHQIn(visibleSector, game.playerFaction)

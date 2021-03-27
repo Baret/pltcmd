@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.pow
@@ -12,6 +13,7 @@ import kotlin.math.sqrt
  *
  * It is like the numerical location of the Military Grid Reference System (see https://en.wikipedia.org/wiki/Military_Grid_Reference_System#Numerical_location).
  */
+@Serializable
 data class Coordinate private constructor(val eastingFromLeft: Int, val northingFromBottom: Int) : Comparable<Coordinate> {
     /**
      * Converts this coordinate to a [MainCoordinate]

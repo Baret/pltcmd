@@ -42,7 +42,7 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
     }
 
     fun contains(coordinate: Coordinate): Boolean {
-        return originToSector.contains(coordinate.toSectorOrigin())
+        return originToSector.contains(coordinate.sectorOrigin)
     }
 
     override fun toString() = "WorldMap[${originToSector.size} sectors, size = $width * $height tiles]"
@@ -66,7 +66,7 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
 
     /** @return the [Terrain] of the tile at the given location or throws an exception if the given coordinate does not belong to this world */
     operator fun get(coordinate: Coordinate): Terrain {
-        val sector = originToSector[coordinate.toSectorOrigin()]!!
+        val sector = originToSector[coordinate.sectorOrigin]!!
         return sector.getTerrainAt(coordinate) ?: throw IllegalStateException("no terrain for $coordinate in $sector")
     }
 

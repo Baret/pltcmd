@@ -21,6 +21,7 @@
         <module>ui</module>
         <module>engine</module>
         <module>ui-strings</module>
+        <module>serialization</module>
     </modules>
 
     <dependencies>
