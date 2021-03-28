@@ -9,7 +9,10 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.protobuf.ProtoBuf
+import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.io.File
 import java.nio.charset.Charset
 import kotlin.random.Random
@@ -18,16 +21,19 @@ import kotlin.random.Random
  * Manages persistent data.
  */
 object Storage {
+    private val log = LoggerFactory.getLogger(Storage::class)
     private val fileMap = File("map.ser")
 
     @OptIn(ExperimentalSerializationApi::class)
     fun save(map: WorldMap) {
-        println("saving $map")
+        log.info("saving $map to $fileMap")
         val dao = WorldMapDao.of(map)
+        val json = Json.encodeToString(dao).toByteArray()
         val protoBuf = ProtoBuf.encodeToByteArray(dao)
         val cbor = Cbor.encodeToByteArray(dao)
         // TODO remove debug output
         println("saved map sizes:")
+        println("JSON ${json.size} " + json.toString(Charset.defaultCharset()).substring(0, 100))
         println("Proto ${protoBuf.size} " + protoBuf.toString(Charset.defaultCharset()).substring(0, 100))
         println("CBOR ${cbor.size} " + cbor.toString(Charset.defaultCharset()).substring(0, 100))
         fileMap.writeBytes(protoBuf)
@@ -36,7 +42,9 @@ object Storage {
     fun loadMap(): WorldMap {
         val bytes = fileMap.readBytes()
         val dao = ProtoBuf.decodeFromByteArray<WorldMapDao>(bytes)
-        return dao.toMap()
+        val map = dao.toMap()
+        log.info("loaded $map from $fileMap")
+        return map
     }
 }
 
