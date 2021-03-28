@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.application
 
+import Storage
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.options.GameOptions
@@ -54,8 +55,19 @@ open class Main {
 
         showTitle(screen, tileGrid)
 
-        generateMap(screen, tileGrid) { generatedMap ->
-            runGame(generatedMap, screen, tileGrid)
+        val mapFile = GameOptions.MAP_FILE
+        val loadedMap = Storage.loadMap(mapFile)
+        if (loadedMap != null) {
+            runGame(loadedMap, screen, tileGrid)
+        } else {
+            if (UiOptions.SKIP_INTRO.not()) {
+                // give title some time before switching to generation view
+                TimeUnit.MILLISECONDS.sleep(4000)
+            }
+            generateMap(screen, tileGrid) { generatedMap ->
+                Storage.save(generatedMap, mapFile)
+                runGame(generatedMap, screen, tileGrid)
+            }
         }
     }
 
@@ -132,7 +144,7 @@ open class Main {
         game.world.sectors.forEach { sector ->
             repeat(elementsPerSector) {
                 game.addElementInSector(sector, Elements.rifleSquad.new(), faction = opfor, playerControlled = false)
-                        .also(gameWorld::trackUnit)
+                    .also(gameWorld::trackUnit)
             }
         }
     }
@@ -144,7 +156,7 @@ open class Main {
      */
     protected fun Sector.createFriendly(element: CommandingElement, faction: Faction, game: Game, gameWorld: GameWorld, position: Coordinate = this.randomCoordinate(random)): ElementEntity {
         return game.addElementInSector(this, element, position, faction, true)
-                .also(gameWorld::trackUnit)
+            .also(gameWorld::trackUnit)
     }
 
     /**
@@ -152,10 +164,7 @@ open class Main {
      * @see UiOptions.SKIP_INTRO
      */
     protected open fun showTitle(screen: Screen, tileGrid: TileGrid) {
-        if (UiOptions.SKIP_INTRO.not()) {
-            screen.dock(TitleView(tileGrid))
-            TimeUnit.MILLISECONDS.sleep(4000)
-        }
+        screen.dock(TitleView(tileGrid))
     }
 
     /**
@@ -170,9 +179,9 @@ open class Main {
         screen.dock(generatingView)
 
         val mapGenerator = WorldMapGenerator(
-                GameOptions.MAP_SEED,
-                worldWidthInTiles,
-                worldHeightInTiles
+            GameOptions.MAP_SEED,
+            worldWidthInTiles,
+            worldHeightInTiles
         )
         MapGenerationProgressController(mapGenerator, generatingView)
 

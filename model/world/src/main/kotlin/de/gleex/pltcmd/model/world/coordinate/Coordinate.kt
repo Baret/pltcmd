@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.world.coordinate
 
 import kotlinx.serialization.Serializable
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -187,7 +188,7 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
             return null
         }
 
-        private val created: MutableMap<Long, Coordinate> = mutableMapOf()
+        private val created: MutableMap<Long, Coordinate> = ConcurrentHashMap()
         /**
          * Provides an [Coordinate] object with the given values.
          **/

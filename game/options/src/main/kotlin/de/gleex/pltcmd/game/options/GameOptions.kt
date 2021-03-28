@@ -45,6 +45,7 @@ object GameOptions {
             } else {
                 System.currentTimeMillis()
             }
+    val MAP_FILE = if (USE_DEBUG_MAP_SEED) "develop" else "last"
 
     /**
      * The origin of the map. In other words the world map's bottom left corner is this coordinate.
