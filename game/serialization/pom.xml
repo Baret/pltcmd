@@ -18,17 +18,7 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlinx-serialization-json</artifactId>
-            <version>${serialization.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-serialization-protobuf</artifactId>
-            <version>${serialization.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlinx-serialization-cbor</artifactId>
             <version>${serialization.version}</version>
         </dependency>
     </dependencies>
