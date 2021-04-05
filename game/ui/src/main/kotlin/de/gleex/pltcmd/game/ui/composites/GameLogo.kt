@@ -19,11 +19,16 @@ import kotlin.math.roundToInt
  * The logo used as splash screen. Intended to be drawn onto the full screen, but might also be used in other places
  */
 object GameLogo {
+    private const val titlePart1 = "p l t"
+    private const val titlePart2 = "c m d"
+
     private val style = StyleSet.create(UiOptions.THEME.primaryForegroundColor, ANSITileColor.BLACK)
     private val styleFadingShadow = style
             .withModifiers(Modifiers.fadeIn(20, 2000, true))
             .withForegroundColor(UiOptions.THEME.primaryBackgroundColor)
             .withBackgroundColor(ANSITileColor.BLACK)
+
+    const val asText = "$titlePart1 $titlePart2"
 
     fun drawOnto(parent: TileGrid) {
         val logoSize = Size.create(parent.width, (parent.width / 1.6).roundToInt())
@@ -51,14 +56,14 @@ object GameLogo {
         mainLayer.draw(
                 CharacterTileStrings
                         .newBuilder()
-                        .withText("p l t")
+                        .withText(titlePart1)
                         .build(),
                 Position.create(logoCenterX - 6, logoCenterY).withRelative(logoOffset))
 
         mainLayer.draw(
                 CharacterTileStrings
                         .newBuilder()
-                        .withText("c m d")
+                        .withText(titlePart2)
                         .build(),
                 Position.create(logoCenterX + 3, logoCenterY).withRelative(logoOffset))
     }
@@ -98,4 +103,5 @@ object GameLogo {
     private fun Layer.addTileAt(position: Position, style: StyleSet, symbol: Char) {
         draw(Tile.createCharacterTile(symbol, style), position)
     }
+
 }

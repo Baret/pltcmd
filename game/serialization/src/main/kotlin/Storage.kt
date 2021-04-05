@@ -19,7 +19,7 @@ object Storage {
     private val dataFolder = File("data")
 
     init {
-        if (!dataFolder.mkdirs()) {
+        if (!dataFolder.exists() && !dataFolder.mkdirs()) {
             log.error("Failed to create folder ${dataFolder.absolutePath}")
         }
     }

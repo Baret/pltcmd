@@ -6,6 +6,16 @@ package de.gleex.pltcmd.game.options
  */
 object GameConstants {
     /**
+     * Constant values regarding information of the application.
+     */
+    object AppInfo {
+        /**
+         * The amount of ingame time that passes in one tick.
+         */
+        val version: String = GameConstants::class.java.`package`.implementationVersion ?: "devel"
+    }
+
+    /**
      * Constant values regarding ingame time.
      */
     object Time {

@@ -8,9 +8,7 @@ import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.mapgeneration.MapGenerationProgressController
-import de.gleex.pltcmd.game.ui.views.GameView
-import de.gleex.pltcmd.game.ui.views.GeneratingView
-import de.gleex.pltcmd.game.ui.views.TitleView
+import de.gleex.pltcmd.game.ui.views.*
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
@@ -29,6 +27,7 @@ import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
+import org.hexworks.zircon.api.uievent.ComponentEventType
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -54,21 +53,35 @@ open class Main {
         val screen = tileGrid.toScreen()
 
         showTitle(screen, tileGrid)
+        selectMap(screen, tileGrid)
+    }
 
+    protected open fun selectMap(screen: Screen, tileGrid: TileGrid) {
         val mapFile = GameOptions.MAP_FILE
         val loadedMap = Storage.loadMap(mapFile)
-        if (loadedMap != null) {
-            runGame(loadedMap, screen, tileGrid)
-        } else {
-            if (UiOptions.SKIP_INTRO.not()) {
-                // give title some time before switching to generation view
-                TimeUnit.MILLISECONDS.sleep(4000)
-            }
-            generateMap(screen, tileGrid) { generatedMap ->
-                Storage.save(generatedMap, mapFile)
-                runGame(generatedMap, screen, tileGrid)
-            }
+        if (loadedMap == null && UiOptions.SKIP_INTRO.not()) {
+            // give title some time before switching to menu
+            TimeUnit.MILLISECONDS.sleep(4000)
         }
+
+        val menuEntries = listOf(
+            MenuEntry("Load previous map", (loadedMap != null)) { event ->
+                if (ComponentEventType.ACTIVATED == event.type) {
+                    // TODO is it ok to run in this event thread?
+                    runGame(loadedMap!!, screen, tileGrid)
+                }
+            },
+            MenuEntry("Generate new map", true) { event ->
+                if (ComponentEventType.ACTIVATED == event.type) {
+                    // TODO is it ok to run in this event thread?
+                    generateMap(screen, tileGrid) { generatedMap ->
+                        Storage.save(generatedMap, mapFile)
+                        runGame(generatedMap, screen, tileGrid)
+                    }
+                }
+            }
+        )
+        screen.dock(MenuView(tileGrid, menuEntries))
     }
 
     /**
@@ -112,17 +125,24 @@ open class Main {
     /**
      * @return the elements that should be controllable by the UI
      */
-    protected open fun createElementsToCommand(visibleSector: Sector, game: Game, gameWorld: GameWorld): List<ElementEntity> {
+    protected open fun createElementsToCommand(
+        visibleSector: Sector,
+        game: Game,
+        gameWorld: GameWorld
+    ): List<ElementEntity> {
         val faction = game.playerFaction
         val elementsToCommand = mutableListOf<ElementEntity>()
         elementsToCommand.run {
 
             val alpha = visibleSector.createFriendly(Elements.transportHelicopterPlatoon.new()
-                    .apply { callSign = CallSign("Alpha") }, faction, game, gameWorld)
+                .apply { callSign = CallSign("Alpha") }, faction, game, gameWorld
+            )
             val bravo = visibleSector.createFriendly(Elements.riflePlatoon.new()
-                    .apply { callSign = CallSign("Bravo") }, faction, game, gameWorld)
+                .apply { callSign = CallSign("Bravo") }, faction, game, gameWorld
+            )
             val charlie = visibleSector.createFriendly(Elements.reconPlane.new()
-                    .apply { callSign = CallSign("Charlie") }, faction, game, gameWorld)
+                .apply { callSign = CallSign("Charlie") }, faction, game, gameWorld
+            )
             listOf(alpha, bravo, charlie).forEach {
                 log.debug("${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeedInKph} kph.")
             }
@@ -154,7 +174,13 @@ open class Main {
      * The position is random by default and the [Affiliation] is friendly. For other affiliations a wandering entity
      * will be added.
      */
-    protected fun Sector.createFriendly(element: CommandingElement, faction: Faction, game: Game, gameWorld: GameWorld, position: Coordinate = this.randomCoordinate(random)): ElementEntity {
+    protected fun Sector.createFriendly(
+        element: CommandingElement,
+        faction: Faction,
+        game: Game,
+        gameWorld: GameWorld,
+        position: Coordinate = this.randomCoordinate(random)
+    ): ElementEntity {
         return game.addElementInSector(this, element, position, faction, true)
             .also(gameWorld::trackUnit)
     }

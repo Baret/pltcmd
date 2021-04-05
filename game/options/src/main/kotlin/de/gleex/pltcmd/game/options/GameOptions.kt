@@ -34,7 +34,7 @@ object GameOptions {
     /**
      * Set to true to "enable dev mode" which always generates the same map.
      */
-    private const val USE_DEBUG_MAP_SEED: Boolean = true
+    private const val USE_DEBUG_MAP_SEED: Boolean = false
 
     /**
      * Seed used to generate the map, usually the current timestamp.
