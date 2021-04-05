@@ -20,6 +20,8 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.sectorOrigin
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.SwingApplications
@@ -64,24 +66,31 @@ open class Main {
             TimeUnit.MILLISECONDS.sleep(4000)
         }
 
+        // true = existing map, false = new map
+        val mapChoice = CompletableDeferred<Boolean>()
         val menuEntries = listOf(
             MenuEntry("Load previous map", (loadedMap != null)) { event ->
                 if (ComponentEventType.ACTIVATED == event.type) {
-                    // TODO is it ok to run in this event thread?
-                    runGame(loadedMap!!, screen, tileGrid)
+                    mapChoice.complete(true)
                 }
             },
             MenuEntry("Generate new map", true) { event ->
                 if (ComponentEventType.ACTIVATED == event.type) {
-                    // TODO is it ok to run in this event thread?
-                    generateMap(screen, tileGrid) { generatedMap ->
-                        Storage.save(generatedMap, mapFile)
-                        runGame(generatedMap, screen, tileGrid)
-                    }
+                    mapChoice.complete(false)
                 }
             }
         )
         screen.dock(MenuView(tileGrid, menuEntries))
+        val loadMap = runBlocking { mapChoice.await() }
+
+        if (loadMap) {
+            runGame(loadedMap!!, screen, tileGrid)
+        } else {
+            generateMap(screen, tileGrid) { generatedMap ->
+                Storage.save(generatedMap, mapFile)
+                runGame(generatedMap, screen, tileGrid)
+            }
+        }
     }
 
     /**
