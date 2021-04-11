@@ -21,6 +21,7 @@
         <module>ui</module>
         <module>engine</module>
         <module>ui-strings</module>
+        <module>networking</module>
     </modules>
 
     <dependencies>
@@ -59,6 +60,11 @@
             <dependency>
                 <groupId>de.gleex.pltcmd.game</groupId>
                 <artifactId>engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.game</groupId>
+                <artifactId>networking</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
