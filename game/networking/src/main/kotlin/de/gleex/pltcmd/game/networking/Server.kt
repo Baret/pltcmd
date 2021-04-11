@@ -28,10 +28,12 @@ private val log = LoggerFactory.getLogger(::startServer::class)
 
 fun startServer(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+internal val pathBroadcastEvents = "/broadcasts"
+
 fun Application.module() {
     install(WebSockets)
     routing {
-        webSocket("/broadcasts") {
+        webSocket(pathBroadcastEvents) {
             log.info("sending broadcasts to $logId")
 
             val eventChannel = Channel<BroadcastEvent>(Channel.BUFFERED)

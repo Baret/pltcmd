@@ -38,7 +38,7 @@
         <!-- ktor client -->
         <dependency>
             <groupId>io.ktor</groupId>
-            <artifactId>ktor-client-cio</artifactId>
+            <artifactId>ktor-client-cio-jvm</artifactId>
             <version>${ktor.version}</version>
         </dependency>
         <dependency>
