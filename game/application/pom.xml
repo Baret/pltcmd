@@ -24,6 +24,10 @@
             <artifactId>ui</artifactId>
         </dependency>
         <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>networking</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.hexworks.zircon</groupId>
             <artifactId>zircon.jvm.swing</artifactId>
         </dependency>

@@ -2,6 +2,8 @@ package de.gleex.pltcmd.game.application
 
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.*
+import de.gleex.pltcmd.game.networking.connect
+import de.gleex.pltcmd.game.networking.startServer
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -64,6 +66,14 @@ open class Main {
      * Then the [Ticker] runs the game.
      */
     protected open fun runGame(generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
+        // networking
+        log.debug("starting server thread")
+        val serverThread = Thread { startServer(arrayOf()) }
+        serverThread.start()
+
+        log.debug("starting client thread")
+        val clientThread = Thread { connect() }
+        clientThread.start()
         // model
         val playerFaction = Faction("player faction")
         val game = Game(Engine.create(), generatedMap, playerFaction, random)
@@ -76,7 +86,12 @@ open class Main {
 
         Ticker.start()
         // cleanup
-        screen.onShutdown { Ticker.stop() }
+        screen.onShutdown {
+            log.debug("shutdown game")
+            Ticker.stop()
+            clientThread.stop()
+            serverThread.stop()
+        }
     }
 
     /**
