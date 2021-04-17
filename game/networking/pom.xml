@@ -24,6 +24,17 @@
             <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>engine</artifactId>
         </dependency>
+        <!-- serialization -->
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-serialization-protobuf</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-serialization</artifactId>
+            <version>${ktor.version}</version>
+        </dependency>
         <!-- ktor server -->
         <dependency>
             <groupId>io.ktor</groupId>

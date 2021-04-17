@@ -1,9 +1,13 @@
 package de.gleex.pltcmd.game.networking
 
+import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.radio.BroadcastEvent
 import de.gleex.pltcmd.model.radio.RadioSender
+import de.gleex.pltcmd.model.radio.UiBroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.building.ConversationBuilder
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
+import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
@@ -21,6 +25,8 @@ import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.protobuf.ProtoBuf
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
@@ -49,13 +55,25 @@ fun Application.module() {
             }
             // send events to client
             for (event in eventChannel) {
-                send(event.toString())
+                // first convert
+                val uiEvent = event.uiEvent
+                // second send
+                val bytes = ProtoBuf.encodeToByteArray(uiEvent)
+                send(bytes)
             }
 
             log.info("finished sending broadcasts to $logId")
         }
     }
 }
+
+// TODO move somewhere else
+val BroadcastEvent.uiEvent: UiBroadcastEvent
+    get() {
+        val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
+        val senderName = transmission.sender.name
+        return UiBroadcastEvent(message, transmission.isOpening, senderName)
+    }
 
 internal val DefaultWebSocketServerSession.logId: String
     get() {

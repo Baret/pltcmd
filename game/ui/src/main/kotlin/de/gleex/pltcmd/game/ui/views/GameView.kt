@@ -14,11 +14,11 @@ import de.gleex.pltcmd.game.ui.components.InfoSidebar
 import de.gleex.pltcmd.game.ui.components.InputSidebar
 import de.gleex.pltcmd.game.ui.components.MapFragment
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.model.radio.BroadcastEvent
-import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
-import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
+import de.gleex.pltcmd.model.radio.UiBroadcastEvent
+import de.gleex.pltcmd.model.radio.UiBroadcasts
 import de.gleex.pltcmd.model.world.Sector
-import de.gleex.pltcmd.util.events.globalEventBus
+import de.gleex.pltcmd.util.events.uiEventBus
+import org.hexworks.cobalt.events.api.simpleSubscribeTo
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -120,10 +120,9 @@ class GameView(
     }
 
     private fun LogArea.logRadioCalls() {
-        globalEventBus.subscribeToBroadcasts { event: BroadcastEvent ->
-            val transmission = event.transmission
-            val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
-            if (transmission.isOpening) {
+        uiEventBus.simpleSubscribeTo(UiBroadcasts) { event: UiBroadcastEvent ->
+            val message = event.message
+            if (event.isOpening) {
                 addHeader(message, false)
             } else {
                 addParagraph(message, false, 5)
@@ -131,4 +130,3 @@ class GameView(
         }
     }
 }
-
