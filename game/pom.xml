@@ -25,10 +25,6 @@
     </modules>
 
     <dependencies>
-        <dependency>
-            <groupId>org.hexworks.zircon</groupId>
-            <artifactId>zircon.core-jvm</artifactId>
-        </dependency>
         <!-- tests -->
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>

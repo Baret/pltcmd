@@ -64,6 +64,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains.kotlinx</groupId>
+			<artifactId>kotlinx-coroutines-core</artifactId>
+			<version>${kotlinx.coroutines.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlinx</groupId>
 			<artifactId>kotlinx-serialization-core</artifactId>
 			<version>${serialization.version}</version>
 		</dependency>
@@ -136,8 +141,10 @@
 			</dependency>
 			<dependency>
 				<groupId>org.jetbrains.kotlinx</groupId>
-				<artifactId>kotlinx-coroutines-core-jvm</artifactId>
+				<artifactId>kotlinx-coroutines-bom</artifactId>
 				<version>${kotlinx.coroutines.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.hexworks.zircon</groupId>
