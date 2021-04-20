@@ -101,20 +101,45 @@ class KnownWorldTest : WordSpec() {
 
                 val coordinate1 = Coordinate(14, 14)
                 val coordinate2 = Coordinate(23, 23)
+                val area1 = CoordinateRectangle(Coordinate(0, 30), 2, 2)
                 knownWorld reveal coordinate1
                 knownWorld reveal coordinate2
+                knownWorld reveal area1
 
                 val coordinate3 = Coordinate(31, 1)
+                val area2 = CoordinateRectangle(Coordinate(0, 31), 2, 2)
                 otherKnownWorld reveal coordinate3
+                otherKnownWorld reveal area2
 
-                knownWorld.shouldHaveRevealed(coordinate1, coordinate2)
-                otherKnownWorld.shouldHaveRevealed(coordinate3)
+                knownWorld.shouldHaveRevealed(
+                    coordinate1,
+                    coordinate2,
+                    Coordinate(0, 30),
+                    Coordinate(0, 31),
+                    Coordinate(1, 30),
+                    Coordinate(1, 31)
+                )
+                otherKnownWorld.shouldHaveRevealed(
+                    coordinate3,
+
+                    Coordinate(0, 31),
+                    Coordinate(0, 32),
+                    Coordinate(1, 31),
+                    Coordinate(1, 32)
+                )
 
                 val mergedKnownWorld = knownWorld mergeWith otherKnownWorld
                 mergedKnownWorld.shouldHaveRevealed(
                     coordinate3,
                     coordinate2,
-                    coordinate1
+                    coordinate1,
+
+                    Coordinate(0, 30),
+                    Coordinate(0, 31),
+                    Coordinate(0, 32),
+                    Coordinate(1, 30),
+                    Coordinate(1, 31),
+                    Coordinate(1, 32),
                 )
 
             }
