@@ -52,7 +52,7 @@ object EntityFactory {
                 ContactsAttribute(),
                 CommandersIntent(),
                 Memory(map)
-                    .also { it.knownWorld.reveal(map.sectorAt(position)) }
+                    .also { it.knownWorld reveal map.sectorAt(position) }
             )
             behaviors(
                 Communicating,
@@ -92,7 +92,7 @@ object EntityFactory {
             RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
             ShootersAttribute(element),
             Memory(world)
-                .also { it.knownWorld.reveal(vision.vision.area) },
+                .also { it.knownWorld reveal vision.vision.area },
 
             MovementPath(),
             MovementBaseSpeed(element),

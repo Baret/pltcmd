@@ -74,19 +74,21 @@ class KnownWorld(world: WorldMap): Known<WorldArea, KnownWorld> {
     /**
      * Reveals the given [Coordinate].
      */
-    fun reveal(toReveal: Coordinate) {
-        unrevealed.removeAt(indexOf(toReveal))
+    infix fun reveal(toReveal: Coordinate) {
+        val index = indexOf(toReveal)
+        if (index >= 0) {
+            unrevealed.removeAt(index)
+        }
     }
 
     /**
      * Reveals the complete [WorldArea].
      */
-    fun reveal(areaToReveal: WorldArea) {
+    infix fun reveal(areaToReveal: CoordinateArea) {
         log.trace("Revealing ${areaToReveal.size} tiles...")
         val revealTime = measureTimeMillis {
             areaToReveal
-                .tiles
-                .forEach { reveal(it.coordinate) }
+                .forEach { reveal(it) }
         }
         log.trace("Done revealing. It took $revealTime ms. ${unrevealed.size} tiles left to uncover.")
         val sum = (avg * values) + revealTime
