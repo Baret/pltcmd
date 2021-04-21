@@ -1,13 +1,14 @@
 package de.gleex.pltcmd.game.engine.attributes.memory
 
 import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight.NINE
 import de.gleex.pltcmd.model.world.terrain.TerrainType.MOUNTAIN
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
-import io.kotest.assertions.asClue
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.forEachAsClue
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.WordSpec
@@ -17,10 +18,12 @@ class KnownWorldTest : WordSpec() {
 
     override fun isolationMode() = IsolationMode.InstancePerLeaf
 
+    private val defaultTerrain = Terrain.of(MOUNTAIN, NINE)
+
     private val originalWorld = WorldMap.create(
         listOf(sectorAtWithTerrain(
             Coordinate.zero
-        ) { Terrain.of(MOUNTAIN, NINE) })
+        ) { defaultTerrain })
     )
 
     private val knownWorld = KnownWorld(originalWorld)
@@ -49,11 +52,11 @@ class KnownWorldTest : WordSpec() {
             }
 
             "not reveal coordinates outside of it" {
-                for(easting in -1..50) {
+                for (easting in -1..50) {
                     knownWorld reveal Coordinate(easting, -1)
                     knownWorld reveal Coordinate(easting, 51)
                 }
-                for(northing in -1..51) {
+                for (northing in -1..51) {
                     knownWorld reveal Coordinate(-1, northing)
                     knownWorld reveal Coordinate(51, northing)
                 }
@@ -158,21 +161,17 @@ class KnownWorldTest : WordSpec() {
                 "$it is not contained in the known world that is being tested!"
             }
         }
-        originalWorld
-            .asWorldArea()
-            .forEachAsClue { coordinate ->
-                val knownTerrain = this[coordinate]
-                knownTerrain.asClue {
-                    if (coordinate in revealedCoordinates) {
-                        it.type shouldBe MOUNTAIN
-                        it.height shouldBe NINE
-                        it.revealed shouldBe true
-                    } else {
-                        it.type shouldBe null
-                        it.height shouldBe null
-                        it.revealed shouldBe false
-                    }
+        assertSoftly {
+            originalWorld
+                .asWorldArea()
+                .forEachAsClue { coordinate ->
+                    val expected =
+                        KnownTerrain(
+                            origin = WorldTile(coordinate, defaultTerrain),
+                            isRevealed = coordinate in revealedCoordinates
+                        )
+                    this[coordinate] shouldBe expected
                 }
-            }
+        }
     }
 }

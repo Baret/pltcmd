@@ -38,6 +38,32 @@ class KnownTerrain(
         } else {
             null
         }
+
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KnownTerrain) return false
+
+        if (origin != other.origin) return false
+        if (coordinate != other.coordinate) return false
+        if (height != other.height) return false
+        if (type != other.type) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = origin.hashCode()
+        result = 31 * result + coordinate.hashCode()
+        result = 31 * result + (height?.hashCode() ?: 0)
+        result = 31 * result + (type?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "KnownTerrain(origin=$origin, coordinate=$coordinate, height=$height, type=$type)"
+    }
 }
 
 /**
