@@ -52,13 +52,9 @@ class KnownWorld(world: WorldMap): Known<WorldArea, KnownWorld> {
     operator fun get(coordinate: Coordinate): KnownTerrain {
         val originalTerrain = origin[coordinate]
             .orElseGet { WorldTile(coordinate.eastingFromLeft, coordinate.northingFromBottom) }
-        return if (coordinate.isUnrevealed()) {
-            originalTerrain.unknown()
-        } else {
-            KnownTerrain(
-                origin = originalTerrain,
-                isRevealed = true
-            )
+        return when {
+            coordinate.isUnrevealed() -> originalTerrain.unknown()
+            else                      -> originalTerrain.known()
         }
     }
 

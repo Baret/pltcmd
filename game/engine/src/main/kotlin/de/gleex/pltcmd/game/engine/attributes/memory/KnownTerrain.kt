@@ -7,12 +7,16 @@ import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.util.knowledge.KnownByBoolean
 
 /**
- * Represents knowledge about a specific [WorldTile], or more exact: The terrain at its [Coordinate]
+ * Represents knowledge about a specific [WorldTile], or more exact: The terrain at its [Coordinate].
+ *
+ * Known terrain is either revealed or not. By default it is unrevealed (aka. unknown). [reveal] changes the
+ * status. Unknown terrain has null [TerrainHeight] and [TerrainType].
+ *
+ * **Hint:** Use [WorldTile.unknown] and [WorldTile.known] extension functions to create instances.
  */
-class KnownTerrain(
-    override val origin: WorldTile,
-    isRevealed: Boolean = false
-): KnownByBoolean<WorldTile, KnownTerrain>(isRevealed) {
+data class KnownTerrain(
+    override val origin: WorldTile
+): KnownByBoolean<WorldTile, KnownTerrain>(isRevealed = false) {
 
     /**
      * The [Coordinate] of this [KnownTerrain]. It is always "the truth".
@@ -38,38 +42,18 @@ class KnownTerrain(
         } else {
             null
         }
-
-
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is KnownTerrain) return false
-
-        if (origin != other.origin) return false
-        if (coordinate != other.coordinate) return false
-        if (height != other.height) return false
-        if (type != other.type) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = origin.hashCode()
-        result = 31 * result + coordinate.hashCode()
-        result = 31 * result + (height?.hashCode() ?: 0)
-        result = 31 * result + (type?.hashCode() ?: 0)
-        return result
-    }
-
-    override fun toString(): String {
-        return "KnownTerrain(origin=$origin, coordinate=$coordinate, height=$height, type=$type)"
-    }
 }
 
 /**
- * Wraps this [WorldTile] into a [KnownTerrain] that is not revealed.
+ * Creates a [KnownTerrain] from this [WorldTile] that is not revealed.
  */
 fun WorldTile.unknown() = KnownTerrain(
-    origin = this,
-    isRevealed = false
+    origin = this
 )
+
+/**
+ * Creates an [KnownTerrain] from this [WorldTile] that is already revealed.
+ */
+fun WorldTile.known() =
+    unknown()
+        .also { it.reveal() }

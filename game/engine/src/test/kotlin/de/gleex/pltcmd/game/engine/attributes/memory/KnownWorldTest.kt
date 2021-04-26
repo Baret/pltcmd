@@ -167,9 +167,11 @@ class KnownWorldTest : WordSpec() {
                 .forEachAsClue { coordinate ->
                     val expected =
                         KnownTerrain(
-                            origin = WorldTile(coordinate, defaultTerrain),
-                            isRevealed = coordinate in revealedCoordinates
+                            origin = WorldTile(coordinate, defaultTerrain)
                         )
+                    if (coordinate in revealedCoordinates) {
+                        expected.reveal()
+                    }
                     this[coordinate] shouldBe expected
                 }
         }
