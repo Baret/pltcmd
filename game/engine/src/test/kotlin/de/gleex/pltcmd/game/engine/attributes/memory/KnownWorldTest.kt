@@ -148,11 +148,12 @@ class KnownWorldTest : WordSpec() {
             }
         }
 
-//        "performance stuff" should {
-//            "be ok" {
-//                500 shouldBe 100
-//            }
-//        }
+        // performance test...
+        // create KnownWorld
+        // reveal everything one by one
+        // reveal everything one by one random order
+        // reveal sector
+        // reveal everything at once
     }
 
     private fun KnownWorld.shouldHaveRevealed(vararg revealedCoordinates: Coordinate) {

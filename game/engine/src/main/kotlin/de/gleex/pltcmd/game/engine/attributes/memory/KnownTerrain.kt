@@ -14,7 +14,7 @@ import de.gleex.pltcmd.util.knowledge.KnownByBoolean
  *
  * **Hint:** Use [WorldTile.unknown] and [WorldTile.known] extension functions to create instances.
  */
-data class KnownTerrain(
+class KnownTerrain(
     override val origin: WorldTile
 ): KnownByBoolean<WorldTile, KnownTerrain>(isRevealed = false) {
 
@@ -42,6 +42,33 @@ data class KnownTerrain(
         } else {
             null
         }
+
+    override fun toString(): String {
+        return "KnownTerrain(origin=$origin, height=$height, type=$type, revealed=$revealed)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        if (!super.equals(other)) return false
+
+        other as KnownTerrain
+
+        if (origin != other.origin) return false
+        if (height != other.height) return false
+        if (type != other.type) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + origin.hashCode()
+        result = 31 * result + (height?.hashCode() ?: 0)
+        result = 31 * result + (type?.hashCode() ?: 0)
+        return result
+    }
+
 }
 
 /**

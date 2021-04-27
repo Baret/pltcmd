@@ -38,4 +38,19 @@ abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed:
     override infix fun isRicherThan(other: SELF): Boolean =
         !revealed && other.revealed
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as KnownByBoolean<*, *>
+
+        if (revealed != other.revealed) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return revealed.hashCode()
+    }
+
 }
