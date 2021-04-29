@@ -16,7 +16,7 @@ import de.gleex.pltcmd.util.knowledge.KnownByBoolean
  */
 class KnownTerrain(
     override val origin: WorldTile
-): KnownByBoolean<WorldTile, KnownTerrain>(isRevealed = false) {
+) : KnownByBoolean<WorldTile, KnownTerrain>(isRevealed = false) {
 
     /**
      * The [Coordinate] of this [KnownTerrain]. It is always "the truth".
@@ -84,3 +84,15 @@ fun WorldTile.unknown() = KnownTerrain(
 fun WorldTile.known() =
     unknown()
         .also { it.reveal() }
+
+/**
+ * Creates a [KnownTerrain] from this [WorldTile] that is either [revealed] or not.
+ *
+ * @param revealed when true, a [known] terrain will be created, [unknown] otherwise.
+ */
+fun WorldTile.toKnownTerrain(revealed: Boolean) =
+    if (revealed) {
+        this.known()
+    } else {
+        this.unknown()
+    }

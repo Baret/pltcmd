@@ -30,17 +30,14 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     operator fun get(coordinate: Coordinate): KnownTerrain {
         val originalTerrain = origin[coordinate]
             .orElseGet { WorldTile(coordinate.eastingFromLeft, coordinate.northingFromBottom) }
-        return when {
-            coordinate.isUnrevealed() -> originalTerrain.unknown()
-            else                      -> originalTerrain.known()
-        }
+        return originalTerrain.toKnownTerrain(coordinate.isRevealed())
     }
 
     /**
      * @return true if this [Coordinate] is contained in [unrevealed]
      */
-    private fun Coordinate.isUnrevealed(): Boolean =
-        indexOf(this) >= 0
+    private fun Coordinate.isRevealed(): Boolean =
+        indexOf(this) < 0
 
     private fun indexOf(coordinate: Coordinate): Int =
         unrevealed.binarySearch(coordinate)
