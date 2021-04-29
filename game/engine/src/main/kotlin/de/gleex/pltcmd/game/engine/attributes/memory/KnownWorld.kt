@@ -56,8 +56,7 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
      * Reveals the complete [WorldArea].
      */
     infix fun reveal(areaToReveal: CoordinateArea) {
-        areaToReveal
-            .forEach { reveal(it) }
+        unrevealed.removeAll(areaToReveal)
     }
 
     override fun mergeWith(other: KnownWorld): KnownWorld =
