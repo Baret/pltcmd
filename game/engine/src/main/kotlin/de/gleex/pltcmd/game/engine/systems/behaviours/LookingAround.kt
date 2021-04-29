@@ -41,7 +41,7 @@ object LookingAround :
         val visibleEntities: EntitySet<Positionable> =
                 context.entities
                         .without(this)
-                        .inArea(visibleTiles)
+                        .inArea(tilesInVisibleRange)
         if (visibleEntities.isNotEmpty()) {
             receiveMessage(DetectEntities(
                 visibleEntities = visibleEntities,
@@ -54,7 +54,7 @@ object LookingAround :
 
     private fun SeeingEntity.rememberTerrain() {
         if (hasMoved()) {
-            visibleTiles
+            tilesInVisibleRange
                 .tiles
                 .map { it.coordinate }
                 .filter { vision.at(it).isAny() }
