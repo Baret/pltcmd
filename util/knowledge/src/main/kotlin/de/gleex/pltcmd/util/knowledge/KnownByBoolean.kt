@@ -25,12 +25,12 @@ abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed:
      * By default merging a revealed [KnownByBoolean] into another one [reveal]s it.
      */
     @Suppress("UNCHECKED_CAST")
-    override infix fun mergeWith(other: SELF): SELF =
-        also {
-            if (other.revealed) {
-                reveal()
-            }
-        } as SELF
+    override infix fun mergeWith(other: SELF): SELF {
+        if (other.revealed) {
+            reveal()
+        }
+        return this as SELF
+    }
 
     /**
      * By default a [KnownByBoolean] is richer than the other when it is revealed and the other one is not.
