@@ -74,6 +74,14 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
         return otherUnrevealedArea covers myUnrevealedArea
     }
 
+    /**
+     * Gets all unknown tiles in the given [CoordinateArea].
+     *
+     * All returned [KnownTerrain] are not [KnownTerrain.revealed].
+     */
+    fun getUnknownIn(area: CoordinateArea): CoordinateArea =
+        CoordinateArea { (area intersect unrevealed).toSortedSet() }
+
     companion object
 
 }

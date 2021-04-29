@@ -17,11 +17,11 @@ import org.hexworks.amethyst.api.entity.EntityType
  * sends a [DetectEntities] message if anything is present in the vision.
  **/
 object LookingAround :
-        BaseBehavior<GameContext>(
-                PositionAttribute::class,
-                VisionAttribute::class,
-                Memory::class
-        ) {
+    BaseBehavior<GameContext>(
+        PositionAttribute::class,
+        VisionAttribute::class,
+        Memory::class
+    ) {
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
         return entity.invokeWhenSeeing {
@@ -39,28 +39,29 @@ object LookingAround :
 
     private suspend fun SeeingEntity.lookForEntities(context: GameContext): Boolean {
         val visibleEntities: EntitySet<Positionable> =
-                context.entities
-                        .without(this)
-                        .inArea(tilesInVisibleRange)
+            context.entities
+                .without(this)
+                .inArea(tilesInVisibleRange)
         if (visibleEntities.isNotEmpty()) {
-            receiveMessage(DetectEntities(
-                visibleEntities = visibleEntities,
-                source = this,
-                context = context
-            ))
+            receiveMessage(
+                DetectEntities(
+                    visibleEntities = visibleEntities,
+                    source = this,
+                    context = context
+                )
+            )
         }
         return true
     }
 
     private fun SeeingEntity.rememberTerrain() {
         if (hasMoved()) {
-            tilesInVisibleRange
-                .tiles
-                .map { it.coordinate }
+            memory
+                .knownWorld
+                // only unknown terrain that is currently visible needs to be revealed
+                .getUnknownIn(tilesInVisibleRange)
                 .filter { vision.at(it).isAny() }
-                .forEach {
-                    memory.knownWorld reveal it
-                }
+                .forEach { memory.knownWorld reveal it }
         }
     }
 

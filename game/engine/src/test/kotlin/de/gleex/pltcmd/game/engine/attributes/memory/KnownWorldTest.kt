@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.engine.attributes.memory
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight.NINE
@@ -12,6 +13,8 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.forEachAsClue
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 
 class KnownWorldTest : WordSpec() {
@@ -146,6 +149,43 @@ class KnownWorldTest : WordSpec() {
                 )
 
             }
+
+            "find unknown areas correctly" {
+                val area = originalWorld.asWorldArea()
+                val toReveal = Coordinate(23, 42)
+                val smallArea = CoordinateRectangle(
+                    bottomLeftCoordinate = toReveal,
+                    width = 2,
+                    height = 2
+                )
+
+                knownWorld.getUnknownIn(area) shouldBeUnknown area
+
+                knownWorld.reveal(toReveal)
+
+                knownWorld.getUnknownIn(area) shouldBeUnknown CoordinateArea(area.filter { it != toReveal }
+                    .toSortedSet())
+                knownWorld.getUnknownIn(smallArea) shouldBeUnknown CoordinateArea(
+                    sortedSetOf(
+                        Coordinate(23, 43),
+                        Coordinate(24, 42),
+                        Coordinate(24, 43)
+                    )
+                )
+
+                knownWorld.reveal(Coordinate(24, 43))
+
+                knownWorld.getUnknownIn(smallArea) shouldBeUnknown CoordinateArea(
+                    sortedSetOf(
+                        Coordinate(23, 43),
+                        Coordinate(24, 42)
+                    )
+                )
+
+                knownWorld.reveal(area)
+
+                knownWorld.getUnknownIn(area) shouldBe emptySet()
+            }
         }
 
         // TODO: write some performance tests to try different implementations
@@ -175,6 +215,17 @@ class KnownWorldTest : WordSpec() {
                     }
                     this[coordinate] shouldBe expected
                 }
+        }
+    }
+
+    /**
+     * Asserts that this area is the same as [area] and that all coordinates in it are unknown in [knownWorld].
+     */
+    private infix fun CoordinateArea.shouldBeUnknown(area: CoordinateArea) {
+        assertSoftly {
+            this shouldContainExactly area
+            this.map { knownWorld[it] }
+                .forAll { it.revealed shouldBe false }
         }
     }
 }
