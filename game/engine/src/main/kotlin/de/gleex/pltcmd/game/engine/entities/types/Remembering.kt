@@ -12,5 +12,8 @@ interface Remembering: EntityType
  */
 typealias RememberingEntity = GameEntity<Remembering>
 
-val RememberingEntity.memory: Memory
+/**
+ * The [Memory] of an entity.
+ */
+internal val RememberingEntity.memory: Memory
     get() = getAttribute(Memory::class)
