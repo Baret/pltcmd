@@ -80,19 +80,19 @@ object EntityFactory {
         } else {
             VisionPower(10.0)
         }
-        val vision = VisionAttribute(world.visionAt(initialPosition.value, visualRange))
+        val visionAttribute = VisionAttribute(world.visionAt(initialPosition.value, visualRange))
         val attributes: MutableList<Attribute> = mutableListOf(
             CommandersIntent(),
             ElementAttribute(element),
             FactionAttribute(faction),
             PositionAttribute(initialPosition),
-            vision,
+            visionAttribute,
             ContactsAttribute(),
             // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
             RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
             ShootersAttribute(element),
             Memory(world)
-                .also { it.knownWorld reveal vision.vision.area },
+                .apply { knownWorld reveal visionAttribute.vision.area },
 
             MovementPath(),
             MovementBaseSpeed(element),
