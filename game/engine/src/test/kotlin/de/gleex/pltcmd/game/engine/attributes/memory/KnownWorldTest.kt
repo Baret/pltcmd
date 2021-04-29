@@ -44,7 +44,7 @@ class KnownWorldTest : WordSpec() {
                 knownWorld reveal firstCoordinate
                 knownWorld.shouldHaveRevealed(firstCoordinate)
 
-                val secondCoordinate = Coordinate(0, 0)
+                val secondCoordinate = Coordinate.zero
                 knownWorld reveal secondCoordinate
                 knownWorld.shouldHaveRevealed(firstCoordinate, secondCoordinate)
 
@@ -68,7 +68,7 @@ class KnownWorldTest : WordSpec() {
 
             "reveal areas correctly" {
                 val firstArea = CoordinateRectangle(
-                    bottomLeftCoordinate = Coordinate(0, 0),
+                    bottomLeftCoordinate = Coordinate.zero,
                     width = 2,
                     height = 2
                 )
