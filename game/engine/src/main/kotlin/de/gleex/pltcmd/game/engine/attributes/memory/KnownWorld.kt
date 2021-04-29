@@ -6,32 +6,14 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.util.knowledge.Known
-import org.hexworks.cobalt.logging.api.LoggerFactory
-import kotlin.system.measureTimeMillis
 
 /**
  * Knowledge about the [WorldArea] defining the whole [WorldMap]. It is initialized as completely unrevealed
  * and get revealed over time.
  */
-class KnownWorld(world: WorldMap): Known<WorldArea, KnownWorld> {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(KnownWorld::class)
-
-        // TODO: Remove. Just to observe performance improvements
-        private var avg: Double = 0.0
-        private var values: Int = 0
-    }
-
-    init {
-        log.debug("Getting world as worldArea")
-    }
+class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
 
     override val origin: WorldArea = world.asWorldArea()
-
-    init {
-        log.debug("Got origin. Mapping to unrevealed...")
-    }
 
     /**
      * All not yet revealed (aka. unknown) [Coordinate]s.
@@ -41,10 +23,6 @@ class KnownWorld(world: WorldMap): Known<WorldArea, KnownWorld> {
             .tiles
             .map { it.coordinate }
             .toMutableList()
-
-    init {
-        log.debug("Finished creating ${unrevealed.size} unrevealed tiles.")
-    }
 
     /**
      * @return the [KnownTerrain] at the given location.
@@ -81,16 +59,8 @@ class KnownWorld(world: WorldMap): Known<WorldArea, KnownWorld> {
      * Reveals the complete [WorldArea].
      */
     infix fun reveal(areaToReveal: CoordinateArea) {
-        log.trace("Revealing ${areaToReveal.size} tiles...")
-        val revealTime = measureTimeMillis {
-            areaToReveal
-                .forEach { reveal(it) }
-        }
-        log.trace("Done revealing. It took $revealTime ms. ${unrevealed.size} tiles left to uncover.")
-        val sum = (avg * values) + revealTime
-        values++
-        avg = sum / values
-        log.trace("Average time after $values: $avg")
+        areaToReveal
+            .forEach { reveal(it) }
     }
 
     override fun mergeWith(other: KnownWorld): KnownWorld =
@@ -107,5 +77,7 @@ class KnownWorld(world: WorldMap): Known<WorldArea, KnownWorld> {
         val otherUnrevealedArea = CoordinateArea(other.unrevealed.toSortedSet())
         return otherUnrevealedArea covers myUnrevealedArea
     }
+
+    companion object
 
 }

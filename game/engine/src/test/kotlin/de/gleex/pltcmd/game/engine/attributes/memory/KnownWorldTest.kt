@@ -148,7 +148,7 @@ class KnownWorldTest : WordSpec() {
             }
         }
 
-        // performance test...
+        // TODO: write some performance tests to try different implementations
         // create KnownWorld
         // reveal everything one by one
         // reveal everything one by one random order
