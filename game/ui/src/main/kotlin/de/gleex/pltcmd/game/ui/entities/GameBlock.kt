@@ -1,9 +1,7 @@
 package de.gleex.pltcmd.game.ui.entities
 
-import de.gleex.pltcmd.game.engine.attributes.memory.KnownTerrain
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import kotlinx.collections.immutable.persistentMapOf
-import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.base.BaseBlock
 
@@ -11,17 +9,10 @@ import org.hexworks.zircon.api.data.base.BaseBlock
  * Represents one tile in the map view. It displays its immutable [Terrain]
  * and the unit (or its marker) at this tile. An optional overlay can be shown.
  */
-class GameBlock(val terrain: ObservableValue<KnownTerrain>) : BaseBlock<Tile>(emptyTile = TileRepository.empty(), tiles = persistentMapOf()) {
+class GameBlock(val terrain: Terrain) : BaseBlock<Tile>(emptyTile = TileRepository.empty(), tiles = persistentMapOf()) {
 
     init {
-        terrain.onChange {
-            displayTerrain(it.newValue)
-        }
-        displayTerrain(terrain.value)
-    }
-
-    private fun displayTerrain(tile: KnownTerrain) {
-        bottom = TileRepository.createTerrainTile(tile.height, tile.type)
+        bottom = TileRepository.createTerrainTile(terrain)
     }
 
     /**

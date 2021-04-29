@@ -1,9 +1,7 @@
 package de.gleex.pltcmd.util.knowledge
 
-import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.collection.ListProperty
 import org.hexworks.cobalt.databinding.api.extension.toProperty
-import org.hexworks.cobalt.databinding.api.value.ObservableValue
 
 /**
  * A collection of [Known] things of the same type.
@@ -38,19 +36,4 @@ class Knowledge<T: Any, K: Known<T, K>> {
         other
             .knownThings
             .forEach{ this.update(it) }
-
-    /**
-     * This method converts the given [Known] to an [ObservableValue] so that changes to it can be observed.
-     * If the given [Known] is already present in this [Knowledge] it is being observed. Otherwise the given object
-     * will be the value of the observable.
-     *
-     * @return an [ObservableValue] of the given [Known]
-     */
-    fun observe(toObserve: K): ObservableValue<K> {
-        return _knownThings.bindTransform {
-            it
-                .find { known -> known.origin == toObserve.origin }
-                ?: toObserve
-        }
-    }
 }
