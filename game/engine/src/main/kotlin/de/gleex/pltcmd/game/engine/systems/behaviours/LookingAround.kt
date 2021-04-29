@@ -26,7 +26,7 @@ object LookingAround :
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
         return entity.invokeWhenSeeing {
             it.updateVision(context)
-            it.remeberTerrain(context)
+            it.rememberTerrain()
             it.lookForEntities(context)
         }
     }
@@ -52,14 +52,14 @@ object LookingAround :
         return true
     }
 
-    private fun SeeingEntity.remeberTerrain(context: GameContext) {
+    private fun SeeingEntity.rememberTerrain() {
         if (hasMoved()) {
             visibleTiles
                 .tiles
                 .map { it.coordinate }
                 .filter { vision.at(it).isAny() }
                 .forEach {
-                    memory.knownWorld.reveal(it)
+                    memory.knownWorld reveal it
                 }
         }
     }
