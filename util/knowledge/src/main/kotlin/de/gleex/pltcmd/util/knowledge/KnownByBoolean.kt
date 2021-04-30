@@ -40,13 +40,9 @@ abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed:
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (other !is KnownByBoolean<*, *>) return false
 
-        other as KnownByBoolean<*, *>
-
-        if (revealed != other.revealed) return false
-
-        return true
+        return revealed == other.revealed
     }
 
     override fun hashCode(): Int {

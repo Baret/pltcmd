@@ -49,25 +49,16 @@ class KnownTerrain(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (other !is KnownTerrain) return false
         if (!super.equals(other)) return false
 
-        other as KnownTerrain
-
-        if (origin != other.origin) return false
-        if (height != other.height) return false
-        if (type != other.type) return false
-
-        return true
+        return origin == other.origin
     }
 
     override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + origin.hashCode()
-        result = 31 * result + (height?.hashCode() ?: 0)
-        result = 31 * result + (type?.hashCode() ?: 0)
-        return result
+        return 31 * super.hashCode() + origin.hashCode()
     }
+
 
 }
 
@@ -83,7 +74,9 @@ fun WorldTile.unknown() = KnownTerrain(
  */
 fun WorldTile.known() =
     unknown()
-        .also { it.reveal() }
+        .apply {
+            reveal()
+        }
 
 /**
  * Creates a [KnownTerrain] from this [WorldTile] that is either [revealed] or not.
