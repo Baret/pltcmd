@@ -82,5 +82,6 @@ private fun assertSameFields(some: KnownTerrain, other: KnownTerrain) {
         height shouldBe other.height
         revealed shouldBe other.revealed
         this shouldBe other
+        hashCode() shouldBe other.hashCode()
     }
 }
