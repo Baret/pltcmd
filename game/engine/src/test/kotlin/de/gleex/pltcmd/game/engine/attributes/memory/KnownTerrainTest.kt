@@ -22,12 +22,12 @@ class KnownTerrainTest: WordSpec({
         val knownByExtension: KnownTerrain = tile.known()
 
         "have null fields when unrevealed" {
-            assertUnknownTerrain(unknown)
-            assertUnknownTerrain(unknownByExtension)
+            unknown.shouldBeUnknownTerrain()
+            unknownByExtension.shouldBeUnknownTerrain()
         }
         "have the correct terrain when revealed" {
-            assertKnownTerrain(known)
-            assertKnownTerrain(knownByExtension)
+            known.shouldBeKnownTerrain()
+            knownByExtension.shouldBeKnownTerrain()
         }
         "equal correctly" {
             val otherTile: WorldTile = WorldTile(coordinate.movedBy(1, 1), Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
@@ -57,8 +57,8 @@ class KnownTerrainTest: WordSpec({
     }
 })
 
-private fun assertKnownTerrain(actual: KnownTerrain) {
-    assertSoftly(actual) {
+private fun KnownTerrain.shouldBeKnownTerrain() {
+    assertSoftly(this) {
         coordinate shouldBe Coordinate.zero
         type shouldBe TerrainType.GRASSLAND
         height shouldBe TerrainHeight.EIGHT
@@ -66,8 +66,8 @@ private fun assertKnownTerrain(actual: KnownTerrain) {
     }
 }
 
-private fun assertUnknownTerrain(actual: KnownTerrain) {
-    assertSoftly(actual) {
+private fun KnownTerrain.shouldBeUnknownTerrain() {
+    assertSoftly(this) {
         coordinate shouldBe Coordinate.zero
         type shouldBe null
         height shouldBe null
