@@ -60,8 +60,7 @@ class KnownTerrainTest: WordSpec({
 private fun KnownTerrain.shouldBeKnownTerrain() {
     assertSoftly(this) {
         coordinate shouldBe Coordinate.zero
-        type shouldBe TerrainType.GRASSLAND
-        height shouldBe TerrainHeight.EIGHT
+        this.it shouldBe WorldTile(Coordinate.zero, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
         revealed shouldBe true
     }
 }
@@ -69,8 +68,7 @@ private fun KnownTerrain.shouldBeKnownTerrain() {
 private fun KnownTerrain.shouldBeUnknownTerrain() {
     assertSoftly(this) {
         coordinate shouldBe Coordinate.zero
-        type shouldBe null
-        height shouldBe null
+        this.it shouldBe null
         revealed shouldBe false
     }
 }
@@ -78,8 +76,7 @@ private fun KnownTerrain.shouldBeUnknownTerrain() {
 private infix fun KnownTerrain.shouldHaveSameFieldsAs(other: KnownTerrain) {
     assertSoftly(this) {
         coordinate shouldBe other.coordinate
-        type shouldBe other.type
-        height shouldBe other.height
+        this.it shouldBe other.it
         revealed shouldBe other.revealed
         this shouldBe other
         hashCode() shouldBe other.hashCode()

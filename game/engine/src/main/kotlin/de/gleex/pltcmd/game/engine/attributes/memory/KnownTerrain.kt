@@ -23,28 +23,8 @@ class KnownTerrain(
      */
     val coordinate: Coordinate = origin.coordinate
 
-    /**
-     * The currently known [TerrainHeight].
-     */
-    val height: TerrainHeight?
-        get() = if (revealed) {
-            origin.terrain.height
-        } else {
-            null
-        }
-
-    /**
-     * The currently know [TerrainType].
-     */
-    val type: TerrainType?
-        get() = if (revealed) {
-            origin.terrain.type
-        } else {
-            null
-        }
-
     override fun toString(): String {
-        return "KnownTerrain(origin=$origin, height=$height, type=$type, revealed=$revealed)"
+        return "KnownTerrain(origin=$origin, revealed=$revealed)"
     }
 
     override fun equals(other: Any?): Boolean {

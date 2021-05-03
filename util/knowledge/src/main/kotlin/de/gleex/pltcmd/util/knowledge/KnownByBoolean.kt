@@ -15,6 +15,16 @@ abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed:
         private set
 
     /**
+     * The actual known thing wrapped in this [KnownByBoolean]. When revealed, it will be [origin], null otherwise.
+     */
+    val it: T?
+        get() = if (revealed) {
+            origin
+        } else {
+            null
+        }
+
+    /**
      * Marks this [KnownByBoolean] as [revealed].
      */
     fun reveal() {
