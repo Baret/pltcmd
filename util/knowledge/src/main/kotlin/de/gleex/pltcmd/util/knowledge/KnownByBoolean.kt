@@ -8,16 +8,15 @@ package de.gleex.pltcmd.util.knowledge
 abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed: Boolean): Known<T, SELF> {
 
     /**
-     * When true, [origin] is the source of information. What happens when [revealed] is false
-     * is up to specific implementations.
+     * When true, [origin] is the source of information.
      */
     var revealed: Boolean = isRevealed
         private set
 
     /**
-     * The actual known thing wrapped in this [KnownByBoolean]. When revealed, it will be [origin], null otherwise.
+     * The actual "knowledge bit" wrapped in this [KnownByBoolean]. When revealed, it will be [origin], null otherwise.
      */
-    val it: T?
+    val bit: T?
         get() = if (revealed) {
             origin
         } else {
