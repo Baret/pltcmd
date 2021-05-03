@@ -33,15 +33,15 @@ class KnownTerrainTest: WordSpec({
             val otherTile: WorldTile = WorldTile(coordinate.movedBy(1, 1), Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
             assertSoftly {
                 unknown shouldNotBe known
-                assertSameFields(known, knownByExtension)
-                assertSameFields(unknown, unknownByExtension)
+                known shouldHaveSameFieldsAs knownByExtension
+                unknown shouldHaveSameFieldsAs unknownByExtension
                 known shouldNotBeSameInstanceAs knownByExtension
                 unknown shouldNotBeSameInstanceAs unknownByExtension
                 // but when revealing unknown terrain...
                 unknown.reveal()
                 unknownByExtension.reveal()
-                assertSameFields(unknown, known)
-                assertSameFields(unknownByExtension, knownByExtension)
+                unknown shouldHaveSameFieldsAs known
+                unknownByExtension shouldHaveSameFieldsAs knownByExtension
                 unknown shouldNotBe otherTile.unknown()
                 unknown shouldNotBe otherTile.known()
             }
@@ -75,8 +75,8 @@ private fun KnownTerrain.shouldBeUnknownTerrain() {
     }
 }
 
-private fun assertSameFields(some: KnownTerrain, other: KnownTerrain) {
-    assertSoftly(some) {
+private infix fun KnownTerrain.shouldHaveSameFieldsAs(other: KnownTerrain) {
+    assertSoftly(this) {
         coordinate shouldBe other.coordinate
         type shouldBe other.type
         height shouldBe other.height
