@@ -145,6 +145,6 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
                     .toVisiblePosition3D()
                     .toCoordinate()
 
-    private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.to3DPosition(0))
+    private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.toPosition3D(0))
 }
 
