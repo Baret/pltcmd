@@ -24,16 +24,16 @@ object LookingAround :
     ) {
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
-        return entity.invokeWhenSeeing {
-            it.updateVision(context)
-            it.rememberTerrain()
-            it.lookForEntities(context)
+        return entity.invokeWhenSeeing { seeing ->
+            seeing.updateVision(context)
+            seeing.lookForEntities(context)
         }
     }
 
     private fun SeeingEntity.updateVision(context: GameContext) {
         if (hasMoved()) {
             visionMutable = context.world.visionAt(currentPosition, visualRange)
+            rememberTerrain()
         }
     }
 
@@ -55,14 +55,12 @@ object LookingAround :
     }
 
     private fun SeeingEntity.rememberTerrain() {
-        if (hasMoved()) {
-            memory
-                .knownWorld
-                // only unknown terrain that is currently visible needs to be revealed
-                .getUnknownIn(tilesInVisibleRange)
-                .filter { vision.at(it).isAny() }
-                .forEach { memory.knownWorld reveal it }
-        }
+        memory
+            .knownWorld
+            // only unknown terrain that is currently visible needs to be revealed
+            .getUnknownIn(tilesInVisibleRange)
+            .filter { vision.at(it).isAny() }
+            .forEach { memory.knownWorld reveal it }
     }
 
     private fun SeeingEntity.hasMoved() = vision.origin != currentPosition
