@@ -61,15 +61,6 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
         }
 
     /**
-     * Another known world is richer than this one when it has a larger revealed area.
-     */
-    override infix fun isRicherThan(other: KnownWorld): Boolean {
-        val myUnrevealedArea = CoordinateArea(unrevealed.toSortedSet())
-        val otherUnrevealedArea = CoordinateArea(other.unrevealed.toSortedSet())
-        return otherUnrevealedArea covers myUnrevealedArea
-    }
-
-    /**
      * Gets all unknown tiles in the given [CoordinateArea].
      *
      * All returned [Coordinate]s are not revealed.

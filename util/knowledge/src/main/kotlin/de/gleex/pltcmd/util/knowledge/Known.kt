@@ -22,10 +22,4 @@ interface Known<T: Any, SELF: Known<T, SELF>> {
      * @return this object with updated information
      */
     infix fun mergeWith(other: SELF): SELF
-
-    /**
-     * @return true when this [Known] has more or other information than [other]. The result may be
-     * used to determine if the two should be merged with [mergeWith]
-     */
-    infix fun isRicherThan(other: SELF): Boolean
 }

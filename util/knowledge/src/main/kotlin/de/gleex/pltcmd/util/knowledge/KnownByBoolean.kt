@@ -47,12 +47,6 @@ data class KnownByBoolean<T : Any, SELF : KnownByBoolean<T, SELF>>(
         return this as SELF
     }
 
-    /**
-     * A [KnownByBoolean] is richer than the other when it is revealed and the other one is not (independent of the [origin]).
-     */
-    override infix fun isRicherThan(other: SELF): Boolean =
-        revealed && !other.revealed
-
 }
 
 /**

@@ -54,23 +54,6 @@ class KnownByBooleanTest : WordSpec({
             unrevealed.revealed shouldBe false
         }
     }
-
-    "isRicherThan" should {
-        "be false for itself" {
-            unrevealed.isRicherThan(unrevealed) shouldBe false
-            revealed.isRicherThan(revealed) shouldBe false
-        }
-        "compare correctly for different revealed states" {
-            unrevealed.isRicherThan(revealed) shouldBe false
-            revealed.isRicherThan(unrevealed) shouldBe true
-        }
-        "be independent of origin" {
-            otherRevealed.isRicherThan(unrevealed) shouldBe true
-            unrevealed.isRicherThan(otherRevealed) shouldBe false
-            otherRevealed.isRicherThan(revealed) shouldBe false
-            revealed.isRicherThan(otherRevealed) shouldBe false
-        }
-    }
 }) {
     override fun isolationMode() = IsolationMode.InstancePerLeaf
 }
