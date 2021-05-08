@@ -19,11 +19,11 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     /**
      * All not yet revealed (aka. unknown) [Coordinate]s.
      */
-    private val unrevealed: MutableList<Coordinate> =
+    private val unrevealed: MutableSet<Coordinate> =
         origin
             .tiles
             .map { it.coordinate }
-            .toMutableList()
+            .toMutableSet()
 
     /**
      * @return the [KnownTerrain] at the given location.
@@ -35,22 +35,16 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     }
 
     /**
-     * @return true if this [Coordinate] is contained in [unrevealed]
+     * @return true if this [Coordinate] is not contained in [unrevealed]
      */
     private fun Coordinate.isRevealed(): Boolean =
-        indexOf(this) < 0
-
-    private fun indexOf(coordinate: Coordinate): Int =
-        unrevealed.binarySearch(coordinate)
+        unrevealed.contains(this).not()
 
     /**
      * Reveals the given [Coordinate].
      */
     infix fun reveal(toReveal: Coordinate) {
-        val index = indexOf(toReveal)
-        if (index >= 0) {
-            unrevealed.removeAt(index)
-        }
+        unrevealed.remove(toReveal)
     }
 
     /**
