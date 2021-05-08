@@ -35,21 +35,23 @@ data class KnownByBoolean<T : Any, SELF : KnownByBoolean<T, SELF>>(
     }
 
     /**
-     * By default merging a revealed [KnownByBoolean] into another one [reveal]s it.
+     * Merging a revealed [KnownByBoolean] into another one with the same [origin] [reveal]s it.
+     *
+     * @return this
      */
     @Suppress("UNCHECKED_CAST")
     override infix fun mergeWith(other: SELF): SELF {
-        if (other.revealed) {
+        if (other.revealed && origin == other.origin) {
             reveal()
         }
         return this as SELF
     }
 
     /**
-     * By default a [KnownByBoolean] is richer than the other when it is revealed and the other one is not.
+     * A [KnownByBoolean] is richer than the other when it is revealed and the other one is not (independent of the [origin]).
      */
     override infix fun isRicherThan(other: SELF): Boolean =
-        !revealed && other.revealed
+        revealed && !other.revealed
 
 }
 
