@@ -12,15 +12,7 @@ class KnownByBooleanTest : WordSpec({
     val revealed = KnownByBoolean<String, KnownByBoolean<String, *>>(knownBit, true)
     val otherRevealed = KnownByBoolean<String, KnownByBoolean<String, *>>("other", true)
 
-    beforeTest {
-    }
-
     "bit" should {
-        // verify test values to have different bits (required for further tests)
-        revealed.bit shouldNotBe null
-        otherRevealed.bit shouldNotBe null
-        revealed.bit shouldNotBe otherRevealed.bit
-
         "be null if not revealed" {
             unrevealed.bit shouldBe null
         }
@@ -54,6 +46,7 @@ class KnownByBooleanTest : WordSpec({
         }
         "stay unrevealed for different origin" {
             unrevealed.revealed shouldBe false
+            revealed.bit shouldNotBe otherRevealed.bit
 
             val merged = unrevealed.mergeWith(otherRevealed)
 
@@ -63,7 +56,7 @@ class KnownByBooleanTest : WordSpec({
     }
 
     "isRicherThan" should {
-        "be false for same Known" {
+        "be false for itself" {
             unrevealed.isRicherThan(unrevealed) shouldBe false
             revealed.isRicherThan(revealed) shouldBe false
         }
