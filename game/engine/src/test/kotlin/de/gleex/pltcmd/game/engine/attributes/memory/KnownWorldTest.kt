@@ -9,6 +9,7 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight.NINE
 import de.gleex.pltcmd.model.world.terrain.TerrainType.MOUNTAIN
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
+import de.gleex.pltcmd.util.knowledge.KnownByBoolean
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.forEachAsClue
 import io.kotest.core.spec.IsolationMode
@@ -206,7 +207,7 @@ class KnownWorldTest : WordSpec() {
             originalWorld
                 .asWorldArea()
                 .forEachAsClue { coordinate ->
-                    val expected = KnownTerrain(WorldTile(coordinate, defaultTerrain))
+                    val expected = KnownByBoolean<WorldTile, KnownByBoolean<WorldTile, *>>(WorldTile(coordinate, defaultTerrain), false)
                     if (coordinate in revealedCoordinates) {
                         expected.reveal()
                     }

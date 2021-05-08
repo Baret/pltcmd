@@ -2,70 +2,23 @@ package de.gleex.pltcmd.game.engine.attributes.memory
 
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.terrain.TerrainHeight
-import de.gleex.pltcmd.model.world.terrain.TerrainType
+import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.knowledge.KnownByBoolean
 
 /**
  * Represents knowledge about a specific [WorldTile], or more exact: The terrain at its [Coordinate].
  *
  * Known terrain is either revealed or not. By default it is unrevealed (aka. unknown). [reveal] changes the
- * status. Unknown terrain has null [TerrainHeight] and [TerrainType].
+ * status. Unknown terrain has null [Terrain].
  *
  * **Hint:** Use [WorldTile.unknown] and [WorldTile.known] extension functions to create instances.
  */
-class KnownTerrain(
-    override val origin: WorldTile
-) : KnownByBoolean<WorldTile, KnownTerrain>(isRevealed = false) {
+typealias KnownTerrain = KnownByBoolean<WorldTile, *>
 
-    /**
-     * The [Coordinate] of this [KnownTerrain]. It is always "the truth".
-     */
-    val coordinate: Coordinate = origin.coordinate
+/** The currently known [Terrain]. `null` if not revealed. */
+val KnownTerrain.terrain: Terrain?
+    get() = bit?.terrain
 
-    override fun toString(): String {
-        return "KnownTerrain(origin=$origin, revealed=$revealed)"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is KnownTerrain) return false
-        if (!super.equals(other)) return false
-
-        return origin == other.origin
-    }
-
-    override fun hashCode(): Int {
-        return 31 * super.hashCode() + origin.hashCode()
-    }
-
-
-}
-
-/**
- * Creates a [KnownTerrain] from this [WorldTile] that is not revealed.
- */
-fun WorldTile.unknown() = KnownTerrain(
-    origin = this
-)
-
-/**
- * Creates an [KnownTerrain] from this [WorldTile] that is already revealed.
- */
-fun WorldTile.known() =
-    unknown()
-        .apply {
-            reveal()
-        }
-
-/**
- * Creates a [KnownTerrain] from this [WorldTile] that is either [revealed] or not.
- *
- * @param revealed when true, a [known] terrain will be created, [unknown] otherwise.
- */
-fun WorldTile.toKnownTerrain(revealed: Boolean) =
-    if (revealed) {
-        this.known()
-    } else {
-        this.unknown()
-    }
+/** The [Coordinate] of this [KnownTerrain]. It is always "the truth" independent of the revealed state. */
+val KnownTerrain.coordinate: Coordinate
+    get() = origin.coordinate

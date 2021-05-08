@@ -1,17 +1,21 @@
 package de.gleex.pltcmd.util.knowledge
 
 /**
- * Represents a [Known] that is either fully [revealed] or not.
+ * Represents a [Known] bit that is either fully [revealed] or not.
  *
+ * @param origin the knowledge bit that may be known
  * @param [isRevealed] sets the initial state.
  */
-abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed: Boolean): Known<T, SELF> {
+data class KnownByBoolean<T : Any, SELF : KnownByBoolean<T, SELF>>(
+    override val origin: T,
+    private var isRevealed: Boolean
+) : Known<T, SELF> {
 
     /**
      * When true, [origin] is the source of information.
      */
-    var revealed: Boolean = isRevealed
-        private set
+    val revealed: Boolean
+        get() = isRevealed
 
     /**
      * The actual "knowledge bit" wrapped in this [KnownByBoolean]. When revealed, it will be [origin], null otherwise.
@@ -27,7 +31,7 @@ abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed:
      * Marks this [KnownByBoolean] as [revealed].
      */
     fun reveal() {
-        revealed = true
+        isRevealed = true
     }
 
     /**
@@ -47,15 +51,33 @@ abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed:
     override infix fun isRicherThan(other: SELF): Boolean =
         !revealed && other.revealed
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is KnownByBoolean<*, *>) return false
-
-        return revealed == other.revealed
-    }
-
-    override fun hashCode(): Int {
-        return revealed.hashCode()
-    }
-
 }
+
+/**
+ * Creates a [KnownByBoolean] from this [Any] that is not revealed.
+ */
+fun <T : Any> T.unknown() = KnownByBoolean<T, KnownByBoolean<T, *>>(
+    origin = this,
+    isRevealed = false
+)
+
+/**
+ * Creates a [KnownByBoolean] from this [Any] that is already revealed.
+ */
+fun <T : Any> T.known() =
+    unknown()
+        .apply {
+            reveal()
+        }
+
+/**
+ * Creates a [KnownByBoolean] from this [Any] that is either [revealed] or not.
+ *
+ * @param revealed when `true`, a [known] terrain will be created, [unknown] otherwise.
+ */
+fun <T : Any> T.toKnownByBoolean(revealed: Boolean) =
+    if (revealed) {
+        this.known()
+    } else {
+        this.unknown()
+    }
