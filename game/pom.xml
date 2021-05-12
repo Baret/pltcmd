@@ -113,6 +113,19 @@
                 <artifactId>events</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.util</groupId>
+                <artifactId>knowledge</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- test dependencies -->
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>world</artifactId>
+                <type>test-jar</type>
+                <scope>test</scope>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

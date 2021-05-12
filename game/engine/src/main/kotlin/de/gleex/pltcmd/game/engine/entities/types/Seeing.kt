@@ -15,7 +15,7 @@ import de.gleex.pltcmd.model.world.WorldArea
  */
 
 /** Type marker for entities that are [Positionable] and can "see" (scan) their surroundings. */
-interface Seeing : Positionable
+interface Seeing : Positionable, Remembering
 /**
  * An entity of type [Seeing]
  */
@@ -24,6 +24,9 @@ typealias SeeingEntity = GameEntity<Seeing>
 private val SeeingEntity.visionAttribute: VisionAttribute
     get() = getAttribute(VisionAttribute::class)
 
+/**
+ * Provides a setter for this entity's [Vision]. Use [vision] when you do not need mutating access.
+ */
 internal var SeeingEntity.visionMutable: Vision
     get() = visionAttribute.vision
     set(value) {
@@ -37,9 +40,15 @@ internal var SeeingEntity.visionMutable: Vision
 val SeeingEntity.vision: Vision
     get() = visionMutable
 
-internal val SeeingEntity.visibleTiles: WorldArea
+/**
+ * The complete area of this entity's [Vision].
+ */
+internal val SeeingEntity.tilesInVisibleRange: WorldArea
     get() = vision.area
 
+/**
+ * The [VisionPower] of this [SeeingEntity].
+ */
 internal val SeeingEntity.visualRange: VisionPower
     get() = visionAttribute.visualRange
 
