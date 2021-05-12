@@ -38,10 +38,6 @@
             <artifactId>world</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.gleex.pltcmd.util</groupId>
-            <artifactId>collections</artifactId>
-        </dependency>
-        <dependency>
             <groupId>de.gleex.pltcmd.model.signals</groupId>
             <artifactId>signals-all</artifactId>
             <type>pom</type>

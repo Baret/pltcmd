@@ -19,7 +19,6 @@
         <module>events</module>
         <module>geometry</module>
         <module>namegeneration</module>
-        <module>collections</module>
     </modules>
 
 </project>

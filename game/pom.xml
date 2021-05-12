@@ -113,11 +113,6 @@
                 <artifactId>events</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>de.gleex.pltcmd.util</groupId>
-                <artifactId>collections</artifactId>
-                <version>${project.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
