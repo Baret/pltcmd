@@ -1,29 +1,21 @@
 package de.gleex.pltcmd.util.knowledge
 
-import org.hexworks.cobalt.databinding.api.extension.toProperty
-import org.hexworks.cobalt.databinding.api.property.Property
-import org.hexworks.cobalt.databinding.api.value.ObservableValue
-
 /**
- * Represents a [Known] that is either fully [revealed] or not.
+ * Represents a [Known] bit that is either fully [revealed] or not.
  *
+ * @param origin the knowledge bit that may be known
  * @param [isRevealed] sets the initial state.
  */
-abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed: Boolean): Known<T, SELF> {
-
-    private val _revealed: Property<Boolean> = isRevealed.toProperty()
+data class KnownByBoolean<T : Any, SELF : KnownByBoolean<T, SELF>>(
+    override val origin: T,
+    private var isRevealed: Boolean
+) : Known<T, SELF> {
 
     /**
      * When true, [origin] is the source of information.
      */
     val revealed: Boolean
-        get() = _revealed.value
-
-    /**
-     * The [revealed] state as [ObservableValue].
-     */
-    val revealedObservable: ObservableValue<Boolean>
-        get() = _revealed
+        get() = isRevealed
 
     /**
      * The actual "knowledge bit" wrapped in this [KnownByBoolean]. When revealed, it will be [origin], null otherwise.
@@ -39,35 +31,49 @@ abstract class KnownByBoolean<T: Any, SELF: KnownByBoolean<T, SELF>>(isRevealed:
      * Marks this [KnownByBoolean] as [revealed].
      */
     fun reveal() {
-        _revealed.value = true
+        isRevealed = true
     }
 
     /**
-     * By default merging a revealed [KnownByBoolean] into another one [reveal]s it.
+     * Merging a revealed [KnownByBoolean] into another one with the same [origin] [reveal]s it.
+     *
+     * @return this
      */
     @Suppress("UNCHECKED_CAST")
     override infix fun mergeWith(other: SELF): SELF {
-        if (other.revealed) {
+        if (other.revealed && origin == other.origin) {
             reveal()
         }
         return this as SELF
     }
 
-    /**
-     * By default a [KnownByBoolean] is richer than the other when it is revealed and the other one is not.
-     */
-    override infix fun isRicherThan(other: SELF): Boolean =
-        !revealed && other.revealed
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is KnownByBoolean<*, *>) return false
-
-        return revealed == other.revealed
-    }
-
-    override fun hashCode(): Int {
-        return revealed.hashCode()
-    }
-
 }
+
+/**
+ * Creates a [KnownByBoolean] from this [Any] that is not revealed.
+ */
+fun <T : Any> T.unknown() = KnownByBoolean<T, KnownByBoolean<T, *>>(
+    origin = this,
+    isRevealed = false
+)
+
+/**
+ * Creates a [KnownByBoolean] from this [Any] that is already revealed.
+ */
+fun <T : Any> T.known() =
+    unknown()
+        .apply {
+            reveal()
+        }
+
+/**
+ * Creates a [KnownByBoolean] from this [Any] that is either [revealed] or not.
+ *
+ * @param revealed when `true`, a [known] terrain will be created, [unknown] otherwise.
+ */
+fun <T : Any> T.toKnownByBoolean(revealed: Boolean) =
+    if (revealed) {
+        this.known()
+    } else {
+        this.unknown()
+    }

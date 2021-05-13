@@ -52,7 +52,7 @@ object EntityFactory {
                 ContactsAttribute(),
                 CommandersIntent(),
                 Memory(map)
-                    .also { it.knownWorld reveal map.sectorAt(position) }
+                    .apply { knownWorld reveal map.sectorAt(position) }
             )
             behaviors(
                 Communicating,

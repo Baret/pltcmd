@@ -24,9 +24,11 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     /**
      * All [MainCoordinate]s contained in this area.
      */
-    open val mainCoordinates: Set<MainCoordinate> = coordinates
+    open val mainCoordinates: Set<MainCoordinate> by lazy {
+        coordinates
             .map { it.toMainCoordinate() }
             .toSortedSet()
+    }
 
     /**
      * All sector origins contained in this area.
@@ -39,8 +41,7 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     /**
      * Checks if this area contains the given [Coordinate].
      */
-    open operator fun contains(coordinate: Coordinate) =
-            contains(coordinate.toMainCoordinate()) && coordinates.contains(coordinate)
+    open operator fun contains(coordinate: Coordinate) = coordinates.contains(coordinate)
 
     /**
      * Checks if this area contains the given [MainCoordinate].

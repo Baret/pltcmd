@@ -5,6 +5,9 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
+import de.gleex.pltcmd.util.knowledge.KnownByBoolean
+import de.gleex.pltcmd.util.knowledge.known
+import de.gleex.pltcmd.util.knowledge.unknown
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
@@ -14,11 +17,11 @@ import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 class KnownTerrainTest: WordSpec({
     "Known terrain" should {
         val coordinate = Coordinate.zero
-        val tile: WorldTile = WorldTile(coordinate, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
-        val unknown: KnownTerrain = KnownTerrain(tile)
-        val unknownByExtension: KnownTerrain = tile.unknown()
+        val tile = WorldTile(coordinate, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
+        val unknown = KnownByBoolean<WorldTile, KnownByBoolean<WorldTile, *>>(tile, false)
+        val unknownByExtension = tile.unknown()
 
-        val known: KnownTerrain = KnownTerrain(tile).also { it.reveal() }
+        val known = KnownByBoolean<WorldTile, KnownByBoolean<WorldTile, *>>(tile, true)
         val knownByExtension: KnownTerrain = tile.known()
 
         "have null fields when unrevealed" {
@@ -30,21 +33,21 @@ class KnownTerrainTest: WordSpec({
             knownByExtension.shouldBeKnownTerrain()
         }
         "equal correctly" {
-            val otherTile: WorldTile = WorldTile(coordinate.movedBy(1, 1), Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
-            assertSoftly {
-                unknown shouldNotBe known
-                known shouldHaveSameFieldsAs knownByExtension
-                unknown shouldHaveSameFieldsAs unknownByExtension
-                known shouldNotBeSameInstanceAs knownByExtension
-                unknown shouldNotBeSameInstanceAs unknownByExtension
-                // but when revealing unknown terrain...
-                unknown.reveal()
-                unknownByExtension.reveal()
-                unknown shouldHaveSameFieldsAs known
-                unknownByExtension shouldHaveSameFieldsAs knownByExtension
-                unknown shouldNotBe otherTile.unknown()
-                unknown shouldNotBe otherTile.known()
-            }
+            val otherTile = WorldTile(coordinate.movedBy(1, 1), Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
+            otherTile shouldNotBe tile
+
+            unknown shouldNotBe known
+            known shouldHaveSameFieldsAs knownByExtension
+            unknown shouldHaveSameFieldsAs unknownByExtension
+            known shouldNotBeSameInstanceAs knownByExtension
+            unknown shouldNotBeSameInstanceAs unknownByExtension
+            // but when revealing unknown terrain...
+            unknown.reveal()
+            unknownByExtension.reveal()
+            unknown shouldHaveSameFieldsAs known
+            unknownByExtension shouldHaveSameFieldsAs knownByExtension
+            unknown shouldNotBe otherTile.unknown()
+            unknown shouldNotBe otherTile.known()
         }
         "change hashcode when being revealed" {
             val terrain = tile.unknown()
