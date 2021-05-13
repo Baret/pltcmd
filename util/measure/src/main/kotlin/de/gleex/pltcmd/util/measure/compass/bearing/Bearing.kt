@@ -11,5 +11,11 @@ data class Bearing internal constructor(val value: Int) {
     }
 }
 
-fun Int.toBearing(): Bearing = Bearing(this % 360)
+/**
+ * Turns this value into a [Bearing] by converting it into the range of 0 to 359.
+ *
+ * This value is interpreted as "number of degrees started from 0" so 360 will result in Bearing(0),
+ * -90 will result in 250, 365 will result in 5 and so on.
+ */
+fun Int.toBearing(): Bearing = Bearing((this % 360 + 360) % 360)
 

@@ -28,12 +28,18 @@ class BearingTest: WordSpec({
     "Special values" should {
         "result in a valid bearing when using the extension function" {
             forAll(
-                row(-1, 359),
                 row(0, 0),
+                row(1, 1),
                 row(360, 0),
-                row(-360, 0),
                 row(720, 0),
-                row(-90, 250)
+                row(365, 5),
+                row(1555, 115),
+                row(-1, 359),
+                row(-360, 0),
+                row(-90, 270),
+                row(-1555, 245),
+                row(-1440, 0),
+                row(-400, 320)
             ) { actual, expected ->
                 actual.toBearing() shouldBe Bearing(expected)
             }
