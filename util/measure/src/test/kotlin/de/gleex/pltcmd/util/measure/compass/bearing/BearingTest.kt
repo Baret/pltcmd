@@ -2,6 +2,8 @@ package de.gleex.pltcmd.util.measure.compass.bearing
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 
 class BearingTest: WordSpec({
@@ -19,6 +21,21 @@ class BearingTest: WordSpec({
                 shouldThrow<IllegalArgumentException> {
                     Bearing(i)
                 }
+            }
+        }
+    }
+
+    "Special values" should {
+        "result in a valid bearing when using the extension function" {
+            forAll(
+                row(-1, 359),
+                row(0, 0),
+                row(360, 0),
+                row(-360, 0),
+                row(720, 0),
+                row(-90, 250)
+            ) { actual, expected ->
+                actual.toBearing() shouldBe Bearing(expected)
             }
         }
     }
