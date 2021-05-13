@@ -11,6 +11,7 @@ data class Bearing internal constructor(
      */
     val angle: Int
 ) {
+
     init {
         require(angle in 0..359) {
             "A bearing must have an angle between 0 and 359, got $angle"
@@ -26,6 +27,8 @@ data class Bearing internal constructor(
      * True if the angle of this bearing is exactly that of a [CardinalPoint]
      */
     val isDue: Boolean = angle == roundedCardinal.angle
+
+    fun asWord() = "${if(isDue) "due " else ""}${roundedCardinal.asWord()}"
 }
 
 /**
