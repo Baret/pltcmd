@@ -77,7 +77,13 @@
                 <groupId>de.gleex.pltcmd.util</groupId>
                 <artifactId>events</artifactId>
                 <version>${project.version}</version>
-            </dependency><!-- tests -->
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.util</groupId>
+                <artifactId>measure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- tests -->
             <dependency>
                 <groupId>de.gleex.pltcmd.util</groupId>
                 <artifactId>tests</artifactId>

@@ -1,10 +1,13 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import de.gleex.pltcmd.util.measure.compass.points.CardinalPoint.*
+import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.collections.containDuplicates
+import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.comparables.beGreaterThan
@@ -182,6 +185,103 @@ class CoordinateTest : WordSpec({
                 Coordinate.fromString(someString)
                         .shouldBeNull()
             }
+        }
+    }
+
+    "The bearing between coordinates" should {
+        "be due for 45° angles" {
+            for (delta in 1..100) {
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.withRelativeNorthing(delta)
+                    ) {
+                        angle shouldBe 0
+                        roundedCardinal shouldBe N
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.movedBy(delta, delta)
+                    ) {
+                        angle shouldBe 45
+                        roundedCardinal shouldBe NE
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.withRelativeEasting(delta)
+                    ) {
+                        angle shouldBe 90
+                        roundedCardinal shouldBe E
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.movedBy(delta, -delta)
+                    ) {
+                        angle shouldBe 135
+                        roundedCardinal shouldBe SE
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.withRelativeNorthing(-delta)
+                    ) {
+                        angle shouldBe 180
+                        roundedCardinal shouldBe S
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.movedBy(-delta, -delta)
+                    ) {
+                        angle shouldBe 225
+                        roundedCardinal shouldBe SW
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.withRelativeEasting(-delta)
+                    ) {
+                        angle shouldBe 270
+                        roundedCardinal shouldBe W
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.movedBy(-delta, delta)
+                    ) {
+                        angle shouldBe 315
+                        roundedCardinal shouldBe NW
+                        isDue shouldBe true
+                    }
+            }
+        }
+
+        "be valid for all points on a circle" {
+            CoordinateCircle(testCoordinate, 20)
+                .forEach { circleCoordinate ->
+                    "Bearing from $testCoordinate to $circleCoordinate".asClue {
+                        val roundedCardinal = (testCoordinate bearingTo circleCoordinate).roundedCardinal
+                        when {
+                            circleCoordinate == testCoordinate                                -> {
+                                roundedCardinal shouldBe N
+                            }
+                            circleCoordinate.eastingFromLeft > testCoordinate.eastingFromLeft -> {
+                                when {
+                                    circleCoordinate.northingFromBottom > testCoordinate.northingFromBottom -> {
+                                        roundedCardinal shouldBeIn listOf(N, NE, E)
+                                    }
+                                    else                                                                    -> {
+                                        roundedCardinal shouldBeIn listOf(E, SE, S)
+                                    }
+                                }
+                            }
+                            else                                                              -> {
+                                when {
+                                    circleCoordinate.northingFromBottom > testCoordinate.northingFromBottom -> {
+                                        roundedCardinal shouldBeIn listOf(N, NW, W)
+                                    }
+                                    else                                                                    -> {
+                                        roundedCardinal shouldBeIn listOf(W, SW, S)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
         }
     }
 })

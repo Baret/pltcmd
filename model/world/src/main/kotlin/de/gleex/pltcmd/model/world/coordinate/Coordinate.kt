@@ -1,9 +1,9 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import de.gleex.pltcmd.util.measure.compass.bearing.Bearing
+import de.gleex.pltcmd.util.measure.compass.bearing.toBearing
 import java.util.*
-import kotlin.math.absoluteValue
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 /**
  * A location on the map. The map is a rectangle and each coordinate describes the distance (in hundreds of
@@ -68,6 +68,20 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
         val northingDistanceSquared = (northingFromBottom - other.northingFromBottom).absoluteValue.toDouble()
                 .pow(2.0)
         return sqrt(eastingDistanceSquared + northingDistanceSquared)
+    }
+
+    /**
+     * Calculates the [Bearing] from this [Coordinate] to [other].
+     */
+    infix fun bearingTo(other: Coordinate): Bearing {
+        val y = (other.northingFromBottom - northingFromBottom).toDouble()
+        val x = (other.eastingFromLeft - eastingFromLeft).toDouble()
+        // calling atan2 with x, y instead of y, x might seem like an error. But this works :P
+        val atan2 = atan2(x, y)
+        return Math
+            .toDegrees(atan2)
+            .roundToInt()
+            .toBearing()
     }
 
     /**
