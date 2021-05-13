@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.util.measure.bearing
+package de.gleex.pltcmd.util.measure.compass.bearing
 
 /**
  * A bearing represents an absolute bearing between 0 and 359 degrees.

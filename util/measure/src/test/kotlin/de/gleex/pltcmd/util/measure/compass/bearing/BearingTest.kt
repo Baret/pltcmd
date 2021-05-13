@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.util.measure.bearing
+package de.gleex.pltcmd.util.measure.compass.bearing
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
