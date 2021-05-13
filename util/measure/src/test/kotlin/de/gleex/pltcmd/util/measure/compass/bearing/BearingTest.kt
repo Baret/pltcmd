@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.util.measure.compass.bearing
 
+import io.kotest.assertions.forEachAsClue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
@@ -10,7 +11,7 @@ class BearingTest: WordSpec({
     "A valid bearing" should {
         "have a value between 0 and 359" {
             for(i in 0..359) {
-                Bearing(i).value shouldBe i
+                Bearing(i).angle shouldBe i
             }
             for (i in -400..-1) {
                 shouldThrow<IllegalArgumentException> {
@@ -40,8 +41,21 @@ class BearingTest: WordSpec({
                 row(-1555, 245),
                 row(-1440, 0),
                 row(-400, 320)
-            ) { actual, expected ->
-                actual.toBearing() shouldBe Bearing(expected)
+            ) { toConvert, expectedAngle ->
+                toConvert.toBearing() shouldBe Bearing(expectedAngle)
+            }
+        }
+    }
+
+    "A bearing" should {
+        "be due on exact cardinals" {
+            (0..359).forEachAsClue { angle ->
+                val actualBearing = angle.toBearing()
+                if(angle % 45 == 0) {
+                    actualBearing.isDue shouldBe true
+                } else {
+                    actualBearing.isDue shouldBe false
+                }
             }
         }
     }
