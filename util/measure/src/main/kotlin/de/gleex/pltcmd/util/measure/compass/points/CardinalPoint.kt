@@ -37,6 +37,17 @@ enum class CardinalPoint(
     /** Northwest */
     NW(315);
 
+    fun asWord(): String = when(this) {
+        N  -> n
+        NE -> "$n$e"
+        E  -> e
+        SE -> "$s$e"
+        S  -> s
+        SW -> "$s$w"
+        W  -> w
+        NW -> "$n$w"
+    }
+
     companion object {
         private val angleRangeMapping: Map<CardinalPoint, IntRange> =
             values()
@@ -53,6 +64,11 @@ enum class CardinalPoint(
                 .keys
                 .firstOrNull()
                 ?: N
+
+        private const val n = "north"
+        private const val e = "east"
+        private const val s = "south"
+        private const val w = "west"
     }
 }
 
