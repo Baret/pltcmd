@@ -9,6 +9,7 @@ import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.util.knowledge.Knowledge
+import de.gleex.pltcmd.util.knowledge.KnowledgeGrade
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -41,10 +42,10 @@ class ContactsKnowledgeTest : WordSpec({
         every { reportedFaction } returns faction2.toProperty()
         every { element } returns Elements.rifleSquad.new()
     }
-    val infantrySquad = Contact(squad, true)
-    val partialInfantry = Contact(squad, false)
-    val faction2Squad = Contact(squad2, true)
-    val infantryPlatoon = Contact(platoon, true)
+    val infantrySquad = Contact(squad, KnowledgeGrade.FULL)
+    val partialInfantry = Contact(squad, KnowledgeGrade.NONE)
+    val faction2Squad = Contact(squad2, KnowledgeGrade.FULL)
+    val infantryPlatoon = Contact(platoon, KnowledgeGrade.FULL)
 
 // TODO remember where the element was spotted
 //    val pos1 = tileArea(123, 456)

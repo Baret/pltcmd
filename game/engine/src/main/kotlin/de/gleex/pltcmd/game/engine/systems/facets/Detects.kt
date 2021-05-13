@@ -11,6 +11,7 @@ import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.signals.vision.visibility
+import de.gleex.pltcmd.util.knowledge.KnowledgeGrade
 import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
@@ -82,10 +83,12 @@ fun ElementEntity.toContact(visibility: Visibility, context: GameContext): Conta
     // TODO remember where the contact was spotted
 //    val location = CoordinateArea(currentPosition)
 //    val area = context.world.areaOf(location)
-    val contact = Contact(this, false)
-    // details of the element are only available if it is clearly visible
-    if (visibility == Visibility.GOOD) {
-        contact.reveal()
-    }
-    return contact
+    return Contact(
+        origin = this,
+        when (visibility) {
+            Visibility.NONE -> KnowledgeGrade.NONE
+            Visibility.POOR -> KnowledgeGrade.MEDIUM
+            Visibility.GOOD -> KnowledgeGrade.FULL
+        }
+    )
 }

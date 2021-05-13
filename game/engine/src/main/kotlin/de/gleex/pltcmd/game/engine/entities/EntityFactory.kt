@@ -49,6 +49,7 @@ object EntityFactory {
                 PositionAttribute(positionProperty),
                 RadioAttribute(RadioCommunicator(callSign, RadioSender(positionProperty, RadioPower.STATIONARY, map))),
                 VisionAttribute(map.visionAt(position, VisionPower(40.0))),
+                SightedAttribute(),
                 CommandersIntent(),
                 Memory(map)
                     .apply { knownWorld reveal map.sectorAt(position) }
@@ -86,6 +87,7 @@ object EntityFactory {
             FactionAttribute(faction),
             PositionAttribute(initialPosition),
             visionAttribute,
+            SightedAttribute(),
             // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
             RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
             ShootersAttribute(element),

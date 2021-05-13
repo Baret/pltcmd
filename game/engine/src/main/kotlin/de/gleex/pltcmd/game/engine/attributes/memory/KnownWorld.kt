@@ -6,7 +6,8 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.util.knowledge.Known
-import de.gleex.pltcmd.util.knowledge.toKnownByBoolean
+import de.gleex.pltcmd.util.knowledge.fullyKnown
+import de.gleex.pltcmd.util.knowledge.nothingKnown
 
 /**
  * Knowledge about the [WorldArea] defining the whole [WorldMap]. It is initialized as completely unrevealed
@@ -31,7 +32,10 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     operator fun get(coordinate: Coordinate): KnownTerrain {
         val originalTerrain = origin[coordinate]
             .orElseGet { WorldTile(coordinate.eastingFromLeft, coordinate.northingFromBottom) }
-        return originalTerrain.toKnownByBoolean(coordinate.isRevealed())
+        return when {
+            coordinate.isRevealed() -> originalTerrain.fullyKnown()
+            else                    -> originalTerrain.nothingKnown()
+        }
     }
 
     /**
