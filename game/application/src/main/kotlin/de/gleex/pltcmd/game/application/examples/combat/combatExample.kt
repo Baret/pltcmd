@@ -59,6 +59,6 @@ class CombatMain : Main() {
     fun addHostile(position: Coordinate, map: WorldMap, faction: Faction, element: CommandingElement = Elements.rifleSquad.new()): ElementEntity {
         val elementPosition = position.toProperty()
         val radioSender = RadioSender(elementPosition, RadioPower(), map)
-        return element.toEntity(elementPosition, faction, radioSender)
+        return element.toEntity(elementPosition, faction, radioSender, map)
     }
 }

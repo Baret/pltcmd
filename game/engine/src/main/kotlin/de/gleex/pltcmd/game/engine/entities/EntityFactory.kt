@@ -3,7 +3,7 @@ package de.gleex.pltcmd.game.engine.entities
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.*
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
-import de.gleex.pltcmd.game.engine.attributes.knowledge.ContactsAttribute
+import de.gleex.pltcmd.game.engine.attributes.memory.Memory
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
@@ -23,7 +23,6 @@ import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.radio.communication.RadioCommunicator
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.signals.vision.VisionPower
-import de.gleex.pltcmd.model.signals.vision.builder.initialVision
 import de.gleex.pltcmd.model.signals.vision.builder.visionAt
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -50,9 +49,10 @@ object EntityFactory {
                 PositionAttribute(positionProperty),
                 RadioAttribute(RadioCommunicator(callSign, RadioSender(positionProperty, RadioPower.STATIONARY, map))),
                 VisionAttribute(map.visionAt(position, VisionPower(40.0))),
-                SightedAttribute(),
                 ContactsAttribute(),
-                CommandersIntent()
+                CommandersIntent(),
+                Memory(map)
+                    .apply { knownWorld reveal map.sectorAt(position) }
             )
             behaviors(
                 Communicating,
@@ -72,24 +72,27 @@ object EntityFactory {
         element: CommandingElement,
         initialPosition: Property<Coordinate>,
         faction: Faction,
-        radioSender: RadioSender
+        radioSender: RadioSender,
+        world: WorldMap
     ): ElementEntity {
         val visualRange = if (element.kind == ElementKind.Aerial) {
             VisionPower(25.0)
         } else {
             VisionPower(10.0)
         }
+        val visionAttribute = VisionAttribute(world.visionAt(initialPosition.value, visualRange))
         val attributes: MutableList<Attribute> = mutableListOf(
             CommandersIntent(),
             ElementAttribute(element),
             FactionAttribute(faction),
             PositionAttribute(initialPosition),
-            VisionAttribute(initialVision(visualRange)),
-            SightedAttribute(),
+            visionAttribute,
             ContactsAttribute(),
             // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
             RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
             ShootersAttribute(element),
+            Memory(world)
+                .apply { knownWorld reveal visionAttribute.vision.area },
 
             MovementPath(),
             MovementBaseSpeed(element),
@@ -134,9 +137,10 @@ object EntityFactory {
         element: CommandingElement,
         initialPosition: Property<Coordinate>,
         faction: Faction,
-        radioSender: RadioSender
+        radioSender: RadioSender,
+        world: WorldMap
     ): ElementEntity =
-        newElement(element, initialPosition, faction, radioSender)
+        newElement(element, initialPosition, faction, radioSender, world)
             .apply { addIfMissing(Wandering) }
 
 }
@@ -147,9 +151,10 @@ object EntityFactory {
 fun CommandingElement.toEntity(
     elementPosition: Property<Coordinate>,
     faction: Faction,
-    radioSender: RadioSender
+    radioSender: RadioSender,
+    world: WorldMap
 ): ElementEntity {
-    return EntityFactory.newElement(this, elementPosition, faction, radioSender)
+    return EntityFactory.newElement(this, elementPosition, faction, radioSender, world)
 }
 
 /**

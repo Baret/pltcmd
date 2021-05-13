@@ -112,7 +112,7 @@ class CoordinateTest : WordSpec({
     }
 
     "The string representation of a coordinate in the form of (xxx|yyy)" should {
-        val regex = Coordinate.REGEX_STRING
+        val regex = Coordinate.REGEX_STRING.pattern
         "always have a length of at least 9 and match '$regex'" {
             var checkedCoordinates = 0
             checkAll<Int, Int> { x, y ->

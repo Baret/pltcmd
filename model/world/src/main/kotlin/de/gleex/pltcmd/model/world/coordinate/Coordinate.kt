@@ -12,7 +12,7 @@ import kotlin.math.sqrt
  *
  * It is like the numerical location of the Military Grid Reference System (see https://en.wikipedia.org/wiki/Military_Grid_Reference_System#Numerical_location).
  */
-data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : Comparable<Coordinate> {
+data class Coordinate private constructor(val eastingFromLeft: Int, val northingFromBottom: Int) : Comparable<Coordinate> {
     /**
      * Converts this coordinate to a [MainCoordinate]
      */
@@ -155,7 +155,7 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
         /**
          * The string representation of a coordinate should match this regex.
          */
-        const val REGEX_STRING = "\\((-?\\d{3,})\\$SEPARATOR(-?\\d{3,})\\)"
+        val REGEX_STRING = Regex("\\((-?\\d{3,})\\$SEPARATOR(-?\\d{3,})\\)")
 
         private const val FORMAT_POSITIVE = "%03d"
         private const val FORMAT_NEGATIVE = "%04d"
@@ -174,7 +174,7 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
          *  Parses the given string and tries to extract a Coordinate. The string needs to be in the format (123|-456)
          */
         fun fromString(coordinateString: String): Coordinate? {
-            Regex(REGEX_STRING).
+            REGEX_STRING.
                 find(coordinateString.trim())?.
                 let { result ->
                     val (easting, northing) = result.groupValues.subList(1, 3).map(String::toIntOrNull)
@@ -183,6 +183,15 @@ data class Coordinate(val eastingFromLeft: Int, val northingFromBottom: Int) : C
                     }
                 }
             return null
+        }
+
+        private val created: MutableMap<Long, Coordinate> = mutableMapOf()
+        /**
+         * Provides an [Coordinate] object with the given values.
+         **/
+        operator fun invoke(eastingFromLeft: Int, northingFromBottom: Int): Coordinate {
+            val key = (eastingFromLeft.toLong() shl Int.SIZE_BITS) + northingFromBottom.toLong()
+            return created.computeIfAbsent(key) { Coordinate(eastingFromLeft, northingFromBottom) }
         }
     }
 

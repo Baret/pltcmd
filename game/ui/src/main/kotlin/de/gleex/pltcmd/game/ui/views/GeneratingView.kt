@@ -124,4 +124,9 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
         confirmCallback = callback
     }
 
+    override fun onUndock() {
+        // TODO after updating Zircon version which fixed https://github.com/Hexworks/zircon/issues/376
+        // incompleteWorld.dispose()
+        super.onUndock()
+    }
 }
