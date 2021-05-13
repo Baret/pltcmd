@@ -3,8 +3,7 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.FactionAttribute
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
-import de.gleex.pltcmd.game.engine.attributes.knowledge.ContactsAttribute
-import de.gleex.pltcmd.game.engine.attributes.knowledge.LocatedContact
+import de.gleex.pltcmd.game.engine.attributes.memory.*
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity
@@ -24,25 +23,25 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * Sends a contact report to the hq when something is detected.
  */
 object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
-    DetectedEntity::class, ContactsAttribute::class, RadioAttribute::class, FactionAttribute::class
+    DetectedEntity::class, Memory::class, RadioAttribute::class, FactionAttribute::class
 ) {
 
     private val log = LoggerFactory.getLogger(ReportContacts::class)
 
     override suspend fun receive(message: DetectedEntity): Response {
         val detected = message
-        return if (detected.isKnown) {
-            Pass
-        } else {
-            val communicating = detected.source as CommunicatingEntity
-            // TODO remember at end of the tick in an own facet?
-            communicating.asRememberingEntity { it.addContact(detected.contact) }
+        val communicating = detected.source as CommunicatingEntity
+        // TODO remember at end of the tick in an own facet?
+        val wasNotYetKnown = communicating.memory.knownContacts.update(detected.contact)
+        return if (wasNotYetKnown) {
             reportContact(communicating, detected.contact, detected.context)
+        } else {
+            Pass
         }
     }
 
-    fun reportContact(reporter: CommunicatingEntity, toReport: LocatedContact, context: GameContext): Response {
-        return toReport.contact.faction.fold({
+    fun reportContact(reporter: CommunicatingEntity, toReport: Contact, context: GameContext): Response {
+        return toReport.faction.fold({
             // unidentified faction
             reportUnknown(reporter, toReport, context)
         }, { faction ->
@@ -55,13 +54,13 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
         })
     }
 
-    fun reportUnknown(reporter: CommunicatingEntity, toReport: LocatedContact, context: GameContext): Response {
-        sendReport(reporter, "unknown ${toReport.contact.description}", toReport.roughLocation, context)
+    fun reportUnknown(reporter: CommunicatingEntity, toReport: Contact, context: GameContext): Response {
+        sendReport(reporter, "unknown ${toReport.description}", toReport.roughLocation, context)
         return Consumed
     }
 
-    fun reportHostile(reporter: CommunicatingEntity, toReport: LocatedContact, context: GameContext): Response {
-        sendReport(reporter, "hostile ${toReport.contact.description}", toReport.roughLocation, context)
+    fun reportHostile(reporter: CommunicatingEntity, toReport: Contact, context: GameContext): Response {
+        sendReport(reporter, "hostile ${toReport.description}", toReport.roughLocation, context)
         return Consumed
     }
 

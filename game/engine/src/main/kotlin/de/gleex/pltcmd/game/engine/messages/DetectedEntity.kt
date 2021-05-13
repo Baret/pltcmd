@@ -1,10 +1,8 @@
 package de.gleex.pltcmd.game.engine.messages
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.attributes.knowledge.LocatedContact
+import de.gleex.pltcmd.game.engine.attributes.memory.Contact
 import de.gleex.pltcmd.game.engine.entities.types.SeeingEntity
-import de.gleex.pltcmd.game.engine.entities.types.asRememberingEntity
-import de.gleex.pltcmd.game.engine.entities.types.isKnown
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import org.hexworks.amethyst.api.Message
 
@@ -16,14 +14,7 @@ import org.hexworks.amethyst.api.Message
  * @param source the [SeeingEntity] that might need to react to the detection of other entities.
  */
 data class DetectedEntity(
-    val contact: LocatedContact,
+    val contact: Contact,
     override val source: SeeingEntity,
     override val context: GameContext
-) : Message<GameContext> {
-
-    /** checks the memory for the amount already known about this contact */
-    val isKnown: Boolean
-        get() = source.asRememberingEntity {
-            it.isKnown(contact)
-        }.orElse(false)
-}
+) : Message<GameContext>

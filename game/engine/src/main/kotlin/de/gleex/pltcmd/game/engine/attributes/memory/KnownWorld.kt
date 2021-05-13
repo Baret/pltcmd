@@ -54,11 +54,10 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
         unrevealed.removeAll(areaToReveal)
     }
 
-    override fun mergeWith(other: KnownWorld): KnownWorld =
-        also {
-            unrevealed
-                .removeAll { it !in other.unrevealed }
-        }
+    override fun mergeWith(other: KnownWorld): Boolean {
+        return unrevealed
+            .removeAll { it !in other.unrevealed }
+    }
 
     /**
      * Gets all unknown tiles in the given [CoordinateArea].

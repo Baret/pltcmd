@@ -6,7 +6,7 @@ package de.gleex.pltcmd.util.knowledge
  * @param T the type of the underlying [origin] (the "truth")
  * @param SELF the actual type of an implementing class so that methods can return
  */
-interface Known<T: Any, SELF: Known<T, SELF>> {
+interface Known<out T: Any, in SELF: Known<T, SELF>> {
     /**
      * The underlying origin of this knowledge bit. When fully revealed, its values will be accessed directly.
      * Otherwise wrong or missing information may be returned.
@@ -19,7 +19,8 @@ interface Known<T: Any, SELF: Known<T, SELF>> {
      *
      * After this operation [other] should somehow be discarded or marked as obsolete.
      *
-     * @return this object with updated information
+     * @param other known information that will be used if not already present in this [Known]
+     * @return true if this object was updated with information from [other]
      */
-    infix fun mergeWith(other: SELF): SELF
+    infix fun mergeWith(other: SELF): Boolean
 }

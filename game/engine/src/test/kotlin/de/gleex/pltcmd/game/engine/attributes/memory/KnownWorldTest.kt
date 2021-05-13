@@ -135,8 +135,8 @@ class KnownWorldTest : WordSpec() {
                     Coordinate(1, 32)
                 )
 
-                val mergedKnownWorld = knownWorld mergeWith otherKnownWorld
-                mergedKnownWorld.shouldHaveRevealed(
+                knownWorld mergeWith otherKnownWorld
+                knownWorld.shouldHaveRevealed(
                     coordinate3,
                     coordinate2,
                     coordinate1,

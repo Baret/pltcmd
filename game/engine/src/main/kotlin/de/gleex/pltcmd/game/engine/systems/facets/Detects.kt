@@ -3,21 +3,18 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
-import de.gleex.pltcmd.game.engine.attributes.knowledge.LocatedContact
+import de.gleex.pltcmd.game.engine.attributes.memory.Contact
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.DetectEntities
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity
-import de.gleex.pltcmd.model.elements.Contact
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.signals.vision.visibility
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
@@ -57,8 +54,9 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
         return if (visibility != Visibility.NONE) {
             logSeen(seeing, seen, visionStrength)
             seeing.sighted(seen, visibility)
-            val contact = seen.toContact(visibility, context)
-            DetectedEntity(contact, seeing, context)
+            seen.asElementEntity { it.toContact(visibility, context) }
+                .fold(whenEmpty = { null },
+                    whenPresent = { DetectedEntity(it, seeing, context) })
         } else {
             null
         }
@@ -80,22 +78,14 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
 
 }
 
-fun PositionableEntity.toContact(visibility: Visibility, context: GameContext): LocatedContact {
-    // basic information is always available
-    val location = CoordinateArea(currentPosition)
-    val area = context.world.areaOf(location)
-    val faction = asFactionEntity { it.reportedFaction.value }
-    val corps = asElementEntity { it.element.corps }
-    val kind = asElementEntity { it.element.kind }
-
-    // details of the entity type are only available if seen is clearly visible
-    val rung = if (visibility == Visibility.GOOD) {
-        asElementEntity { it.element.rung }
-    } else Maybe.empty()
-    val unitCount = if (visibility == Visibility.GOOD) {
-        asElementEntity { it.element.totalUnits }
-    } else Maybe.empty()
-
-    val contact = Contact(faction, corps, kind, rung, unitCount)
-    return LocatedContact(area, contact)
+fun ElementEntity.toContact(visibility: Visibility, context: GameContext): Contact {
+    // TODO remember where the contact was spotted
+//    val location = CoordinateArea(currentPosition)
+//    val area = context.world.areaOf(location)
+    val contact = Contact(this, false)
+    // details of the element are only available if it is clearly visible
+    if (visibility == Visibility.GOOD) {
+        contact.reveal()
+    }
+    return contact
 }

@@ -39,12 +39,12 @@ data class KnownByBoolean<T : Any, SELF : KnownByBoolean<T, SELF>>(
      *
      * @return this
      */
-    @Suppress("UNCHECKED_CAST")
-    override infix fun mergeWith(other: SELF): SELF {
+    override infix fun mergeWith(other: SELF): Boolean {
         if (other.revealed && origin == other.origin) {
             reveal()
+            return true
         }
-        return this as SELF
+        return false
     }
 
 }
