@@ -2,6 +2,9 @@ package de.gleex.pltcmd.model.world.coordinate
 
 import de.gleex.pltcmd.util.measure.compass.bearing.Bearing
 import de.gleex.pltcmd.util.measure.compass.bearing.toBearing
+import de.gleex.pltcmd.util.measure.distance.Distance
+import de.gleex.pltcmd.util.measure.distance.hundredMeters
+import de.gleex.pltcmd.util.measure.distance.times
 import java.util.*
 import kotlin.math.*
 
@@ -62,12 +65,12 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
     }
 
     /** @return the euclidean distance */
-    infix fun distanceTo(other: Coordinate): Double {
+    infix fun distanceTo(other: Coordinate): Distance {
         val eastingDistanceSquared = (eastingFromLeft - other.eastingFromLeft).absoluteValue.toDouble()
                 .pow(2.0)
         val northingDistanceSquared = (northingFromBottom - other.northingFromBottom).absoluteValue.toDouble()
                 .pow(2.0)
-        return sqrt(eastingDistanceSquared + northingDistanceSquared)
+        return sqrt(eastingDistanceSquared + northingDistanceSquared) * edgeLength
     }
 
     /**
@@ -160,6 +163,11 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
          * a normally used [Coordinate].
          */
         val maximum = Coordinate(Int.MAX_VALUE, Int.MAX_VALUE)
+
+        /**
+         * The length of one edge of a [Coordinate] (which is square).
+         */
+        val edgeLength: Distance = 1.hundredMeters
 
         /**
          * The separator used in the string representation.

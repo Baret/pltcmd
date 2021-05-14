@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentSkipListSet
 class CoordinateCircle(val center: Coordinate, val radius: Int) : CoordinateArea({ center.fillCircle(radius) }) {
 
     override fun contains(coordinate: Coordinate): Boolean {
-        return center.distanceTo(coordinate) <= radius
+        return center.distanceTo(coordinate) <= radius.coordinates
     }
 
 }

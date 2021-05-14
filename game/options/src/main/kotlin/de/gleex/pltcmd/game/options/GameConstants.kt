@@ -1,5 +1,8 @@
 package de.gleex.pltcmd.game.options
 
+import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.measure.speed.div
+
 /**
  * This object holds constant values that are otherwise "just assumed". When doing calculations regarding "fixed" values
  * these constants should be used instead of local literal values.
@@ -22,16 +25,6 @@ object GameConstants {
     }
 
     /**
-     * Constant values regarding the simulated world.
-     */
-    object World {
-        /**
-         * One tile of the world is square and this is the length of each edge.
-         */
-        const val tileSizeInMeters = 100.0
-    }
-
-    /**
      * Speed is distance per time ;)
      */
     object Speed {
@@ -44,7 +37,7 @@ object GameConstants {
          * @see Time.secondsSimulatedPerTick
          * @see World.tileSizeInMeters
          */
-        const val speedForOneTileInOneTickInMetersPerSecond = World.tileSizeInMeters / Time.secondsSimulatedPerTick
+        val speedForOneTileInOneTickInMetersPerSecond = Coordinate.edgeLength / Time.secondsSimulatedPerTick
 
         /**
          * To travel one tile of distance in one tick you need this speed.
@@ -52,7 +45,7 @@ object GameConstants {
          * @see Time.secondsSimulatedPerTick
          * @see World.tileSizeInMeters
          */
-        const val speedForOneTileInOneTickInKph =
+        val speedForOneTileInOneTickInKph =
                 // convert meters to kilometers and seconds to hours -> m/s to km/h
                 speedForOneTileInOneTickInMetersPerSecond * (secondsPerHour / metersPerKilometer)
     }

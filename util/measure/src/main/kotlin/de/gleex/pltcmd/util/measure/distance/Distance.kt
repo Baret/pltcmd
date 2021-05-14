@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.util.measure.distance
 
+import kotlin.math.roundToInt
+
 /**
  * A distance between two points. The smallest possible unit is full meters.
  *
@@ -7,42 +9,20 @@ package de.gleex.pltcmd.util.measure.distance
  *
  * @see DistanceUnit
  */
-data class Distance internal constructor(private val valueInMeters: Int)
+data class Distance internal constructor(internal val valueInMeters: Double): Comparable<Distance> {
+    internal constructor(valueInMeters: Int): this(valueInMeters.toDouble())
 
-/**
- * Creates a [Distance] of this meters length.
- */
-val Int.meters: Distance
-    get() = Distance(DistanceUnit.meters.inMeters(this))
+    operator fun times(multiplier: Double): Distance = (valueInMeters * multiplier).meters
 
-/**
- * Creates a [Distance] of this meters length.
- *
- * As [Distance] only supports full meters this double is rounded!
- */
-val Double.meters: Distance
-    get() = Distance(DistanceUnit.meters.inMeters(this))
+    operator fun times(multiplier: Int): Distance = (valueInMeters * multiplier).meters
 
-/**
- * Creates a [Distance] of this hundred meters length.
- */
-val Int.hundredMeters: Distance
-    get() = Distance(DistanceUnit.hundredMeters.inMeters(this))
+    /**
+     * The amount of [unit] in this [Distance], rounded to [Int].
+     */
+    infix fun inUnit(unit: DistanceUnit): Int = (valueInMeters / unit.factorToMeters).roundToInt()
 
-/**
- * Creates a [Distance] of this hundred meters length rounded to full meters.
- */
-val Double.hundredMeters: Distance
-    get() = Distance(DistanceUnit.hundredMeters.inMeters(this))
+    override fun compareTo(other: Distance): Int = valueInMeters.compareTo(other.valueInMeters)
+}
 
-/**
- * Creates a [Distance] of this kilometers length.
- */
-val Int.kilometers: Distance
-    get() = Distance(DistanceUnit.kilometers.inMeters(this))
-
-/**
- * Creates a [Distance] of this kilometers length rounded to full meters.
- */
-val Double.kilometers: Distance
-    get() = Distance(DistanceUnit.kilometers.inMeters(this))
+operator fun Double.times(distance: Distance): Distance =
+    distance * this
