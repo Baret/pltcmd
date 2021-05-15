@@ -49,21 +49,18 @@ enum class CardinalPoint(
     }
 
     companion object {
-        private val angleRangeMapping: Map<CardinalPoint, IntRange> =
-            values()
-                .drop(1).associateWith {
-                    ((it.angle - 22)..(it.angle + 22))
-                }
-
         /**
          * Returns the closest [CardinalPoint] to the given [Bearing].
          */
-        fun fromBearing(bearing: Bearing): CardinalPoint =
-            angleRangeMapping
-                .filterValues { bearing.angle in it }
-                .keys
-                .firstOrNull()
-                ?: N
+        fun fromBearing(bearing: Bearing): CardinalPoint {
+            // range is from -22.5 to +22.5 around the cardinal point (45 degrees or `360/values().size`)
+            val allCardinalPoints = values()
+            val degreePerCardinal: Int = 360 / allCardinalPoints.size
+            val movedBehindCardinalPoint = (bearing.angle + degreePerCardinal / 2) % 360
+            // take advantage of integer division to group angles together
+            val cardinalAngle = movedBehindCardinalPoint / degreePerCardinal * degreePerCardinal
+            return allCardinalPoints.find { it.angle == cardinalAngle }!!
+        }
 
         private const val n = "north"
         private const val e = "east"
