@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.engine.attributes.knowledge
 
-import de.gleex.pltcmd.game.engine.attributes.memory.Contact
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.Contact
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.element
 import de.gleex.pltcmd.game.engine.entities.types.reportedFaction

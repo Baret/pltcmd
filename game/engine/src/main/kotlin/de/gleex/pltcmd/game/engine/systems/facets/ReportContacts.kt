@@ -3,7 +3,11 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.FactionAttribute
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
-import de.gleex.pltcmd.game.engine.attributes.memory.*
+import de.gleex.pltcmd.game.engine.attributes.memory.Memory
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.Contact
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.description
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.faction
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.roughLocation
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity

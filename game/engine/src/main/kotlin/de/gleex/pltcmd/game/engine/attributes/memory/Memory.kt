@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.engine.attributes.memory
 
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.Contact
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.util.knowledge.Knowledge

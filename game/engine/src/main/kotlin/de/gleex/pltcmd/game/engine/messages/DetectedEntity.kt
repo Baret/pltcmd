@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.engine.messages
 
 import de.gleex.pltcmd.game.engine.GameContext
-import de.gleex.pltcmd.game.engine.attributes.memory.Contact
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.Contact
 import de.gleex.pltcmd.game.engine.entities.types.SeeingEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import org.hexworks.amethyst.api.Message

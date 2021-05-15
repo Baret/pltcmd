@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.game.engine.attributes.memory
+package de.gleex.pltcmd.game.engine.attributes.memory.elements
 
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.element
