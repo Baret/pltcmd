@@ -1,10 +1,12 @@
 package de.gleex.pltcmd.model.combat.attack
 
 import de.gleex.pltcmd.util.measure.area.squareMeters
+import de.gleex.pltcmd.util.measure.distance.DistanceUnit.meters
 import de.gleex.pltcmd.util.measure.distance.hundredMeters
 import de.gleex.pltcmd.util.measure.distance.kilometers
 import de.gleex.pltcmd.util.measure.distance.meters
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 
 class PrecisionTest : StringSpec({
@@ -15,12 +17,14 @@ class PrecisionTest : StringSpec({
     }
 
     "offsetAt" {
+        // independent of unit
+        underTest.offsetAt(100.meters) shouldBe 0.1.meters
         underTest.offsetAt(1.hundredMeters) shouldBe 0.1.meters
-        underTest.offsetAt(1.kilometers) shouldBe 1.meters
-        underTest.offsetAt(10.kilometers) shouldBe 10.meters
+        underTest.offsetAt(0.1.kilometers) shouldBe 0.1.meters
+
         underTest.offsetAt(2.hundredMeters) shouldBe 0.2.meters
         underTest.offsetAt(1337.meters) shouldBe 1.337.meters
-        underTest.offsetAt(333.333.meters) shouldBe 0.33333300000000005.meters
+        underTest.offsetAt(333.333.meters) inUnit meters shouldBe (0.333333 plusOrMinus 0.000000001)
     }
 
     "areaAt" {
@@ -41,16 +45,17 @@ class PrecisionTest : StringSpec({
 
     "at100m" {
         Precision.at100m(0.01.meters).offsetAt(1.hundredMeters) shouldBe 0.01.meters
-        Precision.at100m(0.1.meters).offsetAt(10.kilometers) shouldBe 10.meters
+        Precision.at100m(0.1.meters).offsetAt(100.meters) shouldBe 0.1.meters
         Precision.at100m(0.1.meters).offsetAt(1.hundredMeters) shouldBe 0.1.meters
         Precision.at100m(0.33.meters).offsetAt(1.hundredMeters) shouldBe 0.33.meters
     }
 
     "at500m" {
-        Precision.at500m(0.01.meters).offsetAt(50.kilometers) shouldBe 1.meters
-        Precision.at500m(0.1.meters).offsetAt(50.kilometers) shouldBe 10.meters
+        Precision.at500m(0.01.meters).offsetAt(5.hundredMeters) shouldBe 0.01.meters
+        Precision.at500m(0.1.meters).offsetAt(500.meters) shouldBe 0.1.meters
         Precision.at500m(0.1.meters).offsetAt(5.hundredMeters) shouldBe 0.1.meters
-        Precision.at500m(0.33.meters).offsetAt(50.kilometers) shouldBe 33.meters
+
+        Precision.at500m(0.33.meters).offsetAt(500.meters) shouldBe 0.33.meters
         Precision.at500m(0.33.meters).offsetAt(5.hundredMeters) shouldBe 0.33.meters
     }
 })
