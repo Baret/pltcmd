@@ -13,11 +13,11 @@ enum class DistanceUnit(internal val factorToMeters: Double) {
     /**
      * Returns the number of rounded meters in [amount] of this [DistanceUnit]
      */
-    infix fun inMeters(amount: Int): Int = inMeters(amount.toDouble())
+    infix fun inMeters(amount: Int): Int = inMeters(amount.toDouble()).roundToInt()
 
     /**
-     * Returns the number of rounded meters in [amount] of this [DistanceUnit]
+     * Returns the number of meters in [amount] of this [DistanceUnit]
      */
-    infix fun inMeters(amount: Double): Int =
-        (amount * factorToMeters).roundToInt()
+    infix fun inMeters(amount: Double): Double =
+        (amount * factorToMeters)
 }

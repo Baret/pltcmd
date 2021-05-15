@@ -11,6 +11,8 @@ import kotlin.math.roundToInt
  */
 data class Distance internal constructor(internal val valueInMeters: Double): Comparable<Distance> {
     internal constructor(valueInMeters: Int): this(valueInMeters.toDouble())
+    constructor(value: Int, unit: DistanceUnit) : this(unit inMeters value)
+    constructor(value: Double, unit: DistanceUnit) : this(unit inMeters value)
 
     operator fun times(multiplier: Double): Distance = (valueInMeters * multiplier).meters
 
