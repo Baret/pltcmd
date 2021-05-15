@@ -8,10 +8,10 @@ import java.util.*
  */
 open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Iterable<Coordinate> {
     constructor(coordinates: SortedSet<Coordinate>) : this({ coordinates })
-    constructor(coordinate: Coordinate) : this({ TreeSet<Coordinate>().apply { add(coordinate) } })
+    constructor(coordinate: Coordinate) : this({ sortedSetOf(coordinate) })
 
     companion object {
-        val EMPTY = CoordinateArea(Collections.emptySortedSet())
+        val EMPTY = CoordinateArea(sortedSetOf())
     }
 
     private val coordinates: SortedSet<Coordinate> by lazy(coordinateProvider)
