@@ -4,10 +4,10 @@ val Int.squareMeters: Area
     get() = toDouble().squareMeters
 
 val Double.squareMeters: Area
-    get() = Area(AreaUnit.squareMeters.inSquareMeters(this))
+    get() = Area(this, AreaUnit.squareMeters)
 
 val Int.squareKilometers: Area
     get() = toDouble().squareKilometers
 
 val Double.squareKilometers: Area
-    get() = Area(AreaUnit.squareKilometers.inSquareMeters(this))
+    get() = Area(this, AreaUnit.squareKilometers)
