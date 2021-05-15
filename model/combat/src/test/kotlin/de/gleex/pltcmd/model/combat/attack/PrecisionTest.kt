@@ -11,7 +11,7 @@ class PrecisionTest : StringSpec({
 
     var underTest = Precision(0.0)
     beforeTest {
-        underTest = Precision.at100m(10) // 0.9999999166666791 mrad which should be 1.0
+        underTest = Precision.at100m(0.1.meters) // 0.9999999166666791 mrad which should be 1.0
     }
 
     "offsetAt" {
@@ -40,17 +40,17 @@ class PrecisionTest : StringSpec({
     }
 
     "at100m" {
-        Precision.at100m(1).offsetAt(1.hundredMeters) shouldBe 0.01.meters
-        Precision.at100m(10).offsetAt(10.kilometers) shouldBe 10.meters
-        Precision.at100m(10).offsetAt(1.hundredMeters) shouldBe 0.1.meters
-        Precision.at100m(33).offsetAt(1.hundredMeters) shouldBe 0.33.meters
+        Precision.at100m(0.01.meters).offsetAt(1.hundredMeters) shouldBe 0.01.meters
+        Precision.at100m(0.1.meters).offsetAt(10.kilometers) shouldBe 10.meters
+        Precision.at100m(0.1.meters).offsetAt(1.hundredMeters) shouldBe 0.1.meters
+        Precision.at100m(0.33.meters).offsetAt(1.hundredMeters) shouldBe 0.33.meters
     }
 
     "at500m" {
-        Precision.at500m(1).offsetAt(50.kilometers) shouldBe 1.meters
-        Precision.at500m(10).offsetAt(50.kilometers) shouldBe 10.meters
-        Precision.at500m(10).offsetAt(5.hundredMeters) shouldBe 0.1.meters
-        Precision.at500m(33).offsetAt(50.kilometers) shouldBe 33.meters
-        Precision.at500m(33).offsetAt(5.hundredMeters) shouldBe 0.33.meters
+        Precision.at500m(0.01.meters).offsetAt(50.kilometers) shouldBe 1.meters
+        Precision.at500m(0.1.meters).offsetAt(50.kilometers) shouldBe 10.meters
+        Precision.at500m(0.1.meters).offsetAt(5.hundredMeters) shouldBe 0.1.meters
+        Precision.at500m(0.33.meters).offsetAt(50.kilometers) shouldBe 33.meters
+        Precision.at500m(0.33.meters).offsetAt(5.hundredMeters) shouldBe 0.33.meters
     }
 })

@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.util.measure.distance
 
+import de.gleex.pltcmd.util.measure.distance.DistanceUnit.*
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
@@ -25,41 +26,63 @@ class DistanceTest : StringSpec({
         1.23.hundredMeters shouldBe 123.meters
         1.234.hundredMeters shouldBe 123.4.meters
         // conversion from double to int and rounding is strange, so...
-        1.235.hundredMeters.valueInMeters shouldBe 123.5.plusOrMinus(0.0000000000001)
+        1.235.hundredMeters.valueInMeters shouldBe (123.5 plusOrMinus 0.0000000000001)
         0.01.hundredMeters shouldBe 1.meters
 
         val roundedDownKilometers = 1.5532.kilometers
         val roundedUpKilometers = 1.5537.kilometers
-        roundedDownKilometers.valueInMeters shouldBe 1553.2.plusOrMinus(0.000000000001)
-        roundedDownKilometers inUnit DistanceUnit.meters shouldBe 1553
-        roundedDownKilometers.valueInMeters shouldBe 15.532.hundredMeters.valueInMeters.plusOrMinus(0.000000000001)
+        roundedDownKilometers.valueInMeters shouldBe (1553.2 plusOrMinus 0.000000000001)
+        roundedDownKilometers inUnit meters shouldBe (1553.2 plusOrMinus 0.000000000001)
+        roundedDownKilometers roundedTo meters shouldBe 1553
+        roundedDownKilometers.valueInMeters shouldBe (15.532.hundredMeters.valueInMeters plusOrMinus 0.000000000001)
         roundedUpKilometers shouldBe 1553.7.meters
-        roundedUpKilometers inUnit DistanceUnit.meters shouldBe 1554
+        roundedUpKilometers inUnit meters shouldBe 1553.7
+        roundedUpKilometers roundedTo meters shouldBe 1554
         roundedUpKilometers shouldBe 15.537.hundredMeters
 
         128.5.hundredMeters shouldBe 12.85.kilometers
         5224.5.hundredMeters shouldBe 522450.meters
-        5224.5.hundredMeters.valueInMeters shouldBe 522.45.kilometers.valueInMeters.plusOrMinus(0.00000000006)
+        5224.5.hundredMeters.valueInMeters shouldBe (522.45.kilometers.valueInMeters plusOrMinus 0.00000000006)
     }
 
     "Test unit conversion" {
-        0.4.meters inUnit DistanceUnit.meters shouldBe 0
-        0.5.meters inUnit DistanceUnit.meters shouldBe 1
-        12.kilometers inUnit DistanceUnit.meters shouldBe 12000
-        1.hundredMeters inUnit DistanceUnit.kilometers shouldBe 0
-        1.hundredMeters inUnit DistanceUnit.hundredMeters shouldBe 1
-        1.hundredMeters inUnit DistanceUnit.meters shouldBe 100
-        5.hundredMeters inUnit DistanceUnit.kilometers shouldBe 1
-        1.234.hundredMeters inUnit DistanceUnit.meters shouldBe 123
-        1.235.hundredMeters inUnit DistanceUnit.meters shouldBe 124
-        4.99.hundredMeters inUnit DistanceUnit.kilometers shouldBe 0
-        10.51.hundredMeters inUnit DistanceUnit.kilometers shouldBe 1
-        14.99.hundredMeters inUnit DistanceUnit.kilometers shouldBe 1
-        15.hundredMeters inUnit DistanceUnit.kilometers shouldBe 2
+        0.4.meters inUnit meters shouldBe 0.4
+        0.5.meters inUnit meters shouldBe 0.5
+        12.kilometers inUnit meters shouldBe 12000
+        1.hundredMeters inUnit kilometers shouldBe 0.1
+        1.hundredMeters inUnit hundredMeters shouldBe 1
+        1.hundredMeters inUnit meters shouldBe 100
+        5.hundredMeters inUnit kilometers shouldBe 0.5
+        1.234.hundredMeters inUnit meters shouldBe 123.4
+        1.235.hundredMeters inUnit meters shouldBe (123.5 plusOrMinus 0.0000000001)
+        4.99.hundredMeters inUnit kilometers shouldBe 0.499
+        10.51.hundredMeters inUnit kilometers shouldBe 1.051
+        14.99.hundredMeters inUnit kilometers shouldBe 1.499
+        15.hundredMeters inUnit kilometers shouldBe 1.5
         val twoThirdClicks = 1.kilometers * (2.0 / 3.0)
-        twoThirdClicks inUnit DistanceUnit.meters shouldBe 667
-        twoThirdClicks inUnit DistanceUnit.hundredMeters shouldBe 7
-        twoThirdClicks inUnit DistanceUnit.kilometers shouldBe 1
+        twoThirdClicks inUnit meters shouldBe (666.66666 plusOrMinus 0.0001)
+        twoThirdClicks inUnit hundredMeters shouldBe (6.66666 plusOrMinus 0.0001)
+        twoThirdClicks inUnit kilometers shouldBe (0.6666666 plusOrMinus 0.0001)
+    }
+
+    "Test unit conversion rounded" {
+        0.4.meters roundedTo meters shouldBe 0
+        0.5.meters roundedTo meters shouldBe 1
+        12.kilometers roundedTo meters shouldBe 12000
+        1.hundredMeters roundedTo kilometers shouldBe 0
+        1.hundredMeters roundedTo hundredMeters shouldBe 1
+        1.hundredMeters roundedTo meters shouldBe 100
+        5.hundredMeters roundedTo kilometers shouldBe 1
+        1.234.hundredMeters roundedTo meters shouldBe 123
+        1.235.hundredMeters roundedTo meters shouldBe 124
+        4.99.hundredMeters roundedTo kilometers shouldBe 0
+        10.51.hundredMeters roundedTo kilometers shouldBe 1
+        14.99.hundredMeters roundedTo kilometers shouldBe 1
+        15.hundredMeters roundedTo kilometers shouldBe 2
+        val twoThirdClicks = 1.kilometers * (2.0 / 3.0)
+        twoThirdClicks roundedTo meters shouldBe 667
+        twoThirdClicks roundedTo hundredMeters shouldBe 7
+        twoThirdClicks roundedTo kilometers shouldBe 1
     }
 
     "Test arithmetic operations" {

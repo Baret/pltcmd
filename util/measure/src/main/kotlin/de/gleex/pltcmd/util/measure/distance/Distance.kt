@@ -19,9 +19,14 @@ data class Distance internal constructor(internal val valueInMeters: Double): Co
     operator fun times(multiplier: Int): Distance = (valueInMeters * multiplier).meters
 
     /**
+     * The value of this [Distance] in the given [unit].
+     */
+    infix fun inUnit(unit: DistanceUnit): Double = valueInMeters / unit.factorToMeters
+
+    /**
      * The amount of [unit] in this [Distance], rounded to [Int].
      */
-    infix fun inUnit(unit: DistanceUnit): Int = (valueInMeters / unit.factorToMeters).roundToInt()
+    infix fun roundedTo(unit: DistanceUnit): Int = inUnit(unit).roundToInt()
 
     override fun compareTo(other: Distance): Int = valueInMeters.compareTo(other.valueInMeters)
 }
