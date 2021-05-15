@@ -4,6 +4,7 @@ import de.gleex.pltcmd.util.measure.distance.hundredMeters
 import de.gleex.pltcmd.util.measure.distance.kilometers
 import de.gleex.pltcmd.util.measure.distance.meters
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 
 class AreaTest : StringSpec({
@@ -33,10 +34,17 @@ class AreaTest : StringSpec({
         10.squareMeters / 15.squareMeters shouldBe (2.0 / 3.0)
     }
 
-    "Distance * Distance = Area" {
+    "Distance squared = Area" {
         1.meters.squared() shouldBe 1.squareMeters
         5.meters.squared() shouldBe 25.squareMeters
         3.hundredMeters.squared() shouldBe 90_000.squareMeters
         2.kilometers.squared() shouldBe 4.squareKilometers
+    }
+
+    "Distance * Distance = Area" {
+        2.meters * 3.meters shouldBe 6.squareMeters
+        1.2.meters * 3.4.meters shouldBe 4.08.squareMeters
+        (4.5.meters * 6.7.meters).valueInSquareMeters shouldBe (30.15 plusOrMinus 0.00000001)
+        (-8).meters * 9.meters shouldBe (-72).squareMeters
     }
 })
