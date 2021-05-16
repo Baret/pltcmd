@@ -19,11 +19,11 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     /**
      * All not yet revealed (aka. unknown) [Coordinate]s.
      */
-    private val unrevealed: MutableSet<Coordinate> =
+    private val unrevealed: MutableCollection<Coordinate> =
         origin
-            .tiles
-            .map { it.coordinate }
-            .toMutableSet()
+            .toSet()
+            // create a local copy
+            .toMutableList()
 
     /**
      * @return the [KnownTerrain] at the given location.
