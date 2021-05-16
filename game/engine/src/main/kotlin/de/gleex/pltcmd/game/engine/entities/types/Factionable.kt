@@ -22,14 +22,14 @@ interface Factionable : EntityType
 typealias FactionEntity = GameEntity<Factionable>
 
 /** Access to the [Property] of the [FactionAttribute] of a [FactionEntity] */
-val FactionEntity.reportedFaction: ObservableValue<Faction>
+val FactionEntity.faction: ObservableValue<Faction>
     get() = getAttribute(FactionAttribute::class).reportedFaction
 
 fun FactionEntity.affiliationTo(other: FactionEntity): Affiliation =
-    affiliationTo(other.reportedFaction.value)
+    affiliationTo(other.faction.value)
 
 fun FactionEntity.affiliationTo(other: Faction): Affiliation =
-    FactionRelations[reportedFaction.value, other]
+    FactionRelations[faction.value, other]
 
 /**
  * Invokes [whenFactionable] if this entity is an [FactionEntity]. When the type is not [Factionable],
