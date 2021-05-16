@@ -3,7 +3,6 @@ package de.gleex.pltcmd.game.engine.attributes.memory.elements
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.element
 import de.gleex.pltcmd.game.engine.entities.types.reportedFaction
-import de.gleex.pltcmd.model.elements.Corps
 import de.gleex.pltcmd.model.elements.Element
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.elements.Rung
@@ -20,8 +19,6 @@ import org.hexworks.cobalt.datatypes.Maybe
 typealias Contact = KnownByGrade<ElementEntity, *>
 
 // basic information is always available
-val Contact.corps: Maybe<Corps>
-    get() = Maybe.of(origin.element.corps)
 val Contact.kind: Maybe<ElementKind>
     get() = Maybe.of(origin.element.kind)
 
@@ -38,11 +35,11 @@ val Contact.roughLocation: WorldArea
     get() = WorldArea.EMPTY
 
 /**
- * A string containing this element's [corps], [kind] and [rung]. Can be used as relatively short
+ * A string containing this element's [kind] and [rung]. Can be used as relatively short
  * descriptive summary of what this contact is.
  */
 val Contact.description
-    get() = "${corps.text()} ${kind.text()} ${rung.text()} of ${faction.text(Faction::name)} (${unitCount.text()} units)"
+    get() = "${kind.text()} ${rung.text()} of ${faction.text(Faction::name)} (${unitCount.text()} units)"
         .replace(Regex(" +"), " ")
 
 /**
