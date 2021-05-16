@@ -3,7 +3,6 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.VisionAttribute
-import de.gleex.pltcmd.game.engine.attributes.memory.elements.Contact
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.DetectEntities
@@ -11,7 +10,6 @@ import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.signals.vision.visibility
-import de.gleex.pltcmd.util.knowledge.KnowledgeGrade
 import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
@@ -55,9 +53,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
         return if (visibility != Visibility.NONE) {
             logSeen(seeing, seen, visionStrength)
             seeing.sighted(seen, visibility)
-            seen.asElementEntity { it.toContact(visibility, context) }
-                .fold(whenEmpty = { null },
-                    whenPresent = { DetectedEntity(it, seeing, context) })
+            DetectedEntity(seen, visibility, seeing, context)
         } else {
             null
         }
@@ -77,18 +73,4 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
         }
     }
 
-}
-
-fun ElementEntity.toContact(visibility: Visibility, context: GameContext): Contact {
-    // TODO remember where the contact was spotted
-//    val location = CoordinateArea(currentPosition)
-//    val area = context.world.areaOf(location)
-    return Contact(
-        origin = this,
-        when (visibility) {
-            Visibility.NONE -> KnowledgeGrade.NONE
-            Visibility.POOR -> KnowledgeGrade.MEDIUM
-            Visibility.GOOD -> KnowledgeGrade.FULL
-        }
-    )
 }
