@@ -10,7 +10,6 @@ import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.signals.vision.visibility
-import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
@@ -32,12 +31,8 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
         seeing.clearView()
         visibleEntities
             .mapNotNull { seen -> createDetectedCommand(seen, seeing, context) }
-            .apply {
-                runBlocking {
-                    forEach {
-                        seeing.receiveMessage(it)
-                    }
-                }
+            .forEach {
+                seeing.receiveMessage(it)
             }
         return Consumed
     }
