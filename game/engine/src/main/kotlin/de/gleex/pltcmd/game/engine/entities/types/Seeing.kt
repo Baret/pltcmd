@@ -61,7 +61,7 @@ internal fun SeeingEntity.sighted(entity: PositionableEntity, visibility: Visibi
 }
 
 /** Forgets all sighted entities. */
-internal fun SeeingEntity.resetVision() {
+internal fun SeeingEntity.clearView() {
     sighted.clear()
 }
 

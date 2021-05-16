@@ -29,7 +29,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
 
     override suspend fun receive(message: DetectEntities): Response {
         val (visibleEntities, seeing, context) = message
-        seeing.resetVision()
+        seeing.clearView()
         visibleEntities
             .mapNotNull { seen -> createDetectedCommand(seen, seeing, context) }
             .apply {
