@@ -58,6 +58,23 @@ data class KnownByBoolean<T : Any, SELF : KnownByBoolean<T, SELF>> private const
         return this as SELF
     }
 
+    // overwrite equals as Property has no equals() so each object is different. Also if they contain the same state.
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KnownByBoolean<*, *>) return false
+
+        if (origin != other.origin) return false
+        if (revealed != other.revealed) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = origin.hashCode()
+        result = 31 * result + revealed.hashCode()
+        return result
+    }
+
 }
 
 /**
