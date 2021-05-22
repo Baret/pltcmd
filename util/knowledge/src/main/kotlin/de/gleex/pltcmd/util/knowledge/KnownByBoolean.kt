@@ -1,21 +1,32 @@
 package de.gleex.pltcmd.util.knowledge
 
+import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.property.Property
+import org.hexworks.cobalt.databinding.api.value.ObservableValue
+
 /**
  * Represents a [Known] bit that is either fully [revealed] or not.
- *
- * @param origin the knowledge bit that may be known
- * @param [isRevealed] sets the initial state.
  */
-data class KnownByBoolean<T : Any, SELF : KnownByBoolean<T, SELF>>(
+data class KnownByBoolean<T : Any, SELF : KnownByBoolean<T, SELF>> private constructor(
     override val origin: T,
-    private var isRevealed: Boolean
+    private val isRevealed: Property<Boolean>
 ) : Known<T, SELF> {
+    /**
+     * @param origin the knowledge bit that may be known
+     * @param [initialRevealed] sets the initial state.
+     */
+    constructor(origin: T, initialRevealed: Boolean) : this(origin, createPropertyFrom(initialRevealed))
 
     /**
      * When true, [origin] is the source of information.
      */
     val revealed: Boolean
-        get() = isRevealed
+        get() = isRevealed.value
+
+    /**
+     * When true, [origin] is the source of information.
+     */
+    val revealedProperty: ObservableValue<Boolean> = isRevealed
 
     /**
      * The actual "knowledge bit" wrapped in this [KnownByBoolean]. When revealed, it will be [origin], null otherwise.
@@ -31,7 +42,7 @@ data class KnownByBoolean<T : Any, SELF : KnownByBoolean<T, SELF>>(
      * Marks this [KnownByBoolean] as [revealed].
      */
     fun reveal() {
-        isRevealed = true
+        isRevealed.updateValue(true)
     }
 
     /**
@@ -54,7 +65,7 @@ data class KnownByBoolean<T : Any, SELF : KnownByBoolean<T, SELF>>(
  */
 fun <T : Any> T.unknown() = KnownByBoolean<T, KnownByBoolean<T, *>>(
     origin = this,
-    isRevealed = false
+    initialRevealed = false
 )
 
 /**
@@ -71,7 +82,7 @@ fun <T : Any> T.known() =
  *
  * @param revealed when `true`, a [known] terrain will be created, [unknown] otherwise.
  */
-fun <T : Any> T.toKnownByBoolean(revealed: Boolean) =
+fun <T : Any> T.toKnownByBoolean(revealed: Boolean): KnownByBoolean<T, *> =
     if (revealed) {
         this.known()
     } else {

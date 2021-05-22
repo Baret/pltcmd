@@ -20,7 +20,6 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.toSectorOrigin
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.SwingApplications
@@ -67,10 +66,10 @@ open class Main {
         // model
         val playerFaction = Faction("player faction")
         val game = Game(Engine.create(), generatedMap, playerFaction, random)
+        val (elementsToCommand, hq, hostiles) = prepareGame(game)
         // ui
-        val gameWorld = GameWorld(generatedMap, playerFaction)
-
-        val (elementsToCommand, hq) = prepareGame(game, gameWorld)
+        val gameWorld = GameWorld(generatedMap, playerFaction, hq.knownWorld)
+        prepareUi(gameWorld, elementsToCommand, hq, hostiles)
 
         screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
@@ -86,31 +85,39 @@ open class Main {
      *
      * @return the elements to command in the UI and the HQ entity for sending messages from the UI.
      */
-    protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
-        val visibleSector = game.world.sectors.first {
-            it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin()
-        }
-        val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
+    protected open fun prepareGame(game: Game): Triple<List<ElementEntity>, FOBEntity, Set<ElementEntity>> {
+        val visibleSector = game.world.sectors.random(game.random)
+        val elementsToCommand = createElementsToCommand(visibleSector, game)
         val hq = game.newHQIn(visibleSector, game.playerFaction)
-            .also { gameWorld.showBase(it) }
-        addHostiles(game, gameWorld)
-        return Pair(elementsToCommand, hq)
+        val hostiles = addHostiles(game)
+        return Triple(elementsToCommand, hq, hostiles)
+    }
+
+    protected open fun prepareUi(
+        gameWorld: GameWorld,
+        elementsToCommand: List<ElementEntity>,
+        hq: FOBEntity,
+        hostiles: Set<ElementEntity>
+    ) {
+        elementsToCommand.forEach(gameWorld::trackUnit)
+        gameWorld.showBase(hq)
+        hostiles.forEach(gameWorld::trackUnit)
     }
 
     /**
      * @return the elements that should be controllable by the UI
      */
-    protected open fun createElementsToCommand(visibleSector: Sector, game: Game, gameWorld: GameWorld): List<ElementEntity> {
+    protected open fun createElementsToCommand(visibleSector: Sector, game: Game): List<ElementEntity> {
         val faction = game.playerFaction
         val elementsToCommand = mutableListOf<ElementEntity>()
         elementsToCommand.run {
 
             val alpha = visibleSector.createFriendly(Elements.transportHelicopterPlatoon.new()
-                    .apply { callSign = CallSign("Alpha") }, faction, game, gameWorld)
+                    .apply { callSign = CallSign("Alpha") }, faction, game)
             val bravo = visibleSector.createFriendly(Elements.riflePlatoon.new()
-                    .apply { callSign = CallSign("Bravo") }, faction, game, gameWorld)
+                    .apply { callSign = CallSign("Bravo") }, faction, game)
             val charlie = visibleSector.createFriendly(Elements.reconPlane.new()
-                    .apply { callSign = CallSign("Charlie") }, faction, game, gameWorld)
+                    .apply { callSign = CallSign("Charlie") }, faction, game)
             listOf(alpha, bravo, charlie).forEach {
                 log.debug("${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeedInKph} kph.")
             }
@@ -124,17 +131,19 @@ open class Main {
     /**
      * Add elements to the game that are not controlled by the player. This implementation adds 2 rifle squads per [Sector].
      */
-    protected open fun addHostiles(game: Game, gameWorld: GameWorld) {
+    protected open fun addHostiles(game: Game): Set<ElementEntity> {
         val opfor = Faction("opposing force")
         FactionRelations[opfor, game.playerFaction] = Affiliation.Hostile
         // Adding some elements to every sector
         val elementsPerSector = 2
+        val hostiles = mutableSetOf<ElementEntity>()
         game.world.sectors.forEach { sector ->
             repeat(elementsPerSector) {
                 game.addElementInSector(sector, Elements.rifleSquad.new(), faction = opfor, playerControlled = false)
-                        .also(gameWorld::trackUnit)
+                    .also(hostiles::add)
             }
         }
+        return hostiles
     }
 
     /**
@@ -142,9 +151,8 @@ open class Main {
      * The position is random by default and the [Affiliation] is friendly. For other affiliations a wandering entity
      * will be added.
      */
-    protected fun Sector.createFriendly(element: CommandingElement, faction: Faction, game: Game, gameWorld: GameWorld, position: Coordinate = this.randomCoordinate(random)): ElementEntity {
+    protected fun Sector.createFriendly(element: CommandingElement, faction: Faction, game: Game, position: Coordinate = this.randomCoordinate(random)): ElementEntity {
         return game.addElementInSector(this, element, position, faction, true)
-                .also(gameWorld::trackUnit)
     }
 
     /**
