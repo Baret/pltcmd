@@ -6,6 +6,7 @@ import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.toSectorOrigin
 import kotlinx.collections.immutable.persistentMapOf
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -119,6 +120,11 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
      */
     fun fetchBlockAt(coordinate: Coordinate): Maybe<GameBlock> =
             fetchBlockAt(coordinate.toPosition())
+
+    fun scrollTo(coordinate: Coordinate) {
+        val sectorTopLeft = coordinate.toSectorOrigin().withRelativeNorthing(Sector.TILE_COUNT - 1)
+        scrollTo(sectorTopLeft.toPosition())
+    }
 
     private fun Coordinate.toPosition(): Position3D {
         // translate to 0,0 based grid then invert y axis

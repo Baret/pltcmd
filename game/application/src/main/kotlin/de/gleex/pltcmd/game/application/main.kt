@@ -102,6 +102,7 @@ open class Main {
         elementsToCommand.forEach(gameWorld::trackUnit)
         gameWorld.showBase(hq)
         hostiles.forEach(gameWorld::trackUnit)
+        gameWorld.scrollTo(hq.currentPosition)
     }
 
     /**
