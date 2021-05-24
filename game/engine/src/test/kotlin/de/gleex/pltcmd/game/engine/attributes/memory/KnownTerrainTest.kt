@@ -9,6 +9,7 @@ import de.gleex.pltcmd.util.knowledge.KnowledgeGrade
 import de.gleex.pltcmd.util.knowledge.fullyKnown
 import de.gleex.pltcmd.util.knowledge.nothingKnown
 import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -19,47 +20,91 @@ class KnownTerrainTest: WordSpec({
     "Known terrain" should {
         val coordinate = Coordinate.zero
         val tile = WorldTile(coordinate, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
-        val unknown = KnownTerrain(tile, KnowledgeGrade.NONE)
+        val otherTile = WorldTile(coordinate.movedBy(1, 1), Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
+        val unknownByAlias = KnownTerrain(tile, KnowledgeGrade.NONE)
         val unknownByExtension = tile.nothingKnown()
 
-        val known = KnownTerrain(tile, KnowledgeGrade.FULL)
-        val knownByExtension: KnownTerrain = tile.fullyKnown()
+        val knownByAlias = KnownTerrain(tile, KnowledgeGrade.FULL)
+        val knownByExtension = tile.fullyKnown()
 
         "have null fields when unrevealed" {
-            unknown.shouldBeUnknownTerrain()
+            unknownByAlias.shouldBeUnknownTerrain()
             unknownByExtension.shouldBeUnknownTerrain()
         }
         "have the correct terrain when revealed" {
-            known.shouldBeKnownTerrain()
+            knownByAlias.shouldBeKnownTerrain()
             knownByExtension.shouldBeKnownTerrain()
         }
         "equal correctly" {
-            val otherTile = WorldTile(coordinate.movedBy(1, 1), Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
             otherTile shouldNotBe tile
 
-            unknown shouldNotBe known
-            known shouldHaveSameFieldsAs knownByExtension
-            unknown shouldHaveSameFieldsAs unknownByExtension
-            known shouldNotBeSameInstanceAs knownByExtension
-            unknown shouldNotBeSameInstanceAs unknownByExtension
+            unknownByAlias shouldNotBe knownByAlias
+            knownByAlias shouldHaveSameFieldsAs knownByExtension
+            unknownByAlias shouldHaveSameFieldsAs unknownByExtension
+            knownByAlias shouldNotBeSameInstanceAs knownByExtension
+            unknownByAlias shouldNotBeSameInstanceAs unknownByExtension
             // but when revealing unknown terrain...
-            unknown.reveal(KnowledgeGrade.FULL)
+            unknownByAlias.reveal(KnowledgeGrade.FULL)
             unknownByExtension.reveal(KnowledgeGrade.FULL)
-            unknown shouldHaveSameFieldsAs known
+            unknownByAlias shouldHaveSameFieldsAs knownByAlias
             unknownByExtension shouldHaveSameFieldsAs knownByExtension
-            unknown shouldNotBe otherTile.nothingKnown()
-            unknown shouldNotBe otherTile.fullyKnown()
+            unknownByAlias shouldNotBe otherTile.nothingKnown()
+            unknownByAlias shouldNotBe otherTile.fullyKnown()
         }
         "change hashcode when being revealed" {
             val terrain = tile.nothingKnown()
-            terrain.revealed shouldBe false
+            terrain.revealed shouldBe KnowledgeGrade.NONE
             val oldHash = terrain.hashCode()
             terrain.reveal(KnowledgeGrade.FULL)
-            terrain.revealed shouldBe true
+            terrain.revealed shouldBe KnowledgeGrade.FULL
             terrain.hashCode() shouldNotBe oldHash
         }
+        "merge with less knowledge to stays as it is" {
+            // the typealias erases some generic type information so it cannot be used for merging
+            //knownByAlias.mergeWith(unknownByAlias)
+            //knownByAlias.mergeWith(unknownByExtension)
+            unknownByAlias.shouldBeUnknownTerrain()
+            val resultByAlias = knownByExtension.mergeWith(unknownByAlias)
+            resultByAlias shouldBe false
+            knownByExtension.shouldBeKnownTerrain()
+            unknownByAlias.shouldBeUnknownTerrain()
+
+            unknownByExtension.shouldBeUnknownTerrain()
+            val resultByExtension = knownByExtension.mergeWith(unknownByExtension)
+            resultByExtension shouldBe false
+            knownByExtension.shouldBeKnownTerrain()
+            unknownByExtension.shouldBeUnknownTerrain()
+        }
+        "merge with more knowledge by alias to increases it" {
+            // the typealias erases some generic type information so it cannot be used for merging
+            //unknownByAlias.mergeWith(knownByAlias)
+            //unknownByAlias.mergeWith(knownByExtension)
+            val result = unknownByExtension.mergeWith(knownByAlias)
+            result shouldBe true
+            unknownByExtension.shouldBeKnownTerrain()
+            knownByAlias.shouldBeKnownTerrain()
+        }
+        "merge with more knowledge by extension to increases it" {
+            // the typealias erases some generic type information so it cannot be used for merging
+            //unknownByAlias.mergeWith(knownByAlias)
+            //unknownByAlias.mergeWith(knownByExtension)
+            val result = unknownByExtension.mergeWith(knownByExtension)
+            result shouldBe true
+            unknownByExtension.shouldBeKnownTerrain()
+            knownByAlias.shouldBeKnownTerrain()
+        }
+        "not merge with other knowledge" {
+            val otherKnown = otherTile.fullyKnown()
+            unknownByExtension.shouldBeUnknownTerrain()
+
+            val result = unknownByExtension.mergeWith(otherKnown)
+            result shouldBe false
+            unknownByExtension.shouldBeUnknownTerrain()
+        }
     }
-})
+}) {
+    override fun isolationMode() = IsolationMode.InstancePerLeaf
+}
 
 private fun KnownTerrain.shouldBeKnownTerrain() {
     assertSoftly(this) {
