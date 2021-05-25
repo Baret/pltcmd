@@ -35,7 +35,7 @@
 		<kotlinx.coroutines.version>1.3.9</kotlinx.coroutines.version>
 
 		<zircon.version>2020.2.0-RELEASE</zircon.version>
-		<amethyst.version>2020.1.2-RELEASE</amethyst.version>
+		<amethyst.version>2021.0.1-RELEASE</amethyst.version>
 		<!-- Should match the higher version used by Amethyst or Zircon -->
 		<cobalt.version>2020.0.19-PREVIEW</cobalt.version>
 
