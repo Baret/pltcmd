@@ -15,12 +15,24 @@ import org.hexworks.cobalt.datatypes.Maybe
  *
  * **Hint:** Use [WorldTile.unknown] and [WorldTile.known] extension functions to create instances.
  */
-typealias KnownTerrain = KnownByGrade<WorldTile, *>
+class KnownTerrain internal constructor(knownTile: WorldTile, grade: KnowledgeGrade): KnownByGrade<WorldTile, KnownTerrain>(knownTile, grade) {
 
-/** The currently known [Terrain]. `null` if not revealed. */
-val KnownTerrain.terrain: Maybe<Terrain>
-    get() = revealAt(KnowledgeGrade.FULL) { it.terrain }
+    /** The currently known [Terrain]. `null` if not revealed. */
+    val terrain: Maybe<Terrain>
+        get() = revealAt(KnowledgeGrade.FULL) { it.terrain }
 
-/** The [Coordinate] of this [KnownTerrain]. It is always "the truth" independent of the revealed state. */
-val KnownTerrain.coordinate: Coordinate
-    get() = origin.coordinate
+    /** The [Coordinate] of this [KnownTerrain]. It is always "the truth" independent of the revealed state. */
+    val coordinate: Coordinate
+        get() = origin.coordinate
+
+}
+
+/**
+ * Creates a revealed [KnownTerrain].
+ */
+fun WorldTile.known() = KnownTerrain(this, KnowledgeGrade.FULL)
+
+/**
+ * Creates an unrevealed [KnownTerrain].
+ */
+fun WorldTile.unknown() = KnownTerrain(this, KnowledgeGrade.NONE)

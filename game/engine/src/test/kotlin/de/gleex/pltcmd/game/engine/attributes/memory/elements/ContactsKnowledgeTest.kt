@@ -1,15 +1,7 @@
 package de.gleex.pltcmd.game.engine.attributes.memory.elements
 
-import de.gleex.pltcmd.model.elements.Elements
-import de.gleex.pltcmd.model.faction.Affiliation
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.util.knowledge.Knowledge
-import de.gleex.pltcmd.util.knowledge.KnowledgeGrade
-import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
-import io.mockk.mockkStatic
-
 /** Test for [Knowledge] with [KnownContact]s */
+/*
 class ContactsKnowledgeTest : WordSpec({
     // required for mocking extension functions, see https://mockk.io/#extension-functions
     mockkStatic(
@@ -73,3 +65,4 @@ class ContactsKnowledgeTest : WordSpec({
     }
 
 })
+*/

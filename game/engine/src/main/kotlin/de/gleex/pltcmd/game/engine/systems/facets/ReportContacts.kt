@@ -3,8 +3,10 @@ package de.gleex.pltcmd.game.engine.systems.facets
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.FactionAttribute
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
+import de.gleex.pltcmd.game.engine.attributes.goals.RadioGoal
 import de.gleex.pltcmd.game.engine.attributes.memory.Memory
-import de.gleex.pltcmd.game.engine.attributes.memory.elements.*
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.KnownContact
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.description
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity
@@ -20,6 +22,7 @@ import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
+import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
@@ -32,50 +35,33 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
     private val log = LoggerFactory.getLogger(ReportContacts::class)
 
     override suspend fun receive(message: DetectedEntity): Response {
-        val detected = message
-        val communicating = detected.source as CommunicatingEntity
-        // create contact
-        return detected.entity.asElementEntity {
-            communicating hasContactWith it
-        }
-            .map { contact ->
-                // remember contact
-                // TODO remember at end of the tick in an own facet?
-                val knownContact = contact knownBy detected
-                val wasNotYetKnown = communicating.memory.knownContacts.update(knownContact)
-                // send contact
-                return@map if (wasNotYetKnown) {
-                    reportContact(communicating, knownContact, detected.context)
-                } else {
-                    Pass
-                }
+        val reporterMaybe: Maybe<ElementEntity> = message.source.asElementEntity { it }
+        val detectedElementMaybe = message.entity.asElementEntity { it }
+        if (reporterMaybe.isPresent && detectedElementMaybe.isPresent) {
+            val reporter = reporterMaybe.get()
+            val contact = KnownContact(reporter, detectedElementMaybe.get())
+                .apply { reveal(message.visibility.toKnowledgeGrade()) }
+            val wasNotYetKnown = reporter.memory.knownContacts.update(contact)
+            if(wasNotYetKnown) {
+                return reportContact(reporter, contact, message.context)
             }
-            .orElse(Pass)
+        }
+        return Pass
     }
 
-    fun reportContact(reporter: CommunicatingEntity, toReport: KnownContact, context: GameContext): Response {
-        val affiliationToReport = toReport.affiliation
-        return when {
-            // unidentified faction
-            affiliationToReport.isEmpty()                    -> reportUnknown(reporter, toReport, context)
-            affiliationToReport.get() == Affiliation.Hostile -> reportHostile(reporter, toReport, context)
+    private fun reportContact(reporter: ElementEntity, contact: KnownContact, context: GameContext): Response {
+        return when (contact.affiliation) {
+            Affiliation.Unknown, Affiliation.Hostile -> {
+                sendReport(reporter, contact.description, contact.position, context)
+                Consumed
+            }
             // neutral and friends are not reported over the radio
-            else                                             -> Pass
+            else                                     -> Pass
         }
     }
 
-    fun reportUnknown(reporter: CommunicatingEntity, toReport: KnownContact, context: GameContext): Response {
-        sendReport(reporter, "unknown ${toReport.description}", toReport.position, context)
-        return Consumed
-    }
-
-    fun reportHostile(reporter: CommunicatingEntity, toReport: KnownContact, context: GameContext): Response {
-        sendReport(reporter, "hostile ${toReport.description}", toReport.position, context)
-        return Consumed
-    }
-
-    fun sendReport(reporter: CommunicatingEntity, what: String, at: Coordinate, context: GameContext) {
-        // TODO Does non player controlled elements need contact reports?
+    private fun sendReport(reporter: ElementEntity, what: String, at: Coordinate, context: GameContext) {
+        // TODO Does non player controlled elements need contact reports? -> sure! But until we have channels (#42) we keep this workaround
         if (reporter.affiliationTo(context.playerFaction) != Affiliation.Self) {
             log.trace("not reporting contact of non player faction of ${reporter.logIdentifier}: $what at $at")
             return
@@ -83,16 +69,13 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
         val hq = CallSign(GameOptions.commandersCallSign)
         log.debug("Reporting contact of ${reporter.logIdentifier} to ${hq.name}: $what at $at")
         val report: Conversation = Conversations.Messages.contact(reporter.radioCallSign, hq, what, at)
-        reporter.startConversation(report)
+        reporter.commandersIntent.butNow(RadioGoal(report))
     }
 
+    private fun Visibility.toKnowledgeGrade() =
+        when (this) {
+            Visibility.NONE -> KnowledgeGrade.NONE
+            Visibility.POOR -> KnowledgeGrade.MEDIUM
+            Visibility.GOOD -> KnowledgeGrade.FULL
+        }
 }
-
-internal infix fun ContactData.knownBy(message: DetectedEntity) = KnownContact(
-    origin = this,
-    when (message.visibility) {
-        Visibility.NONE -> KnowledgeGrade.NONE
-        Visibility.POOR -> KnowledgeGrade.MEDIUM
-        Visibility.GOOD -> KnowledgeGrade.FULL
-    }
-)

@@ -6,8 +6,6 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.util.knowledge.KnowledgeGrade
-import de.gleex.pltcmd.util.knowledge.fullyKnown
-import de.gleex.pltcmd.util.knowledge.nothingKnown
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.WordSpec
@@ -22,10 +20,10 @@ class KnownTerrainTest: WordSpec({
         val tile = WorldTile(coordinate, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
         val otherTile = WorldTile(coordinate.movedBy(1, 1), Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
         val unknownByAlias = KnownTerrain(tile, KnowledgeGrade.NONE)
-        val unknownByExtension = tile.nothingKnown()
+        val unknownByExtension = tile.unknown()
 
         val knownByAlias = KnownTerrain(tile, KnowledgeGrade.FULL)
-        val knownByExtension = tile.fullyKnown()
+        val knownByExtension = tile.known()
 
         "have null fields when unrevealed" {
             unknownByAlias.shouldBeUnknownTerrain()
@@ -48,11 +46,11 @@ class KnownTerrainTest: WordSpec({
             unknownByExtension.reveal(KnowledgeGrade.FULL)
             unknownByAlias shouldHaveSameFieldsAs knownByAlias
             unknownByExtension shouldHaveSameFieldsAs knownByExtension
-            unknownByAlias shouldNotBe otherTile.nothingKnown()
-            unknownByAlias shouldNotBe otherTile.fullyKnown()
+            unknownByAlias shouldNotBe otherTile.unknown()
+            unknownByAlias shouldNotBe otherTile.known()
         }
         "change hashcode when being revealed" {
-            val terrain = tile.nothingKnown()
+            val terrain = tile.unknown()
             terrain.revealed shouldBe KnowledgeGrade.NONE
             val oldHash = terrain.hashCode()
             terrain.reveal(KnowledgeGrade.FULL)
@@ -64,13 +62,13 @@ class KnownTerrainTest: WordSpec({
             //knownByAlias.mergeWith(unknownByAlias)
             //knownByAlias.mergeWith(unknownByExtension)
             unknownByAlias.shouldBeUnknownTerrain()
-            val resultByAlias = knownByExtension.mergeWith(unknownByAlias)
+            val resultByAlias = knownByExtension mergeWith unknownByAlias
             resultByAlias shouldBe false
             knownByExtension.shouldBeKnownTerrain()
             unknownByAlias.shouldBeUnknownTerrain()
 
             unknownByExtension.shouldBeUnknownTerrain()
-            val resultByExtension = knownByExtension.mergeWith(unknownByExtension)
+            val resultByExtension = knownByExtension mergeWith unknownByExtension
             resultByExtension shouldBe false
             knownByExtension.shouldBeKnownTerrain()
             unknownByExtension.shouldBeUnknownTerrain()
@@ -94,7 +92,7 @@ class KnownTerrainTest: WordSpec({
             knownByAlias.shouldBeKnownTerrain()
         }
         "not merge with other knowledge" {
-            val otherKnown = otherTile.fullyKnown()
+            val otherKnown = otherTile.known()
             unknownByExtension.shouldBeUnknownTerrain()
 
             val result = unknownByExtension.mergeWith(otherKnown)

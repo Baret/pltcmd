@@ -42,8 +42,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
         seeing: SeeingEntity,
         context: GameContext
     ): DetectedEntity? {
-        val seenPosition = seen.currentPosition
-        val visionStrength = seeing.vision.at(seenPosition)
+        val visionStrength = seeing.vision at seen.currentPosition
         val visibility = visionStrength.visibility
         return if (visibility != Visibility.NONE) {
             logSeen(seeing, seen, visionStrength)

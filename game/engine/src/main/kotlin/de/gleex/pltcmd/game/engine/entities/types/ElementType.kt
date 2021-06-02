@@ -43,3 +43,8 @@ internal val ElementEntity.commandersIntent
  */
 fun <R> AnyGameEntity.asElementEntity(whenElement: (ElementEntity) -> R): Maybe<R> =
     tryCastTo<ElementEntity, ElementType, R>(whenElement)
+
+/**
+ * @return true, when this entity is an [ElementEntity].
+ */
+fun AnyGameEntity.isElementEntity(): Boolean = type == ElementType

@@ -1,11 +1,6 @@
 package de.gleex.pltcmd.util.knowledge
 
-import io.kotest.core.spec.IsolationMode
-import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
-import org.hexworks.cobalt.datatypes.Maybe
-
+/*
 class KnownByGradeTest : WordSpec({
 
     val knownBit = "testing"
@@ -63,3 +58,4 @@ class KnownByGradeTest : WordSpec({
 }) {
     override fun isolationMode() = IsolationMode.InstancePerLeaf
 }
+*/
