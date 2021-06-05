@@ -1,10 +1,10 @@
 package de.gleex.pltcmd.game.application
 
-import Storage
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.serialization.world.MapStorage
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.mapgeneration.MapGenerationProgressController
@@ -60,7 +60,7 @@ open class Main {
 
     protected open fun selectMap(screen: Screen, tileGrid: TileGrid) {
         val mapFile = GameOptions.MAP_FILE
-        val loadedMap = Storage.loadMap(mapFile)
+        val loadedMap = MapStorage.load(mapFile)
         if (loadedMap == null && UiOptions.SKIP_INTRO.not()) {
             // give title some time before switching to menu
             TimeUnit.MILLISECONDS.sleep(4000)
@@ -87,7 +87,7 @@ open class Main {
             runGame(loadedMap!!, screen, tileGrid)
         } else {
             generateMap(screen, tileGrid) { generatedMap ->
-                Storage.save(generatedMap, mapFile)
+                MapStorage.save(generatedMap, mapFile)
                 runGame(generatedMap, screen, tileGrid)
             }
         }
