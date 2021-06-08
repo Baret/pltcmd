@@ -66,22 +66,24 @@ open class Main {
             TimeUnit.MILLISECONDS.sleep(4000)
         }
 
-        // true = existing map, false = new map
-        val mapChoice = CompletableDeferred<Boolean>()
+        /**
+         * true = existing map, false = new map
+         */
+        val loadMapChoice = CompletableDeferred<Boolean>()
         val menuEntries = listOf(
-            MenuEntry("Load previous map", (loadedMap != null)) { event ->
+            MenuEntry("Load previous map", enabled = (loadedMap != null)) { event ->
                 if (ComponentEventType.ACTIVATED == event.type) {
-                    mapChoice.complete(true)
+                    loadMapChoice.complete(true)
                 }
             },
-            MenuEntry("Generate new map", true) { event ->
+            MenuEntry("Generate new map", enabled = true) { event ->
                 if (ComponentEventType.ACTIVATED == event.type) {
-                    mapChoice.complete(false)
+                    loadMapChoice.complete(false)
                 }
             }
         )
         screen.dock(MenuView(tileGrid, menuEntries))
-        val loadMap = runBlocking { mapChoice.await() }
+        val loadMap = runBlocking { loadMapChoice.await() }
 
         if (loadMap) {
             runGame(loadedMap!!, screen, tileGrid)
