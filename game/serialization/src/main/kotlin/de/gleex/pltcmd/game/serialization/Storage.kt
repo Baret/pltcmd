@@ -22,7 +22,7 @@ internal object Storage {
     }
 
     /** Stores the given object in a file with the given name. */
-    fun save(dao: Any, fileName: String) {
+    inline fun <reified T> save(dao: T, fileName: String) {
         val bytes = ProtoBuf.encodeToByteArray(dao)
         val file = File(dataFolder, fileName)
         file.writeBytes(bytes)
