@@ -10,6 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>serialization</artifactId>
+    <name>Game serialization</name>
+    <description>Serializes parts of the game and stores/loads it in/from files.</description>
 
     <dependencies>
         <dependency>

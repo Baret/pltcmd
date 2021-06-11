@@ -10,7 +10,7 @@ object GameConstants {
      */
     object AppInfo {
         /**
-         * The amount of ingame time that passes in one tick.
+         * Version number of the packaged application or 'devel' if run directly from source code.
          */
         val version: String = GameConstants::class.java.`package`.implementationVersion ?: "devel"
     }

@@ -62,7 +62,7 @@ open class Main {
         val mapFile = GameOptions.MAP_FILE
         val loadedMap = MapStorage.load(mapFile)
         if (loadedMap == null && UiOptions.SKIP_INTRO.not()) {
-            // give title some time before switching to menu
+            // give title some time before switching to menu when not loading a map
             TimeUnit.MILLISECONDS.sleep(4000)
         }
 
