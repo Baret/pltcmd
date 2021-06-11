@@ -34,18 +34,18 @@ object GameOptions {
     /**
      * Set to true to "enable dev mode" which always generates the same map.
      */
-    private const val USE_DEBUG_MAP_SEED: Boolean = false
+    private const val DEV_MODE: Boolean = false
 
     /**
      * Seed used to generate the map, usually the current timestamp.
      */
     val MAP_SEED: Long =
-            if (USE_DEBUG_MAP_SEED) {
+            if (DEV_MODE) {
                 DEBUG_MAP_SEED
             } else {
                 System.currentTimeMillis()
             }
-    val MAP_FILE = if (USE_DEBUG_MAP_SEED) "develop" else "last"
+    val MAP_FILE = if (DEV_MODE) "develop" else "last"
 
     /**
      * The origin of the map. In other words the world map's bottom left corner is this coordinate.
