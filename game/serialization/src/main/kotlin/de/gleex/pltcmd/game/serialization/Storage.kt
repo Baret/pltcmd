@@ -21,16 +21,16 @@ internal object Storage {
         }
     }
 
-    /** Stores the given object in a file with the given name. */
-    inline fun <reified T> save(dao: T, fileName: String) {
+    /** Stores the given object in a file with the id. */
+    inline fun <reified T> save(dao: T, id: StorageId) {
         val bytes = ProtoBuf.encodeToByteArray(dao)
-        val file = File(dataFolder, fileName)
+        val file = id.file
         file.writeBytes(bytes)
     }
 
-    /** Loads the object from the given file. */
-    inline fun <reified R> load(fileName: String): R? {
-        val file = File(dataFolder, fileName)
+    /** Loads the object from the identified storage (file). */
+    inline fun <reified R> load(id: StorageId): R? {
+        val file = id.file
         if (!file.canRead()) {
             log.warn("Cannot load data from $file because it is not readable!")
             return null
@@ -38,8 +38,10 @@ internal object Storage {
         val bytes = file.readBytes()
         return ProtoBuf.decodeFromByteArray<R>(bytes)
     }
+
+    private val StorageId.file
+        get() = File(dataFolder, sanitizeFilename(id) + "." + type)
 }
 
 /** Remove path navigation from name like "../../root" and an extension */
-val String.fileBasename: String
-    get() = File(this).nameWithoutExtension
+fun sanitizeFilename(text: String): String = File(text).nameWithoutExtension

@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.serialization.world
 
 import de.gleex.pltcmd.game.serialization.Storage
-import de.gleex.pltcmd.game.serialization.fileBasename
+import de.gleex.pltcmd.game.serialization.StorageId
 import de.gleex.pltcmd.model.world.WorldMap
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.time.ExperimentalTime
@@ -14,29 +14,30 @@ import kotlin.time.measureTimedValue
 @OptIn(ExperimentalTime::class)
 object MapStorage {
     private val log = LoggerFactory.getLogger(MapStorage::class)
-    private const val fileSuffix = ".map"
+    private const val storageType = "map"
 
-    /** Save the given map to the specified file. */
-    fun save(map: WorldMap, fileId: String) {
-        val fileName = toMapFile(fileId)
-        log.debug("saving $map to $fileName")
+    /** Save the given map under the given id. */
+    fun save(map: WorldMap, mapId: String) {
+        val storage = mapId.storageId
+        log.debug("saving $map to $storage")
         val duration = measureTime {
             val dao = WorldMapDao.of(map)
-            Storage.save(dao, fileName)
+            Storage.save(dao, storage)
         }
-        log.info("saved $map to $fileName in $duration")
+        log.info("saved $map to ${storage.id} in $duration")
     }
 
-    /** Loads the map from the given file. Returns null if the file does not exist. */
-    fun load(fileId: String): WorldMap? {
-        val fileName = toMapFile(fileId)
+    /** Loads the map for the given id. Returns null if no map is stored under that id. */
+    fun load(mapId: String): WorldMap? {
+        val storage = mapId.storageId
         val (map, duration) = measureTimedValue {
-            val dao = Storage.load<WorldMapDao>(fileName)
+            val dao = Storage.load<WorldMapDao>(storage)
             dao?.toMap()
         }
-        log.info("loaded $map from $fileName in $duration")
+        log.info("loaded $map from ${storage.id} in $duration")
         return map
     }
 
-    private fun toMapFile(fileId: String) = fileId.fileBasename + fileSuffix
+    private val String.storageId
+        get() = StorageId(this, storageType)
 }
