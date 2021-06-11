@@ -16,8 +16,8 @@ internal object Storage {
     private val dataFolder = File("data")
 
     init {
-        if (!dataFolder.exists() && !dataFolder.mkdirs()) {
-            log.error("Failed to create folder ${dataFolder.absolutePath}")
+        require(dataFolder.canWrite() || dataFolder.mkdirs()) {
+            "Failed to create folder ${dataFolder.absolutePath}"
         }
     }
 
