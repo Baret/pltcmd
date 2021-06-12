@@ -8,29 +8,42 @@ import java.io.File
 
 class StorageTest : StringSpec({
 
+    val loremIpsum256 =
+        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata "
+
     "sanitizeFilename should create safe names for files" {
         forAll(
-            row("simple", "0f7d0d088b6ea936fb25b477722d734706fe8b40"),
-            row("_3-Om", "6cfd763a512deeb80b5907a89f0d473e02fb0b09"),
-            row("Süßölgefäß", "7aeb4ad3e3d475b3ffbcf5e9b29d797c5eb719ec"),
-            row("1337", "77ba9cd915c8e359d9733edcfe9c61e5aca92afb"),
+            row("simple", "73696d706c65"),
+            row("_3-Om", "5f332d4f6d"),
+            row("Süßölgefäß", "53c3bcc39fc3b66c676566c3a4c39f"),
+            row("1337", "31333337"),
+            row(
+                // 555 characters
+                "${loremIpsum256}sanctus est Lorem ipsum dolor sit amet. ${loremIpsum256}san",
+                "4c6f72656d20697073756d20646f6c6f722073697420616d65742c20636f6e736574657475722073616469707363696e6720656c6974722c20736564206469616d206e6f6e756d79206569726d6f642074656d706f7220696e766964756e74207574206c61626f726520657420646f6c6f7265206d61676e6120616c69"
+            ),
+            row(
+                // other end as before but same prefix
+                "${loremIpsum256}this does not matter for the current implementation",
+                "4c6f72656d20697073756d20646f6c6f722073697420616d65742c20636f6e736574657475722073616469707363696e6720656c6974722c20736564206469616d206e6f6e756d79206569726d6f642074656d706f7220696e766964756e74207574206c61626f726520657420646f6c6f7265206d61676e6120616c69"
+            ),
             // cactus emoji
-            row("\uD83C\uDF35", "630b7aec7c76806f4613ec9841bff48b845534f8"),
-            row("foo/bar.baz", "512ceb063fd31e3e8159a3e88bddfc5d8f62b161"),
-            row("foo.bar.baz", "fb2d5a853a8edd799b4084a828d7d6746210534b"),
-            row(".foo", "7770702de319e88ed55826fa88d448ba7ca628d0"),
-            row("/test", "f133a4599372cf531bcdbfeb1116b9afe8d09b4f"),
-            row("/test/", "5411388e827eca295edece717228823dd2fe055c"),
-            row("../test", "54d0ecf469c7bea98493349d3fcc4915b598ed98"),
-            row("C:\\Users\\cod3r", "5683e660912624aa6dfa241858ae06c7abeb05a3"),
+            row("\uD83C\uDF35", "f09f8cb5"),
+            row("foo/bar.baz", "666f6f2f6261722e62617a"),
+            row("foo.bar.baz", "666f6f2e6261722e62617a"),
+            row(".foo", "2e666f6f"),
+            row("/test", "2f74657374"),
+            row("/test/", "2f746573742f"),
+            row("../test", "2e2e2f74657374"),
+            row("C:\\Users\\cod3r", "433a5c55736572735c636f643372"),
             // first ASCII special chars
-            row(" !\"#\$%&'()*+,-.", "64afe078dbdc5a59629f935ddf07ef6b20daa9a2"),
+            row(" !\"#\$%&'()*+,-.", "202122232425262728292a2b2c2d2e"),
             // second block of ASCII special chars behind numbers
-            row(":;<=>?@", "c31ed54d39d11b9b37f525dcfd40581d56ba1fba"),
+            row(":;<=>?@", "3a3b3c3d3e3f40"),
             // special ASCII chars behind upper case chars
-            row("[\\]^_`", "406a370d0c90527298f1d93e055bec44b659a7d6"),
+            row("[\\]^_`", "5b5c5d5e5f60"),
             // special ASCII chars behind lower case chars
-            row("{|}~", "42841c73ca4dc5ec5360f1f7186a8411d3ec35cb"),
+            row("{|}~", "7b7c7d7e"),
         ) { input, expected ->
 
             val result = sanitizeFilename(input)
@@ -41,5 +54,4 @@ class StorageTest : StringSpec({
             testFile.delete() shouldBe true
         }
     }
-
 })

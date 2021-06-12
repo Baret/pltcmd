@@ -6,7 +6,6 @@ import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.io.File
-import java.security.MessageDigest
 
 /**
  * Manages persistent data.
@@ -46,8 +45,10 @@ internal object Storage {
 
 /** Create a String safe for file names that are as unique as the given text */
 fun sanitizeFilename(text: String): String {
-    val hash = MessageDigest.getInstance("SHA-1").digest(text.toByteArray(Charsets.UTF_8))
-    return hash.toHex()
+    val bytes = text.toByteArray(Charsets.UTF_8)
+    val hex = bytes.toHex()
+    // maximum filename length is 255 bytes https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
+    return hex.take(250)
 }
 
 // from https://www.javacodemonk.com/md5-and-sha256-in-java-kotlin-and-android-96ed9628
