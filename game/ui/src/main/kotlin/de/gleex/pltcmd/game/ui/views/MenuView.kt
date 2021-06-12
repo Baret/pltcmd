@@ -15,7 +15,7 @@ import org.hexworks.zircon.api.view.base.BaseView
 /**
  * Displays a centered menu with the given entries.
  */
-class MenuView(tileGrid: TileGrid, entries: List<MenuEntry>) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
+open class MenuView(tileGrid: TileGrid, entries: List<MenuEntry>) : BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     init {
         val header = createHeader()
