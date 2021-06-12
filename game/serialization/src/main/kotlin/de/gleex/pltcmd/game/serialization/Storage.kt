@@ -6,6 +6,7 @@ import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.io.File
+import java.security.MessageDigest
 
 /**
  * Manages persistent data.
@@ -43,5 +44,13 @@ internal object Storage {
         get() = File(dataFolder, sanitizeFilename(id) + "." + type)
 }
 
-/** Remove path navigation from name like "../../root" and an extension */
-fun sanitizeFilename(text: String): String = File(text).nameWithoutExtension
+/** Create a String safe for file names that are as unique as the given text */
+fun sanitizeFilename(text: String): String {
+    val hash = MessageDigest.getInstance("SHA-1").digest(text.toByteArray(Charsets.UTF_8))
+    return hash.toHex()
+}
+
+// from https://www.javacodemonk.com/md5-and-sha256-in-java-kotlin-and-android-96ed9628
+fun ByteArray.toHex(): String {
+    return joinToString("") { "%02x".format(it) }
+}
