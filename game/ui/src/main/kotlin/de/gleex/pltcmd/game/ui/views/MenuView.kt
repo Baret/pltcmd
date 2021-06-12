@@ -32,11 +32,11 @@ class MenuView(tileGrid: TileGrid, entries: List<MenuEntry>) : BaseView(theme = 
     }
 
     open fun createMenu(entries: List<MenuEntry>): Component {
-        val maxLabelWidth =
-            (entries.maxOfOrNull { it.label.length } ?: 0) + 2// + 2 because the button uses brackets left and right
+        val maxEntryWidth =
+            (entries.maxOfOrNull { it.uiWidth } ?: 0)
 
         val menuBox = Components.vbox()
-            .withSize(maxLabelWidth, entries.size)
+            .withSize(maxEntryWidth, entries.size)
             .withAlignmentWithin(screen, ComponentAlignment.CENTER)
             .build()
         entries.forEach(menuBox::addEntry)
@@ -52,23 +52,36 @@ class MenuView(tileGrid: TileGrid, entries: List<MenuEntry>) : BaseView(theme = 
 
 }
 
-data class MenuEntry(val label: String, val enabled: Boolean, val eventHandler: (ComponentEvent) -> Unit)
+data class MenuEntry(val label: String, val enabled: Boolean, val eventHandler: (ComponentEvent) -> Unit) {
+
+    /** the horizontal space used by the component created for this menu entry */
+    val uiWidth = label.length + 2 // + 2 because the button uses brackets left and right
+
+    /**
+     * Creates a button. The button will have the text of this entry which also handles events when activated.
+     */
+    fun createUi(): Component =
+        Components
+            .button()
+            .withText(label)
+            .build()
+            .apply {
+                if (enabled) {
+                    onActivated(eventHandler)
+                }
+            }
+
+}
 
 /**
- * Adds a button to this container. The button will have the text of the given entry which also handles events and determines if it is enabled.
+ * Adds a component to this container and update the enablement according to the given entry.
  */
-fun Container.addEntry(entry: MenuEntry) {
-    val button = Components
-        .button()
-        .withText(entry.label)
-        .build()
-    addComponent(button)
+private fun Container.addEntry(entry: MenuEntry) {
+    val entryComponent = entry.createUi()
+    addComponent(entryComponent)
     // disable
-    button.apply {
+    entryComponent.apply {
         isEnabled = entry.enabled
-        if (entry.enabled) {
-            onActivated(entry.eventHandler)
-        }
     }
 
 }
