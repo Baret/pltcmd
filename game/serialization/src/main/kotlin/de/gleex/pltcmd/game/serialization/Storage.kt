@@ -43,7 +43,7 @@ internal object Storage {
         get() = File(dataFolder, sanitizeFilename(id) + "." + type)
 }
 
-/** Create a String safe for file names that are as unique as the given text */
+/** Create a String safe for file names that are almost as unique as the given text */
 fun sanitizeFilename(text: String): String {
     val bytes = text.toByteArray(Charsets.UTF_8)
     val hex = bytes.toHex()
