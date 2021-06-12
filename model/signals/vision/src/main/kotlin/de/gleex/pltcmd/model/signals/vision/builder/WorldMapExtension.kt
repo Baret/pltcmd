@@ -25,7 +25,7 @@ fun WorldMap.visionAt(location: Coordinate, visualRange: VisionPower): Vision {
     val radius: Int = ceil(visualRange.power).toInt()
     log.debug("Creating vision at $location with $visualRange. Calculating circle with radius ${radius}...")
     val (area, duration) = measureTimedValue { circleAt(location, radius) }
-    log.debug("Created area with ${area.size} tiles in ${duration.inMilliseconds} ms, returning signal.")
+    log.debug("Created area with ${area.size} tiles in ${duration.inWholeMilliseconds} ms, returning signal.")
     return Vision(
             location,
             area,

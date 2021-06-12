@@ -36,7 +36,7 @@ class Table<M : Any>(
 
     val selectedRow: ObservableValue<M> = selectedRowProperty
 
-    private val width = columns.sumBy { it.format.length } + (columns.size * columnSpacing)
+    private val width = columns.sumOf { it.format.length } + (columns.size * columnSpacing)
 
     /**
      * The actual size of this table.

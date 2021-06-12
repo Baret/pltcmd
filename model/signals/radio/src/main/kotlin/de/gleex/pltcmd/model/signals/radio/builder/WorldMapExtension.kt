@@ -19,7 +19,7 @@ private val log = LoggerFactory.getLogger(WorldMap::radioSignalAt::class)
 fun WorldMap.radioSignalAt(location: Coordinate, power: RadioPower): Signal<RadioPower> {
         log.debug("Creating radio signal at $location with radio power $power. Calculating circle with radius ${power.maxRange}...")
         val (area, duration) = measureTimedValue { circleAt(location, power.maxRange) }
-        log.debug("Created area with ${area.size} tiles in ${duration.inMilliseconds} ms, returning signal.")
+        log.debug("Created area with ${area.size} tiles in ${duration.inWholeMilliseconds} ms, returning signal.")
         return Signal(
                 location,
                 area,
