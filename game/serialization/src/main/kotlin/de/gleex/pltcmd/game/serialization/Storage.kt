@@ -49,7 +49,7 @@ fun sanitizeFilename(text: String): String {
     val hex = bytes.toHex()
     // maximum filename length is 255 bytes https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
     // we leave some space for prefix and file extension
-    return hex.take(240)
+    return hex.take(110)
 }
 
 // from https://www.javacodemonk.com/md5-and-sha256-in-java-kotlin-and-android-96ed9628
