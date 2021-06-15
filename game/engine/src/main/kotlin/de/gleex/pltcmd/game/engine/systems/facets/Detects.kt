@@ -10,7 +10,6 @@ import de.gleex.pltcmd.game.engine.messages.DetectedEntity
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.signals.vision.visibility
-import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
@@ -29,15 +28,11 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
 
     override suspend fun receive(message: DetectEntities): Response {
         val (visibleEntities, seeing, context) = message
-        val lastSeen: Map<PositionableEntity, Visibility> = seeing.forgetAll()
+        seeing.clearView()
         visibleEntities
-            .mapNotNull { seen -> createDetectedCommand(seen, seeing, lastSeen, context) }
-            .apply {
-                runBlocking {
-                    forEach {
-                        seeing.receiveMessage(it)
-                    }
-                }
+            .mapNotNull { seen -> createDetectedCommand(seen, seeing, context) }
+            .forEach {
+                seeing.receiveMessage(it)
             }
         return Consumed
     }
@@ -45,17 +40,14 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
     private fun createDetectedCommand(
         seen: PositionableEntity,
         seeing: SeeingEntity,
-        lastSeen: Map<PositionableEntity, Visibility>,
         context: GameContext
     ): DetectedEntity? {
-        val seenPosition = seen.currentPosition
-        val visionStrength = seeing.vision.at(seenPosition)
+        val visionStrength = seeing.vision at seen.currentPosition
         val visibility = visionStrength.visibility
         return if (visibility != Visibility.NONE) {
-            val previousVisibility = lastSeen[seen] ?: Visibility.NONE
-            logSeen(seeing, seen, visionStrength, previousVisibility)
-            seeing.rememberContact(seen, visibility)
-            DetectedEntity(seen, visibility, previousVisibility, seeing, context)
+            logSeen(seeing, seen, visionStrength)
+            seeing.sighted(seen, visibility)
+            DetectedEntity(seen, visibility, seeing, context)
         } else {
             null
         }
@@ -64,15 +56,14 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
     private fun logSeen(
         seeing: SeeingEntity,
         seen: PositionableEntity,
-        visibility: SignalStrength,
-        previousVisibility: Visibility
+        visibility: SignalStrength
     ) {
         if (log.isDebugEnabled()) {
             val who = seeing.logIdentifier.padEnd(12)
             val what = seen.logIdentifier.padEnd(12)
             val where = seen.currentPosition.toString().padEnd(12)
             val how = visibility.asRatio()
-            log.debug("$who sees $what at $where with signal strength $how (last visibility was $previousVisibility)")
+            log.debug("$who sees $what at $where with signal strength $how")
         }
     }
 

@@ -8,9 +8,10 @@ import java.util.*
  */
 open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Iterable<Coordinate> {
     constructor(coordinates: SortedSet<Coordinate>) : this({ coordinates })
+    constructor(coordinate: Coordinate) : this({ sortedSetOf(coordinate) })
 
     companion object {
-        val EMPTY = CoordinateArea(Collections.emptySortedSet())
+        val EMPTY = CoordinateArea(sortedSetOf())
     }
 
     private val coordinates: SortedSet<Coordinate> by lazy(coordinateProvider)
@@ -20,6 +21,19 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
 
     open val isEmpty: Boolean
         get() = coordinates.isEmpty()
+
+    open val first: Coordinate?
+        get() = coordinates.first()
+
+    open val last: Coordinate?
+        get() = coordinates.last()
+
+    open val description: String
+        get() = when {
+            isEmpty   -> "empty area"
+            size == 1 -> first!!.toString()
+            else      -> "area between $first and $last"
+        }
 
     /**
      * All [MainCoordinate]s contained in this area.

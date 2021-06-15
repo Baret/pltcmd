@@ -9,7 +9,9 @@ import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
+import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.faction.Faction
+import de.gleex.pltcmd.model.faction.FactionRelations
 import de.gleex.pltcmd.model.radio.RadioSender
 import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
@@ -39,6 +41,7 @@ class CombatMain : Main() {
 
     override fun addHostiles(game: Game, gameWorld: GameWorld) {
         val opfor = Faction("opposing force")
+        FactionRelations[opfor, game.playerFaction] = Affiliation.Hostile
         val worldMap = game.world
         val position = getBattlefield(worldMap).movedBy(1, 0)
         addHostile(position, worldMap, opfor)

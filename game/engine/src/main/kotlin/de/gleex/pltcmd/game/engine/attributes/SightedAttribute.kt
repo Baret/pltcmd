@@ -4,8 +4,8 @@ import de.gleex.pltcmd.game.engine.entities.types.PositionableEntity
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import org.hexworks.amethyst.api.base.BaseAttribute
 
-/** The remembered contacts */
-class ContactsAttribute : BaseAttribute() {
+/** The entities that are currently visible. */
+class SightedAttribute : BaseAttribute() {
     private val visibleEntities = mutableMapOf<PositionableEntity, Visibility>()
 
     val all: Map<PositionableEntity, Visibility>

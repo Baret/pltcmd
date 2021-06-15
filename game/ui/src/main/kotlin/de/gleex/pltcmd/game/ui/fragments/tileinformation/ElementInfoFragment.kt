@@ -32,8 +32,10 @@ class ElementInfoFragment(
     // TODO: Handle multiple elements (list binding, show list of elements)
     private val currentElement: ObservableValue<Maybe<ElementEntity>> = currentInfoTile.bindTransform {
         Maybe.ofNullable(
-                game.elementsAt(it)
-                        .firstOrNull())
+            // TODO use knowledge of HQ
+            game.elementsAt(it)
+                .firstOrNull()
+        )
     }
 
     private val callSign: FrontendString<String> = whenElementPresent { it.callsign.name }
