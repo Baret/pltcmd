@@ -31,8 +31,8 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
         val originalTerrain = origin[coordinate]
             .orElseGet { WorldTile(coordinate.eastingFromLeft, coordinate.northingFromBottom) }
         return when {
-            coordinate.isRevealed() -> originalTerrain.known()
-            else                    -> originalTerrain.unknown()
+            coordinate.isRevealed() -> originalTerrain.revealed()
+            else                    -> originalTerrain.unrevealed()
         }
     }
 

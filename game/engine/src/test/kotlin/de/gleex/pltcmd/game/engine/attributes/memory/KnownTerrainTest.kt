@@ -5,7 +5,6 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import de.gleex.pltcmd.util.knowledge.KnowledgeGrade
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.WordSpec
@@ -19,11 +18,11 @@ class KnownTerrainTest: WordSpec({
         val coordinate = Coordinate.zero
         val tile = WorldTile(coordinate, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
         val otherTile = WorldTile(coordinate.movedBy(1, 1), Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
-        val unknownByAlias = KnownTerrain(tile, KnowledgeGrade.NONE)
-        val unknownByExtension = tile.unknown()
+        val unknownByAlias = KnownTerrain(tile)
+        val unknownByExtension = tile.unrevealed()
 
-        val knownByAlias = KnownTerrain(tile, KnowledgeGrade.FULL)
-        val knownByExtension = tile.known()
+        val knownByAlias = KnownTerrain(tile)
+        val knownByExtension = tile.revealed()
 
         "have null fields when unrevealed" {
             unknownByAlias.shouldBeUnknownTerrain()
@@ -42,19 +41,19 @@ class KnownTerrainTest: WordSpec({
             knownByAlias shouldNotBeSameInstanceAs knownByExtension
             unknownByAlias shouldNotBeSameInstanceAs unknownByExtension
             // but when revealing unknown terrain...
-            unknownByAlias.reveal(KnowledgeGrade.FULL)
-            unknownByExtension.reveal(KnowledgeGrade.FULL)
+            unknownByAlias.reveal()
+            unknownByExtension.reveal()
             unknownByAlias shouldHaveSameFieldsAs knownByAlias
             unknownByExtension shouldHaveSameFieldsAs knownByExtension
-            unknownByAlias shouldNotBe otherTile.unknown()
-            unknownByAlias shouldNotBe otherTile.known()
+            unknownByAlias shouldNotBe otherTile.unrevealed()
+            unknownByAlias shouldNotBe otherTile.revealed()
         }
         "change hashcode when being revealed" {
-            val terrain = tile.unknown()
-            terrain.revealed shouldBe KnowledgeGrade.NONE
+            val terrain = tile.unrevealed()
+            terrain.revealed shouldBe false
             val oldHash = terrain.hashCode()
-            terrain.reveal(KnowledgeGrade.FULL)
-            terrain.revealed shouldBe KnowledgeGrade.FULL
+            terrain.reveal()
+            terrain.revealed shouldBe false
             terrain.hashCode() shouldNotBe oldHash
         }
         "merge with less knowledge to stays as it is" {
@@ -84,6 +83,7 @@ class KnownTerrainTest: WordSpec({
         }
         "merge with more knowledge by extension to increases it" {
             // the typealias erases some generic type information so it cannot be used for merging
+            // TODO: Fix these tests!
             //unknownByAlias.mergeWith(knownByAlias)
             //unknownByAlias.mergeWith(knownByExtension)
             val result = unknownByExtension.mergeWith(knownByExtension)
@@ -92,7 +92,7 @@ class KnownTerrainTest: WordSpec({
             knownByAlias.shouldBeKnownTerrain()
         }
         "not merge with other knowledge" {
-            val otherKnown = otherTile.known()
+            val otherKnown = otherTile.revealed()
             unknownByExtension.shouldBeUnknownTerrain()
 
             val result = unknownByExtension.mergeWith(otherKnown)
@@ -108,15 +108,15 @@ private fun KnownTerrain.shouldBeKnownTerrain() {
     assertSoftly(this) {
         coordinate shouldBe Coordinate.zero
         terrain shouldBe Maybe.of(Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
-        revealed shouldBe KnowledgeGrade.FULL
+        revealed shouldBe true
     }
 }
 
 private fun KnownTerrain.shouldBeUnknownTerrain() {
     assertSoftly(this) {
         coordinate shouldBe Coordinate.zero
-        terrain shouldBe Maybe.empty()
-        revealed shouldBe KnowledgeGrade.NONE
+        terrain shouldBe null
+        revealed shouldBe false
     }
 }
 
