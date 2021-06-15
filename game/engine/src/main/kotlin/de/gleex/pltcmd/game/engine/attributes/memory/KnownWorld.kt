@@ -21,8 +21,6 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     private val unrevealed: MutableCollection<Coordinate> =
         origin
             .toSet()
-            // create a local copy
-            .toMutableList()
 
     /**
      * @return the [KnownTerrain] at the given location.
