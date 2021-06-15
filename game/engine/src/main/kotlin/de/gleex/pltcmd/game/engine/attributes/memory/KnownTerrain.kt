@@ -25,6 +25,24 @@ class KnownTerrain internal constructor(knownTile: WorldTile, grade: KnowledgeGr
     val coordinate: Coordinate
         get() = origin.coordinate
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as KnownTerrain
+
+        if (terrain != other.terrain) return false
+        if (coordinate != other.coordinate) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = terrain.hashCode()
+        result = 31 * result + coordinate.hashCode()
+        return result
+    }
+
 }
 
 /**
