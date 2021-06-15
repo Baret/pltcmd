@@ -13,6 +13,8 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.time.LocalTime
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
 /**
  * This singleton is responsible for publishing _ticks_ via the [EventBus] and by this advance the ingame time.
@@ -74,10 +76,23 @@ object Ticker {
      */
     val isPaused: ObservableValue<Boolean> = _isPausedProperty
 
+    private var lastTickTimestamp: Long? = null
+
+    private var durationMeasurements: Int = 0
+    private var avgTickDuration: Double = 0.0
+
     /**
      * Increases the current tick, publishes the corresponding [TickEvent].
      */
+    @OptIn(ExperimentalTime::class)
     private fun tick() {
+        if(log.isDebugEnabled() && lastTickTimestamp != null) {
+            val last = lastTickTimestamp ?: 0
+            val duration = System.currentTimeMillis() - last
+            avgTickDuration = ((avgTickDuration * durationMeasurements) + duration) / ++durationMeasurements
+            log.debug("Tick $currentTick took ${duration.toDuration(TimeUnit.MILLISECONDS)}. Avg = $avgTickDuration")
+            lastTickTimestamp = System.currentTimeMillis()
+        }
         _currentTickProperty.value = nextTick
         _currentTimeProperty.updateValue(
                 _currentTimeProperty
@@ -101,6 +116,7 @@ object Ticker {
             tick()
         }, 1, tickRateDuration, tickRateTimeunit)
         _isPausedProperty.updateValue(false)
+        lastTickTimestamp = System.currentTimeMillis()
     }
 
     /**
@@ -110,6 +126,7 @@ object Ticker {
         executor.shutdown()
         executor = newExecutor()
         _isPausedProperty.updateValue(true)
+        lastTickTimestamp = null
     }
 
     /**
