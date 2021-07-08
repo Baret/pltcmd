@@ -17,6 +17,10 @@
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>world</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.hexworks.zircon</groupId>
+            <artifactId>zircon.core-jvm</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
