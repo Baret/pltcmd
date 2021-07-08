@@ -47,7 +47,7 @@ object TileRepository {
         }
     }
 
-    fun createTerrainTile(terrain: Terrain): Tile = createTerrainTile(terrain.height, terrain.type)
+    fun createTerrainTile(terrain: Terrain?): Tile = createTerrainTile(terrain?.height, terrain?.type)
 
     fun createTerrainTile(terrainHeight: TerrainHeight?, terrainType: TerrainType?): Tile =
             Tile.newBuilder()

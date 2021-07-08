@@ -8,10 +8,10 @@ import de.gleex.pltcmd.util.knowledge.KnownByBoolean
 /**
  * Represents knowledge about a specific [WorldTile], or more exact: The terrain at its [Coordinate].
  *
- * Known terrain is either revealed or not. By default it is unrevealed (aka. unknown). [reveal] changes the
+ * Known terrain is either revealed or not. By default it is unrevealed (aka. unknown). [KnownByBoolean.reveal] changes the
  * status. Unknown terrain has null [Terrain].
  *
- * **Hint:** Use [WorldTile.unknown] and [WorldTile.known] extension functions to create instances.
+ * @see KnownByBoolean
  */
 typealias KnownTerrain = KnownByBoolean<WorldTile, *>
 
