@@ -39,6 +39,16 @@ internal object Storage {
         return ProtoBuf.decodeFromByteArray<R>(bytes)
     }
 
+    /** lists all stored entries of the given type */
+    inline fun listAll(type: String): List<StorageId> {
+        return dataFolder.listFiles { file -> file.extension == type }
+            .map {
+                val sanitizedName = it.nameWithoutExtension
+                val id = unsanitizeName(sanitizedName)
+                StorageId(id, type)
+            }
+    }
+
     private val StorageId.file
         get() = File(dataFolder, sanitizeFilename(id) + "." + type)
 }
@@ -52,7 +62,21 @@ fun sanitizeFilename(text: String): String {
     return hex.take(110)
 }
 
+fun unsanitizeName(fileName: String): String {
+    val bytes = fileName.decodeHex()
+    return String(bytes, Charsets.UTF_8)
+}
+
 // from https://www.javacodemonk.com/md5-and-sha256-in-java-kotlin-and-android-96ed9628
 fun ByteArray.toHex(): String {
     return joinToString("") { "%02x".format(it) }
+}
+
+// from https://stackoverflow.com/a/66614516
+fun String.decodeHex(): ByteArray {
+    require(length % 2 == 0) { "Must have an even length" }
+
+    return chunked(2)
+        .map { it.toInt(16).toByte() }
+        .toByteArray()
 }

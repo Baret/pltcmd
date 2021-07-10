@@ -16,6 +16,13 @@ object MapStorage {
     private val log = LoggerFactory.getLogger(MapStorage::class)
     private const val storageType = "map"
 
+    /** map of all stored maps to their names */
+    val list: Map<StorageId, String>
+        get() {
+            return Storage.listAll(storageType)
+                .associateWith { Storage.load<WorldMapDao>(it)?.name ?: "missing ${it.id}" }
+        }
+
     /** Save the given map under the given id. */
     fun save(map: WorldMap, mapId: String) {
         val storage = mapId.storageId
@@ -29,7 +36,11 @@ object MapStorage {
 
     /** Loads the map for the given id. Returns null if no map is stored under that id. */
     fun load(mapId: String): WorldMap? {
-        val storage = mapId.storageId
+        return load(mapId.storageId)
+    }
+
+    /** Loads the map for the given id. Returns null if no map is stored under that id. */
+    fun load(storage: StorageId): WorldMap? {
         val (map, duration) = measureTimedValue {
             val dao = Storage.load<WorldMapDao>(storage)
             dao?.toMap()
