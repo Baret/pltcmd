@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 
 /** Stores/loads map data. */
 @Serializable
-data class WorldMapDao(val tiles: Collection<WorldTile>) {
+data class WorldMapDao(val tiles: Collection<WorldTile>, val name: String = "legacy storage format") {
 
     /** Convert this data back to a model. */
     fun toMap(): WorldMap {
@@ -20,9 +20,9 @@ data class WorldMapDao(val tiles: Collection<WorldTile>) {
 
     companion object {
         /** Returns only the basic data of the map */
-        fun of(map: WorldMap): WorldMapDao {
+        fun of(map: WorldMap, name: String): WorldMapDao {
             val tilesPerOrigin = map.sectors.flatMap { sector -> sector.tiles.toList() }
-            return WorldMapDao(tilesPerOrigin)
+            return WorldMapDao(tilesPerOrigin, name)
         }
     }
 }
