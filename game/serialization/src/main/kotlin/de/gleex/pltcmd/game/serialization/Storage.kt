@@ -40,7 +40,7 @@ internal object Storage {
     }
 
     /** lists all stored entries of the given type */
-    inline fun listAll(type: String): List<StorageId> {
+    fun listAll(type: String): List<StorageId> {
         return dataFolder.listFiles { file -> file.extension == type }
             .map {
                 val sanitizedName = it.nameWithoutExtension
