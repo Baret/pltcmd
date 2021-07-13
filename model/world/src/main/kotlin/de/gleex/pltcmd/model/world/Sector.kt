@@ -17,7 +17,7 @@ class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<S
 
     init {
         // sectors must have full 50s as origin
-        if (origin != origin.toSectorOrigin()) {
+        if (origin != origin.sectorOrigin) {
             throw IllegalArgumentException("Origin of a Sector must be on a 50th of the map. Given: $origin")
         }
 
@@ -57,7 +57,7 @@ class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<S
 
     override operator fun contains(coordinate: Coordinate): Boolean {
         // because this sector contains all coordinates
-        return origin == coordinate.toSectorOrigin()
+        return origin == coordinate.sectorOrigin
     }
 
     fun getTerrainAt(coordinate: Coordinate): Terrain? {
@@ -95,11 +95,12 @@ class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<S
 }
 
 // extensions for WorldTile
-fun WorldTile.inSameSector(other: WorldTile) = getSectorOrigin() == other.getSectorOrigin()
+fun WorldTile.inSameSector(other: WorldTile) = sectorOrigin == other.sectorOrigin
 
-fun WorldTile.getSectorOrigin() = coordinate.toSectorOrigin()
+val WorldTile.sectorOrigin get() = coordinate.sectorOrigin
 
-fun Coordinate.toSectorOrigin() = Coordinate(
+val Coordinate.sectorOrigin
+    get() = Coordinate(
         eastingFromLeft - Math.floorMod(eastingFromLeft, Sector.TILE_COUNT),
         northingFromBottom - Math.floorMod(northingFromBottom, Sector.TILE_COUNT)
-)
+    )

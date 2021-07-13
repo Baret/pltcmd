@@ -4,10 +4,12 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
+import kotlinx.serialization.Serializable
 
 /**
  * The smallest piece of the world/map.
  */
+@Serializable
 data class WorldTile(val coordinate: Coordinate, val terrain: Terrain) : Comparable<WorldTile> {
 
     /** creates a tile at the given location with a default terrain (useful for tests) */

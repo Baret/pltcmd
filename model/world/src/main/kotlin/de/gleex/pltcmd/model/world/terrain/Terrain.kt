@@ -1,7 +1,9 @@
 package de.gleex.pltcmd.model.world.terrain
 
+import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
+@Serializable
 data class Terrain private constructor(val type: TerrainType, val height: TerrainHeight) {
 
     companion object {

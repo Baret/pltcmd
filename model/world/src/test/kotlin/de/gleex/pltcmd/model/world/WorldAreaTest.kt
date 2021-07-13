@@ -5,7 +5,7 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateTest
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.doubles.shouldBeLessThan
+import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.shouldNotBe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
@@ -36,6 +36,6 @@ class WorldAreaTest : StringSpec({
             }
         }
         log.info("accessing tile took $duration")
-        duration.inMilliseconds shouldBeLessThan 100.0
+        duration.inWholeMilliseconds shouldBeLessThan 100
     }
 })

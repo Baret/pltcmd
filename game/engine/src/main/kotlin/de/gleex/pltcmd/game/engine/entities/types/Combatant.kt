@@ -63,7 +63,7 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
  **/
 @ExperimentalTime
 internal fun Shooter.fireShots(range: Double, attackDuration: Duration, random: Random): Int {
-    val shotsPerDuration = weapon.roundsPerMinute * attackDuration.inMinutes + partialShot
+    val shotsPerDuration = weapon.roundsPerMinute * attackDuration.toDouble(DurationUnit.MINUTES) + partialShot
     // rounding down loses a partial shot that is remember for the next call.
     val fullShots: Int = shotsPerDuration.toInt()
     partialShot = shotsPerDuration % 1

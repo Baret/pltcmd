@@ -6,6 +6,7 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import org.hexworks.zircon.api.graphics.Symbols
+import java.util.*
 
 internal val terrainTransformation: Transformation<Terrain> = { format ->
     when(format) {
@@ -46,13 +47,16 @@ internal val terrainTypeTransformation: Transformation<TerrainType> = { format -
         Format.SIDEBAR, Format.FULL    -> when (this) {
             TerrainType.GRASSLAND,
             TerrainType.FOREST,
-            TerrainType.MOUNTAIN      -> name.toLowerCase().capitalize()
+            TerrainType.MOUNTAIN      -> name.toCamelCase()
             TerrainType.HILL          -> "Hills"
             TerrainType.WATER_DEEP    -> "Deep water"
             TerrainType.WATER_SHALLOW -> "Shallow water"
         }
     }
 }
+
+fun String.toCamelCase() = lowercase(Locale.getDefault())
+    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
 internal val terrainHeightTransformation: Transformation<TerrainHeight> = { format ->
     when(format) {

@@ -46,7 +46,7 @@ open class Element(
      * The total number of soldiers making up this element (all [Unit.personnel] summed up).
      */
     open val totalSoldiers
-            get() = allUnits.sumBy { it.personnel }
+            get() = allUnits.sumOf { it.personnel }
 
     private var _superordinate: Property<Maybe<CommandingElement>> =
             initialSuperOrdinate.toProperty { newValue ->
