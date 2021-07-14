@@ -6,6 +6,16 @@ package de.gleex.pltcmd.game.options
  */
 object GameConstants {
     /**
+     * Constant values regarding information of the application.
+     */
+    object AppInfo {
+        /**
+         * Version number of the packaged application or 'devel' if run directly from source code.
+         */
+        val version: String = GameConstants::class.java.`package`.implementationVersion ?: "devel"
+    }
+
+    /**
      * Constant values regarding ingame time.
      */
     object Time {

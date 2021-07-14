@@ -18,7 +18,7 @@ fun main() {
     }
     val alpha = Elements.riflePlatoon.new().apply { callSign = CallSign("Alpha") }
     val bravo = Elements.riflePlatoon.new().apply { callSign = CallSign("Bravo") }
-    println("A full ${alpha.kind} ${alpha.rung} called ${alpha.callSign} would have a combined firepower of ${alpha.allUnits.sumByDouble { firePowerFor(it) ?: 0.0 }}")
+    println("A full ${alpha.kind} ${alpha.rung} called ${alpha.callSign} would have a combined firepower of ${alpha.allUnits.sumOf { firePowerFor(it) ?: 0.0 }}")
 
     spacer()
 

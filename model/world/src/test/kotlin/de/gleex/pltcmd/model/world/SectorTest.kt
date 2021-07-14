@@ -65,7 +65,7 @@ class SectorTest : WordSpec() {
         "Coordinates" should {
 
             "in the same sector should be mapped to the sector origin" {
-                validOrigin.toSectorOrigin() shouldBe validOrigin
+                validOrigin.sectorOrigin shouldBe validOrigin
                 io.kotest.data.forAll(
                         row(0, 0),
                         row(1, 0),
@@ -75,7 +75,7 @@ class SectorTest : WordSpec() {
                         row(TILE_COUNT - 1, TILE_COUNT - 1)
                 ) { offsetOriginEast, offsetOriginNorth ->
                     val coordinate = validOrigin.movedBy(offsetOriginEast, offsetOriginNorth)
-                    coordinate.toSectorOrigin() shouldBe validOrigin
+                    coordinate.sectorOrigin shouldBe validOrigin
                 }
             }
             "in a neighbor sector should be mapped to that sector origin" {
@@ -91,13 +91,13 @@ class SectorTest : WordSpec() {
                 ) { offsetOriginEast, offsetOriginNorth, expectedSectorOffsetEast, expectedSectorOffsetNorth ->
                     val coordinate = validOrigin.movedBy(offsetOriginEast, offsetOriginNorth)
                     val expectedOrigin = validOrigin.movedBy(expectedSectorOffsetEast * TILE_COUNT, expectedSectorOffsetNorth * TILE_COUNT)
-                    coordinate.toSectorOrigin() shouldBe expectedOrigin
+                    coordinate.sectorOrigin shouldBe expectedOrigin
                 }
             }
             "in a neighbor sector with negative coordinates should be mapped to that sector origin" {
                 val coordinate = Coordinate(-1, -1)
                 val expectedOrigin = Coordinate.zero.movedBy(-1 * TILE_COUNT, -1 * TILE_COUNT)
-                coordinate.toSectorOrigin() shouldBe expectedOrigin
+                coordinate.sectorOrigin shouldBe expectedOrigin
             }
         }
     }

@@ -10,7 +10,7 @@ import de.gleex.pltcmd.game.engine.entities.types.movementPath
 import de.gleex.pltcmd.game.engine.messages.UpdatePosition
 import de.gleex.pltcmd.game.options.GameConstants
 import de.gleex.pltcmd.game.ticks.Ticker
-import de.gleex.pltcmd.model.world.toSectorOrigin
+import de.gleex.pltcmd.model.world.sectorOrigin
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
@@ -24,7 +24,7 @@ object MakesSecurityHalts : BaseFacet<GameContext, UpdatePosition>(UpdatePositio
     private val log = LoggerFactory.getLogger(MakesSecurityHalts::class)
 
     override suspend fun receive(message: UpdatePosition): Response {
-        if (message.oldPosition.toSectorOrigin() != message.newPosition.toSectorOrigin()) {
+        if (message.oldPosition.sectorOrigin != message.newPosition.sectorOrigin) {
             val entity: MovableEntity = message.source
             entity.findAttribute(CommandersIntent::class)
                 .ifPresent { intent ->
