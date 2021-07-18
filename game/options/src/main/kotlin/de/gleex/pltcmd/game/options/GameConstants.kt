@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.options
 
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.util.measure.speed.Speed
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -41,9 +41,9 @@ object GameConstants {
          * To travel one tile of distance in one tick you need this speed.
          *
          * @see Time.timeSimulatedPerTick
-         * @see Coordinate.edgeLength
+         * @see WorldTile.edgeLength
          */
-        val speedForOneTileInOneTick = Speed(Coordinate.edgeLength, Time.timeSimulatedPerTick)
+        val speedForOneTileInOneTick = Speed(WorldTile.edgeLength, Time.timeSimulatedPerTick)
 
     }
 }

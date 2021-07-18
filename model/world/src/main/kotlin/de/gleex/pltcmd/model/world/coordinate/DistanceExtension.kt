@@ -1,11 +1,12 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.util.measure.distance.Distance
 
 /**
- * The [Distance] of this many [Coordinate]s.
+ * The [Distance] of this many [WorldTile]s.
  *
- * @see Coordinate.edgeLength
+ * @see WorldTile.edgeLength
  */
-val Int.coordinates: Distance
-    get() = Coordinate.edgeLength * this
+val Int.tilesAway: Distance
+    get() = WorldTile.edgeLength * this
