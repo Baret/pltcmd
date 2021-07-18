@@ -4,7 +4,6 @@ import de.gleex.pltcmd.util.measure.area.Area
 import de.gleex.pltcmd.util.measure.area.squared
 import de.gleex.pltcmd.util.measure.area.times
 import de.gleex.pltcmd.util.measure.distance.Distance
-import de.gleex.pltcmd.util.measure.distance.DistanceUnit
 import de.gleex.pltcmd.util.measure.distance.hundredMeters
 import de.gleex.pltcmd.util.measure.distance.times
 import kotlin.math.PI
@@ -35,7 +34,7 @@ class Precision(private val mrad: Double) {
         /** @param coneDiameter the diameter of the cone at [range] [Distance]. */
         fun offAt(coneDiameter: Distance, range: Distance): Precision {
             // formula from http://shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/#tab-4574-2 / http://ballistipedia.com/index.php?title=Angular_Size
-            val mrad = mradsPerCircle * atan((coneDiameter inUnit DistanceUnit.meters) / (2.0 * (range inUnit DistanceUnit.meters)))
+            val mrad = mradsPerCircle * atan(coneDiameter / (2.0 * range))
             return Precision(mrad)
         }
     }
