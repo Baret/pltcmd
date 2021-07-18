@@ -83,10 +83,10 @@ fun main() {
     val bravoCallSign = CallSign("Bravo-2")
     val charlieCallSign = CallSign("Charlie-1")
 
-    val hqEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = hqCallSign }, hqLocation, commandFaction, hqRadio)
-    val bravoEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = bravoCallSign }, bravoLocation, friends, bravoRadio)
-    val charlieEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = charlieCallSign }, charlieLocation, friends, charlieRadio)
-    val zuluEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = CallSign("Zulu-0") }, zuluLocation, neutrals, zuluRadio)
+    val hqEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = hqCallSign }, hqLocation, commandFaction, hqRadio, map)
+    val bravoEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = bravoCallSign }, bravoLocation, friends, bravoRadio, map)
+    val charlieEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = charlieCallSign }, charlieLocation, friends, charlieRadio, map)
+    val zuluEntity = EntityFactory.newElement(Elements.rifleSquad.new().apply { callSign = CallSign("Zulu-0") }, zuluLocation, neutrals, zuluRadio, map)
 
     game.addEntity(hqEntity)
     game.addEntity(bravoEntity)

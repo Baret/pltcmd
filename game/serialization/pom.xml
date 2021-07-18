@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>game</artifactId>
+        <groupId>de.gleex.pltcmd.game</groupId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>serialization</artifactId>
+    <name>Game serialization</name>
+    <description>Serializes parts of the game and stores/loads it in/from files.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>world</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-serialization-protobuf</artifactId>
+            <version>${serialization.version}</version>
+        </dependency>
+    </dependencies>
+</project>

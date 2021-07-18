@@ -5,7 +5,9 @@ import de.gleex.pltcmd.util.measure.compass.bearing.toBearing
 import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.hundredMeters
 import de.gleex.pltcmd.util.measure.distance.times
+import kotlinx.serialization.Serializable
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.*
 
 /**
@@ -15,6 +17,7 @@ import kotlin.math.*
  *
  * It is like the numerical location of the Military Grid Reference System (see https://en.wikipedia.org/wiki/Military_Grid_Reference_System#Numerical_location).
  */
+@Serializable
 data class Coordinate private constructor(val eastingFromLeft: Int, val northingFromBottom: Int) : Comparable<Coordinate> {
     /**
      * Converts this coordinate to a [MainCoordinate]
@@ -207,7 +210,7 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
             return null
         }
 
-        private val created: MutableMap<Long, Coordinate> = mutableMapOf()
+        private val created: MutableMap<Long, Coordinate> = ConcurrentHashMap()
         /**
          * Provides an [Coordinate] object with the given values.
          **/
