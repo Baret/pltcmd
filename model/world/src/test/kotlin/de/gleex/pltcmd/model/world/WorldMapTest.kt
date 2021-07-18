@@ -83,9 +83,9 @@ class WorldMapTest : WordSpec({
 
             val allDurations = mutableListOf<Long>()
             forAll(
-                row(10, 317),
-                row(50, 6439),
-                row(100, 17054),
+                row(10, 349),
+                row(50, 6559),
+                row(100, 17149),
                 row(200, 22500),
                 row(300, 22500)
             ) { radius, expected ->
