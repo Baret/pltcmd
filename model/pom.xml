@@ -22,6 +22,7 @@
         <module>combat</module>
         <module>signals</module>
         <module>faction</module>
+        <module>pathfinding</module>
     </modules>
 
     <dependencyManagement>
@@ -55,6 +56,11 @@
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
                 <artifactId>world</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>pathfinder</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
