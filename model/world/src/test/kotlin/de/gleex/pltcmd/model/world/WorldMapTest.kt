@@ -92,7 +92,7 @@ class WorldMapTest : WordSpec({
                 repeat(20) {
                     allDurations.add(
                         measureTimeMillis {
-                            largeMap.circleAt(center, radius).size shouldBe expected
+                            largeMap.circleAt(center, WorldTile.edgeLength * radius).size shouldBe expected
                         }
                     )
                 }

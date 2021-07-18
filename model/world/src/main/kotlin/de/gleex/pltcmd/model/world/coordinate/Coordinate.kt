@@ -68,13 +68,13 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
     }
 
     /** @return the euclidean distance */
-    // TODO split Distance to WorldTile, keep Double here
     infix fun distanceTo(other: Coordinate): Distance {
         val eastingDistanceSquared = (eastingFromLeft - other.eastingFromLeft).absoluteValue.toDouble()
                 .pow(2.0)
         val northingDistanceSquared = (northingFromBottom - other.northingFromBottom).absoluteValue.toDouble()
                 .pow(2.0)
-        return sqrt(eastingDistanceSquared + northingDistanceSquared) * WorldTile.edgeLength
+        val distance = sqrt(eastingDistanceSquared + northingDistanceSquared)
+        return distance * WorldTile.edgeLength
     }
 
     /**

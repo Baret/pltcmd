@@ -3,7 +3,9 @@ package de.gleex.pltcmd.model.signals.radio
 import de.gleex.pltcmd.model.signals.core.SignalPropagator
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.radio.RadioSignalPropagator.Companion.MIN_POWER_THRESHOLD
+import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.terrain.TerrainType
+import de.gleex.pltcmd.util.measure.distance.Distance
 import java.math.RoundingMode
 import kotlin.math.log
 import kotlin.math.max
@@ -39,9 +41,10 @@ class RadioSignalPropagator(initialRadioPower: Double) : SignalPropagator {
          * The maximum number of tiles a radio signal can travel with the given power. This is only possible
          * when it only travels through air.
          */
-        fun maxRangeInTiles(power: Double): Int {
+        fun maxRangeInTiles(power: Double): Distance {
             // MIN = power * loss^x -> x = log(MIN/power, loss)
-            return max(log(MIN_POWER_THRESHOLD / power, AIR_LOSS_FACTOR).toInt(), 0)
+            val rangeInTiles = max(log(MIN_POWER_THRESHOLD / power, AIR_LOSS_FACTOR).toInt(), 0)
+            return WorldTile.edgeLength * rangeInTiles
         }
     }
 

@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.util.measure.compass.points.CardinalPoint.*
 import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
@@ -251,7 +252,7 @@ class CoordinateTest : WordSpec({
         }
 
         "be valid for all points on a circle" {
-            CoordinateCircle(testCoordinate, 20)
+            CoordinateCircle(testCoordinate, WorldTile.edgeLength * 20)
                 .forEach { circleCoordinate ->
                     "Bearing from $testCoordinate to $circleCoordinate".asClue {
                         val roundedCardinal = (testCoordinate bearingTo circleCoordinate).roundedCardinal

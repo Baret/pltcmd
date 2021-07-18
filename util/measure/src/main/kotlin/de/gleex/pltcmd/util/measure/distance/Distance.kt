@@ -18,6 +18,8 @@ data class Distance internal constructor(internal val valueInMeters: Double): Co
 
     operator fun times(multiplier: Int): Distance = (valueInMeters * multiplier).meters
 
+    operator fun plus(other: Distance): Distance = (valueInMeters + other.valueInMeters).meters
+
     /**
      * The value of this [Distance] in the given [unit].
      */
