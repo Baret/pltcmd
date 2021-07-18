@@ -5,7 +5,7 @@ import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
-import de.gleex.pltcmd.game.options.GameConstants.Time.secondsSimulatedPerTick
+import de.gleex.pltcmd.game.options.GameConstants.Time.timeSimulatedPerTick
 import de.gleex.pltcmd.util.measure.area.squareMeters
 import de.gleex.pltcmd.util.measure.distance.Distance
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -13,7 +13,6 @@ import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
-import kotlin.time.toDuration
 
 /**
  * This file contains code for entities that have the [ShootersAttribute].
@@ -43,14 +42,12 @@ infix fun CombatantEntity.onDefeat(callback: () -> Unit) {
 }
 
 /** This combatant attacks the given [target] for a full tick */
-@OptIn(ExperimentalTime::class)
 internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
-    val attackDurationPerTick = secondsSimulatedPerTick.toDuration(DurationUnit.SECONDS)
     if (target.isAbleToFight) {
         val range: Distance = currentPosition distanceTo target.currentPosition
         val hitsPerTick = shooters
             .combatReady
-            .sumOf { it.fireShots(range, attackDurationPerTick, random) }
+            .sumOf { it.fireShots(range, timeSimulatedPerTick, random) }
         val wounded = hitsPerTick * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
         target.shooters.wound(wounded)
         log.info("$logIdentifier attack with $hitsPerTick hits resulted in ${target.shooters.combatReadyCount} combat-ready units of ${target.logIdentifier}")
@@ -62,9 +59,9 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
  * @param range in meters
  * @return number of all hits in the given time.
  **/
-@ExperimentalTime
+@OptIn(ExperimentalTime::class)
 internal fun Shooter.fireShots(range: Distance, attackDuration: Duration, random: Random): Int {
-    val shotsPerDuration = weapon.roundsPerMinute * attackDuration.inMinutes + partialShot
+    val shotsPerDuration = weapon.roundsPerMinute * attackDuration.toDouble(DurationUnit.MINUTES) + partialShot
     // rounding down loses a partial shot that is remember for the next call.
     val fullShots: Int = shotsPerDuration.toInt()
     partialShot = shotsPerDuration % 1

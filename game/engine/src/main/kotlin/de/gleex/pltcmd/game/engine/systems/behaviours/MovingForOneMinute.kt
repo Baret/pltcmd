@@ -43,7 +43,7 @@ object MovingForOneMinute :
             return false
         } else if (entity.movementPath.isNotEmpty()) {
             // TODO: Might be more accurate by re-calculating currentSpeedInKph after each tile (we might be slower there)
-            val travelDistanceInTiles = entity.currentSpeedInKph / GameConstants.Speed.speedForOneTileInOneTickInKph
+            val travelDistanceInTiles = entity.currentSpeedInKph / GameConstants.Movement.speedForOneTileInOneTick.inKph
             entity.movementProgress += travelDistanceInTiles
             log.debug("${entity.logIdentifier} travels $travelDistanceInTiles tiles/tick with a base speed of ${entity.baseSpeedInKph} and current speed of ${entity.currentSpeedInKph} km/h. New progress: ${entity.movementProgress}")
             while (entity.movementProgress.hasTilesToAdvance() && entity.movementPath.isNotEmpty()) {

@@ -13,6 +13,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.time.LocalTime
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.time.ExperimentalTime
 
 /**
  * This singleton is responsible for publishing _ticks_ via the [EventBus] and by this advance the ingame time.
@@ -77,12 +78,13 @@ object Ticker {
     /**
      * Increases the current tick, publishes the corresponding [TickEvent].
      */
+    @OptIn(ExperimentalTime::class)
     private fun tick() {
         _currentTickProperty.value = nextTick
         _currentTimeProperty.updateValue(
                 _currentTimeProperty
                         .value
-                        .plusSeconds(GameConstants.Time.secondsSimulatedPerTick.toLong()))
+                        .plusSeconds(GameConstants.Time.timeSimulatedPerTick.inWholeSeconds))
         log.debug(" - TICK - Sending tick $currentTick, current time: ${currentTime.value}")
         globalEventBus.publishTick(currentTick)
     }

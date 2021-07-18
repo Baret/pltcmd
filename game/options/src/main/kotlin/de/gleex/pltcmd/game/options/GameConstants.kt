@@ -1,7 +1,9 @@
 package de.gleex.pltcmd.game.options
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.util.measure.speed.div
+import de.gleex.pltcmd.util.measure.speed.Speed
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * This object holds constant values that are otherwise "just assumed". When doing calculations regarding "fixed" values
@@ -25,38 +27,23 @@ object GameConstants {
         /**
          * The amount of ingame time that passes in one tick.
          */
-        const val secondsSimulatedPerTick = 60.0
+        @OptIn(ExperimentalTime::class)
+        val timeSimulatedPerTick = Duration.seconds(60)
 
-        /**
-         * The number of ticks needed to simulate one ingame minute.
-         * @see secondsSimulatedPerTick
-         */
-        const val ticksPerMinute: Double = 60.0 / secondsSimulatedPerTick
     }
 
     /**
-     * Speed is distance per time ;)
+     * Constant values regarding movement in the world.
      */
-    object Speed {
-        private const val secondsPerHour = 60.0 * 60.0
-        private const val metersPerKilometer = 1000.0
+    object Movement {
 
         /**
          * To travel one tile of distance in one tick you need this speed.
          *
-         * @see Time.secondsSimulatedPerTick
-         * @see World.tileSizeInMeters
+         * @see Time.timeSimulatedPerTick
+         * @see Coordinate.edgeLength
          */
-        val speedForOneTileInOneTickInMetersPerSecond = Coordinate.edgeLength / Time.secondsSimulatedPerTick
+        val speedForOneTileInOneTick = Speed(Coordinate.edgeLength, Time.timeSimulatedPerTick)
 
-        /**
-         * To travel one tile of distance in one tick you need this speed.
-         *
-         * @see Time.secondsSimulatedPerTick
-         * @see World.tileSizeInMeters
-         */
-        val speedForOneTileInOneTickInKph =
-                // convert meters to kilometers and seconds to hours -> m/s to km/h
-                speedForOneTileInOneTickInMetersPerSecond * (secondsPerHour / metersPerKilometer)
     }
 }

@@ -31,7 +31,7 @@ object MakesSecurityHalts : BaseFacet<GameContext, UpdatePosition>(UpdatePositio
                     // Make a security halt when approximately 300m into the new sector
                     val afterTiles = 3.0
                     val ticksPerTile =
-                        GameConstants.Speed.speedForOneTileInOneTickInKph / if (entity.currentSpeedInKph > 0.0) entity.currentSpeedInKph else entity.baseSpeedInKph
+                        GameConstants.Movement.speedForOneTileInOneTick.inKph / if (entity.currentSpeedInKph > 0.0) entity.currentSpeedInKph else entity.baseSpeedInKph
                     val inTurns = (afterTiles * ticksPerTile).toInt()
 
                     if (entity.movementPath.size > afterTiles) {
