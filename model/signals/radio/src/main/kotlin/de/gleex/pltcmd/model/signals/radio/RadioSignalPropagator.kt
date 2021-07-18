@@ -6,6 +6,7 @@ import de.gleex.pltcmd.model.signals.radio.RadioSignalPropagator.Companion.MIN_P
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.util.measure.distance.Distance
+import de.gleex.pltcmd.util.measure.distance.times
 import java.math.RoundingMode
 import kotlin.math.log
 import kotlin.math.max
@@ -44,7 +45,7 @@ class RadioSignalPropagator(initialRadioPower: Double) : SignalPropagator {
         fun maxRangeInTiles(power: Double): Distance {
             // MIN = power * loss^x -> x = log(MIN/power, loss)
             val rangeInTiles = max(log(MIN_POWER_THRESHOLD / power, AIR_LOSS_FACTOR).toInt(), 0)
-            return WorldTile.edgeLength * rangeInTiles
+            return rangeInTiles * WorldTile.edgeLength
         }
     }
 

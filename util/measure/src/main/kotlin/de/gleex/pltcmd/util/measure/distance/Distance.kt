@@ -41,3 +41,6 @@ data class Distance internal constructor(internal val valueInMeters: Double): Co
 
 operator fun Double.times(distance: Distance): Distance =
     distance * this
+
+operator fun Int.times(distance: Distance): Distance =
+    distance * this

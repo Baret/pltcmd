@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world.coordinate
 
 import de.gleex.pltcmd.model.world.WorldTile
+import de.gleex.pltcmd.util.measure.distance.times
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -31,7 +32,7 @@ class CoordinateCircleTest : StringSpec() {
     init {
 
         beforeTest {
-            underTest = CoordinateCircle(center, WorldTile.edgeLength * radiusInTiles)
+            underTest = CoordinateCircle(center, radiusInTiles * WorldTile.edgeLength)
         }
 
         "size" {

@@ -4,6 +4,7 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.util.geometry.circleOffsetFromGrid
 import de.gleex.pltcmd.util.geometry.circleWithRadius
 import de.gleex.pltcmd.util.measure.distance.Distance
+import de.gleex.pltcmd.util.measure.distance.times
 import java.util.*
 import java.util.concurrent.ConcurrentSkipListSet
 
@@ -11,7 +12,7 @@ import java.util.concurrent.ConcurrentSkipListSet
 class CoordinateCircle(val center: Coordinate, val radius: Distance) : CoordinateArea({ center.fillCircle(radius) }) {
 
     override fun contains(coordinate: Coordinate): Boolean {
-        return center.distanceTo(coordinate) <= radius + WorldTile.edgeLength * circleOffsetFromGrid
+        return center.distanceTo(coordinate) <= radius + circleOffsetFromGrid * WorldTile.edgeLength
     }
 
 }
