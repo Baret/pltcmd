@@ -29,6 +29,10 @@ data class Distance internal constructor(internal val valueInMeters: Double): Co
     infix fun roundedTo(unit: DistanceUnit): Int = inUnit(unit).roundToInt()
 
     override fun compareTo(other: Distance): Int = valueInMeters.compareTo(other.valueInMeters)
+
+    companion object {
+        val ZERO = Distance(0.0)
+    }
 }
 
 operator fun Double.times(distance: Distance): Distance =
