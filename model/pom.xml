@@ -83,6 +83,11 @@
                 <groupId>de.gleex.pltcmd.util</groupId>
                 <artifactId>events</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.util</groupId>
+                <artifactId>graph</artifactId>
+                <version>${project.version}</version>
             </dependency><!-- tests -->
             <dependency>
                 <groupId>de.gleex.pltcmd.util</groupId>
