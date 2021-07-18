@@ -5,8 +5,8 @@ import de.gleex.pltcmd.game.engine.entities.types.destination
 import de.gleex.pltcmd.game.engine.entities.types.movementPath
 import de.gleex.pltcmd.game.engine.entities.types.position
 import de.gleex.pltcmd.game.engine.messages.MoveTo
+import de.gleex.pltcmd.model.pathfinding.simple.StraightLinePathFinder
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
@@ -17,7 +17,8 @@ object PathFinding : BaseFacet<GameContext, MoveTo>(MoveTo::class) {
     override suspend fun receive(message: MoveTo): Response {
         val (destination, _, entity) = message
         if (entity.movementPath.isNotEmpty()
-            && entity.destination.filter { current -> current == destination }.isPresent) {
+            && entity.destination.filter { current -> current == destination }.isPresent
+        ) {
             return Consumed
         }
         val currentPosition = entity.position.value
@@ -25,8 +26,7 @@ object PathFinding : BaseFacet<GameContext, MoveTo>(MoveTo::class) {
         entity.movementPath = Stack<Coordinate>()
             .apply {
                 addAll(
-                    CoordinatePath
-                        .line(currentPosition, destination)
+                    StraightLinePathFinder.findPath(currentPosition, destination)
                         .drop(1)
                         .reversed()
                 )

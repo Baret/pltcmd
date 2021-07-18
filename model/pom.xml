@@ -22,6 +22,7 @@
         <module>combat</module>
         <module>signals</module>
         <module>faction</module>
+        <module>pathfinding</module>
     </modules>
 
     <dependencyManagement>
@@ -58,6 +59,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>pathfinder</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>de.gleex.pltcmd.model.signals</groupId>
                 <artifactId>radio</artifactId>
                 <version>${project.version}</version>
@@ -76,6 +82,11 @@
             <dependency>
                 <groupId>de.gleex.pltcmd.util</groupId>
                 <artifactId>events</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.util</groupId>
+                <artifactId>graph</artifactId>
                 <version>${project.version}</version>
             </dependency><!-- tests -->
             <dependency>
