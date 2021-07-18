@@ -38,6 +38,10 @@
             <artifactId>world</artifactId>
         </dependency>
         <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>pathfinding</artifactId>
+        </dependency>
+        <dependency>
             <groupId>de.gleex.pltcmd.model.signals</groupId>
             <artifactId>signals-all</artifactId>
             <type>pom</type>
