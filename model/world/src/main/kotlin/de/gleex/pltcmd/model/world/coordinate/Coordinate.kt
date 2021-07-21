@@ -69,11 +69,11 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
 
     /** @return the euclidean distance */
     infix fun distanceTo(other: Coordinate): Distance {
-        val eastingDistanceSquared = (eastingFromLeft - other.eastingFromLeft).absoluteValue.toDouble()
+        val eastingDiffSquared = (eastingFromLeft - other.eastingFromLeft).absoluteValue.toDouble()
                 .pow(2.0)
-        val northingDistanceSquared = (northingFromBottom - other.northingFromBottom).absoluteValue.toDouble()
+        val northingDiffSquared = (northingFromBottom - other.northingFromBottom).absoluteValue.toDouble()
                 .pow(2.0)
-        val distance = sqrt(eastingDistanceSquared + northingDistanceSquared)
+        val distance = sqrt(eastingDiffSquared + northingDiffSquared)
         return distance * WorldTile.edgeLength
     }
 
@@ -81,10 +81,10 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
      * Calculates the [Bearing] from this [Coordinate] to [other].
      */
     infix fun bearingTo(other: Coordinate): Bearing {
-        val y = (other.northingFromBottom - northingFromBottom).toDouble()
-        val x = (other.eastingFromLeft - eastingFromLeft).toDouble()
+        val dy = (other.northingFromBottom - northingFromBottom).toDouble()
+        val dx = (other.eastingFromLeft - eastingFromLeft).toDouble()
         // calling atan2 with x, y instead of y, x might seem like an error. But this works :P
-        val atan2 = atan2(x, y)
+        val atan2 = atan2(dx, dy)
         return Math
             .toDegrees(atan2)
             .roundToInt()
