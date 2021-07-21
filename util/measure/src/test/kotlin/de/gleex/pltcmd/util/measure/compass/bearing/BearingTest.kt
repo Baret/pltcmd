@@ -7,10 +7,10 @@ import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 
-class BearingTest: WordSpec({
+class BearingTest : WordSpec({
     "A valid bearing" should {
         "have a value between 0 and 359" {
-            for(i in 0..359) {
+            for (i in 0..359) {
                 Bearing(i).angle shouldBe i
             }
             for (i in -400..-1) {
@@ -51,7 +51,7 @@ class BearingTest: WordSpec({
         "be due on exact cardinals" {
             (0..359).forEachAsClue { angle ->
                 val actualBearing = angle.toBearing()
-                if(angle % 45 == 0) {
+                if (angle % 45 == 0) {
                     actualBearing.isDue shouldBe true
                 } else {
                     actualBearing.isDue shouldBe false

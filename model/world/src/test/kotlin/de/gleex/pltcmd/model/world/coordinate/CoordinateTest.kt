@@ -1,15 +1,11 @@
 package de.gleex.pltcmd.model.world.coordinate
 
-import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.util.measure.compass.points.CardinalPoint.*
-import de.gleex.pltcmd.util.measure.distance.times
-import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.collections.containDuplicates
-import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.comparables.beGreaterThan
@@ -250,40 +246,6 @@ class CoordinateTest : WordSpec({
                         isDue shouldBe true
                     }
             }
-        }
-
-        "be valid for all points on a circle" {
-            CoordinateCircle(testCoordinate, 20 * WorldTile.edgeLength)
-                .forEach { circleCoordinate ->
-                    "Bearing from $testCoordinate to $circleCoordinate".asClue {
-                        val roundedCardinal = (testCoordinate bearingTo circleCoordinate).roundedCardinal
-                        when {
-                            circleCoordinate == testCoordinate                                -> {
-                                roundedCardinal shouldBe N
-                            }
-                            circleCoordinate.eastingFromLeft > testCoordinate.eastingFromLeft -> {
-                                when {
-                                    circleCoordinate.northingFromBottom > testCoordinate.northingFromBottom -> {
-                                        roundedCardinal shouldBeIn listOf(N, NE, E)
-                                    }
-                                    else                                                                    -> {
-                                        roundedCardinal shouldBeIn listOf(E, SE, S)
-                                    }
-                                }
-                            }
-                            else                                                              -> {
-                                when {
-                                    circleCoordinate.northingFromBottom > testCoordinate.northingFromBottom -> {
-                                        roundedCardinal shouldBeIn listOf(N, NW, W)
-                                    }
-                                    else                                                                    -> {
-                                        roundedCardinal shouldBeIn listOf(W, SW, S)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
         }
     }
 })
