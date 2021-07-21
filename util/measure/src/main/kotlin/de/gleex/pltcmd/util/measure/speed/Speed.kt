@@ -29,10 +29,6 @@ data class Speed(val inKph: Double) : Comparable<Speed> {
         return (inKph - other.inKph).toInt()
     }
 
-    override fun toString(): String {
-        return "${javaClass.simpleName} $inKph km/h"
-    }
-
     companion object {
         val ZERO = Speed(Distance.ZERO, 1.toDuration(DurationUnit.HOURS))
 

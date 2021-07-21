@@ -39,7 +39,7 @@ object MovingForOneMinute :
         context: GameContext
     ): Boolean {
         return if (entity.canNotMove) {
-            log.debug("${entity.logIdentifier} can not move currently! The current speed is even ${entity.currentSpeed} km/h")
+            log.debug("${entity.logIdentifier} can not move currently! The current speed is even ${entity.currentSpeed.inKph} km/h")
             return false
         } else if (entity.movementPath.isNotEmpty()) {
             // TODO: Might be more accurate by re-calculating currentSpeedInKph after each tile (we might be slower there)
