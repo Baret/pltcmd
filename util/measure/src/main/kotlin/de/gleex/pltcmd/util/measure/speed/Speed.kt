@@ -2,7 +2,6 @@ package de.gleex.pltcmd.util.measure.speed
 
 import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.DistanceUnit
-import de.gleex.pltcmd.util.measure.distance.kilometers
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -24,6 +23,10 @@ data class Speed(val distance: Distance, val time: Duration) : Comparable<Speed>
 
     override fun compareTo(other: Speed): Int {
         return (inKph - other.inKph).toInt()
+    }
+
+    override fun toString(): String {
+        return "${javaClass.simpleName} $inKph km/h"
     }
 
     companion object {
