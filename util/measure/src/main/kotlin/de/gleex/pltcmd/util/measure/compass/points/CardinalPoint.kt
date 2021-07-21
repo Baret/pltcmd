@@ -68,7 +68,3 @@ enum class CardinalPoint(
         private const val w = "west"
     }
 }
-
-fun main() {
-    println("this is north: ${CardinalPoint.N}")
-}
