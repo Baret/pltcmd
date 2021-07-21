@@ -11,7 +11,8 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class SpeedTest : StringSpec({
 
-    "inKph" {
+    "constructors/inKph" {
+        Speed(13.37).inKph shouldBe 13.37
         13.kilometers.perHour.inKph shouldBe 13.0
         Speed(3.hundredMeters, Duration.minutes(15)).inKph shouldBe 1.2
     }
@@ -26,6 +27,6 @@ class SpeedTest : StringSpec({
 
     "equals" {
         7000.meters.perHour shouldBe 7.kilometers.perHour
-        7.kilometers.perHour shouldBe Speed(21.kilometers, Duration.minutes(3 * 60))
+        7.kilometers.perHour shouldBe Speed(21.kilometers, Duration.minutes(180))
     }
 })
