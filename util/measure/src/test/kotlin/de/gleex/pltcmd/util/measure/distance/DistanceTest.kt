@@ -95,5 +95,6 @@ class DistanceTest : StringSpec({
         3.33.meters * 3.333 shouldBe 0.1109889.hundredMeters
         10.meters * 10 shouldBe 1.hundredMeters
         1.kilometers * (2.0 / 3.0) shouldBe ((2.0 / 3.0) * 10).hundredMeters
+        (3 + 1.0 / 3.0).meters * 3.0 shouldBe 10.meters
     }
 })
