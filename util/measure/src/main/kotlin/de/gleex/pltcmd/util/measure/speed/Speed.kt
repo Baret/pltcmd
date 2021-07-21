@@ -15,7 +15,7 @@ import kotlin.time.toDuration
 @OptIn(ExperimentalTime::class)
 data class Speed(val inKph: Double) : Comparable<Speed> {
     constructor(distance: Distance, time: Duration) : this(
-        distance.inUnit(DistanceUnit.kilometers) / time.toDouble(
+        distance.inUnit(DistanceUnit.Kilometers) / time.toDouble(
             DurationUnit.HOURS
         )
     )

@@ -18,22 +18,22 @@ val Double.meters: Distance
  * Creates a [Distance] of this hundred meters length.
  */
 val Int.hundredMeters: Distance
-    get() = Distance(this, DistanceUnit.hundredMeters)
+    get() = Distance(this, DistanceUnit.HundredMeters)
 
 /**
  * Creates a [Distance] of this hundred meters length rounded to full meters.
  */
 val Double.hundredMeters: Distance
-    get() = Distance(this, DistanceUnit.hundredMeters)
+    get() = Distance(this, DistanceUnit.HundredMeters)
 
 /**
  * Creates a [Distance] of this kilometers length.
  */
 val Int.kilometers: Distance
-    get() = Distance(this, DistanceUnit.kilometers)
+    get() = Distance(this, DistanceUnit.Kilometers)
 
 /**
  * Creates a [Distance] of this kilometers length rounded to full meters.
  */
 val Double.kilometers: Distance
-    get() = Distance(this, DistanceUnit.kilometers)
+    get() = Distance(this, DistanceUnit.Kilometers)

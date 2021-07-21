@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.combat.attack
 
 import de.gleex.pltcmd.util.measure.area.squareMeters
-import de.gleex.pltcmd.util.measure.distance.DistanceUnit.meters
+import de.gleex.pltcmd.util.measure.distance.DistanceUnit.Meters
 import de.gleex.pltcmd.util.measure.distance.hundredMeters
 import de.gleex.pltcmd.util.measure.distance.kilometers
 import de.gleex.pltcmd.util.measure.distance.meters
@@ -24,7 +24,7 @@ class PrecisionTest : StringSpec({
 
         underTest.offsetAt(2.hundredMeters) shouldBe 0.2.meters
         underTest.offsetAt(1337.meters) shouldBe 1.337.meters
-        underTest.offsetAt(333.333.meters) inUnit meters shouldBe (0.333333 plusOrMinus 0.000000001)
+        underTest.offsetAt(333.333.meters) inUnit Meters shouldBe (0.333333 plusOrMinus 0.000000001)
     }
 
     "areaAt" {
