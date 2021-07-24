@@ -23,7 +23,7 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
         origin
             .toSet()
             // create a local copy
-            .toMutableList()
+            .toMutableSet()
 
     /**
      * @return the [KnownTerrain] at the given location.
