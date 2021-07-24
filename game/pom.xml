@@ -21,6 +21,7 @@
         <module>ui</module>
         <module>engine</module>
         <module>ui-strings</module>
+        <module>serialization</module>
     </modules>
 
     <dependencies>
@@ -63,6 +64,11 @@
             </dependency>
             <dependency>
                 <groupId>de.gleex.pltcmd.game</groupId>
+                <artifactId>serialization</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.game</groupId>
                 <artifactId>ticks</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -95,6 +101,11 @@
             <dependency>
                 <groupId>de.gleex.pltcmd.model</groupId>
                 <artifactId>mapgeneration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.model</groupId>
+                <artifactId>pathfinding</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

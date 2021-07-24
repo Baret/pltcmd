@@ -1,4 +1,4 @@
-package de.gleex.pltcmd.model.mapgeneration.dijkstra
+package de.gleex.pltcmd.util.graph
 
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory

@@ -4,12 +4,12 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.serialization.StorageId
+import de.gleex.pltcmd.game.serialization.world.MapStorage
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.mapgeneration.MapGenerationProgressController
-import de.gleex.pltcmd.game.ui.views.GameView
-import de.gleex.pltcmd.game.ui.views.GeneratingView
-import de.gleex.pltcmd.game.ui.views.TitleView
+import de.gleex.pltcmd.game.ui.views.*
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
@@ -20,6 +20,8 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.SwingApplications
@@ -27,6 +29,7 @@ import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
+import org.hexworks.zircon.api.uievent.ComponentEventType
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -52,9 +55,46 @@ open class Main {
         val screen = tileGrid.toScreen()
 
         showTitle(screen, tileGrid)
+        selectMap(screen, tileGrid)
+    }
 
-        generateMap(screen, tileGrid) { generatedMap ->
-            runGame(generatedMap, screen, tileGrid)
+    protected open fun selectMap(screen: Screen, tileGrid: TileGrid) {
+        val availableMaps = MapStorage.list
+        if (availableMaps.isEmpty() && UiOptions.SKIP_INTRO.not()) {
+            // give title some time before switching to menu when not loading a map
+            TimeUnit.MILLISECONDS.sleep(4000)
+        }
+
+        val loadMapChoice = CompletableDeferred<StorageId?>()
+        val menuEntries = mutableListOf<MenuEntry>()
+        menuEntries.addAll(
+            availableMaps.map { (mapId, mapName) ->
+                MenuEntry("Load map $mapName", enabled = true) { event ->
+                    if (ComponentEventType.ACTIVATED == event.type) {
+                        loadMapChoice.complete(mapId)
+                    }
+                }
+            }
+        )
+        menuEntries.add(
+            MenuEntry("Generate new map", enabled = true) { event ->
+                if (ComponentEventType.ACTIVATED == event.type) {
+                    loadMapChoice.complete(null)
+                }
+            }
+        )
+        screen.dock(MenuView(tileGrid, menuEntries))
+        val mapToLoad = runBlocking { loadMapChoice.await() }
+
+        if (mapToLoad != null) {
+            val loadedMap = MapStorage.load(mapToLoad)
+            runGame(loadedMap!!, screen, tileGrid)
+        } else {
+            val mapFile = GameOptions.MAP_FILE
+            generateMap(screen, tileGrid) { generatedMap ->
+                MapStorage.save(generatedMap, mapFile)
+                runGame(generatedMap, screen, tileGrid)
+            }
         }
     }
 
@@ -114,11 +154,14 @@ open class Main {
         elementsToCommand.run {
 
             val alpha = visibleSector.createFriendly(Elements.transportHelicopterPlatoon.new()
-                    .apply { callSign = CallSign("Alpha") }, faction, game)
+                .apply { callSign = CallSign("Alpha") }, faction, game
+            )
             val bravo = visibleSector.createFriendly(Elements.riflePlatoon.new()
-                    .apply { callSign = CallSign("Bravo") }, faction, game)
+                .apply { callSign = CallSign("Bravo") }, faction, game
+            )
             val charlie = visibleSector.createFriendly(Elements.reconPlane.new()
-                    .apply { callSign = CallSign("Charlie") }, faction, game)
+                .apply { callSign = CallSign("Charlie") }, faction, game
+            )
             listOf(alpha, bravo, charlie).forEach {
                 log.debug("${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeedInKph} kph.")
             }
@@ -161,10 +204,7 @@ open class Main {
      * @see UiOptions.SKIP_INTRO
      */
     protected open fun showTitle(screen: Screen, tileGrid: TileGrid) {
-        if (UiOptions.SKIP_INTRO.not()) {
-            screen.dock(TitleView(tileGrid))
-            TimeUnit.MILLISECONDS.sleep(4000)
-        }
+        screen.dock(TitleView(tileGrid))
     }
 
     /**
@@ -179,9 +219,9 @@ open class Main {
         screen.dock(generatingView)
 
         val mapGenerator = WorldMapGenerator(
-                GameOptions.MAP_SEED,
-                worldWidthInTiles,
-                worldHeightInTiles
+            GameOptions.MAP_SEED,
+            worldWidthInTiles,
+            worldHeightInTiles
         )
         MapGenerationProgressController(mapGenerator, generatingView)
 
