@@ -182,6 +182,7 @@ open class Main {
         val elementsPerSector = 2
         val hostiles = mutableSetOf<ElementEntity>()
         game.world.sectors.forEach { sector ->
+            log.debug("adding $elementsPerSector hostiles to $sector")
             repeat(elementsPerSector) {
                 game.addElementInSector(sector, Elements.rifleSquad.new(), faction = opfor, playerControlled = false)
                     .also(hostiles::add)
