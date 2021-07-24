@@ -6,7 +6,7 @@ import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.toSectorOrigin
+import de.gleex.pltcmd.model.world.sectorOrigin
 import kotlinx.collections.immutable.persistentMapOf
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
@@ -122,7 +122,7 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
             fetchBlockAt(coordinate.toPosition())
 
     fun scrollTo(coordinate: Coordinate) {
-        val sectorTopLeft = coordinate.toSectorOrigin().withRelativeNorthing(Sector.TILE_COUNT - 1)
+        val sectorTopLeft = coordinate.sectorOrigin.withRelativeNorthing(Sector.TILE_COUNT - 1)
         scrollTo(sectorTopLeft.toPosition())
     }
 
