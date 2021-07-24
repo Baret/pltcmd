@@ -8,8 +8,6 @@ import org.hexworks.zircon.api.resource.TilesetResource
 object UiOptions {
     fun buildAppConfig() =
             AppConfig.newBuilder().
-                    // GameComponents is a beta feature
-                    enableBetaFeatures().
                     withSize(WINDOW_WIDTH, WINDOW_HEIGHT).
                     withTitle("PltCmd").
                     withDefaultTileset(DEFAULT_TILESET).
