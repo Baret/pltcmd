@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.options
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 import java.util.concurrent.TimeUnit
 
@@ -16,7 +16,7 @@ object GameOptions {
     /**
      * Option to turn on the RadioSignalVisualizer and corresponding UI elements.
      */
-    val displayRadioSignals: Property<Boolean> = createPropertyFrom(false)
+    val displayRadioSignals: Property<Boolean> = false.toProperty()
 
     /**
      * The amount of time between each tick.

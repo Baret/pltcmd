@@ -49,11 +49,11 @@ open class Element(
             get() = allUnits.sumOf { it.personnel }
 
     private var _superordinate: Property<Maybe<CommandingElement>> =
-            initialSuperOrdinate.toProperty { newValue ->
+            initialSuperOrdinate.toProperty({ _, newValue ->
                 newValue.fold({ true }) {
                     it != this
                 }
-            }
+            })
 
     /**
      * If this element is currently being commanded this [Maybe] contains the superordinate.
