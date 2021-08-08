@@ -17,8 +17,8 @@ import org.hexworks.cobalt.datatypes.Maybe
  * Holds information about an [Element] that was reported (directly or indirectly, by vision, sound or assumption).
  * It may not be accurate and mostly incomplete!
  */
-class KnownContact(private val reporter: ElementEntity, contact: ElementEntity) :
-    KnownByGrade<ElementEntity, KnownContact>(contact, KnowledgeGrade.NONE) {
+class KnownContact(private val reporter: ElementEntity, contact: ElementEntity, grade: KnowledgeGrade) :
+    KnownByGrade<ElementEntity, KnownContact>(contact, grade) {
 
     // basic information is always available
     val kind: ElementKind
@@ -37,7 +37,7 @@ class KnownContact(private val reporter: ElementEntity, contact: ElementEntity) 
 }
 
 /**
- * A string containing this element's [kind] and [rung]. Can be used as relatively short
+ * A string containing this element's [KnownContact.kind] and [KnownContact.rung]. Can be used as relatively short
  * descriptive summary of what this contact is.
  */
 val KnownContact.description

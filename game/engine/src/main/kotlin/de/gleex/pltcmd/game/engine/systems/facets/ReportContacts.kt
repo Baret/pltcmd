@@ -39,8 +39,7 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
         val detectedElementMaybe = message.entity.asElementEntity { it }
         if (reporterMaybe.isPresent && detectedElementMaybe.isPresent) {
             val reporter = reporterMaybe.get()
-            val contact = KnownContact(reporter, detectedElementMaybe.get())
-                .apply { reveal(message.knowledgeGrade) }
+            val contact = KnownContact(reporter, detectedElementMaybe.get(), message.knowledgeGrade)
             val hasNewKnowledge = reporter.rememberContact(contact)
             if(hasNewKnowledge) {
                 return reportContact(reporter, contact, message.context)
