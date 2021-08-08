@@ -1,7 +1,12 @@
-target/
+# pltcmd
+/data/
 logs/
+
+# Maven
+target/
 
 # IntelliJ
 .DS_Store
 .idea
 *.iml
+

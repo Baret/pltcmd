@@ -184,7 +184,7 @@ class KnownWorldTest : WordSpec() {
 
                 knownWorld.reveal(area)
 
-                knownWorld.getUnknownIn(area) shouldBe emptySet()
+                knownWorld.getUnknownIn(area) shouldBe CoordinateArea.EMPTY
             }
         }
 

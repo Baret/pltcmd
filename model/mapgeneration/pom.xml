@@ -18,6 +18,10 @@
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>world</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>graph</artifactId>
+        </dependency>
         <!-- tests -->
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>

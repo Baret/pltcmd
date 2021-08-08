@@ -53,12 +53,12 @@ object NatoAlphabet {
      *
      * Both upper and lower case characters work.
      */
-    operator fun get(character: Char): String? = alphabet[character.toLowerCase()]
+    operator fun get(character: Char): String? = alphabet[character.lowercaseChar()]
 
     /**
      * Checks if the given character can be translated with [get].
      */
-    operator fun contains(character: Char) = alphabet.contains(character.toLowerCase())
+    operator fun contains(character: Char) = alphabet.contains(character.lowercaseChar())
 
     fun random(r: Random = Random): String = alphabet.values.random(r)
 }
