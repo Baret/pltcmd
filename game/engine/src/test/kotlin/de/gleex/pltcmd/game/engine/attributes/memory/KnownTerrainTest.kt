@@ -11,60 +11,59 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
-import org.hexworks.cobalt.datatypes.Maybe
 
 class KnownTerrainTest: WordSpec({
     "Known terrain" should {
         val coordinate = Coordinate.zero
         val tile = WorldTile(coordinate, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
         val otherTile = WorldTile(coordinate.movedBy(1, 1), Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
-        val unknownByAlias = KnownTerrain(tile)
+        val unknownByConstructor = KnownTerrain(tile)
         val unknownByExtension = tile.unrevealed()
 
-        val knownByAlias = KnownTerrain(tile)
+        val knownByConstructor = KnownTerrain(tile, true)
         val knownByExtension = tile.revealed()
 
         "have null fields when unrevealed" {
-            unknownByAlias.shouldBeUnknownTerrain()
+            unknownByConstructor.shouldBeUnknownTerrain()
             unknownByExtension.shouldBeUnknownTerrain()
         }
         "have the correct terrain when revealed" {
-            knownByAlias.shouldBeKnownTerrain()
+            knownByConstructor.shouldBeKnownTerrain()
             knownByExtension.shouldBeKnownTerrain()
         }
         "equal correctly" {
             otherTile shouldNotBe tile
 
-            unknownByAlias shouldNotBe knownByAlias
-            knownByAlias shouldHaveSameFieldsAs knownByExtension
-            unknownByAlias shouldHaveSameFieldsAs unknownByExtension
-            knownByAlias shouldNotBeSameInstanceAs knownByExtension
-            unknownByAlias shouldNotBeSameInstanceAs unknownByExtension
+            unknownByConstructor shouldNotBe knownByConstructor
+            knownByConstructor shouldHaveSameFieldsAs knownByExtension
+            unknownByConstructor shouldHaveSameFieldsAs unknownByExtension
+            knownByConstructor shouldNotBeSameInstanceAs knownByExtension
+            unknownByConstructor shouldNotBeSameInstanceAs unknownByExtension
             // but when revealing unknown terrain...
-            unknownByAlias.reveal()
+            unknownByConstructor.reveal()
             unknownByExtension.reveal()
-            unknownByAlias shouldHaveSameFieldsAs knownByAlias
+            unknownByConstructor shouldHaveSameFieldsAs knownByConstructor
             unknownByExtension shouldHaveSameFieldsAs knownByExtension
-            unknownByAlias shouldNotBe otherTile.unrevealed()
-            unknownByAlias shouldNotBe otherTile.revealed()
+            unknownByConstructor shouldNotBe otherTile.unrevealed()
+            unknownByConstructor shouldNotBe otherTile.revealed()
         }
         "change hashcode when being revealed" {
             val terrain = tile.unrevealed()
             terrain.revealed shouldBe false
             val oldHash = terrain.hashCode()
             terrain.reveal()
-            terrain.revealed shouldBe false
+            terrain.revealed shouldBe true
             terrain.hashCode() shouldNotBe oldHash
         }
         "merge with less knowledge to stays as it is" {
             // the typealias erases some generic type information so it cannot be used for merging
             //knownByAlias.mergeWith(unknownByAlias)
             //knownByAlias.mergeWith(unknownByExtension)
-            unknownByAlias.shouldBeUnknownTerrain()
-            val resultByAlias = knownByExtension mergeWith unknownByAlias
+            unknownByConstructor.shouldBeUnknownTerrain()
+            val resultByAlias = knownByExtension mergeWith unknownByConstructor
             resultByAlias shouldBe false
             knownByExtension.shouldBeKnownTerrain()
-            unknownByAlias.shouldBeUnknownTerrain()
+            unknownByConstructor.shouldBeUnknownTerrain()
 
             unknownByExtension.shouldBeUnknownTerrain()
             val resultByExtension = knownByExtension mergeWith unknownByExtension
@@ -76,10 +75,10 @@ class KnownTerrainTest: WordSpec({
             // the typealias erases some generic type information so it cannot be used for merging
             //unknownByAlias.mergeWith(knownByAlias)
             //unknownByAlias.mergeWith(knownByExtension)
-            val result = unknownByExtension.mergeWith(knownByAlias)
+            val result = unknownByExtension.mergeWith(knownByConstructor)
             result shouldBe true
             unknownByExtension.shouldBeKnownTerrain()
-            knownByAlias.shouldBeKnownTerrain()
+            knownByConstructor.shouldBeKnownTerrain()
         }
         "merge with more knowledge by extension to increases it" {
             // the typealias erases some generic type information so it cannot be used for merging
@@ -89,7 +88,7 @@ class KnownTerrainTest: WordSpec({
             val result = unknownByExtension.mergeWith(knownByExtension)
             result shouldBe true
             unknownByExtension.shouldBeKnownTerrain()
-            knownByAlias.shouldBeKnownTerrain()
+            knownByConstructor.shouldBeKnownTerrain()
         }
         "not merge with other knowledge" {
             val otherKnown = otherTile.revealed()
@@ -107,7 +106,7 @@ class KnownTerrainTest: WordSpec({
 private fun KnownTerrain.shouldBeKnownTerrain() {
     assertSoftly(this) {
         coordinate shouldBe Coordinate.zero
-        terrain shouldBe Maybe.of(Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
+        terrain shouldBe Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT)
         revealed shouldBe true
     }
 }

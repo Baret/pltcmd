@@ -13,10 +13,11 @@ import de.gleex.pltcmd.util.knowledge.Revealable
  *
  * **Hint:** Use [WorldTile.unrevealed] and [WorldTile.revealed] extension functions to create instances.
  */
-class KnownTerrain internal constructor(knownTile: WorldTile) : Revealable<WorldTile, KnownTerrain>(knownTile, false) {
+class KnownTerrain internal constructor(knownTile: WorldTile, isRevealed: Boolean = false) : Revealable<WorldTile, KnownTerrain>(knownTile, isRevealed) {
 
     /** The currently known [Terrain]. `null` if not revealed. */
-    val terrain: Terrain? = bit?.terrain
+    val terrain: Terrain?
+        get() = bit?.terrain
 
     /** The [Coordinate] of this [KnownTerrain]. It is always "the truth" independent of the revealed state. */
     val coordinate: Coordinate
