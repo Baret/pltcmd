@@ -90,7 +90,7 @@ object Ticker {
             val last = lastTickTimestamp ?: 0
             val duration = System.currentTimeMillis() - last
             avgTickDuration = ((avgTickDuration * durationMeasurements) + duration) / ++durationMeasurements
-            log.debug("Tick $currentTick took ${duration.toDuration(TimeUnit.MILLISECONDS)}. Avg = $avgTickDuration")
+            log.debug("$currentTick took ${duration.toDuration(TimeUnit.MILLISECONDS)}. Avg = $avgTickDuration")
             lastTickTimestamp = System.currentTimeMillis()
         }
         _currentTickProperty.value = nextTick
