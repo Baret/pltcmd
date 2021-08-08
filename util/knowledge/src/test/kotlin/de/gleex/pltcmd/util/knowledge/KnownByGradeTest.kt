@@ -1,13 +1,18 @@
 package de.gleex.pltcmd.util.knowledge
 
-/*
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import org.hexworks.cobalt.datatypes.Maybe
+
 class KnownByGradeTest : WordSpec({
 
     val knownBit = "testing"
-    val unrevealed = KnownByGrade<String, KnownByGrade<String, *>>(knownBit, KnowledgeGrade.NONE)
-    val halfRevealed = KnownByGrade<String, KnownByGrade<String, *>>(knownBit, KnowledgeGrade.MEDIUM)
-    val revealed = KnownByGrade<String, KnownByGrade<String, *>>(knownBit, KnowledgeGrade.FULL)
-    val otherRevealed = KnownByGrade<String, KnownByGrade<String, *>>("other", KnowledgeGrade.FULL)
+    val unrevealed = TestingKnowledgeByGrade(knownBit, KnowledgeGrade.NONE)
+    val halfRevealed = TestingKnowledgeByGrade(knownBit, KnowledgeGrade.MEDIUM)
+    val revealed = TestingKnowledgeByGrade(knownBit, KnowledgeGrade.FULL)
+    val otherRevealed = TestingKnowledgeByGrade("other", KnowledgeGrade.FULL)
 
     "revealed" should {
         "be NONE if not revealed" {
@@ -58,4 +63,3 @@ class KnownByGradeTest : WordSpec({
 }) {
     override fun isolationMode() = IsolationMode.InstancePerLeaf
 }
-*/

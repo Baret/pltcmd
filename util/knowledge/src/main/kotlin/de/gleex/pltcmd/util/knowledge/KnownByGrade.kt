@@ -31,7 +31,7 @@ abstract class KnownByGrade<T : Any, SELF : KnownByGrade<T, SELF>>(
     /**
      * Returns the value of the [accessor] depending on the [revealed] value of this [Known]
      */
-    protected fun <R> revealAt(minAmount: KnowledgeGrade, accessor: (T) -> R): Maybe<R> {
+    fun <R> revealAt(minAmount: KnowledgeGrade, accessor: (T) -> R): Maybe<R> {
         if (revealed >= minAmount) {
             return Maybe.of(accessor(origin))
         }
@@ -49,6 +49,26 @@ abstract class KnownByGrade<T : Any, SELF : KnownByGrade<T, SELF>>(
             return true
         }
         return false
+    }
+
+    override fun toString(): String {
+        return "${javaClass.simpleName}[grade = $grade, origin = $origin]"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as KnownByGrade<*, *>
+
+        return origin == other.origin &&
+                grade == other.grade
+    }
+
+    override fun hashCode(): Int {
+        var result = origin.hashCode()
+        result = 31 * result + grade.hashCode()
+        return result
     }
 
 }
