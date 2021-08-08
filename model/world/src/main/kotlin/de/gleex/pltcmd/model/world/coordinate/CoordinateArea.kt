@@ -82,6 +82,10 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     open infix fun covers(otherArea: CoordinateArea): Boolean =
         coordinates.containsAll(otherArea.coordinates)
 
+    open fun filter(predicate: (Coordinate) -> Boolean): CoordinateArea {
+        return CoordinateArea { coordinates.filter(predicate).toSortedSet() }
+    }
+
     /**
      * Returns an ordered sequence of all [Coordinate]s in this area.
      */

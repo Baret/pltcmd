@@ -8,7 +8,6 @@ import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.messages.DetectEntities
 import de.gleex.pltcmd.model.signals.vision.builder.visionAt
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
@@ -58,8 +57,7 @@ object LookingAround :
     private fun SeeingEntity.rememberVisibleTerrain() {
         val tilesToReveal = tilesInVisibleRange
             .filter { vision.at(it).isAny() }
-            .toSortedSet()
-        rememberRevealed(CoordinateArea(tilesToReveal))
+        rememberRevealed(tilesToReveal)
     }
 
     private fun SeeingEntity.hasMoved() = vision.origin != currentPosition

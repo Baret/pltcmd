@@ -163,8 +163,7 @@ class KnownWorldTest : WordSpec() {
 
                 knownWorld.reveal(toReveal)
 
-                knownWorld.getUnknownIn(area) shouldBeUnknown CoordinateArea(area.filter { it != toReveal }
-                    .toSortedSet())
+                knownWorld.getUnknownIn(area) shouldBeUnknown area.filter { it != toReveal }
                 knownWorld.getUnknownIn(smallArea) shouldBeUnknown CoordinateArea(
                     sortedSetOf(
                         Coordinate(23, 43),
