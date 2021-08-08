@@ -40,7 +40,7 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
         if (reporterMaybe.isPresent && detectedElementMaybe.isPresent) {
             val reporter = reporterMaybe.get()
             val contact = KnownContact(reporter, detectedElementMaybe.get())
-                .apply { reveal(message.visibility.toKnowledgeGrade()) }
+                .apply { reveal(message.knowledgeGrade) }
             val hasNewKnowledge = reporter.rememberContact(contact)
             if(hasNewKnowledge) {
                 return reportContact(reporter, contact, message.context)
@@ -72,8 +72,8 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
         reporter.commandersIntent.butNow(RadioGoal(report))
     }
 
-    private fun Visibility.toKnowledgeGrade() =
-        when (this) {
+    private val DetectedEntity.knowledgeGrade: KnowledgeGrade
+        get() = when (visibility) {
             Visibility.NONE -> KnowledgeGrade.NONE
             Visibility.POOR -> KnowledgeGrade.MEDIUM
             Visibility.GOOD -> KnowledgeGrade.FULL
