@@ -72,31 +72,3 @@ abstract class KnownByGrade<T : Any, SELF : KnownByGrade<T, SELF>>(
     }
 
 }
-
-/**
- * Creates a [KnownByGrade] from this [Any] that is not revealed.
- */
-//fun <T : Any, K: KnownByGrade<*, *>> T.nothingKnown() = K(
-//    origin = this,
-//    KnowledgeGrade.NONE
-//)
-
-/**
- * Creates a [KnownByGrade] from this [Any] that is fully revealed.
- */
-//fun <T : Any> T.fullyKnown() =
-//    nothingKnown()
-//        .apply {
-//            reveal(KnowledgeGrade.FULL)
-//        }
-
-/**
- * Creates a [KnownByGrade] from this [Any] that is either [revealed] or not.
- *
- * @param revealed when `true`, a [known] terrain will be created, [unknown] otherwise.
- */
-//fun <T : Any> T.toKnownByGrade(revealed: Double) =
-//    KnownByGrade<T, KnownByGrade<T, *>>(
-//        origin = this,
-//        KnowledgeGrade.of(revealed)
-//    )
