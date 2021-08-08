@@ -41,8 +41,8 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
             val reporter = reporterMaybe.get()
             val contact = KnownContact(reporter, detectedElementMaybe.get())
                 .apply { reveal(message.visibility.toKnowledgeGrade()) }
-            val wasNotYetKnown = reporter.memory.knownContacts.update(contact)
-            if(wasNotYetKnown) {
+            val hasNewKnowledge = reporter.rememberContact(contact)
+            if(hasNewKnowledge) {
                 return reportContact(reporter, contact, message.context)
             }
         }
