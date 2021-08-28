@@ -9,7 +9,7 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.scopes.WordSpecShouldScope
+import io.kotest.core.spec.style.scopes.WordSpecShouldContainerContext
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 
@@ -43,7 +43,7 @@ class EmptyRectangleAreaFinderTest : WordSpec()
     }
 }
 
-private suspend fun WordSpecShouldScope.testFilledOrigin(underTest: EmptyRectangleAreaFinder, testWorld: MutableWorld, origin: Coordinate) {
+private suspend fun WordSpecShouldContainerContext.testFilledOrigin(underTest: EmptyRectangleAreaFinder, testWorld: MutableWorld, origin: Coordinate) {
     val result = underTest.findAll(testWorld)
     "find rectangle beside origin to the end of the world" {
         result shouldContain CoordinateRectangle(origin.withRelativeEasting(1), testWorld.topRightCoordinate)
