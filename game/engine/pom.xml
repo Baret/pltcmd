@@ -38,10 +38,26 @@
             <artifactId>world</artifactId>
         </dependency>
         <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>pathfinding</artifactId>
+        </dependency>
+        <dependency>
             <groupId>de.gleex.pltcmd.model.signals</groupId>
             <artifactId>signals-all</artifactId>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>knowledge</artifactId>
+        </dependency>
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>world</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <!-- other dependencies -->
         <dependency>
             <groupId>org.hexworks.amethyst</groupId>
             <artifactId>amethyst.core-jvm</artifactId>

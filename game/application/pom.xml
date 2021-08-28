@@ -25,6 +25,10 @@
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>serialization</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>networking</artifactId>
         </dependency>
         <dependency>
@@ -56,6 +60,8 @@
                             <archive>
                                 <manifest>
                                     <mainClass>${main.class}</mainClass>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                    <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

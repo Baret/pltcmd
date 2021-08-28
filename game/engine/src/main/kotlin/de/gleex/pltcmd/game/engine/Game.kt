@@ -94,9 +94,9 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
         val elementPosition = positionInSector.toProperty()
         val radioSender = RadioSender(elementPosition, RadioPower(), world)
         val elementEntity = if (playerControlled) {
-            element.toEntity(elementPosition, faction, radioSender)
+            element.toEntity(elementPosition, faction, radioSender, world)
         } else {
-            EntityFactory.newWanderingElement(element, elementPosition, faction, radioSender)
+            EntityFactory.newWanderingElement(element, elementPosition, faction, radioSender, world)
         }
         log.debug("Adding ${element.description} with callsign ${element.callSign} to engine at position $positionInSector")
         return addEntity(elementEntity)
@@ -111,7 +111,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
             allEntities.elementsAt(location)
         }
         if (log.isTraceEnabled()) {
-            log.trace("Finding ${elements.size} of ${allEntities.filterElements().size} elements at $location took ${duration.inMilliseconds} ms")
+            log.trace("Finding ${elements.size} of ${allEntities.filterElements().size} elements at $location took ${duration.inWholeMilliseconds} ms")
         }
         return elements
     }

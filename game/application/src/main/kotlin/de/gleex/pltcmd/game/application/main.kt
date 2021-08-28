@@ -6,12 +6,12 @@ import de.gleex.pltcmd.game.networking.connect
 import de.gleex.pltcmd.game.networking.startServer
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.serialization.StorageId
+import de.gleex.pltcmd.game.serialization.world.MapStorage
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.game.ui.mapgeneration.MapGenerationProgressController
-import de.gleex.pltcmd.game.ui.views.GameView
-import de.gleex.pltcmd.game.ui.views.GeneratingView
-import de.gleex.pltcmd.game.ui.views.TitleView
+import de.gleex.pltcmd.game.ui.views.*
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
@@ -22,7 +22,9 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.toSectorOrigin
+import de.gleex.pltcmd.model.world.sectorOrigin
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.SwingApplications
@@ -30,6 +32,7 @@ import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.extensions.toScreen
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
+import org.hexworks.zircon.api.uievent.ComponentEventType
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -55,9 +58,46 @@ open class Main {
         val screen = tileGrid.toScreen()
 
         showTitle(screen, tileGrid)
+        selectMap(screen, tileGrid)
+    }
 
-        generateMap(screen, tileGrid) { generatedMap ->
-            runGame(generatedMap, screen, tileGrid)
+    protected open fun selectMap(screen: Screen, tileGrid: TileGrid) {
+        val availableMaps = MapStorage.list
+        if (availableMaps.isEmpty() && UiOptions.SKIP_INTRO.not()) {
+            // give title some time before switching to menu when not loading a map
+            TimeUnit.MILLISECONDS.sleep(4000)
+        }
+
+        val loadMapChoice = CompletableDeferred<StorageId?>()
+        val menuEntries = mutableListOf<MenuEntry>()
+        menuEntries.addAll(
+            availableMaps.map { (mapId, mapName) ->
+                MenuEntry("Load map $mapName", enabled = true) { event ->
+                    if (ComponentEventType.ACTIVATED == event.type) {
+                        loadMapChoice.complete(mapId)
+                    }
+                }
+            }
+        )
+        menuEntries.add(
+            MenuEntry("Generate new map", enabled = true) { event ->
+                if (ComponentEventType.ACTIVATED == event.type) {
+                    loadMapChoice.complete(null)
+                }
+            }
+        )
+        screen.dock(MenuView(tileGrid, menuEntries))
+        val mapToLoad = runBlocking { loadMapChoice.await() }
+
+        if (mapToLoad != null) {
+            val loadedMap = MapStorage.load(mapToLoad)
+            runGame(loadedMap!!, screen, tileGrid)
+        } else {
+            val mapFile = GameOptions.MAP_FILE
+            generateMap(screen, tileGrid) { generatedMap ->
+                MapStorage.save(generatedMap, mapFile)
+                runGame(generatedMap, screen, tileGrid)
+            }
         }
     }
 
@@ -103,7 +143,7 @@ open class Main {
      */
     protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
         val visibleSector = game.world.sectors.first {
-            it.origin == gameWorld.visibleTopLeftCoordinate().toSectorOrigin()
+            it.origin == gameWorld.visibleTopLeftCoordinate().sectorOrigin
         }
         val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
         val hq = game.newHQIn(visibleSector, game.playerFaction)
@@ -115,17 +155,24 @@ open class Main {
     /**
      * @return the elements that should be controllable by the UI
      */
-    protected open fun createElementsToCommand(visibleSector: Sector, game: Game, gameWorld: GameWorld): List<ElementEntity> {
+    protected open fun createElementsToCommand(
+        visibleSector: Sector,
+        game: Game,
+        gameWorld: GameWorld
+    ): List<ElementEntity> {
         val faction = game.playerFaction
         val elementsToCommand = mutableListOf<ElementEntity>()
         elementsToCommand.run {
 
             val alpha = visibleSector.createFriendly(Elements.transportHelicopterPlatoon.new()
-                    .apply { callSign = CallSign("Alpha") }, faction, game, gameWorld)
+                .apply { callSign = CallSign("Alpha") }, faction, game, gameWorld
+            )
             val bravo = visibleSector.createFriendly(Elements.riflePlatoon.new()
-                    .apply { callSign = CallSign("Bravo") }, faction, game, gameWorld)
+                .apply { callSign = CallSign("Bravo") }, faction, game, gameWorld
+            )
             val charlie = visibleSector.createFriendly(Elements.reconPlane.new()
-                    .apply { callSign = CallSign("Charlie") }, faction, game, gameWorld)
+                .apply { callSign = CallSign("Charlie") }, faction, game, gameWorld
+            )
             listOf(alpha, bravo, charlie).forEach {
                 log.debug("${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeedInKph} kph.")
             }
@@ -147,7 +194,7 @@ open class Main {
         game.world.sectors.forEach { sector ->
             repeat(elementsPerSector) {
                 game.addElementInSector(sector, Elements.rifleSquad.new(), faction = opfor, playerControlled = false)
-                        .also(gameWorld::trackUnit)
+                    .also(gameWorld::trackUnit)
             }
         }
     }
@@ -157,9 +204,15 @@ open class Main {
      * The position is random by default and the [Affiliation] is friendly. For other affiliations a wandering entity
      * will be added.
      */
-    protected fun Sector.createFriendly(element: CommandingElement, faction: Faction, game: Game, gameWorld: GameWorld, position: Coordinate = this.randomCoordinate(random)): ElementEntity {
+    protected fun Sector.createFriendly(
+        element: CommandingElement,
+        faction: Faction,
+        game: Game,
+        gameWorld: GameWorld,
+        position: Coordinate = this.randomCoordinate(random)
+    ): ElementEntity {
         return game.addElementInSector(this, element, position, faction, true)
-                .also(gameWorld::trackUnit)
+            .also(gameWorld::trackUnit)
     }
 
     /**
@@ -167,10 +220,7 @@ open class Main {
      * @see UiOptions.SKIP_INTRO
      */
     protected open fun showTitle(screen: Screen, tileGrid: TileGrid) {
-        if (UiOptions.SKIP_INTRO.not()) {
-            screen.dock(TitleView(tileGrid))
-            TimeUnit.MILLISECONDS.sleep(4000)
-        }
+        screen.dock(TitleView(tileGrid))
     }
 
     /**
@@ -185,9 +235,9 @@ open class Main {
         screen.dock(generatingView)
 
         val mapGenerator = WorldMapGenerator(
-                GameOptions.MAP_SEED,
-                worldWidthInTiles,
-                worldHeightInTiles
+            GameOptions.MAP_SEED,
+            worldWidthInTiles,
+            worldHeightInTiles
         )
         MapGenerationProgressController(mapGenerator, generatingView)
 

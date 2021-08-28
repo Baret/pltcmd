@@ -53,7 +53,7 @@ fun List<TerrainHeight>.average(): TerrainHeight? {
         // prevent division by zero
         return null
     }
-    val sumOfValues = sumBy { it.value }
+    val sumOfValues = sumOf { it.value }
     val averageValue = sumOfValues / size
     return TerrainHeight.ofValue(averageValue)
 }

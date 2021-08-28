@@ -19,6 +19,8 @@
         <module>events</module>
         <module>geometry</module>
         <module>namegeneration</module>
+        <module>knowledge</module>
+        <module>graph</module>
     </modules>
 
 </project>

@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.mapgeneration.mapgenerators
 
-import de.gleex.pltcmd.model.mapgeneration.dijkstra.DijkstraMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.graph.DijkstraMap
 import kotlin.random.Random
 
 /**

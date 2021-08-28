@@ -14,7 +14,7 @@
 		<connection>scm:git:https://github.com/Baret/pltcmd.git</connection>
 		<developerConnection>scm:git:git@github.com:Baret/pltcmd.git</developerConnection>
 		<url>https://github.com/Baret/pltcmd</url>
-		<tag>pltcmd-0.1.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<modules>
@@ -26,35 +26,23 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 
-		<kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
-		<kotlin.version>1.4.32</kotlin.version>
+		<kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
+		<kotlin.version>1.5.10</kotlin.version>
 		<!-- version used by Kotest or Ktor -->
-		<kotlinx.coroutines.version>1.4.3-native-mt</kotlinx.coroutines.version>
-		<serialization.version>1.1.0</serialization.version>
+		<kotlinx.coroutines.version>1.5.0</kotlinx.coroutines.version>
+		<serialization.version>1.2.1</serialization.version>
 
 		<zircon.version>2020.2.0-RELEASE</zircon.version>
-		<amethyst.version>2020.1.2-RELEASE</amethyst.version>
+		<amethyst.version>2021.0.1-RELEASE</amethyst.version>
 		<!-- Should match the higher version used by Amethyst or Zircon -->
 		<cobalt.version>2020.0.19-PREVIEW</cobalt.version>
 
 		<jupiter.version>5.7.0-M1</jupiter.version>
-		<kotest.version>4.4.3</kotest.version>
+		<kotest.version>4.6.0</kotest.version>
 	</properties>
-
-	<repositories>
-		<repository>
-			<!-- needed for kotlinx-datetime-jvm by amethyst -->
-			<id>kotlinx</id>
-			<name>kotlinx</name>
-			<url>https://kotlin.bintray.com/kotlinx/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -84,20 +72,8 @@
 		</dependency>
 		<!-- test dependencies -->
 		<dependency>
-			<groupId>org.jetbrains.kotlin</groupId>
-			<artifactId>kotlin-test-junit5</artifactId>
-			<version>${kotlin.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>io.kotest</groupId>
 			<artifactId>kotest-runner-junit5-jvm</artifactId>
-			<version>${kotest.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.kotest</groupId>
-			<artifactId>kotest-framework-api-jvm</artifactId>
 			<version>${kotest.version}</version>
 			<scope>test</scope>
 		</dependency>
@@ -114,9 +90,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.kotest</groupId>
-			<artifactId>kotest-assertions-arrow-jvm</artifactId>
-			<version>${kotest.version}</version>
+			<groupId>io.kotest.extensions</groupId>
+			<artifactId>kotest-assertions-arrow</artifactId>
+			<version>1.0.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

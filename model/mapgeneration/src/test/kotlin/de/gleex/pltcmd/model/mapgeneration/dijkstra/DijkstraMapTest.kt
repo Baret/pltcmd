@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.mapgeneration.dijkstra
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.graph.DijkstraMap
 import de.gleex.pltcmd.util.tests.beEmptyMaybe
 import de.gleex.pltcmd.util.tests.shouldContainValue
 import io.kotest.assertions.assertSoftly
@@ -10,6 +11,7 @@ import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 
+/** Tests [DijkstraMap] with [Coordinate]s */
 class DijkstraMapTest: WordSpec({
     "A map with only a target" should {
         val target = Coordinate(2, 3)
