@@ -3,6 +3,8 @@ package de.gleex.pltcmd.game.ui.views
 import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.FOBEntity
+import de.gleex.pltcmd.game.engine.entities.types.onReceivedTransmission
+import de.gleex.pltcmd.game.engine.entities.types.onSendTransmission
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
 import de.gleex.pltcmd.game.options.UiOptions.MAP_VIEW_HEIGHT
@@ -14,11 +16,9 @@ import de.gleex.pltcmd.game.ui.components.InfoSidebar
 import de.gleex.pltcmd.game.ui.components.InputSidebar
 import de.gleex.pltcmd.game.ui.components.MapFragment
 import de.gleex.pltcmd.game.ui.entities.GameWorld
-import de.gleex.pltcmd.model.radio.BroadcastEvent
+import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
-import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.world.Sector
-import de.gleex.pltcmd.util.events.globalEventBus
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -39,7 +39,7 @@ class GameView(
     val hq: FOBEntity,
     val elementsToCommand: List<ElementEntity>
 ) :
-        BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
+    BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     companion object {
         private val log = LoggerFactory.getLogger(GameView::class)
@@ -52,13 +52,13 @@ class GameView(
     override fun onDock() {
 
         val logArea = Components.logArea()
-                .withSize(LOG_AREA_WIDTH, LOG_AREA_HEIGHT)
-                .withPosition(Position.create(0, 0))
-                .withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log"))
-                .build()
-                .also {
-                    it.logRadioCalls()
-                }
+            .withSize(LOG_AREA_WIDTH, LOG_AREA_HEIGHT)
+            .withPosition(Position.create(0, 0))
+            .withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log"))
+            .build()
+            .also {
+                it.logRadioCalls()
+            }
 
         val leftSidebar = InputSidebar(SIDEBAR_HEIGHT, game, hq, elementsToCommand, gameWorld)
 
@@ -70,10 +70,11 @@ class GameView(
         val rightSidebar = InfoSidebar(SIDEBAR_HEIGHT, gameWorld, game)
 
         screen.addComponents(
-                logArea,
-                leftSidebarComponent,
-                mapComponent,
-                CustomComponent(rightSidebar, Position.topRightOf(mapComponent)))
+            logArea,
+            leftSidebarComponent,
+            mapComponent,
+            CustomComponent(rightSidebar, Position.topRightOf(mapComponent))
+        )
 
         // connect parts that depend on each other
         leftSidebar.connectTo(map.mapPanel)
@@ -102,7 +103,7 @@ class GameView(
                         gameWorld.scrollBackwardBy(Sector.TILE_COUNT)
                         Processed
                     }
-                    KeyCode.KEY_Q                     -> {
+                    KeyCode.KEY_Q -> {
                         GameOptions.displayRadioSignals.value = GameOptions.displayRadioSignals.value.not()
                         log.debug("Toggled radio signal display to ${if (GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
                         Processed
@@ -111,7 +112,7 @@ class GameView(
                         Ticker.togglePause()
                         Processed
                     }
-                    else                              -> Pass
+                    else          -> Pass
                 }
             } else {
                 Pass
@@ -120,15 +121,20 @@ class GameView(
     }
 
     private fun LogArea.logRadioCalls() {
-        globalEventBus.subscribeToBroadcasts { event: BroadcastEvent ->
-            val transmission = event.transmission
-            val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
-            if (transmission.isOpening) {
-                addHeader(message, false)
-            } else {
-                addParagraph(message, false, 5)
-            }
+        hq.onReceivedTransmission {
+            logTransmission(it)
+        }.disposeWhen(hiddenProperty)
+        hq.onSendTransmission {
+            logTransmission(it)
+        }.disposeWhen(hiddenProperty)
+    }
+
+    private fun LogArea.logTransmission(transmission: Transmission) {
+        val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
+        if (transmission.isOpening) {
+            addHeader(message, false)
+        } else {
+            addParagraph(message, false, 5)
         }
     }
 }
-

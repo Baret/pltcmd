@@ -11,6 +11,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.contactL
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasReceiver
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.location
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
+import de.gleex.pltcmd.model.radio.receivedTransmission
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import de.gleex.pltcmd.util.events.globalEventBus
@@ -28,7 +29,11 @@ import java.util.*
 class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
     private val state: CommunicatorState = CommunicatorState()
     private val sender = SendingCommunicator(callSign, state, radio)
-    private val receiver = ReceivingCommunicator(callSign, state, sender)
+    private val receiver = ReceivingCommunicator(callSign, state, sender).apply {
+        onReceivedTransmission = { transmission ->
+            globalEventBus.receivedTransmission(this@RadioCommunicator, transmission)
+        }
+    }
 
     var radioContext: RadioContext
         get() = sender.radioContext
@@ -66,6 +71,7 @@ class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
     /** Start the given conversation on the next free transmission slot. See [proceedWithConversation] */
     fun startConversation(conversation: Conversation) = sender.startConversation(conversation)
 
+    fun isSender(inQuestion: RadioSender): Boolean = sender.radio == inQuestion
 }
 
 internal open class CommonCommunicator internal constructor(internal val callSign: CallSign, internal val state: CommunicatorState) {
@@ -91,6 +97,7 @@ internal open class CommonCommunicator internal constructor(internal val callSig
 internal class ReceivingCommunicator internal constructor(callSign: CallSign, state: CommunicatorState, private val sender: SendingCommunicator)
     : CommonCommunicator(callSign, state) {
     private var broadcastSubscription: Subscription? = null
+    internal var onReceivedTransmission: ((Transmission) -> Unit)? = null
 
     /** Start listening to radio broadcasts */
     fun startRadio() {
@@ -118,6 +125,7 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
             val receivedTransmission = event.transmission
             log.debug("$callSign received with strength $strength the transmission '${receivedTransmission.message}'")
             if (strength.isAny() && receivedTransmission.isSentBySomeoneElse()) {
+                onReceivedTransmission?.invoke(receivedTransmission)
                 if (receivedTransmission.isForMe()) {
                     respondTo(receivedTransmission)
                 } else {
