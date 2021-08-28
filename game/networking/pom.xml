@@ -12,7 +12,7 @@
     <artifactId>networking</artifactId>
 
     <properties>
-        <ktor.version>1.5.3</ktor.version>
+        <ktor.version>1.6.3</ktor.version>
     </properties>
 
     <dependencies>
