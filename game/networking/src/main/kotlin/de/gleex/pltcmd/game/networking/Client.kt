@@ -10,6 +10,7 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
+import org.hexworks.cobalt.events.api.simpleSubscribeTo
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 internal const val defaultPort = 9170
@@ -36,5 +37,10 @@ fun connect(host: String = "127.0.0.1", port: Int = defaultPort) {
 }
 
 fun main() {
+    uiEventBus.simpleSubscribeTo(UiBroadcasts) { event: UiBroadcastEvent ->
+        log.info("received UI event: $event")
+        val message = event.message
+        println(message)
+    }
     connect()
 }
