@@ -1,15 +1,19 @@
 package de.gleex.pltcmd.game.networking
 
+import de.gleex.pltcmd.game.engine.entities.EntityFactory
+import de.gleex.pltcmd.game.engine.entities.types.CommunicatingEntity
+import de.gleex.pltcmd.game.engine.entities.types.communicator
+import de.gleex.pltcmd.game.engine.entities.types.onReceivedTransmission
+import de.gleex.pltcmd.game.engine.entities.types.onSendTransmission
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.radio.BroadcastEvent
-import de.gleex.pltcmd.model.radio.RadioSender
+import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.radio.UiBroadcastEvent
 import de.gleex.pltcmd.model.radio.communication.building.ConversationBuilder
+import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
-import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
-import de.gleex.pltcmd.model.signals.radio.RadioPower
+import de.gleex.pltcmd.model.radio.receivedTransmission
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
@@ -29,7 +33,6 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
-import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.concurrent.TimeUnit
 
@@ -40,41 +43,34 @@ internal const val defaultPort = 9170
 internal val pathBroadcastEvents = "/broadcasts"
 
 // TODO encapsulate return type. Providing the Ktor implementation class to the caller couples the code to this implementation.
-fun createServer(): ApplicationEngine {
+fun createServer(hq: CommunicatingEntity): ApplicationEngine {
     return embeddedServer(Netty, port = defaultPort) {
         install(WebSockets)
         routing {
-            broadcastsRoute()
+            broadcastsRoute(hq)
         }
     }
 }
 
-private fun Routing.broadcastsRoute() {
+private fun Routing.broadcastsRoute(hq: CommunicatingEntity) {
     webSocket(pathBroadcastEvents) {
         logger.info("sending broadcasts to $logId")
 
-        val eventChannel = Channel<BroadcastEvent>(Channel.BUFFERED)
+        val eventChannel = Channel<UiBroadcastEvent>(Channel.BUFFERED)
         // listen to local events
-        val subscription = globalEventBus.subscribeToBroadcasts { event ->
-            val sendResult = eventChannel.trySend(event)
-            if (sendResult.isFailure) {
-                logger.error("failed to send event $event due to ${sendResult.exceptionOrNull()}")
-            } else if (sendResult.isSuccess) {
-                logger.trace("successfully send event $event")
-            }
-        }
+        val subscriptionReceived = hq.onReceivedTransmission(eventChannel::trySendLogging)
+        val subscriptionSend = hq.onSendTransmission(eventChannel::trySendLogging)
         // clean up on disconnect
         closeReason.invokeOnCompletion {
             logger.debug("client closed connection $logId")
-            subscription.dispose()
+            subscriptionReceived.dispose()
+            subscriptionSend.dispose()
             eventChannel.close()
         }
         // send events to client
         for (event in eventChannel) {
-            // first convert
-            val uiEvent = event.uiEvent
-            // second send
-            val bytes = ProtoBuf.encodeToByteArray(uiEvent)
+            // second send over network
+            val bytes = ProtoBuf.encodeToByteArray(event)
             send(bytes)
         }
 
@@ -82,12 +78,25 @@ private fun Routing.broadcastsRoute() {
     }
 }
 
+/** sends the given Event to the given channel and logs the result. */
+private fun Channel<UiBroadcastEvent>.trySendLogging(event: Transmission) {
+    // first convert
+    val uiEvent = event.uiEvent
+    // and queue event
+    val sendResult = trySend(uiEvent)
+    if (sendResult.isFailure) {
+        logger.error("failed to queue event $uiEvent for network transmission due to ${sendResult.exceptionOrNull()}")
+    } else if (sendResult.isSuccess) {
+        logger.trace("successfully queued event $uiEvent for network transmission")
+    }
+}
+
 // TODO move somewhere else
-val BroadcastEvent.uiEvent: UiBroadcastEvent
+val Transmission.uiEvent: UiBroadcastEvent
     get() {
-        val message = "${Ticker.currentTimeString.value}: ${transmission.message}"
-        val senderName = transmission.sender.name
-        return UiBroadcastEvent(message, transmission.isOpening, senderName)
+        val message = "${Ticker.currentTimeString.value}: ${message}"
+        val senderName = sender.name
+        return UiBroadcastEvent(message, isOpening, senderName)
     }
 
 internal val DefaultWebSocketServerSession.logId: String
@@ -97,22 +106,30 @@ internal val DefaultWebSocketServerSession.logId: String
     }
 
 fun main(args: Array<String>) {
-    val serverThread = createServer()
-    serverThread.start(wait = false)
-    logger.info("creating RadioSender...")
+    // setup communication model
+    logger.info("creating HQ...")
+    val sender = CallSign("sender")
     val testTransmission = ConversationBuilder(
-        CallSign("sender"),
+        sender,
         CallSign("receiver")
     ).terminatingResponse("The test finished successfully :)")
     val origin = Coordinate(0, 0)
     val map = dummyMapAt(origin)
-    val radioSender = RadioSender(origin.toProperty(), RadioPower.RADIO_POLE, map)
+    val hq: CommunicatingEntity = EntityFactory.newBaseAt(origin, map, Faction("example"), sender)
     logger.info("done!")
+
+    // start networking
+    val serverThread = createServer(hq)
+    serverThread.start(wait = false)
+
+    // transfer data
     repeat(3) {
         logger.info("sending test")
-        radioSender.transmit(testTransmission)
+        globalEventBus.receivedTransmission(hq.communicator, testTransmission)
         Thread.sleep(3000)
     }
+
+    // done
     logger.info("Stopping server...")
     serverThread.stop(200, 500, TimeUnit.MILLISECONDS)
     logger.info("Stopped")

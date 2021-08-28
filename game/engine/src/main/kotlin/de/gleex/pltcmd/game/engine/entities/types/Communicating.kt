@@ -27,7 +27,8 @@ typealias CommunicatingEntity = GameEntity<Communicating>
 
 private val log = LoggerFactory.getLogger(Communicating::class)
 
-internal val CommunicatingEntity.communicator: RadioCommunicator
+// FIXME only public for testing! Should be internal and use extension functions to access transmissions.
+val CommunicatingEntity.communicator: RadioCommunicator
     get() = getAttribute(RadioAttribute::class).communicator
 
 /**

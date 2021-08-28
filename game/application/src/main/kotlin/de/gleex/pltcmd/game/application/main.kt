@@ -107,14 +107,6 @@ open class Main {
      * Then the [Ticker] runs the game.
      */
     protected open fun runGame(generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
-        // networking
-        log.debug("starting network server")
-        val serverEngine = createServer()
-        serverEngine.start(wait = false)
-
-        log.debug("starting network client thread")
-        val clientThread = Thread { connect() }
-        clientThread.start()
         // model
         val playerFaction = Faction("player faction")
         val game = Game(Engine.create(), generatedMap, playerFaction, random)
@@ -122,6 +114,15 @@ open class Main {
         val gameWorld = GameWorld(generatedMap, playerFaction)
 
         val (elementsToCommand, hq) = prepareGame(game, gameWorld)
+
+        // networking
+        log.debug("starting network server")
+        val serverEngine = createServer(hq)
+        serverEngine.start(wait = false)
+
+        log.debug("starting network client thread")
+        val clientThread = Thread { connect() }
+        clientThread.start()
 
         screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
