@@ -13,8 +13,6 @@ import kotlinx.serialization.protobuf.ProtoBuf
 import org.hexworks.cobalt.events.api.simpleSubscribeTo
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
-internal const val defaultPort = 9170
-
 private val log = LoggerFactory.getLogger(::connect::class)
 
 fun connect(host: String = "127.0.0.1", port: Int = defaultPort) {

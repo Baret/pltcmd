@@ -23,53 +23,62 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.logging.api.LoggerFactory
+import java.util.concurrent.TimeUnit
 
 // there is also an `Application.log` provided by Ktor!
-private val logger = LoggerFactory.getLogger(::startServer::class)
+private val logger = LoggerFactory.getLogger(::createServer::class)
 
-fun startServer(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
-
+internal const val defaultPort = 9170
 internal val pathBroadcastEvents = "/broadcasts"
 
-fun Application.module() {
-    install(WebSockets)
-    routing {
-        webSocket(pathBroadcastEvents) {
-            logger.info("sending broadcasts to $logId")
-
-            val eventChannel = Channel<BroadcastEvent>(Channel.BUFFERED)
-            // listen to local events
-            val subscription = globalEventBus.subscribeToBroadcasts { event ->
-                val sendResult = eventChannel.trySend(event)
-                if (sendResult.isFailure) {
-                    logger.error("failed to send event $event due to ${sendResult.exceptionOrNull()}")
-                } else if (sendResult.isSuccess) {
-                    logger.trace("successfully send event $event")
-                }
-            }
-            // clean up on disconnect
-            closeReason.invokeOnCompletion {
-                logger.debug("client closed connection $logId")
-                subscription.dispose()
-                eventChannel.close()
-            }
-            // send events to client
-            for (event in eventChannel) {
-                // first convert
-                val uiEvent = event.uiEvent
-                // second send
-                val bytes = ProtoBuf.encodeToByteArray(uiEvent)
-                send(bytes)
-            }
-
-            logger.info("finished sending broadcasts to $logId")
+// TODO encapsulate return type. Providing the Ktor implementation class to the caller couples the code to this implementation.
+fun createServer(): ApplicationEngine {
+    return embeddedServer(Netty, port = defaultPort) {
+        install(WebSockets)
+        routing {
+            broadcastsRoute()
         }
+    }
+}
+
+private fun Routing.broadcastsRoute() {
+    webSocket(pathBroadcastEvents) {
+        logger.info("sending broadcasts to $logId")
+
+        val eventChannel = Channel<BroadcastEvent>(Channel.BUFFERED)
+        // listen to local events
+        val subscription = globalEventBus.subscribeToBroadcasts { event ->
+            val sendResult = eventChannel.trySend(event)
+            if (sendResult.isFailure) {
+                logger.error("failed to send event $event due to ${sendResult.exceptionOrNull()}")
+            } else if (sendResult.isSuccess) {
+                logger.trace("successfully send event $event")
+            }
+        }
+        // clean up on disconnect
+        closeReason.invokeOnCompletion {
+            logger.debug("client closed connection $logId")
+            subscription.dispose()
+            eventChannel.close()
+        }
+        // send events to client
+        for (event in eventChannel) {
+            // first convert
+            val uiEvent = event.uiEvent
+            // second send
+            val bytes = ProtoBuf.encodeToByteArray(uiEvent)
+            send(bytes)
+        }
+
+        logger.info("finished sending broadcasts to $logId")
     }
 }
 
@@ -88,24 +97,24 @@ internal val DefaultWebSocketServerSession.logId: String
     }
 
 fun main(args: Array<String>) {
-    val serverThread = Thread { startServer(args) }
-    serverThread.start()
+    val serverThread = createServer()
+    serverThread.start(wait = false)
     logger.info("creating RadioSender...")
-        val testTransmission = ConversationBuilder(
-            CallSign("sender"),
-            CallSign("receiver")
-        ).terminatingResponse("The test finished successfully :)")
-        val origin = Coordinate(0, 0)
-        val map = dummyMapAt(origin)
-        val radioSender = RadioSender(origin.toProperty(), RadioPower.RADIO_POLE, map)
-        logger.info("done!")
-        repeat(3) {
-            logger.info("sending test")
-            radioSender.transmit(testTransmission)
-            Thread.sleep(3000)
-        }
+    val testTransmission = ConversationBuilder(
+        CallSign("sender"),
+        CallSign("receiver")
+    ).terminatingResponse("The test finished successfully :)")
+    val origin = Coordinate(0, 0)
+    val map = dummyMapAt(origin)
+    val radioSender = RadioSender(origin.toProperty(), RadioPower.RADIO_POLE, map)
+    logger.info("done!")
+    repeat(3) {
+        logger.info("sending test")
+        radioSender.transmit(testTransmission)
+        Thread.sleep(3000)
+    }
     logger.info("Stopping server...")
-    serverThread.stop()
+    serverThread.stop(200, 500, TimeUnit.MILLISECONDS)
     logger.info("Stopped")
 }
 
