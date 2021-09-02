@@ -8,18 +8,24 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 /**
- * Holds the amount of distance traveled in a given time.
+ * Holds the amount of distance traveled in a given time. To instantiate an instance either [div]
+ * a [Distance] by [Duration] or use [per]. So you can either write
+ *
+ * - `distance / time` or
+ * - `distance per time`
+ * - or directly use Int/Double extensions: `5.kph`
  *
  * @param inKph km/h (kilometre per hour)
  */
 @OptIn(ExperimentalTime::class)
-data class Speed(val inKph: Double) : Comparable<Speed> {
-    constructor(distance: Distance, time: Duration) : this(
+data class Speed internal constructor(val inKph: Double) : Comparable<Speed> {
+    internal constructor(distance: Distance, time: Duration) : this(
         distance.inUnit(DistanceUnit.Kilometers) / time.toDouble(
             DurationUnit.HOURS
         )
     )
 
+    /** multiplies this speed by the given amount */
     operator fun times(multiplier: Double): Speed = Speed(inKph * multiplier)
 
     /** Returns how much of this speed is contained in the given speed */

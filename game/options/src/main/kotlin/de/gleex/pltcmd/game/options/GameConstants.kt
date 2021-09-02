@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.game.options
 
 import de.gleex.pltcmd.model.world.WorldTile
-import de.gleex.pltcmd.util.measure.speed.Speed
+import de.gleex.pltcmd.util.measure.speed.per
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -43,7 +43,7 @@ object GameConstants {
          * @see Time.timeSimulatedPerTick
          * @see WorldTile.edgeLength
          */
-        val speedForOneTileInOneTick = Speed(WorldTile.edgeLength, Time.timeSimulatedPerTick)
+        val speedForOneTileInOneTick = WorldTile.edgeLength per Time.timeSimulatedPerTick
 
     }
 }
