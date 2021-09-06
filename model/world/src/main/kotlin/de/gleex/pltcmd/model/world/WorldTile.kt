@@ -4,6 +4,8 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
+import de.gleex.pltcmd.util.measure.distance.Distance
+import de.gleex.pltcmd.util.measure.distance.hundredMeters
 import kotlinx.serialization.Serializable
 
 /**
@@ -40,4 +42,10 @@ data class WorldTile(val coordinate: Coordinate, val terrain: Terrain) : Compara
         return terrain.height.compareTo(other.terrain.height)
     }
 
+    companion object {
+        /**
+         * The length of one edge of a [WorldTile] (which is square).
+         */
+        val edgeLength: Distance = 1.hundredMeters
+    }
 }

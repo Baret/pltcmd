@@ -6,6 +6,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.orderTemplate
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.measure.compass.bearing.Bearing
 import org.hexworks.cobalt.datatypes.Maybe
 
 /**
@@ -94,9 +95,9 @@ object Conversations {
                     }
                 }
 
-        fun contact(sender: CallSign, receiver: CallSign, what: String, where: Coordinate, whither: String? = null) =
+        fun contact(sender: CallSign, receiver: CallSign, what: String, where: Bearing) =
             conversation(sender, receiver) {
-                openingTransmission = request("we have contact with %s at %s %s", { what }, { where }, { whither ?: "" }) {
+                openingTransmission = request("we have contact with %s %s of us", { what }, { where.asWord() }) {
                     terminatingResponse("copy that")
                 }
             }
