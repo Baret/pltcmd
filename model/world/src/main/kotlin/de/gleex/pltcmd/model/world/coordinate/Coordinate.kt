@@ -1,11 +1,14 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import de.gleex.pltcmd.model.world.WorldTile
+import de.gleex.pltcmd.util.measure.compass.bearing.Bearing
+import de.gleex.pltcmd.util.measure.compass.bearing.toBearing
+import de.gleex.pltcmd.util.measure.distance.Distance
+import de.gleex.pltcmd.util.measure.distance.times
 import kotlinx.serialization.Serializable
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.absoluteValue
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 /**
  * A location on the map. The map is a rectangle and each coordinate describes the distance (in hundreds of
@@ -65,12 +68,27 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
     }
 
     /** @return the euclidean distance */
-    infix fun distanceTo(other: Coordinate): Double {
-        val eastingDistanceSquared = (eastingFromLeft - other.eastingFromLeft).absoluteValue.toDouble()
+    infix fun distanceTo(other: Coordinate): Distance {
+        val eastingDiffSquared = (eastingFromLeft - other.eastingFromLeft).absoluteValue.toDouble()
                 .pow(2.0)
-        val northingDistanceSquared = (northingFromBottom - other.northingFromBottom).absoluteValue.toDouble()
+        val northingDiffSquared = (northingFromBottom - other.northingFromBottom).absoluteValue.toDouble()
                 .pow(2.0)
-        return sqrt(eastingDistanceSquared + northingDistanceSquared)
+        val distance = sqrt(eastingDiffSquared + northingDiffSquared)
+        return distance * WorldTile.edgeLength
+    }
+
+    /**
+     * Calculates the [Bearing] from this [Coordinate] to [other].
+     */
+    infix fun bearingTo(other: Coordinate): Bearing {
+        val dy = (other.northingFromBottom - northingFromBottom).toDouble()
+        val dx = (other.eastingFromLeft - eastingFromLeft).toDouble()
+        // calling atan2 with x, y instead of y, x might seem like an error. But this works :P
+        val atan2 = atan2(dx, dy)
+        return Math
+            .toDegrees(atan2)
+            .roundToInt()
+            .toBearing()
     }
 
     /**

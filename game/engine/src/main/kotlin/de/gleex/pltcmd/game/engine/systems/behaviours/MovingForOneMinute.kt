@@ -14,7 +14,7 @@ import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
- * Advances the [MovementProgress] of a [MovableEntity] according to its [currentSpeedInKph].
+ * Advances the [MovementProgress] of a [MovableEntity] according to its [currentSpeed].
  *
  * When the progress is > 1.0 the entity executes a [UpdatePosition] message.
  */
@@ -39,13 +39,13 @@ object MovingForOneMinute :
         context: GameContext
     ): Boolean {
         return if (entity.canNotMove) {
-            log.debug("${entity.logIdentifier} can not move currently! The current speed is even ${entity.currentSpeedInKph} km/h")
+            log.debug("${entity.logIdentifier} can not move currently! The current speed is even ${entity.currentSpeed.inKph} km/h")
             return false
         } else if (entity.movementPath.isNotEmpty()) {
             // TODO: Might be more accurate by re-calculating currentSpeedInKph after each tile (we might be slower there)
-            val travelDistanceInTiles = entity.currentSpeedInKph / GameConstants.Speed.speedForOneTileInOneTickInKph
+            val travelDistanceInTiles = entity.currentSpeed / GameConstants.Movement.speedForOneTileInOneTick
             entity.movementProgress += travelDistanceInTiles
-            log.debug("${entity.logIdentifier} travels $travelDistanceInTiles tiles/tick with a base speed of ${entity.baseSpeedInKph} and current speed of ${entity.currentSpeedInKph} km/h. New progress: ${entity.movementProgress}")
+            log.debug("${entity.logIdentifier} travels $travelDistanceInTiles tiles/tick with a base speed of ${entity.baseSpeed.inKph} and current speed of ${entity.currentSpeed.inKph} km/h. New progress: ${entity.movementProgress}")
             while (entity.movementProgress.hasTilesToAdvance() && entity.movementPath.isNotEmpty()) {
                 val oldPosition = entity.position.value
                 val newPosition = entity.movementPath.pop()

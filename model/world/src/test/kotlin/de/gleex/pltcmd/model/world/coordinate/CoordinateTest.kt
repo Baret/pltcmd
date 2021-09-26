@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import de.gleex.pltcmd.util.measure.compass.points.CardinalPoint.*
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
@@ -181,6 +182,69 @@ class CoordinateTest : WordSpec({
             "be null when created from invalid string '$someString'" {
                 Coordinate.fromString(someString)
                         .shouldBeNull()
+            }
+        }
+    }
+
+    "The bearing between coordinates" should {
+        "be due for 45° angles" {
+            for (delta in 1..100) {
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.withRelativeNorthing(delta)
+                    ) {
+                        angle shouldBe 0
+                        roundedCardinal shouldBe N
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.movedBy(delta, delta)
+                    ) {
+                        angle shouldBe 45
+                        roundedCardinal shouldBe NE
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.withRelativeEasting(delta)
+                    ) {
+                        angle shouldBe 90
+                        roundedCardinal shouldBe E
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.movedBy(delta, -delta)
+                    ) {
+                        angle shouldBe 135
+                        roundedCardinal shouldBe SE
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.withRelativeNorthing(-delta)
+                    ) {
+                        angle shouldBe 180
+                        roundedCardinal shouldBe S
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.movedBy(-delta, -delta)
+                    ) {
+                        angle shouldBe 225
+                        roundedCardinal shouldBe SW
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.withRelativeEasting(-delta)
+                    ) {
+                        angle shouldBe 270
+                        roundedCardinal shouldBe W
+                        isDue shouldBe true
+                    }
+                    assertSoftly(
+                        testCoordinate bearingTo testCoordinate.movedBy(-delta, delta)
+                    ) {
+                        angle shouldBe 315
+                        roundedCardinal shouldBe NW
+                        isDue shouldBe true
+                    }
             }
         }
     }

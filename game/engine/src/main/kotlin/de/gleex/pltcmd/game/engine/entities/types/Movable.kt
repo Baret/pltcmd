@@ -9,6 +9,9 @@ import de.gleex.pltcmd.game.engine.extensions.GameEntity
 import de.gleex.pltcmd.game.engine.extensions.castToSuspending
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.measure.distance.kilometers
+import de.gleex.pltcmd.util.measure.speed.Speed
+import de.gleex.pltcmd.util.measure.speed.perHour
 import org.hexworks.cobalt.datatypes.Maybe
 import java.util.*
 
@@ -43,14 +46,17 @@ internal val MovableEntity.movementProgress: MovementProgress
 /**
  * The base speed determined by the [MovementBaseSpeed] attribute.
  */
-val MovableEntity.baseSpeedInKph: Double
-    get() = getAttribute(MovementBaseSpeed::class).value
+val MovableEntity.baseSpeed: Speed
+    get() {
+        val baseSpeed = getAttribute(MovementBaseSpeed::class).value
+        return baseSpeed.kilometers.perHour
+    }
 
 /**
- * The current speed calculated by taking the [baseSpeedInKph] and applying all [movementModifiers].
+ * The current speed calculated by taking the [baseSpeed] and applying all [movementModifiers].
  */
-val MovableEntity.currentSpeedInKph: Double
-    get() = movementModifiers.fold(baseSpeedInKph) { speed: Double, modifier: MovementModifier -> modifier(speed) }
+val MovableEntity.currentSpeed: Speed
+    get() = movementModifiers.fold(baseSpeed) { speed: Speed, modifier: MovementModifier -> modifier(speed) }
 
 /** Check if a destination is set. */
 val MovableEntity.hasNoDestination: Boolean

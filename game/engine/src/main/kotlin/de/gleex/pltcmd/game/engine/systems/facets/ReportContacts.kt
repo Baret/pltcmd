@@ -16,8 +16,8 @@ import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.signals.vision.Visibility
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.knowledge.KnowledgeGrade
+import de.gleex.pltcmd.util.measure.compass.bearing.Bearing
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
@@ -51,7 +51,7 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
     private fun reportContact(reporter: ElementEntity, contact: KnownContact, context: GameContext): Response {
         return when (contact.affiliation) {
             Affiliation.Unknown, Affiliation.Hostile -> {
-                sendReport(reporter, contact.description, contact.position, context)
+                sendReport(reporter, contact.description, reporter.currentPosition bearingTo contact.position, context)
                 Consumed
             }
             // neutral and friends are not reported over the radio
@@ -59,7 +59,7 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
         }
     }
 
-    private fun sendReport(reporter: ElementEntity, what: String, at: Coordinate, context: GameContext) {
+    private fun sendReport(reporter: ElementEntity, what: String, at: Bearing, context: GameContext) {
         // TODO Does non player controlled elements need contact reports? -> sure! But until we have channels (#42) we keep this workaround
         if (reporter.affiliationTo(context.playerFaction) != Affiliation.Self) {
             log.trace("not reporting contact of non player faction of ${reporter.logIdentifier}: $what at $at")

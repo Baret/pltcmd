@@ -97,7 +97,7 @@ object Ticker {
         _currentTimeProperty.updateValue(
                 _currentTimeProperty
                         .value
-                        .plusSeconds(GameConstants.Time.secondsSimulatedPerTick.toLong()))
+                        .plusSeconds(GameConstants.Time.timeSimulatedPerTick.inWholeSeconds))
         log.debug(" - TICK - Sending tick $currentTick, current time: ${currentTime.value}")
         globalEventBus.publishTick(currentTick)
     }
