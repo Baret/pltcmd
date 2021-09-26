@@ -21,6 +21,7 @@
         <module>namegeneration</module>
         <module>knowledge</module>
         <module>graph</module>
+        <module>measure</module>
     </modules>
 
 </project>
