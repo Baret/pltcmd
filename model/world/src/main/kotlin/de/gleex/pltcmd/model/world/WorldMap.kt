@@ -5,6 +5,7 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.coordinate.CoordinateCircle
 import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
+import de.gleex.pltcmd.util.measure.distance.Distance
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -92,7 +93,7 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
     /**
      * Returns a [WorldArea] containing all [WorldTile]s contained in a circle with given [radius] at the given [location]
      */
-    fun circleAt(location: Coordinate, radius: Int): WorldArea {
+    fun circleAt(location: Coordinate, radius: Distance): WorldArea {
         return areaOf(CoordinateCircle(location, radius))
     }
 

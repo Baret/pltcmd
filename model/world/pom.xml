@@ -19,6 +19,10 @@
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>measure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.util</groupId>
             <artifactId>tests</artifactId>
             <type>test-jar</type>
         </dependency>
