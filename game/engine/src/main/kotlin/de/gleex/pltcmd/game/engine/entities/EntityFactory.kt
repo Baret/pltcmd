@@ -26,6 +26,8 @@ import de.gleex.pltcmd.model.signals.vision.VisionPower
 import de.gleex.pltcmd.model.signals.vision.builder.visionAt
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.measure.distance.kilometers
+import de.gleex.pltcmd.util.measure.speed.perHour
 import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.extensions.FacetWithContext
 import org.hexworks.amethyst.api.newEntityOfType
@@ -101,7 +103,7 @@ object EntityFactory {
         // TODO: Make systems comparable so we do not need to make sure this if/else madness has the correct order
         // Lets say we have a speed limit for aerial elements (just for testing)
         if (element.kind == ElementKind.Aerial) {
-            attributes += MovementModifier.SpeedCap(18.0)
+            attributes += MovementModifier.SpeedCap(18.kilometers.perHour)
         }
 
         val behaviors: MutableList<Behavior<GameContext>> = mutableListOf(

@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.testhelpers.randomSectorAt
+import de.gleex.pltcmd.util.measure.distance.times
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
@@ -82,9 +83,9 @@ class WorldMapTest : WordSpec({
 
             val allDurations = mutableListOf<Long>()
             forAll(
-                row(10, 317),
-                row(50, 6439),
-                row(100, 17054),
+                row(10, 349),
+                row(50, 6559),
+                row(100, 17149),
                 row(200, 22500),
                 row(300, 22500)
             ) { radius, expected ->
@@ -92,7 +93,7 @@ class WorldMapTest : WordSpec({
                 repeat(20) {
                     allDurations.add(
                         measureTimeMillis {
-                            largeMap.circleAt(center, radius).size shouldBe expected
+                            largeMap.circleAt(center, radius * WorldTile.edgeLength).size shouldBe expected
                         }
                     )
                 }

@@ -159,7 +159,7 @@ open class Main {
                 .apply { callSign = CallSign("Charlie") }, faction, game, gameWorld
             )
             listOf(alpha, bravo, charlie).forEach {
-                log.debug("${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeedInKph} kph.")
+                log.debug("${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeed.inKph} kph.")
             }
             add(alpha)
             add(bravo)

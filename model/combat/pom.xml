@@ -18,5 +18,9 @@
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>elements</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>measure</artifactId>
+        </dependency>
     </dependencies>
 </project>
