@@ -46,7 +46,8 @@ fun EventBus.subscribeToReceivedTransmissions(
  * @param receiver the [RadioCommunicator] that received the transmission
  * @param transmission the received [Transmission]
  */
-internal fun EventBus.receivedTransmission(receiver: RadioCommunicator, transmission: Transmission) =
+// TODO public for testing only! Should be internal and models must be used to access Transmissions.
+fun EventBus.receivedTransmission(receiver: RadioCommunicator, transmission: Transmission) =
     publish(TransmissionReceivedEvent(receiver, transmission), Transmissions)
 
 /** Returns a key that uniquely identifies this receiving object */
