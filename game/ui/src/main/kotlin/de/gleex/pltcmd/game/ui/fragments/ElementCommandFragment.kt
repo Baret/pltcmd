@@ -16,8 +16,8 @@ import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.Fragments
 import org.hexworks.zircon.api.data.Position
+import org.hexworks.zircon.api.dsl.fragment.buildSelector
 import org.hexworks.zircon.api.uievent.*
 
 /**
@@ -34,9 +34,11 @@ class ElementCommandFragment(
         private val game: Game
 ) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
 
-    private val elementSelect = Fragments.selector(fragmentWidth, elements)
-            .withToStringMethod { it.callsign.toString() }
-            .build()
+    private val elementSelect = buildSelector<ElementEntity> {
+        width = fragmentWidth
+        valueList = elements
+        toStringMethod = { it.callsign.toString() }
+    }
 
     private val selectedDestination = elements.first().currentPosition.toProperty()
     private val selectedCallsign: ObservableValue<CallSign> = elementSelect
