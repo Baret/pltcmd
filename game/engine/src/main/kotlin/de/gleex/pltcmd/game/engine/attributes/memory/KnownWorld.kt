@@ -6,6 +6,7 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.util.knowledge.Known
+import java.util.*
 
 /**
  * Knowledge about the [WorldArea] defining the whole [WorldMap]. It is initialized as completely unrevealed
@@ -18,9 +19,10 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     /**
      * All not yet revealed (aka. unknown) [Coordinate]s.
      */
-    private val unrevealed: MutableCollection<Coordinate> =
+    private val unrevealed: SortedSet<Coordinate> =
         origin
-            .toSet()
+            // create a local copy
+            .toSortedSet()
 
     /**
      * @return the [KnownTerrain] at the given location.
@@ -65,7 +67,7 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
      * All returned [Coordinate]s are not revealed.
      */
     fun getUnknownIn(area: CoordinateArea): CoordinateArea =
-        CoordinateArea { (area intersect unrevealed).toSortedSet() }
+        area intersect CoordinateArea(this::unrevealed)
 
     companion object
 

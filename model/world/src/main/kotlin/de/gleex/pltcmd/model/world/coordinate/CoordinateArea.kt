@@ -47,10 +47,11 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     /**
      * All sector origins contained in this area.
      */
-    open val sectorOrigins: SortedSet<Coordinate> =
-            coordinates
-                    .map { it.sectorOrigin }
-                    .toSortedSet()
+    open val sectorOrigins: SortedSet<Coordinate> by lazy {
+        coordinates
+            .map { it.sectorOrigin }
+            .toSortedSet()
+    }
 
     /**
      * Checks if this area contains the given [Coordinate].

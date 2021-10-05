@@ -5,6 +5,8 @@ import de.gleex.pltcmd.game.engine.attributes.FactionAttribute
 import de.gleex.pltcmd.game.engine.attributes.RadioAttribute
 import de.gleex.pltcmd.game.engine.attributes.goals.RadioGoal
 import de.gleex.pltcmd.game.engine.attributes.memory.Memory
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.KnownContact
+import de.gleex.pltcmd.game.engine.attributes.memory.elements.description
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.DetectedEntity
@@ -14,11 +16,13 @@ import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.signals.vision.Visibility
+import de.gleex.pltcmd.util.knowledge.KnowledgeGrade
 import de.gleex.pltcmd.util.measure.compass.bearing.Bearing
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
+import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
@@ -31,53 +35,32 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
     private val log = LoggerFactory.getLogger(ReportContacts::class)
 
     override suspend fun receive(message: DetectedEntity): Response {
-        val detected = message
-        return if (!detected.increasedVisibility || detected.source.type !is Communicating) {
-            Pass
-        } else {
-            val reportingElement = detected.source as ElementEntity
-            when (detected.visibility) {
-                // details of the entity type are only available if seen is clearly visible
-                Visibility.GOOD -> reportContact(reportingElement, detected.entity, detected.context)
-                // basic information is always available
-                Visibility.POOR -> reportUnknown(reportingElement, detected.entity, detected.context)
-                Visibility.NONE -> Pass
+        val reporterMaybe: Maybe<ElementEntity> = message.source.asElementEntity { it }
+        val detectedElementMaybe = message.entity.asElementEntity { it }
+        if (reporterMaybe.isPresent && detectedElementMaybe.isPresent) {
+            val reporter = reporterMaybe.get()
+            val contact = KnownContact(reporter, detectedElementMaybe.get(), message.knowledgeGrade)
+            val hasNewKnowledge = reporter.rememberContact(contact)
+            if(hasNewKnowledge) {
+                return reportContact(reporter, contact, message.context)
             }
         }
         return Pass
     }
 
-    fun reportContact(reporter: ElementEntity, toReport: PositionableEntity, context: GameContext): Response {
-        return when (toReport.type) {
-            ElementType -> {
-                val elementToReport = toReport as ElementEntity
-                if (reporter.affiliationTo(elementToReport) == Affiliation.Hostile) {
-                    reportElement(reporter, elementToReport, context)
-                    Consumed
-                } else {
-                    // neutral and friends are not reported over the radio
-                    Pass
-                }
+    private fun reportContact(reporter: ElementEntity, contact: KnownContact, context: GameContext): Response {
+        return when (contact.affiliation) {
+            Affiliation.Unknown, Affiliation.Hostile -> {
+                sendReport(reporter, contact.description, reporter.currentPosition bearingTo contact.position, context)
+                Consumed
             }
-            else        -> {
-                log.warn("Not reporting entity type '${toReport.type}'!")
-                Pass
-            }
+            // neutral and friends are not reported over the radio
+            else                                     -> Pass
         }
     }
 
-    fun reportUnknown(reporter: ElementEntity, toReport: PositionableEntity, context: GameContext): Response {
-        sendReport(reporter, "unknown", reporter.currentPosition bearingTo toReport.currentPosition, context)
-        return Consumed
-    }
-
-    fun reportElement(reporter: ElementEntity, toReport: ElementEntity, context: GameContext): Response {
-        sendReport(reporter, toReport.element.description, reporter.currentPosition bearingTo toReport.currentPosition, context)
-        return Consumed
-    }
-
-    fun sendReport(reporter: CommunicatingEntity, what: String, at: Bearing, context: GameContext) {
-        // TODO report to own faction #62 only. Does non player controlled elements need contact reports?
+    private fun sendReport(reporter: ElementEntity, what: String, at: Bearing, context: GameContext) {
+        // TODO Does non player controlled elements need contact reports? -> sure! But until we have channels (#42) we keep this workaround
         if (reporter.affiliationTo(context.playerFaction) != Affiliation.Self) {
             log.trace("not reporting contact of non player faction of ${reporter.logIdentifier}: $what at $at")
             return
