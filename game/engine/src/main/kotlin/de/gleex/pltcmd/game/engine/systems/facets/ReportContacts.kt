@@ -10,18 +10,18 @@ import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.util.measure.compass.bearing.Bearing
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Sends a contact report to the hq when something is detected.
  */
 object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::class) {
 
-    private val log = LoggerFactory.getLogger(ReportContacts::class)
+    private val log = KotlinLogging.logger {}
 
     override suspend fun receive(message: DetectedEntity): Response {
         val detected = message

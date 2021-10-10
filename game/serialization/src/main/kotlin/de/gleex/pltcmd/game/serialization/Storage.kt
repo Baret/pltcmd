@@ -4,7 +4,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import java.io.File
 
 /**
@@ -12,7 +12,7 @@ import java.io.File
  */
 @OptIn(ExperimentalSerializationApi::class)
 internal object Storage {
-    private val log = LoggerFactory.getLogger(Storage::class)
+    private val log = KotlinLogging.logger {}
     private val dataFolder = File("data")
 
     init {

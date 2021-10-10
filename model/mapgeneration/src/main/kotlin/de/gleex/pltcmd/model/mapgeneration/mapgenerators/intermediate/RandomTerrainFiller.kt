@@ -5,7 +5,7 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.random.Random
 
 /**
@@ -13,7 +13,7 @@ import kotlin.random.Random
  */
 class RandomTerrainFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
-    private val log = LoggerFactory.getLogger(RandomTerrainFiller::class)
+    private val log = KotlinLogging.logger {}
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         var emptyOnes = 0

@@ -23,8 +23,8 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.sectorOrigin
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Engine
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.extensions.toScreen
@@ -34,7 +34,7 @@ import org.hexworks.zircon.api.uievent.ComponentEventType
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-private val log = LoggerFactory.getLogger(::main::class)
+private val log = KotlinLogging.logger {}
 private val random = Random(GameOptions.MAP_SEED)
 
 fun main() {
@@ -159,7 +159,7 @@ open class Main {
                 .apply { callSign = CallSign("Charlie") }, faction, game, gameWorld
             )
             listOf(alpha, bravo, charlie).forEach {
-                log.debug("${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeed.inKph} kph.")
+                log.debug {"${it.callsign} is a ${it.element.description} with a speed of ${it.baseSpeed.inKph} kph."}
             }
             add(alpha)
             add(bravo)

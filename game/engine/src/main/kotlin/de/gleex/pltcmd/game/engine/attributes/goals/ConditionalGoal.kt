@@ -2,9 +2,9 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * This goal consists of two sub-goals. It executes [whenFalse] until [condition] becomes true. Then [whenTrue] is
@@ -20,7 +20,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 data class ConditionalGoal(private val whenTrue: Goal, private val whenFalse: Goal, private val condition: () -> Boolean) : Goal(whenFalse) {
     private var conditionWasTrue = false
 
-    private val log = LoggerFactory.getLogger(ConditionalGoal::class)
+    private val log = KotlinLogging.logger {}
 
     override fun isFinished(element: ElementEntity): Boolean =
             whenTrue.isFinished(element) && whenFalse.isFinished(element)

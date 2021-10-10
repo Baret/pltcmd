@@ -2,15 +2,15 @@ package de.gleex.pltcmd.game.engine.extensions
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.*
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.amethyst.api.extensions.FacetWithContext
 import org.hexworks.amethyst.api.system.Behavior
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.reflect.KClass
 
-private val log = LoggerFactory.getLogger("AnyGameEntity")
+private val log = KotlinLogging.logger {}
 
 /**
  * Gets the [Attribute] of given type or throws an [IllegalStateException] if no attribute of this type is present.

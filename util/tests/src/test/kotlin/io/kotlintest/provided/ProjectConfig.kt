@@ -6,11 +6,11 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.reflect.KClass
 
 class ProjectConfig: AbstractProjectConfig() {
-    val log = LoggerFactory.getLogger(ProjectConfig::class)
+    val log = KotlinLogging.logger {}
     private var allStartTime = 0L
     val executionTimes = mutableListOf<Long>()
     val heapSizes = mutableListOf<Long>()

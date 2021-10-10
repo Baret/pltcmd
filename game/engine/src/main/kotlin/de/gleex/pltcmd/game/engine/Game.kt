@@ -24,11 +24,11 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.util.events.globalEventBus
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
@@ -38,7 +38,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     private val allEntities: EntitySet<EntityType> = EntitySet()
 
     companion object {
-        private val log = LoggerFactory.getLogger(Game::class)
+        private val log = KotlinLogging.logger {}
     }
 
     private var previousUpdate: Job? = null
@@ -46,7 +46,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     init {
         globalEventBus.subscribeToTicks {
             if (previousUpdate?.isActive == true) {
-                log.warn("processing of previous tick has not finished yet! Waiting before doing tick #${it.id}")
+                log.warn { "processing of previous tick has not finished yet! Waiting before doing tick #${it.id}" }
                 runBlocking {
                     previousUpdate?.join()
                 }
@@ -76,7 +76,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     }
 
     private fun removeEntity(entity: AnyGameEntity) {
-        log.debug("Removing entity ${entity.logIdentifier} from game")
+        log.debug { "Removing entity ${entity.logIdentifier} from game" }
         allEntities.remove(entity)
         engine.removeEntity(entity)
     }

@@ -4,7 +4,7 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.GenerationContext
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.random.Random
 
 /**
@@ -16,7 +16,7 @@ class FixedTypeFiller(
         override val context: GenerationContext
 ) : IntermediateGenerator() {
 
-    private val log = LoggerFactory.getLogger(this::class)
+    private val log = KotlinLogging.logger {}
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         mutableWorld.find(area) {

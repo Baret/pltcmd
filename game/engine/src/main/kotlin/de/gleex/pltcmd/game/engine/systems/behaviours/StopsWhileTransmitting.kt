@@ -9,8 +9,8 @@ import de.gleex.pltcmd.game.engine.entities.types.isTransmitting
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.addIfMissing
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.base.BaseBehavior
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * [CommunicatingEntity]s with this behavior need to stop when they are transmitting on the radio.
@@ -18,7 +18,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * This behavior adds the [Transmitting] flag while the entity [isTransmitting].
  */
 object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class) {
-    private val log = LoggerFactory.getLogger(StopsWhileTransmitting::class)
+    private val log = KotlinLogging.logger {}
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         return entity.asCommunicatingEntity { communicating ->

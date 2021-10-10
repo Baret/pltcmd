@@ -4,7 +4,7 @@ import de.gleex.pltcmd.model.signals.core.SignalPropagator
 import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.core.toSignalStrength
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 
 /**
  * Vision propagates really far through air but stops instantly when hitting the ground (obviously).
@@ -15,7 +15,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 class VisionPropagator(maxRangeInTiles: Double) : SignalPropagator {
 
     companion object {
-        private val log = LoggerFactory.getLogger(VisionPropagator::class)
+        private val log = KotlinLogging.logger {}
     }
 
     private var accumulatedSignalLoss: Double = 0.0

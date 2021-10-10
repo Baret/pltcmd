@@ -10,8 +10,8 @@ import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.engine.messages.UpdatePosition
 import de.gleex.pltcmd.game.options.GameConstants
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.base.BaseBehavior
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Advances the [MovementProgress] of a [MovableEntity] according to its [currentSpeed].
@@ -26,7 +26,7 @@ object MovingForOneMinute :
         MovementProgress::class
     ) {
 
-    private val log = LoggerFactory.getLogger(MovingForOneMinute::class)
+    private val log = KotlinLogging.logger {}
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         return entity.invokeWhenMovable {

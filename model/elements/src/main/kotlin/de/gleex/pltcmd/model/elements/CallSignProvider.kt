@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.elements
 
 import de.gleex.pltcmd.util.namegeneration.AlphabetPicker
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.reflect.KProperty
 
 /**
@@ -10,15 +10,15 @@ import kotlin.reflect.KProperty
  * by user input.
  */
 internal class CallSignProvider(
-        corps: Corps,
-        @Suppress("UNUSED_PARAMETER")
-        kind: ElementKind,
-        @Suppress("UNUSED_PARAMETER")
-        rung: Rung
+    corps: Corps,
+    @Suppress("UNUSED_PARAMETER")
+    kind: ElementKind,
+    @Suppress("UNUSED_PARAMETER")
+    rung: Rung
 ) {
 
     companion object {
-        private val log = LoggerFactory.getLogger(CallSignProvider::class)
+        private val log = KotlinLogging.logger {}
     }
 
     private var callSign: CallSign
@@ -26,18 +26,19 @@ internal class CallSignProvider(
     init {
         // TODO: Pick name generator based on corps, kind and rung (#84)
         callSign = CallSign(
-                when(corps) {
-                    Corps.Fighting  -> AlphabetPicker() // Cool names
-                    Corps.Logistics -> AlphabetPicker() // Animal names
-                    // something like that...
-                    else            -> AlphabetPicker()
-                }.generate())
+            when (corps) {
+                Corps.Fighting  -> AlphabetPicker() // Cool names
+                Corps.Logistics -> AlphabetPicker() // Animal names
+                // something like that...
+                else            -> AlphabetPicker()
+            }.generate()
+        )
     }
 
     operator fun getValue(commandingElement: CommandingElement, property: KProperty<*>): CallSign = callSign
 
     operator fun setValue(commandingElement: CommandingElement, property: KProperty<*>, callSign: CallSign) {
-        log.debug("${this.callSign} is now know as $callSign")
+        log.debug { "${this.callSign} is now know as $callSign" }
         this.callSign = callSign
     }
 }

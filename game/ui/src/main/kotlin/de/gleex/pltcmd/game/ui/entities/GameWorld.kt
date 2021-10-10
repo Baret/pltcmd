@@ -6,8 +6,8 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import kotlinx.collections.immutable.persistentMapOf
+import mu.KotlinLogging
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
@@ -34,7 +34,7 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
                 initialFilters = emptyList()) {
 
     companion object {
-        private val log = LoggerFactory.getLogger(GameWorld::class)
+        private val log = KotlinLogging.logger {}
     }
 
     private val topLeftOffset: Position

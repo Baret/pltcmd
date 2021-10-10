@@ -7,7 +7,7 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.coordinate.MainCoordinate
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -18,7 +18,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
     private val MAX_TERRAIN = if (context.hilliness < 0.3) TerrainHeight.MAX - 1 else TerrainHeight.MAX
     private val MIN_TERRAIN = TerrainHeight.FOUR
 
-    private val log = LoggerFactory.getLogger(this::class)
+    private val log = KotlinLogging.logger {}
 
     private val mountainTopsPerMainCoordinate: Int = (4.0 * context.hilliness).roundToInt()
 

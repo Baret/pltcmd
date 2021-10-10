@@ -3,13 +3,13 @@ package de.gleex.pltcmd.game.ticks
 import de.gleex.pltcmd.game.options.GameConstants
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.util.events.globalEventBus
+import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.events.api.EventBus
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.time.LocalTime
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -20,7 +20,7 @@ import kotlin.time.ExperimentalTime
  */
 object Ticker {
 
-    private val log = LoggerFactory.getLogger(Ticker::class)
+    private val log = KotlinLogging.logger {}
 
     /**
      * The current tick the simulation is currently in. Or "the last tick that happened".

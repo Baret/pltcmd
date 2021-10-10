@@ -4,17 +4,17 @@ import de.gleex.pltcmd.model.combat.attack.WeaponStats
 import de.gleex.pltcmd.model.combat.attack.weapon
 import de.gleex.pltcmd.model.combat.defense.UnitFightingState
 import de.gleex.pltcmd.model.elements.Element
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.base.BaseAttribute
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /** The offensive part of the given element. */
 internal class ShootersAttribute(weapons: Iterable<WeaponStats>) : BaseAttribute() {
     constructor(element: Element) : this(element.allUnits.map { it.blueprint.weapon })
 
     companion object {
-        private val log = LoggerFactory.getLogger(ShootersAttribute::class)
+        private val log = KotlinLogging.logger {}
         private val filterCombatReady: (Shooter) -> Boolean = { it.isAbleToFight }
         private val filterWounded: (Shooter) -> Boolean = { UnitFightingState.WIA == it.state.value }
     }

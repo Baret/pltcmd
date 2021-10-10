@@ -8,7 +8,7 @@ import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.options.GameConstants.Time.timeSimulatedPerTick
 import de.gleex.pltcmd.util.measure.area.squareMeters
 import de.gleex.pltcmd.util.measure.distance.Distance
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -17,7 +17,7 @@ import kotlin.time.ExperimentalTime
 /**
  * This file contains code for entities that have the [ShootersAttribute].
  */
-private val log = LoggerFactory.getLogger("de.gleex.pltcmd.game.engine.entities.types.Combatant")
+private val log = KotlinLogging.logger {}
 
 interface Combatant : Positionable
 typealias CombatantEntity = GameEntity<Combatant>

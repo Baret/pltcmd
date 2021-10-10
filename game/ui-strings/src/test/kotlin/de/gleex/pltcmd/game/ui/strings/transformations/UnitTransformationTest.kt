@@ -9,12 +9,12 @@ import io.kotest.matchers.collections.beUnique
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.beUpperCase
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 
 class UnitTransformationTest : WordSpec() {
 
     companion object {
-        private val log = LoggerFactory.getLogger(UnitTransformationTest::class)
+        private val log = KotlinLogging.logger {}
     }
 
     init {

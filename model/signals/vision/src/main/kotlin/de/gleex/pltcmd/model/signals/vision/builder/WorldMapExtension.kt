@@ -8,12 +8,12 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.times
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.math.ceil
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-private val log = LoggerFactory.getLogger(WorldMap::visionAt::class)
+private val log = KotlinLogging.logger {}
 
 /**
  * Creates a new [Signal] representing the vision of an entity at [location] with the given [visualRange].

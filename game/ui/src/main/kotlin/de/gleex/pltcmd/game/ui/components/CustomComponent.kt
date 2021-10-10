@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.game.ui.components
 
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.component.Panel
@@ -13,7 +13,7 @@ import org.hexworks.zircon.api.data.Position
  * calling `CustomComponent(ourFragment)`.
  */
 object CustomComponent {
-    private val log = LoggerFactory.getLogger(CustomComponent::class)
+    private val log = KotlinLogging.logger {}
 
     /**
      * Wraps the given [Fragment] into a [Panel] with the same size and position. This kind of turns [fragmentToWrap]

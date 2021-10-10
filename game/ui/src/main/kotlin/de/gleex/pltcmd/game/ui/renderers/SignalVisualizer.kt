@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 
 /**
  * Draws a [Signal] at its origin when activated. When deactivated the last drawn overlays are cleared.
@@ -17,7 +17,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 class SignalVisualizer(val world: GameWorld) {
 
     companion object {
-        private val log = LoggerFactory.getLogger(SignalVisualizer::class)
+        private val log = KotlinLogging.logger {}
         private val visualizerScope = CoroutineScope(Dispatchers.Default)
     }
 

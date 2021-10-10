@@ -10,7 +10,7 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -20,7 +20,7 @@ import kotlin.random.Random
 class PlainsGenerator(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
     companion object {
-        private val log = LoggerFactory.getLogger(PlainsGenerator::class)
+        private val log = KotlinLogging.logger {}
         private const val MIN_WIDTH = 5  // tiles
         private const val MAX_WIDTH = 50 // tiles
         private const val FADING_BORDER = 3 // tiles

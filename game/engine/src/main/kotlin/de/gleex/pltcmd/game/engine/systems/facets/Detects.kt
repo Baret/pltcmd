@@ -11,10 +11,10 @@ import de.gleex.pltcmd.model.signals.core.SignalStrength
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.signals.vision.visibility
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Handles the [DetectEntities] message. It gets a set of possibly visible entities and calculates the actual
@@ -25,7 +25,7 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
     VisionAttribute::class,
     PositionAttribute::class
 ) {
-    private val log = LoggerFactory.getLogger(Detects::class)
+    private val log = KotlinLogging.logger {}
 
     override suspend fun receive(message: DetectEntities): Response {
         val (visibleEntities, seeing, context) = message

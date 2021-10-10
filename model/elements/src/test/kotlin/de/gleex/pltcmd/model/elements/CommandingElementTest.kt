@@ -13,13 +13,13 @@ import io.kotest.inspectors.forNone
 import io.kotest.matchers.collections.*
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import mu.KotlinLogging
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 class CommandingElementTest : WordSpec() {
 
     companion object {
-        private val log = LoggerFactory.getLogger(CommandingElementTest::class)
+        private val log = KotlinLogging.logger {}
 
         private val defaultElementKind = ElementKind.MotorizedInfantry
         private val defaultCorps = Corps.CombatSupport
@@ -200,7 +200,7 @@ class CommandingElementTest : WordSpec() {
      * Asserts that [subElementToAdd] can be added to [commandingElement].
      */
     private fun checkSubordination(commandingElement: CommandingElement, subElementToAdd: Element) {
-        log.info("Checking if (1) can be added to (2)\n(1) $subElementToAdd\n(2) $commandingElement")
+        log.info { "Checking if (1) can be added to (2)\n(1) $subElementToAdd\n(2) $commandingElement" }
         commandingElement.subordinates shouldNotContain subElementToAdd
         subElementToAdd canBeSubordinateOf commandingElement shouldBe true
         commandingElement.addElement(subElementToAdd) shouldBe true

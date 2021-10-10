@@ -19,7 +19,7 @@ import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
 import de.gleex.pltcmd.model.world.Sector
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.LogArea
@@ -42,7 +42,7 @@ class GameView(
     BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     companion object {
-        private val log = LoggerFactory.getLogger(GameView::class)
+        private val log = KotlinLogging.logger {}
 
         private const val LOG_AREA_HEIGHT = WINDOW_HEIGHT - MAP_VIEW_HEIGHT
         private const val LOG_AREA_WIDTH = WINDOW_WIDTH

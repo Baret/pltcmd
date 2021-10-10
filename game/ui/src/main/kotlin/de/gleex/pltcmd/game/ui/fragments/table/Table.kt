@@ -1,10 +1,10 @@
 package de.gleex.pltcmd.game.ui.fragments.table
 
 import de.gleex.pltcmd.game.ui.fragments.table.column.Column
+import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.*
 import org.hexworks.zircon.api.data.Size
@@ -137,6 +137,6 @@ class Table<M : Any>(
          */
         const val MIN_HEIGHT = 6
 
-        private val log = LoggerFactory.getLogger(Table::class)
+        private val log = KotlinLogging.logger {}
     }
 }

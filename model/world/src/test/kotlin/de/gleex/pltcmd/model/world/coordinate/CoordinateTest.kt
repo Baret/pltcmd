@@ -17,11 +17,11 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldHaveMinLength
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.property.checkAll
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 
 class CoordinateTest : WordSpec({
 
-    val log = LoggerFactory.getLogger(CoordinateTest::class)
+    val log = KotlinLogging.logger {}
     val testCoordinate = Coordinate(123, 345)
 
     "A coordinate $testCoordinate" should {

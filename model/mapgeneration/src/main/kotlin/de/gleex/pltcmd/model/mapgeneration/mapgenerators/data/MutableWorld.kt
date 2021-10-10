@@ -12,7 +12,7 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainData
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -57,7 +57,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
     val mainCoordinatesEmpty: Set<MainCoordinate>
         get() = mainCoordinates - mainCoordinatesNotEmpty
 
-    private val log = LoggerFactory.getLogger(this::class)
+    private val log = KotlinLogging.logger {}
 
     init {
         require(bottomLeftCoordinate.eastingFromLeft % Sector.TILE_COUNT == 0

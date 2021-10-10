@@ -7,13 +7,13 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.model.world.terrain.TerrainType.*
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.random.Random
 
 class TypeFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
-    private val log = LoggerFactory.getLogger(this::class)
+    private val log = KotlinLogging.logger {}
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         val allTiles = mutableWorld.find(area) {

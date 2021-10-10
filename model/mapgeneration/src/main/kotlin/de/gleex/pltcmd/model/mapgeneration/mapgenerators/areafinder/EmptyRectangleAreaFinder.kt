@@ -3,7 +3,7 @@ package de.gleex.pltcmd.model.mapgeneration.mapgenerators.areafinder
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 
 /**
@@ -11,7 +11,7 @@ import java.util.*
  */
 class EmptyRectangleAreaFinder : AreaFinder {
     companion object {
-        private val log = LoggerFactory.getLogger(EmptyRectangleAreaFinder::class)
+        private val log = KotlinLogging.logger {}
     }
 
     override fun findAll(partialWorld: MutableWorld): Set<CoordinateRectangle> {

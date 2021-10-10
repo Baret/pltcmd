@@ -2,9 +2,9 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * An element may have a _goal_ that is an abstraction layer on top of the basic capabilities of "a bunch of soldiers".
@@ -20,7 +20,7 @@ abstract class Goal(vararg subGoals: Goal) {
 
     private val subGoals = ArrayDeque<Goal>()
 
-    private val log = LoggerFactory.getLogger(Goal::class)
+    private val log = KotlinLogging.logger {}
 
     init {
         appendSubGoals(*subGoals)

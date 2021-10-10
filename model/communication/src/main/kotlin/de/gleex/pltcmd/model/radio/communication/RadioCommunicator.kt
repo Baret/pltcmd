@@ -15,10 +15,10 @@ import de.gleex.pltcmd.model.radio.receivedTransmission
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import de.gleex.pltcmd.util.events.globalEventBus
+import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.events.api.Subscription
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import java.util.*
 
 /**
@@ -74,16 +74,19 @@ class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
     fun isSender(inQuestion: RadioSender): Boolean = sender.radio == inQuestion
 }
 
-internal open class CommonCommunicator internal constructor(internal val callSign: CallSign, internal val state: CommunicatorState) {
+internal open class CommonCommunicator internal constructor(
+    internal val callSign: CallSign,
+    internal val state: CommunicatorState
+) {
 
     companion object {
-        internal val log = LoggerFactory.getLogger(RadioCommunicator::class)
+        internal val log = KotlinLogging.logger {}
     }
 
     private var _radioContext: RadioContext? = null
     var radioContext: RadioContext
         get() = _radioContext
-                ?: throw IllegalStateException("RadioContext must be set before processing transmissions!")
+            ?: throw IllegalStateException("RadioContext must be set before processing transmissions!")
         set(value) {
             _radioContext = value
         }
@@ -94,17 +97,20 @@ internal open class CommonCommunicator internal constructor(internal val callSig
 
 }
 
-internal class ReceivingCommunicator internal constructor(callSign: CallSign, state: CommunicatorState, private val sender: SendingCommunicator)
-    : CommonCommunicator(callSign, state) {
+internal class ReceivingCommunicator internal constructor(
+    callSign: CallSign,
+    state: CommunicatorState,
+    private val sender: SendingCommunicator
+) : CommonCommunicator(callSign, state) {
     private var broadcastSubscription: Subscription? = null
     internal var onReceivedTransmission: ((Transmission) -> Unit)? = null
 
     /** Start listening to radio broadcasts */
     fun startRadio() {
-        if(broadcastSubscription != null) {
+        if (broadcastSubscription != null) {
             stopRadio()
         }
-        log.debug("$callSign is listening to radio broadcasts...")
+        log.debug { "$callSign is listening to radio broadcasts..." }
         broadcastSubscription = globalEventBus.subscribeToBroadcasts { event ->
             onBroadcast(event)
         }
@@ -114,7 +120,7 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
     fun stopRadio() {
         broadcastSubscription?.dispose()
         broadcastSubscription = null
-        log.debug("$callSign stopped listening to radio broadcasts.")
+        log.debug { "$callSign stopped listening to radio broadcasts." }
     }
 
     private fun onBroadcast(event: BroadcastEvent) {
@@ -123,7 +129,7 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
             // TODO decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me" (#85)
             val strength = event.signal.at(radioLocation)
             val receivedTransmission = event.transmission
-            log.debug("$callSign received with strength $strength the transmission '${receivedTransmission.message}'")
+            log.debug { "$callSign received with strength $strength the transmission '${receivedTransmission.message}'" }
             if (strength.isAny() && receivedTransmission.isSentBySomeoneElse()) {
                 onReceivedTransmission?.invoke(receivedTransmission)
                 if (receivedTransmission.isForMe()) {
@@ -159,9 +165,9 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
 
     private fun sendResponseTo(transmission: Transmission) {
         when (transmission) {
-            is OrderTransmission        -> executeOrderAndRespond(transmission)
+            is OrderTransmission -> executeOrderAndRespond(transmission)
             is TransmissionWithResponse -> sender.sendNext(transmission.response)
-            is TerminatingTransmission  -> endConversation()
+            is TerminatingTransmission -> endConversation()
         }
     }
 
@@ -181,28 +187,37 @@ internal class ReceivingCommunicator internal constructor(callSign: CallSign, st
         if (incomingTransmission is TerminatingTransmission) {
             endConversation()
         } else {
-            sender.queueConversation(Conversation(callSign, incomingTransmission.sender, nextTransmissionOf(incomingTransmission)))
+            sender.queueConversation(
+                Conversation(
+                    callSign,
+                    incomingTransmission.sender,
+                    nextTransmissionOf(incomingTransmission)
+                )
+            )
             sender.sendNext(Conversations.Other.standBy(callSign, incomingTransmission.sender).firstTransmission)
         }
     }
 
     private fun nextTransmissionOf(transmission: Transmission) =
-            // TODO: This probably has to be improved, but currently is only used when sending a "stand by" response
-            (transmission as TransmissionWithResponse).response
+        // TODO: This probably has to be improved, but currently is only used when sending a "stand by" response
+        (transmission as TransmissionWithResponse).response
 
     private fun gatherInformationFrom(transmission: Transmission) {
         // TODO: Learn stuff from transmissions and add it to the "knowledge" of this unit/element (#104)
         val contacts = transmission.contactLocations
         if (contacts.isNotEmpty()) {
-            log.debug("${callSign}: learned about enemies at ${contacts.joinToString()}")
+            log.debug { "${callSign}: learned about enemies at ${contacts.joinToString()}" }
             // radioContext.addKnowledge(contacts)
         }
     }
 
 }
 
-internal class SendingCommunicator internal constructor(callSign: CallSign, state: CommunicatorState, internal val radio: RadioSender)
-    : CommonCommunicator(callSign, state) {
+internal class SendingCommunicator internal constructor(
+    callSign: CallSign,
+    state: CommunicatorState,
+    internal val radio: RadioSender
+) : CommonCommunicator(callSign, state) {
 
     /**
      * When this communicator shall start a [Conversation] but currently already is in one, the new conversation(s)
@@ -222,10 +237,10 @@ internal class SendingCommunicator internal constructor(callSign: CallSign, stat
         // if no conversation is going on, check if we should start a new one
         if (!state.isInConversation()) {
             conversationQueue.poll()
-                    ?.let {
-                        startConversation(it)
-                        proceedWithConversation()
-                    }
+                ?.let {
+                    startConversation(it)
+                    proceedWithConversation()
+                }
         }
     }
 
@@ -257,7 +272,7 @@ internal class SendingCommunicator internal constructor(callSign: CallSign, stat
     }
 
     private fun nothingHeardFrom(expectedSender: CallSign): Conversation {
-        log.info("$expectedSender did not respond so $callSign cancels the conversation.")
+        log.info { "$expectedSender did not respond so $callSign cancels the conversation." }
         endConversation()
         return Conversations.Other.nothingHeard(callSign, expectedSender)
     }

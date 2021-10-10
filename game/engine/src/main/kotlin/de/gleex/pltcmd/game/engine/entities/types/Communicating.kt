@@ -12,10 +12,10 @@ import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.radio.subscribeToReceivedTransmissions
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import de.gleex.pltcmd.util.events.globalEventBus
+import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.events.api.Subscription
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * This file contains code for entities that have the RadioAttribute.
@@ -25,7 +25,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 interface Communicating : Factionable
 typealias CommunicatingEntity = GameEntity<Communicating>
 
-private val log = LoggerFactory.getLogger(Communicating::class)
+private val log = KotlinLogging.logger {}
 
 internal val CommunicatingEntity.communicator: RadioCommunicator
     get() = getAttribute(RadioAttribute::class).communicator

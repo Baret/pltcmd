@@ -4,7 +4,7 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.GenerationContext
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.random.Random
 
 /**
@@ -17,7 +17,7 @@ abstract class IntermediateGenerator {
 
     abstract fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld)
 
-    private val log = LoggerFactory.getLogger(this::class)
+    private val log = KotlinLogging.logger {}
 
     val processedTiles = mutableSetOf<Coordinate>()
     private val frontier = mutableSetOf<Coordinate>()

@@ -15,12 +15,12 @@ import de.gleex.pltcmd.game.engine.messages.OrderMessage
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.*
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
 import org.hexworks.amethyst.api.system.Facet
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * Facet to make an entity execute orders committed via [OrderMessage].
@@ -33,7 +33,7 @@ internal object ExecuteOrder: Facet<GameContext, OrderMessage>
  */
 private object ExecuteOrderWithCommandersIntent :
     BaseFacet<GameContext, OrderMessage>(OrderMessage::class, CommandersIntent::class) {
-    private val log = LoggerFactory.getLogger(ExecuteOrderWithCommandersIntent::class)
+    private val log = KotlinLogging.logger {}
 
     override suspend fun receive(message: OrderMessage): Response {
         val (order, orderedBy, orderedTo, _, entity) = message
@@ -83,7 +83,7 @@ private object ExecuteOrderWithCommandersIntent :
  */
 private object ExecuteOrderAsBase: BaseFacet<GameContext, OrderMessage>(OrderMessage::class, RadioAttribute::class) {
 
-    private val log = LoggerFactory.getLogger(ExecuteOrderAsBase::class)
+    private val log = KotlinLogging.logger {}
 
     override suspend fun receive(message: OrderMessage): Response {
         // TODO: Make Bases able to execute specific orders

@@ -9,12 +9,12 @@ import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.*
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.Fragments
 import org.hexworks.zircon.api.data.Position
@@ -44,7 +44,7 @@ class ElementCommandFragment(
         .bindTransform { it.callsign }
 
     companion object {
-        private val log = LoggerFactory.getLogger(ElementCommandFragment::class)
+        private val log = KotlinLogging.logger {}
     }
 
     override val root = Components.vbox()

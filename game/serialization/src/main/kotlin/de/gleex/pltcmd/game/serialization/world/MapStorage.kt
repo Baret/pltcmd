@@ -3,7 +3,7 @@ package de.gleex.pltcmd.game.serialization.world
 import de.gleex.pltcmd.game.serialization.Storage
 import de.gleex.pltcmd.game.serialization.StorageId
 import de.gleex.pltcmd.model.world.WorldMap
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
@@ -13,7 +13,7 @@ import kotlin.time.measureTimedValue
  */
 @OptIn(ExperimentalTime::class)
 object MapStorage {
-    private val log = LoggerFactory.getLogger(MapStorage::class)
+    private val log = KotlinLogging.logger {}
     private const val storageType = "map"
 
     /** map of all stored maps to their names */

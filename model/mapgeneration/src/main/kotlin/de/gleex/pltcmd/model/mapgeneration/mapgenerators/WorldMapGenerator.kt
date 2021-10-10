@@ -6,7 +6,7 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.random.Random
 
 /**
@@ -24,7 +24,7 @@ class WorldMapGenerator(private val seed: Long, val worldWidthInTiles: Int, val 
     private val random = Random(seed)
     private val context = GenerationContext.Companion.fromRandom(random)
 
-    private val log = LoggerFactory.getLogger(this::class)
+    private val log = KotlinLogging.logger {}
 
     private val generators: List<IntermediateGenerator> = listOf(
             // different generators go here
