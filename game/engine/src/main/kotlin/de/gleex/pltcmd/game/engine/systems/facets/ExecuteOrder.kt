@@ -40,7 +40,7 @@ private object ExecuteOrderWithCommandersIntent :
         return entity.asElementEntity<Response> { element ->
             when (order) {
                 MoveTo        -> {
-                    log.debug("Sending MoveTo message for destination $orderedTo")
+                    log.debug { "Sending MoveTo message for destination $orderedTo" }
                     element.commandersIntent
                         .setTo(ReachDestination(orderedTo!!))
                         .andThen(RadioGoal(Conversations.Messages.destinationReached(element.callsign, orderedBy)))
@@ -87,7 +87,7 @@ private object ExecuteOrderAsBase: BaseFacet<GameContext, OrderMessage>(OrderMes
 
     override suspend fun receive(message: OrderMessage): Response {
         // TODO: Make Bases able to execute specific orders
-        log.debug("${message.source.logIdentifier} can not execute orders yet.")
+        log.debug { "${message.source.logIdentifier} can not execute orders yet." }
         return Pass
     }
 }

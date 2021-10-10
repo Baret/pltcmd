@@ -27,6 +27,6 @@ class RandomTerrainFiller(override val rand: Random, override val context: Gener
                 missingTypeOnes++
             }
         }
-        log.debug("Filled up $missingTypeOnes coordinates with random terrain type, created $emptyOnes full tiles with ranom terrain")
+        log.debug { "Filled up $missingTypeOnes coordinates with random terrain type, created $emptyOnes full tiles with random terrain" }
     }
 }

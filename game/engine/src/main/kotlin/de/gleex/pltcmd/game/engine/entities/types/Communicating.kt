@@ -70,7 +70,7 @@ fun CommunicatingEntity.onSendTransmission(handler: (Transmission) -> Unit): Sub
  */
 // TODO: Instantly start the conversation if possible. Currently it takes 2 ticks until the conversation actually starts
 internal fun CommunicatingEntity.startConversation(conversation: Conversation) {
-    log.debug("$logIdentifier starting conversation $conversation")
+    log.debug { "$logIdentifier starting conversation $conversation" }
     communicator.startConversation(conversation)
 }
 

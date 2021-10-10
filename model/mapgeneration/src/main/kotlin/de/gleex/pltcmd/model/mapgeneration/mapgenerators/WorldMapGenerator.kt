@@ -68,7 +68,7 @@ class WorldMapGenerator(private val seed: Long, val worldWidthInTiles: Int, val 
                 it.generateArea(
                         fullMapArea,
                         partiallyGeneratedWorld)
-                log.debug("Generator ${it::class.simpleName} took ${System.currentTimeMillis() - intermediateStarted} ms")
+                log.debug { "Generator ${it::class.simpleName} took ${System.currentTimeMillis() - intermediateStarted} ms" }
             }
             val generationTime = System.currentTimeMillis() - started
             log.info("Map generation with seed $seed took $generationTime ms")

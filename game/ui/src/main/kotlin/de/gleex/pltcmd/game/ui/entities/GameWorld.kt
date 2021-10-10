@@ -42,7 +42,7 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
 
     init {
         worldMap.sectors.forEach(::putSector)
-        log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = $visibleSize")
+        log.debug { "Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = $visibleSize" }
     }
 
     private fun putSector(sector: Sector) {

@@ -17,17 +17,21 @@ import org.hexworks.cobalt.datatypes.Maybe
  * @param condition that triggers the switch to the other goal. It is invoked until it returns true. This means it
  *                  is enough to return true once (i.e. on a specific tick), it does not need to stay true.
  */
-data class ConditionalGoal(private val whenTrue: Goal, private val whenFalse: Goal, private val condition: () -> Boolean) : Goal(whenFalse) {
+data class ConditionalGoal(
+    private val whenTrue: Goal,
+    private val whenFalse: Goal,
+    private val condition: () -> Boolean
+) : Goal(whenFalse) {
     private var conditionWasTrue = false
 
     private val log = KotlinLogging.logger {}
 
     override fun isFinished(element: ElementEntity): Boolean =
-            whenTrue.isFinished(element) && whenFalse.isFinished(element)
+        whenTrue.isFinished(element) && whenFalse.isFinished(element)
 
     override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         if (conditionWasTrue.not() && condition.invoke()) {
-            log.debug(" - - - - - - - - -CONDITION WAS TRUE! SWITCHING GOAL - - - - - - - - -")
+            log.debug { " - - - - - - - - -CONDITION WAS TRUE! SWITCHING GOAL - - - - - - - - -" }
             conditionWasTrue = true
             prependSubGoals(whenTrue)
         }

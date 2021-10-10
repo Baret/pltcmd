@@ -77,7 +77,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
      */
     fun toWorldMap(): WorldMap {
         finishGeneration()
-        log.debug("Creating world map from ${terrainMap.size} tiles")
+        log.debug { "Creating world map from ${terrainMap.size} tiles" }
         require(terrainMap.size == completeArea.size) {
             "${terrainMap.size} coordinates have been generated, but ${completeArea.size} are needed."
         }

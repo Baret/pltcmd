@@ -20,7 +20,7 @@ class TypeFiller(override val rand: Random, override val context: GenerationCont
             mutableWorld.typeAt(it) == null
         }
 
-        log.debug("Found ${allTiles.size} tiles that need a terrain type")
+        log.debug { "Found ${allTiles.size} tiles that need a terrain type" }
 
         // start with highest points in the world
         val highestPoints = findHighestPoints(allTiles, mutableWorld)
@@ -28,7 +28,7 @@ class TypeFiller(override val rand: Random, override val context: GenerationCont
             fillTypeBasedOnHeight(it, MOUNTAIN, mutableWorld)
             processedTiles.add(it)
         }
-        log.debug("Started with ${processedTiles.size} highest points, working downwards from there...")
+        log.debug { "Started with ${processedTiles.size} highest points, working downwards from there..." }
 
         workFrontier(processedTiles, {currentCoordinate ->
             mutableWorld.neighborsOf(currentCoordinate).

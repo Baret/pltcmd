@@ -26,12 +26,12 @@ object MapStorage {
     /** Save the given map under the given id. */
     fun save(map: WorldMap, mapId: String) {
         val storage = mapId.storageId
-        log.debug("saving $map to $storage")
+        log.debug { "saving $map to $storage" }
         val duration = measureTime {
             val dao = WorldMapDao.of(map, mapId)
             Storage.save(dao, storage)
         }
-        log.info("saved $map to ${storage.id} in $duration")
+        log.info { "saved $map to ${storage.id} in $duration" }
     }
 
     /** Loads the map for the given id. Returns null if no map is stored under that id. */

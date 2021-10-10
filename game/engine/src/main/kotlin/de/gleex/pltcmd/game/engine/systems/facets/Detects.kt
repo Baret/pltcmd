@@ -16,6 +16,8 @@ import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Handles the [DetectEntities] message. It gets a set of possibly visible entities and calculates the actual
  * visibility using source's vision.
@@ -25,7 +27,6 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
     VisionAttribute::class,
     PositionAttribute::class
 ) {
-    private val log = KotlinLogging.logger {}
 
     override suspend fun receive(message: DetectEntities): Response {
         val (visibleEntities, seeing, context) = message
@@ -67,12 +68,12 @@ object Detects : BaseFacet<GameContext, DetectEntities>(
         visibility: SignalStrength,
         previousVisibility: Visibility
     ) {
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled) {
             val who = seeing.logIdentifier.padEnd(12)
             val what = seen.logIdentifier.padEnd(12)
             val where = seen.currentPosition.toString().padEnd(12)
             val how = visibility.asRatio()
-            log.debug("$who sees $what at $where with signal strength $how (last visibility was $previousVisibility)")
+            log.debug { "$who sees $what at $where with signal strength $how (last visibility was $previousVisibility)" }
         }
     }
 

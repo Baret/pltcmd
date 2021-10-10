@@ -7,6 +7,8 @@ import de.gleex.pltcmd.model.world.terrain.TerrainType
 import mu.KotlinLogging
 import kotlin.random.Random
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Simply fills the given area with the given [TerrainType] at all locations that do not yet have a type.
  */
@@ -16,13 +18,11 @@ class FixedTypeFiller(
         override val context: GenerationContext
 ) : IntermediateGenerator() {
 
-    private val log = KotlinLogging.logger {}
-
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         mutableWorld.find(area) {
             mutableWorld.typeAt(it) == null
         }.also {
-            log.debug("Filling up ${it.size} tiles with type $terrainType")
+            log.debug { "Filling up ${it.size} tiles with type $terrainType" }
         }.forEach {
             mutableWorld[it] = terrainType
         }

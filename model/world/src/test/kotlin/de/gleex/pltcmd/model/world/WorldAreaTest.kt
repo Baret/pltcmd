@@ -29,12 +29,12 @@ class WorldAreaTest : StringSpec({
         val duration = measureTime {
             repeat(10) {
                 val wanted = Coordinate(eastingRange.random(), northingRange.random())
-                log.debug("getting tile $wanted")
+                log.debug { "getting tile $wanted" }
                 val result = underTest[wanted]
                 result shouldNotBe null
             }
         }
-        log.info("accessing tile took $duration")
+        log.info { "accessing tile took $duration" }
         duration.inWholeMilliseconds shouldBeLessThan 100
     }
 })

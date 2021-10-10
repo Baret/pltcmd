@@ -26,9 +26,9 @@ private val log = KotlinLogging.logger {}
 @OptIn(ExperimentalTime::class)
 fun WorldMap.visionAt(location: Coordinate, visualRange: VisionPower): Vision {
     val radius: Distance = ceil(visualRange.power) * WorldTile.edgeLength
-    log.debug("Creating vision at $location with $visualRange. Calculating circle with radius ${radius}...")
+    log.debug { "Creating vision at $location with $visualRange. Calculating circle with radius ${radius}..." }
     val (area, duration) = measureTimedValue { circleAt(location, radius) }
-    log.debug("Created area with ${area.size} tiles in ${duration.inWholeMilliseconds} ms, returning signal.")
+    log.debug { "Created area with ${area.size} tiles in ${duration.inWholeMilliseconds} ms, returning signal." }
     return Vision(
             location,
             area,

@@ -29,7 +29,7 @@ class SignalVisualizer(val world: GameWorld) {
      */
     fun deactivate() {
         currentJob?.let {
-            log.debug("Cancelling job")
+            log.debug { "Cancelling draw signal job" }
             it.cancel()
         }
         val blocksToClear = currentBlocks
@@ -49,7 +49,7 @@ class SignalVisualizer(val world: GameWorld) {
      * Draws the given signal at its origin.
      */
     fun activateWith(signal: Signal<*>) {
-        log.debug("Displaying signal at ${signal.origin}")
+        log.debug { "Displaying signal at ${signal.origin}" }
         deactivate()
         draw(signal)
     }

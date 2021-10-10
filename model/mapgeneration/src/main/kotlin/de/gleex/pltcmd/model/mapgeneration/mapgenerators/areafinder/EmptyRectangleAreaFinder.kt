@@ -6,13 +6,12 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import mu.KotlinLogging
 import java.util.*
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Groups the empty spaces of a world into rectangles. The rectangles are as wide as possible like lines.
  */
 class EmptyRectangleAreaFinder : AreaFinder {
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
 
     override fun findAll(partialWorld: MutableWorld): Set<CoordinateRectangle> {
         val start = System.currentTimeMillis()
@@ -24,7 +23,7 @@ class EmptyRectangleAreaFinder : AreaFinder {
             rectangles.add(rectangle)
         }
         val duration = System.currentTimeMillis() - start
-        EmptyRectangleAreaFinder.Companion.log.debug("Found ${rectangles.size} empty rectangles in $duration ms")
+        log.debug { "Found ${rectangles.size} empty rectangles in $duration ms" }
         return rectangles
     }
 

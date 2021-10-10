@@ -55,7 +55,7 @@ class Table<M : Any>(
                         .apply {
                             processMouseEvents(MouseEventType.MOUSE_CLICKED) { _, phase ->
                                 if (phase == UIEventPhase.TARGET) {
-                                    log.debug("Column header '${column.name}' has been clicked. A filter modal might have opened now :O")
+                                    log.debug { "Column header '${column.name}' has been clicked. A filter modal might have opened now :O" }
                                 }
                             }
                         }
@@ -83,7 +83,7 @@ class Table<M : Any>(
     private val maxRows: Int = (rowPanel.height.toDouble() / (1 + rowSpacing)).toInt()
 
     init {
-        log.debug("Creating table with ${Size.create(height, width)} for ${columns.size} columns and ${values.size} values. rowPanel.height = ${rowPanel.height}, maxRows = $maxRows")
+        log.debug { "Creating table with ${Size.create(height, width)} for ${columns.size} columns and ${values.size} values. rowPanel.height = ${rowPanel.height}, maxRows = $maxRows" }
         fillTable(values)
     }
 

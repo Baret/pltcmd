@@ -93,7 +93,7 @@ class ElementCommandFragment(
     override fun invoke(event: MouseEvent, phase: UIEventPhase): UIEventResponse =
             if (phase == UIEventPhase.TARGET && event.button == 1) {
                 val coord = world.coordinateAtVisiblePosition(event.position - mapOffset.value)
-                log.debug("MOUSE CLICKED at ${event.position}! Offset is $mapOffset. Updating command fragment value to $coord")
+                log.debug { "MOUSE CLICKED at ${event.position}! Offset is $mapOffset. Updating command fragment value to $coord" }
                 selectedDestination.updateValue(coord)
                 Processed
             } else {
@@ -104,7 +104,7 @@ class ElementCommandFragment(
             sendConversation(order.create(hq.radioCallSign, selectedCallsign.value, selectedDestination.value))
 
     private fun sendConversation(conversation: Conversation) {
-        log.debug("Sending conversation to ${conversation.receiver}: $conversation")
+        log.debug { "Sending conversation to ${conversation.receiver}: $conversation" }
         runBlocking {
             hq.sendMessage(ConversationMessage(conversation, game.context(), hq))
         }

@@ -80,10 +80,10 @@ class GameView(
         leftSidebar.connectTo(map.mapPanel)
         rightSidebar.connectTo(map.mapPanel)
 
-        log.debug("Created map view with size ${mapComponent.size}, content size ${mapComponent.contentSize} and position ${mapComponent.position}")
-        log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
+        log.debug { "Created map view with size ${mapComponent.size}, content size ${mapComponent.contentSize} and position ${mapComponent.position}" }
+        log.debug { "It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}" }
 
-        log.debug("Adding keyboard listener to screen")
+        log.debug { "Adding keyboard listener to screen" }
         screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, phase ->
             if (phase == UIEventPhase.TARGET) {
                 when (event.code) {
@@ -105,7 +105,7 @@ class GameView(
                     }
                     KeyCode.KEY_Q -> {
                         GameOptions.displayRadioSignals.value = GameOptions.displayRadioSignals.value.not()
-                        log.debug("Toggled radio signal display to ${if (GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
+                        log.debug { "Toggled radio signal display to ${if (GameOptions.displayRadioSignals.value) "ON" else "OFF"}" }
                         Processed
                     }
                     KeyCode.KEY_P -> {

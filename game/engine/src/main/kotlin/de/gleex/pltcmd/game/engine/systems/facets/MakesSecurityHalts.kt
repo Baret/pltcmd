@@ -36,7 +36,7 @@ object MakesSecurityHalts : BaseFacet<GameContext, UpdatePosition>(UpdatePositio
                     val inTurns = (afterTiles * ticksPerTile).toInt()
 
                     if (entity.movementPath.size > afterTiles) {
-                        log.debug("- - - Entered new sector! Planning security halt at Tick ${Ticker.currentTick + inTurns}")
+                        log.debug { "- - - Entered new sector! Planning security halt at Tick ${Ticker.currentTick + inTurns}" }
                         intent.inTurns(inTurns, SecurityHalt(3))
                     }
                 }

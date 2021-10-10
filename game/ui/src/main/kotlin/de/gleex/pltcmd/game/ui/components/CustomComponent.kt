@@ -21,7 +21,7 @@ object CustomComponent {
      */
     operator fun invoke(fragmentToWrap: Fragment, position: Position): Panel {
         val size = fragmentToWrap.root.size
-        log.debug("Creating custom component with size $size at $position for fragment $fragmentToWrap")
+        log.debug { "Creating custom component with size $size at $position for fragment $fragmentToWrap" }
         return Components.panel()
                 .withSize(size)
                 .withPosition(position)

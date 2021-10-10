@@ -39,22 +39,22 @@ object MovingForOneMinute :
         context: GameContext
     ): Boolean {
         return if (entity.canNotMove) {
-            log.debug("${entity.logIdentifier} can not move currently! The current speed is even ${entity.currentSpeed.inKph} km/h")
+            log.debug { "${entity.logIdentifier} can not move currently! The current speed is even ${entity.currentSpeed.inKph} km/h" }
             return false
         } else if (entity.movementPath.isNotEmpty()) {
             // TODO: Might be more accurate by re-calculating currentSpeedInKph after each tile (we might be slower there)
             val travelDistanceInTiles = entity.currentSpeed / GameConstants.Movement.speedForOneTileInOneTick
             entity.movementProgress += travelDistanceInTiles
-            log.debug("${entity.logIdentifier} travels $travelDistanceInTiles tiles/tick with a base speed of ${entity.baseSpeed.inKph} and current speed of ${entity.currentSpeed.inKph} km/h. New progress: ${entity.movementProgress}")
+            log.debug { "${entity.logIdentifier} travels $travelDistanceInTiles tiles/tick with a base speed of ${entity.baseSpeed.inKph} and current speed of ${entity.currentSpeed.inKph} km/h. New progress: ${entity.movementProgress}" }
             while (entity.movementProgress.hasTilesToAdvance() && entity.movementPath.isNotEmpty()) {
                 val oldPosition = entity.position.value
                 val newPosition = entity.movementPath.pop()
                 entity.receiveMessage(UpdatePosition(oldPosition, newPosition, context, entity))
                 if (oldPosition != entity.position.value) {
-                    log.debug("${entity.logIdentifier} successfully moved from $oldPosition to ${entity.position}")
+                    log.debug { "${entity.logIdentifier} successfully moved from $oldPosition to ${entity.position}" }
                     entity.movementProgress.advance()
                 } else {
-                    log.debug("${entity.logIdentifier} was stopped by something! Progress left: ${entity.movementProgress}")
+                    log.debug { "${entity.logIdentifier} was stopped by something! Progress left: ${entity.movementProgress}" }
                     break
                 }
             }

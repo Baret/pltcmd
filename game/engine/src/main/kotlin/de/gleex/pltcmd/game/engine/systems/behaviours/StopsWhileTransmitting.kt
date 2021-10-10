@@ -26,13 +26,13 @@ object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class)
             communicating.findAttribute(Transmitting::class)
                 .fold(whenEmpty = {
                     if (communicating.isTransmitting) {
-                        log.debug("${communicating.logIdentifier} is transmitting, adding attribute.")
+                        log.debug { "${communicating.logIdentifier} is transmitting, adding attribute." }
                         communicating.addIfMissing(Transmitting)
                         updated = true
                     }
                 }, whenPresent = {
                     if (communicating.isTransmitting.not()) {
-                        log.debug("${communicating.logIdentifier} stopped transmitting, removing attribute.")
+                        log.debug { "${communicating.logIdentifier} stopped transmitting, removing attribute." }
                         communicating.asMutableEntity()
                             .removeAttribute(Transmitting)
                         updated = true

@@ -42,14 +42,14 @@ abstract class IntermediateGenerator {
     ) {
         frontier.clear()
         frontier.addAll(initialFrontier)
-        log.debug("Starting to process frontier starting with ${frontier.size} tiles")
+        log.debug { "Starting to process frontier starting with ${frontier.size} tiles" }
         var frontiersProcessed = 1
         while(frontier.isNotEmpty()) {
             nextFrontier.clear()
             frontier.forEach(atEachNode)
             afterFrontier.invoke()
             processedTiles.addAll(frontier)
-            log.debug("Processed ${processedTiles.size} tiles after $frontiersProcessed iterations")
+            log.debug { "Processed ${processedTiles.size} tiles after $frontiersProcessed iterations" }
             frontiersProcessed++
             frontier.clear()
             frontier.addAll(nextFrontier)
