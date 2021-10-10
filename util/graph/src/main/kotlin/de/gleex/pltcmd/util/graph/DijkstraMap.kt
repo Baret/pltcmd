@@ -1,9 +1,6 @@
 package de.gleex.pltcmd.util.graph
 
-import mu.KotlinLogging
 import org.hexworks.cobalt.datatypes.Maybe
-
-private val log = KotlinLogging.logger {}
 
 /**
  * A generic and rather simple implementation of a DijkstraMap (http://www.roguebasin.com/index.php?title=Dijkstra_Maps_Visualized)
