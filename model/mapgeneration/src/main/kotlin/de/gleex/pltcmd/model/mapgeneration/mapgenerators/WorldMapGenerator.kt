@@ -54,8 +54,8 @@ class WorldMapGenerator(private val seed: Long, val worldWidthInTiles: Int, val 
         listeners.forEach { it.startGeneration(bottomLeftCoordinate) }
         listeners.forEach(partiallyGeneratedWorld::addListener)
         try {
-            log.info{"Generating a random world with seed $seed" }
-            log.info{"\tContext: $context" }
+            log.info { "Generating a random world with seed $seed" }
+            log.info { "\tContext: $context" }
             log.info { "\tWorld size: $worldWidthInTiles * $worldHeightInTiles = ${worldWidthInTiles * worldHeightInTiles} tiles" }
             log.info { "\tRanging from $bottomLeftCoordinate to ${partiallyGeneratedWorld.topRightCoordinate}" }
 
