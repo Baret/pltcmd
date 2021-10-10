@@ -14,6 +14,8 @@ import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.base.BaseGameArea
 
+private val log = KotlinLogging.logger {}
+
 /**
  * The game world contains all [GameBlock]s representing the map. It has a visible part and can scroll from [Sector] to sector.
  * It is also capable of translating [Coordinate]s to [Position3D] and vice versa.
@@ -32,10 +34,6 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
                 initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
                 initialContents = persistentMapOf(),
                 initialFilters = emptyList()) {
-
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
 
     private val topLeftOffset: Position
         get() = worldMap.getTopLeftOffset()

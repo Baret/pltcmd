@@ -11,6 +11,8 @@ import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.uievent.MouseEventType
 import org.hexworks.zircon.api.uievent.UIEventPhase
 
+private val log = KotlinLogging.logger {}
+
 /**
  * A table lists values of type [M] in columns defined by [columns].
  *
@@ -136,7 +138,5 @@ class Table<M : Any>(
          * The minimum height this fragment needs.
          */
         const val MIN_HEIGHT = 6
-
-        private val log = KotlinLogging.logger {}
     }
 }

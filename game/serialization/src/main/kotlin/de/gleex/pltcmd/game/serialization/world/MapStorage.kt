@@ -8,12 +8,13 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Stores and loads map data.
  */
 @OptIn(ExperimentalTime::class)
 object MapStorage {
-    private val log = KotlinLogging.logger {}
     private const val storageType = "map"
 
     /** map of all stored maps to their names */

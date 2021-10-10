@@ -11,9 +11,10 @@ import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
+private val log = KotlinLogging.logger {}
+
 @OptIn(ExperimentalTime::class)
 class WorldAreaTest : StringSpec({
-    val log = KotlinLogging.logger {}
 
     "get() must not be slow" {
         val terrain = Terrain.random(Random)

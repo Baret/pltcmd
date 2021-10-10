@@ -19,9 +19,10 @@ import io.kotest.matchers.string.shouldMatch
 import io.kotest.property.checkAll
 import mu.KotlinLogging
 
+private val log = KotlinLogging.logger {}
+
 class CoordinateTest : WordSpec({
 
-    val log = KotlinLogging.logger {}
     val testCoordinate = Coordinate(123, 345)
 
     "A coordinate $testCoordinate" should {

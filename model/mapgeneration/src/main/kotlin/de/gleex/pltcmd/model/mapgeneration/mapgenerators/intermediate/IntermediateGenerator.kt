@@ -7,6 +7,8 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import mu.KotlinLogging
 import kotlin.random.Random
 
+private val log = KotlinLogging.logger {}
+
 /**
  * An intermediate generator generates a part of the final world. It may be called before or after other
  * intermediate generators. And it might be called to generate only a part of the whole world.
@@ -16,8 +18,6 @@ abstract class IntermediateGenerator {
     abstract val context: GenerationContext
 
     abstract fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld)
-
-    private val log = KotlinLogging.logger {}
 
     val processedTiles = mutableSetOf<Coordinate>()
     private val frontier = mutableSetOf<Coordinate>()

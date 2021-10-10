@@ -6,6 +6,8 @@ import mu.KotlinLogging
 import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
 
+private val log = KotlinLogging.logger {}
+
 /**
  * An element may have a _goal_ that is an abstraction layer on top of the basic capabilities of "a bunch of soldiers".
  *
@@ -19,8 +21,6 @@ import org.hexworks.cobalt.datatypes.Maybe
 abstract class Goal(vararg subGoals: Goal) {
 
     private val subGoals = ArrayDeque<Goal>()
-
-    private val log = KotlinLogging.logger {}
 
     init {
         appendSubGoals(*subGoals)

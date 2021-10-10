@@ -16,6 +16,8 @@ import mu.KotlinLogging
 import java.util.*
 import java.util.concurrent.Executors
 
+private val log = KotlinLogging.logger {}
+
 /**
  * A world that is currently being generated. When created it has a size but none of its tiles are filled yet.
  * It is a data container for coordinates and their corresponding terrain heights and types but also provides
@@ -56,8 +58,6 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
      */
     val mainCoordinatesEmpty: Set<MainCoordinate>
         get() = mainCoordinates - mainCoordinatesNotEmpty
-
-    private val log = KotlinLogging.logger {}
 
     init {
         require(bottomLeftCoordinate.eastingFromLeft % Sector.TILE_COUNT == 0

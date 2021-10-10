@@ -11,13 +11,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import mu.KotlinLogging
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Draws a [Signal] at its origin when activated. When deactivated the last drawn overlays are cleared.
  */
 class SignalVisualizer(val world: GameWorld) {
 
     companion object {
-        private val log = KotlinLogging.logger {}
         private val visualizerScope = CoroutineScope(Dispatchers.Default)
     }
 

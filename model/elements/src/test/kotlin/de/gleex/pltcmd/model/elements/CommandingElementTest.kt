@@ -16,11 +16,11 @@ import io.kotest.matchers.shouldBe
 import mu.KotlinLogging
 import org.hexworks.cobalt.datatypes.Maybe
 
+private val log = KotlinLogging.logger {}
+
 class CommandingElementTest : WordSpec() {
 
     companion object {
-        private val log = KotlinLogging.logger {}
-
         private val defaultElementKind = ElementKind.MotorizedInfantry
         private val defaultCorps = Corps.CombatSupport
         private val defaultRung = Rung.Fireteam

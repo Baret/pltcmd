@@ -17,12 +17,12 @@ import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
 
+private val log = KotlinLogging.logger {}
+
 /**
  * When entering a new sector this facet plans a [SecurityHalt] after some tiles.
  */
 object MakesSecurityHalts : BaseFacet<GameContext, UpdatePosition>(UpdatePosition::class) {
-
-    private val log = KotlinLogging.logger {}
 
     override suspend fun receive(message: UpdatePosition): Response {
         if (message.oldPosition.sectorOrigin != message.newPosition.sectorOrigin) {

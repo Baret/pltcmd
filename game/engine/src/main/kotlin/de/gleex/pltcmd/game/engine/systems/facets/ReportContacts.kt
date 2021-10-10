@@ -16,12 +16,12 @@ import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Sends a contact report to the hq when something is detected.
  */
 object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::class) {
-
-    private val log = KotlinLogging.logger {}
 
     override suspend fun receive(message: DetectedEntity): Response {
         val detected = message

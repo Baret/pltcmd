@@ -9,6 +9,8 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import mu.KotlinLogging
 import kotlin.random.Random
 
+private val log = KotlinLogging.logger {}
+
 /**
  * The WorldMapGenerator is the only class you need outside this package. It generates the world for the game given a seed.
  */
@@ -23,8 +25,6 @@ class WorldMapGenerator(private val seed: Long, val worldWidthInTiles: Int, val 
 
     private val random = Random(seed)
     private val context = GenerationContext.Companion.fromRandom(random)
-
-    private val log = KotlinLogging.logger {}
 
     private val generators: List<IntermediateGenerator> = listOf(
             // different generators go here

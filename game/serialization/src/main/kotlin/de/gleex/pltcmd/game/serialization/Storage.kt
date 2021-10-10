@@ -7,12 +7,13 @@ import kotlinx.serialization.protobuf.ProtoBuf
 import mu.KotlinLogging
 import java.io.File
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Manages persistent data.
  */
 @OptIn(ExperimentalSerializationApi::class)
 internal object Storage {
-    private val log = KotlinLogging.logger {}
     private val dataFolder = File("data")
 
     init {

@@ -6,6 +6,8 @@ import de.gleex.pltcmd.model.signals.core.toSignalStrength
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import mu.KotlinLogging
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Vision propagates really far through air but stops instantly when hitting the ground (obviously).
  *
@@ -13,10 +15,6 @@ import mu.KotlinLogging
  * signal loss the vision stops at this range.
  */
 class VisionPropagator(maxRangeInTiles: Double) : SignalPropagator {
-
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
 
     private var accumulatedSignalLoss: Double = 0.0
 

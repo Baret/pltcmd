@@ -6,6 +6,8 @@ import mu.KotlinLogging
 import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
 
+private val log = KotlinLogging.logger {}
+
 /**
  * This goal consists of two sub-goals. It executes [whenFalse] until [condition] becomes true. Then [whenTrue] is
  * stepped until it finishes. Afterwards execution goes back to [whenFalse]. This goal is finished, when both
@@ -23,8 +25,6 @@ data class ConditionalGoal(
     private val condition: () -> Boolean
 ) : Goal(whenFalse) {
     private var conditionWasTrue = false
-
-    private val log = KotlinLogging.logger {}
 
     override fun isFinished(element: ElementEntity): Boolean =
         whenTrue.isFinished(element) && whenFalse.isFinished(element)

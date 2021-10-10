@@ -20,6 +20,8 @@ import org.hexworks.zircon.api.Fragments
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.uievent.*
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Displays a list of entities and makes it possible to send them a command from `hq`.
  * Currently they get a move command sent by the given `hq`. For now this fragment is just a debug/playaround
@@ -42,10 +44,6 @@ class ElementCommandFragment(
     private val selectedCallsign: ObservableValue<CallSign> = elementSelect
         .selectedValue
         .bindTransform { it.callsign }
-
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
 
     override val root = Components.vbox()
             .withSize(fragmentWidth, 5)

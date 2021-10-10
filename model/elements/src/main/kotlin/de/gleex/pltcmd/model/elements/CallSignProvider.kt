@@ -4,6 +4,8 @@ import de.gleex.pltcmd.util.namegeneration.AlphabetPicker
 import mu.KotlinLogging
 import kotlin.reflect.KProperty
 
+private val log = KotlinLogging.logger {}
+
 /**
  * This class is used to provide call signs for a commanding element and all its subordinates.
  * It picks a random (hopefully) unique call sign at creation time but it may be overwritten i.e.
@@ -16,10 +18,6 @@ internal class CallSignProvider(
     @Suppress("UNUSED_PARAMETER")
     rung: Rung
 ) {
-
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
 
     private var callSign: CallSign
 

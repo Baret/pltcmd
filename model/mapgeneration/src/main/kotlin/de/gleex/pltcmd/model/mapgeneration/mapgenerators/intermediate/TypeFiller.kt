@@ -11,9 +11,9 @@ import mu.KotlinLogging
 import java.util.*
 import kotlin.random.Random
 
-class TypeFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
+private val log = KotlinLogging.logger {}
 
-    private val log = KotlinLogging.logger {}
+class TypeFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         val allTiles = mutableWorld.find(area) {

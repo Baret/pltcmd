@@ -14,13 +14,14 @@ import mu.KotlinLogging
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Generates multiple plains in an area. Plains are rectangles of grass land with a height between two to five. They have a minimum height/width of at least 5 tiles and a maximum of 50.
  */
 class PlainsGenerator(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
     companion object {
-        private val log = KotlinLogging.logger {}
         private const val MIN_WIDTH = 5  // tiles
         private const val MAX_WIDTH = 50 // tiles
         private const val FADING_BORDER = 3 // tiles

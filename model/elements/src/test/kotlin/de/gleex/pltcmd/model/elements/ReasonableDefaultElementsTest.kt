@@ -23,11 +23,9 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.starProjectedType
 
-class ReasonableDefaultElementsTest : WordSpec() {
+private val log = KotlinLogging.logger {}
 
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
+class ReasonableDefaultElementsTest : WordSpec() {
 
     init {
         val infantryFireteamSize = 2 to 4

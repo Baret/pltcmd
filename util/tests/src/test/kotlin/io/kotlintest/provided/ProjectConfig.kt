@@ -9,8 +9,9 @@ import io.kotest.core.test.TestType
 import mu.KotlinLogging
 import kotlin.reflect.KClass
 
+private val log = KotlinLogging.logger {}
+
 class ProjectConfig: AbstractProjectConfig() {
-    val log = KotlinLogging.logger {}
     private var allStartTime = 0L
     val executionTimes = mutableListOf<Long>()
     val heapSizes = mutableListOf<Long>()

@@ -10,11 +10,11 @@ import de.gleex.pltcmd.model.faction.Affiliation
 import mu.KotlinLogging
 import org.hexworks.amethyst.api.base.BaseBehavior
 
+private val log = KotlinLogging.logger {}
+
 /** Attacks nearby enemies. */
 internal object Fighting :
     BaseBehavior<GameContext>(ShootersAttribute::class, PositionAttribute::class, ElementAttribute::class) {
-
-    private val log = KotlinLogging.logger {}
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean =
         entity.asElementEntity { attackNearbyEnemies(it, context) }

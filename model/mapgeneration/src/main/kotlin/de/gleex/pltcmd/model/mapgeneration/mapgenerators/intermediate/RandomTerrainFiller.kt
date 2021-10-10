@@ -8,12 +8,12 @@ import de.gleex.pltcmd.model.world.terrain.TerrainType
 import mu.KotlinLogging
 import kotlin.random.Random
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Fills an area with random [Terrain] and adds random [TerrainType] to coordinates that only contain a height.
  */
 class RandomTerrainFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
-
-    private val log = KotlinLogging.logger {}
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         var emptyOnes = 0

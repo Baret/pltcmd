@@ -6,6 +6,8 @@ import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.data.Position
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Workaround to wrap [Fragment]s into a [Panel]. As we can not directly extend [Components] (we would need
  * to implement the internal interface), we simulate custom components. We actually build [Fragment]s but to
@@ -13,7 +15,6 @@ import org.hexworks.zircon.api.data.Position
  * calling `CustomComponent(ourFragment)`.
  */
 object CustomComponent {
-    private val log = KotlinLogging.logger {}
 
     /**
      * Wraps the given [Fragment] into a [Panel] with the same size and position. This kind of turns [fragmentToWrap]

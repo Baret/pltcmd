@@ -8,8 +8,9 @@ import de.gleex.pltcmd.model.world.terrain.TerrainType
 import mu.KotlinLogging
 import kotlin.random.Random
 
+private val log = KotlinLogging.logger {}
+
 class RiverTyper(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
-    private val log = KotlinLogging.logger {}
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         // for now create one river on every mountain (expecting every mountain top to be a "target")

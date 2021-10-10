@@ -29,6 +29,8 @@ import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.uievent.*
 import org.hexworks.zircon.api.view.base.BaseView
 
+private val log = KotlinLogging.logger {}
+
 /**
  * The view to display the map, radio log and interaction panel
  */
@@ -42,8 +44,6 @@ class GameView(
     BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     companion object {
-        private val log = KotlinLogging.logger {}
-
         private const val LOG_AREA_HEIGHT = WINDOW_HEIGHT - MAP_VIEW_HEIGHT
         private const val LOG_AREA_WIDTH = WINDOW_WIDTH
         private const val SIDEBAR_HEIGHT = WINDOW_HEIGHT - LOG_AREA_HEIGHT

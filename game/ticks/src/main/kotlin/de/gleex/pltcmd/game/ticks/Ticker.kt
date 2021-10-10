@@ -15,12 +15,12 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.time.ExperimentalTime
 
+private val log = KotlinLogging.logger {}
+
 /**
  * This singleton is responsible for publishing _ticks_ via the [EventBus] and by this advance the ingame time.
  */
 object Ticker {
-
-    private val log = KotlinLogging.logger {}
 
     /**
      * The current tick the simulation is currently in. Or "the last tick that happened".

@@ -13,6 +13,8 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.floor
 
+private val log = KotlinLogging.logger {}
+
 /**
  * A signal has an [origin] and an [area] that it can be received in. For every [Coordinate] in [area] the
  * [SignalStrength] can be calculated. The [SignalPower] determines it's range and thus the size of [area].
@@ -27,10 +29,6 @@ class Signal<P : SignalPower>(
     val area: WorldArea,
     val power: P
 ) {
-
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
 
     init {
         require(origin in area) {

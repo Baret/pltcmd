@@ -11,11 +11,9 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.beUpperCase
 import mu.KotlinLogging
 
-class UnitTransformationTest : WordSpec() {
+private val log = KotlinLogging.logger {}
 
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
+class UnitTransformationTest : WordSpec() {
 
     init {
         "The unit transformation" should {

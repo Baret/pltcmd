@@ -12,13 +12,14 @@ import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import mu.KotlinLogging
 import org.hexworks.amethyst.api.base.BaseBehavior
 
+private val log = KotlinLogging.logger {}
+
 /**
  * [CommunicatingEntity]s with this behavior need to stop when they are transmitting on the radio.
  *
  * This behavior adds the [Transmitting] flag while the entity [isTransmitting].
  */
 object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class) {
-    private val log = KotlinLogging.logger {}
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         return entity.asCommunicatingEntity { communicating ->

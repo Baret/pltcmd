@@ -11,14 +11,14 @@ import mu.KotlinLogging
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
+private val log = KotlinLogging.logger {}
+
 /**
  * Creates a number of mountain tops and slowly decreases the terrain around them.
  */
 class MountainTopHeightMapper(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
     private val MAX_TERRAIN = if (context.hilliness < 0.3) TerrainHeight.MAX - 1 else TerrainHeight.MAX
     private val MIN_TERRAIN = TerrainHeight.FOUR
-
-    private val log = KotlinLogging.logger {}
 
     private val mountainTopsPerMainCoordinate: Int = (4.0 * context.hilliness).roundToInt()
 

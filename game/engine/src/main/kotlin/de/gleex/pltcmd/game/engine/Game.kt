@@ -33,13 +33,11 @@ import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
+private val log = KotlinLogging.logger {}
+
 data class Game(val engine: Engine<GameContext>, val world: WorldMap, val playerFaction: Faction, val random: Random) {
 
     private val allEntities: EntitySet<EntityType> = EntitySet()
-
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
 
     private var previousUpdate: Job? = null
 

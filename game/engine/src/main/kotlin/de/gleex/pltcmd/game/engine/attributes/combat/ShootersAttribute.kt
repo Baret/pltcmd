@@ -9,12 +9,13 @@ import org.hexworks.amethyst.api.base.BaseAttribute
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 
+private val log = KotlinLogging.logger {}
+
 /** The offensive part of the given element. */
 internal class ShootersAttribute(weapons: Iterable<WeaponStats>) : BaseAttribute() {
     constructor(element: Element) : this(element.allUnits.map { it.blueprint.weapon })
 
     companion object {
-        private val log = KotlinLogging.logger {}
         private val filterCombatReady: (Shooter) -> Boolean = { it.isAbleToFight }
         private val filterWounded: (Shooter) -> Boolean = { UnitFightingState.WIA == it.state.value }
     }

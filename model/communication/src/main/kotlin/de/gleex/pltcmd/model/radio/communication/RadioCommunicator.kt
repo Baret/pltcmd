@@ -21,6 +21,8 @@ import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.events.api.Subscription
 import java.util.*
 
+private val log = KotlinLogging.logger {}
+
 /**
  * A [RadioCommunicator] participates in radio communications. It sends with the given radio each time [proceedWithConversation]
  * is called and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [globalEventBus].
@@ -78,10 +80,6 @@ internal open class CommonCommunicator internal constructor(
     internal val callSign: CallSign,
     internal val state: CommunicatorState
 ) {
-
-    companion object {
-        internal val log = KotlinLogging.logger {}
-    }
 
     private var _radioContext: RadioContext? = null
     var radioContext: RadioContext

@@ -3,6 +3,8 @@ package de.gleex.pltcmd.util.graph
 import mu.KotlinLogging
 import org.hexworks.cobalt.datatypes.Maybe
 
+private val log = KotlinLogging.logger {}
+
 /**
  * A generic and rather simple implementation of a DijkstraMap (http://www.roguebasin.com/index.php?title=Dijkstra_Maps_Visualized)
  * It must be built node by node, which is handy when a map generator sets one tile after another and wants to
@@ -10,8 +12,6 @@ import org.hexworks.cobalt.datatypes.Maybe
  *
  */
 class DijkstraMap<T>(vararg initialTargets: T) {
-
-    private val log = KotlinLogging.logger {}
 
     private val _targets = initialTargets.toMutableSet()
     val targets
