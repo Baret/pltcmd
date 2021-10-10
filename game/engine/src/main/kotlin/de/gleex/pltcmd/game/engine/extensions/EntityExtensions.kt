@@ -110,7 +110,7 @@ internal suspend inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGa
         val result = invocation(this as E)
         Maybe.of(result)
     } else {
-        log.warn("$logIdentifier can not be cast to an entity of type ${T::class} because it has type ${type::class}")
+        log.warn { "$logIdentifier can not be cast to an entity of type ${T::class} because it has type ${type::class}" }
         Maybe.empty()
     }
 

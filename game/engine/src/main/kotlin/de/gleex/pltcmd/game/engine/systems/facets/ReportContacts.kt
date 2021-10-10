@@ -52,7 +52,7 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(DetectedEntity::c
                 }
             }
             else        -> {
-                log.warn("Not reporting entity type '${toReport.type}'!")
+                log.warn { "Not reporting entity type '${toReport.type}'!" }
                 Pass
             }
         }

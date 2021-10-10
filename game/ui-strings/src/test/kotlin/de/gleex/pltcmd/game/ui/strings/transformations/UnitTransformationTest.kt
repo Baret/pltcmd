@@ -62,7 +62,7 @@ class UnitTransformationTest : WordSpec() {
     private fun Collection<String>.logDuplicates(format: Format) {
         val duplicates = this.duplicates()
         if(duplicates.isNotEmpty()) {
-            log.warn("Non unique $format values: $duplicates")
+            log.warn { "Non unique $format values: $duplicates" }
         }
     }
 

@@ -66,7 +66,7 @@ internal class ShootersAttribute(weapons: Iterable<WeaponStats>) : BaseAttribute
                 .limit(maxAffectedUnits)
                 .forEach { it.state.updateValue(newState) }
         defeated.updateValue(!isAbleToFight)
-        log.trace("set $defenderCount of ${shooters.size} to $newState. combat-ready afterwards: $combatReadyCount isAbleToFight? $isAbleToFight")
+        log.trace { "set $defenderCount of ${shooters.size} to $newState. combat-ready afterwards: $combatReadyCount isAbleToFight? $isAbleToFight" }
     }
 
     infix fun onDefeat(callback: () -> kotlin.Unit) {

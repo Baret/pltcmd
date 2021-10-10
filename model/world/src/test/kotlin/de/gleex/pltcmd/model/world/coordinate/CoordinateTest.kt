@@ -125,7 +125,7 @@ class CoordinateTest : WordSpec({
                 }
                 checkedCoordinates++
             }
-            log.info("checked $checkedCoordinates different string representations of Coordinate")
+            log.info { "checked $checkedCoordinates different string representations of Coordinate" }
         }
 
         val expectedString = "(123|345)"

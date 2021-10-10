@@ -46,7 +46,7 @@ object MapStorage {
             val dao = Storage.load<WorldMapDao>(storage)
             dao?.toMap()
         }
-        log.info("loaded $map from ${storage.id} in $duration")
+        log.info { "loaded $map from ${storage.id} in $duration" }
         return map
     }
 

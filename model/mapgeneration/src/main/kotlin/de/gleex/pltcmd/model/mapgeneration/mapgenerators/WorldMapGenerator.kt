@@ -54,10 +54,10 @@ class WorldMapGenerator(private val seed: Long, val worldWidthInTiles: Int, val 
         listeners.forEach { it.startGeneration(bottomLeftCoordinate) }
         listeners.forEach(partiallyGeneratedWorld::addListener)
         try {
-            log.info("Generating a random world with seed $seed")
-            log.info("\tContext: $context")
-            log.info("\tWorld size: $worldWidthInTiles * $worldHeightInTiles = ${worldWidthInTiles * worldHeightInTiles} tiles")
-            log.info("\tRanging from $bottomLeftCoordinate to ${partiallyGeneratedWorld.topRightCoordinate}")
+            log.info{"Generating a random world with seed $seed" }
+            log.info{"\tContext: $context" }
+            log.info { "\tWorld size: $worldWidthInTiles * $worldHeightInTiles = ${worldWidthInTiles * worldHeightInTiles} tiles" }
+            log.info { "\tRanging from $bottomLeftCoordinate to ${partiallyGeneratedWorld.topRightCoordinate}" }
 
             val started = System.currentTimeMillis()
 
@@ -71,7 +71,7 @@ class WorldMapGenerator(private val seed: Long, val worldWidthInTiles: Int, val 
                 log.debug { "Generator ${it::class.simpleName} took ${System.currentTimeMillis() - intermediateStarted} ms" }
             }
             val generationTime = System.currentTimeMillis() - started
-            log.info("Map generation with seed $seed took $generationTime ms")
+            log.info { "Map generation with seed $seed took $generationTime ms" }
             return partiallyGeneratedWorld.toWorldMap()
         } finally {
             listeners.forEach(partiallyGeneratedWorld::removeListener)

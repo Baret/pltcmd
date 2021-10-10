@@ -50,7 +50,7 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
             .sumOf { it.fireShots(range, timeSimulatedPerTick, random) }
         val wounded = hitsPerTick * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
         target.shooters.wound(wounded)
-        log.info("$logIdentifier attack with $hitsPerTick hits resulted in ${target.shooters.combatReadyCount} combat-ready units of ${target.logIdentifier}")
+        log.info { "$logIdentifier attack with $hitsPerTick hits resulted in ${target.shooters.combatReadyCount} combat-ready units of ${target.logIdentifier}" }
     }
 }
 
@@ -73,6 +73,6 @@ internal fun Shooter.fireShots(range: Distance, attackDuration: Duration, random
             hits++
         }
     }
-    log.trace("$this firing $shotsPerDuration shots in $attackDuration with accuracy ${weapon.shotAccuracy} results in $hits hits")
+    log.trace { "$this firing $shotsPerDuration shots in $attackDuration with accuracy ${weapon.shotAccuracy} results in $hits hits" }
     return hits
 }

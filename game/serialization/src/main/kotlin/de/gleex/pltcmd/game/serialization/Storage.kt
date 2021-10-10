@@ -33,7 +33,7 @@ internal object Storage {
     inline fun <reified R> load(id: StorageId): R? {
         val file = id.file
         if (!file.canRead()) {
-            log.warn("Cannot load data from $file because it is not readable!")
+            log.warn { "Cannot load data from $file because it is not readable!" }
             return null
         }
         val bytes = file.readBytes()
