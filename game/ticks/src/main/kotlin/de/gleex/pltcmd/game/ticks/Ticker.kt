@@ -5,7 +5,6 @@ import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.util.events.globalEventBus
 import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
-import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
@@ -14,6 +13,7 @@ import java.time.LocalTime
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
 private val log = KotlinLogging.logger {}
 
@@ -33,11 +33,11 @@ object Ticker {
      */
     val nextTick get() = currentTick.next
 
-    private val _currentTickProperty = createPropertyFrom(TickId(0))
+    private val _currentTickProperty = TickId(0).toProperty()
 
     private val _currentTimeProperty: Property<LocalTime>
 
-    private val _currentDayProperty: Property<Int> = 0.toProperty { newDay -> newDay > 0 }
+    private val _currentDayProperty: Property<Int> = 0.toProperty({ _, newDay -> newDay > 0 })
 
     private val _isPausedProperty: Property<Boolean> = true.toProperty()
 
@@ -45,7 +45,7 @@ object Ticker {
 
     init {
         val initialTime = LocalTime.of(23, 50)
-        _currentTimeProperty = createPropertyFrom(initialTime)
+        _currentTimeProperty = initialTime.toProperty()
         _currentTimeProperty.onChange { changedTime ->
             if(changedTime.newValue.toSecondOfDay() == 0) {
                 _currentDayProperty.transformValue { it + 1 }
@@ -75,11 +75,23 @@ object Ticker {
      */
     val isPaused: ObservableValue<Boolean> = _isPausedProperty
 
+    private var lastTickTimestamp: Long? = null
+
+    private var durationMeasurements: Int = 0
+    private var avgTickDuration: Double = 0.0
+
     /**
      * Increases the current tick, publishes the corresponding [TickEvent].
      */
     @OptIn(ExperimentalTime::class)
     private fun tick() {
+        if(log.isDebugEnabled() && lastTickTimestamp != null) {
+            val last = lastTickTimestamp ?: 0
+            val duration = System.currentTimeMillis() - last
+            avgTickDuration = ((avgTickDuration * durationMeasurements) + duration) / ++durationMeasurements
+            log.debug("$currentTick took ${duration.toDuration(TimeUnit.MILLISECONDS)}. Avg = $avgTickDuration")
+            lastTickTimestamp = System.currentTimeMillis()
+        }
         _currentTickProperty.value = nextTick
         _currentTimeProperty.updateValue(
                 _currentTimeProperty
@@ -103,6 +115,7 @@ object Ticker {
             tick()
         }, 1, tickRateDuration, tickRateTimeunit)
         _isPausedProperty.updateValue(false)
+        lastTickTimestamp = System.currentTimeMillis()
     }
 
     /**
@@ -112,6 +125,7 @@ object Ticker {
         executor.shutdown()
         executor = newExecutor()
         _isPausedProperty.updateValue(true)
+        lastTickTimestamp = null
     }
 
     /**

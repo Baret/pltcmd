@@ -10,13 +10,15 @@ import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.data.Tile
+import org.hexworks.zircon.api.game.ProjectionMode
 
 /**
  * The main fragment of the game view. It displays the map with its decorations.
  */
 class MapFragment(gameWorld: GameWorld) : Fragment {
 
-    private val mapRenderer = GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(gameWorld)
+    private val mapRenderer =
+        GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(gameWorld, ProjectionMode.TOP_DOWN)
 
     override val root: Panel = Components.panel()
         .withSize(UiOptions.MAP_VIEW_WIDTH, UiOptions.MAP_VIEW_HEIGHT)

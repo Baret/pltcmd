@@ -22,7 +22,7 @@ import org.hexworks.cobalt.events.api.Subscription
  */
 
 /** Type marker for entities that have the [RadioAttribute] */
-interface Communicating : Factionable
+interface Communicating : Factionable, Remembering
 typealias CommunicatingEntity = GameEntity<Communicating>
 
 private val log = KotlinLogging.logger {}

@@ -6,7 +6,6 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.util.knowledge.Known
-import de.gleex.pltcmd.util.knowledge.toKnownByBoolean
 import java.util.*
 
 /**
@@ -31,7 +30,10 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     operator fun get(coordinate: Coordinate): KnownTerrain {
         val originalTerrain = origin[coordinate]
             .orElseGet { WorldTile(coordinate.eastingFromLeft, coordinate.northingFromBottom) }
-        return originalTerrain.toKnownByBoolean(coordinate.isRevealed())
+        return when {
+            coordinate.isRevealed() -> originalTerrain.revealed()
+            else                    -> originalTerrain.unrevealed()
+        }
     }
 
     /**
@@ -54,11 +56,10 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
         unrevealed.removeAll(areaToReveal)
     }
 
-    override fun mergeWith(other: KnownWorld): KnownWorld =
-        also {
-            unrevealed
-                .removeAll { it !in other.unrevealed }
-        }
+    override fun mergeWith(other: KnownWorld): Boolean {
+        return unrevealed
+            .removeAll { it !in other.unrevealed }
+    }
 
     /**
      * Gets all unknown tiles in the given [CoordinateArea].

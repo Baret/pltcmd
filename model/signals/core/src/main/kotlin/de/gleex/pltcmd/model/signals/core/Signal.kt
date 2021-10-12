@@ -64,7 +64,7 @@ class Signal<P : SignalPower>(
      * @return the [SignalStrength] of this signal at the given target. All [Coordinate]s outside
      * of [area] are automatically considered [SignalStrength.NONE].
      */
-    fun at(target: Coordinate): SignalStrength {
+    infix fun at(target: Coordinate): SignalStrength {
         log.trace { "Calculating signal strength at $target" }
         return if (target in area) {
             signalCache.computeIfAbsent(target) { calculateSignalStrengthAt(it) }

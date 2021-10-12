@@ -12,12 +12,12 @@ import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
-import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.Fragments
 import org.hexworks.zircon.api.data.Position
+import org.hexworks.zircon.api.dsl.fragment.buildSelector
 import org.hexworks.zircon.api.uievent.*
 
 private val log = KotlinLogging.logger {}
@@ -36,11 +36,13 @@ class ElementCommandFragment(
         private val game: Game
 ) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
 
-    private val elementSelect = Fragments.selector(fragmentWidth, elements)
-            .withToStringMethod { it.callsign.toString() }
-            .build()
+    private val elementSelect = buildSelector<ElementEntity> {
+        width = fragmentWidth
+        valueList = elements
+        toStringMethod = { it.callsign.toString() }
+    }
 
-    private val selectedDestination = createPropertyFrom(elements.first().currentPosition)
+    private val selectedDestination = elements.first().currentPosition.toProperty()
     private val selectedCallsign: ObservableValue<CallSign> = elementSelect
         .selectedValue
         .bindTransform { it.callsign }
@@ -54,7 +56,7 @@ class ElementCommandFragment(
                         .withSize(width, 1)
                         .build()
                         .apply {
-                            textProperty.updateFrom(createPropertyFrom("Move to ") bindPlusWith selectedDestination.bindTransform { it.toString() }, true)
+                            textProperty.updateFrom("Move to ".toProperty() bindPlusWith selectedDestination.bindTransform { it.toString() }, true)
                             onActivated {
                                 sendOrder(MoveTo)
                             }
@@ -63,7 +65,7 @@ class ElementCommandFragment(
                         .withSize(width, 1)
                         .build()
                         .apply {
-                            textProperty.updateFrom(createPropertyFrom("Patrol at ") bindPlusWith selectedDestination.bindTransform { it.toString() }, true)
+                            textProperty.updateFrom("Patrol at ".toProperty() bindPlusWith selectedDestination.bindTransform { it.toString() }, true)
                             onActivated {
                                 sendOrder(PatrolAreaAt)
                             }

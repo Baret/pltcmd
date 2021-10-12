@@ -32,7 +32,6 @@ import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
-import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
@@ -202,7 +201,7 @@ fun createRadioCommuicatorPanel(element: ElementEntity, size: Size): Component {
                         build().
                         apply {
                             textProperty.updateFrom(
-                                    createPropertyFrom("Talking to ")
+                                    "Talking to ".toProperty()
                                             bindPlusWith element.inConversationWith.bindTransform {
                                         it.map { callSign -> callSign.toString() }
                                                 .orElse("nobody")
