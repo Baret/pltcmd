@@ -42,5 +42,5 @@ replacers:
   - search: '/(close(s|d)?|fix(es|ed)?|resolve(s|d)?)\s*#\d*:?/gi'
     replace: ''
 # direct issue references
-  - search: '/issue ?#?\d+ ?/gi'
+  - search: '/issue\W+#?\d+[ :]?\W+/gi'
     replace: ''
