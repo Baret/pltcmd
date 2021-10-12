@@ -6,7 +6,7 @@ import de.gleex.pltcmd.game.ui.renderers.SignalVisualizer
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.databinding.internal.binding.ComputedDualBinding
-import org.hexworks.zircon.api.Fragments
+import org.hexworks.zircon.api.dsl.fragment.buildSelector
 
 /**
  * A fragment that uses a [SignalVisualizer] to draw signals of the currently selected element (if present).
@@ -34,10 +34,11 @@ class SignalVisualizationFragment(
         }
     )
 
-    private val select = Fragments
-        .selector(SUB_COMPONENT_WIDTH, namedActions.toList())
-        .withToStringMethod { it.first }
-        .build()
+    private val select = buildSelector<Pair<String, (ElementEntity) -> Unit>> {
+        width = SUB_COMPONENT_WIDTH
+        valueList = namedActions.toList()
+        toStringMethod = { it.first }
+    }
 
     init {
         // React to updates of currentInfoTile as well as new selection of the multiselect
