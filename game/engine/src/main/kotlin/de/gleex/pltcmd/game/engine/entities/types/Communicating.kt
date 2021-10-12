@@ -12,10 +12,10 @@ import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.radio.subscribeToReceivedTransmissions
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import de.gleex.pltcmd.util.events.globalEventBus
+import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.events.api.Subscription
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * This file contains code for entities that have the RadioAttribute.
@@ -25,7 +25,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 interface Communicating : Factionable, Remembering
 typealias CommunicatingEntity = GameEntity<Communicating>
 
-private val log = LoggerFactory.getLogger(Communicating::class)
+private val log = KotlinLogging.logger {}
 
 internal val CommunicatingEntity.communicator: RadioCommunicator
     get() = getAttribute(RadioAttribute::class).communicator
@@ -70,7 +70,7 @@ fun CommunicatingEntity.onSendTransmission(handler: (Transmission) -> Unit): Sub
  */
 // TODO: Instantly start the conversation if possible. Currently it takes 2 ticks until the conversation actually starts
 internal fun CommunicatingEntity.startConversation(conversation: Conversation) {
-    log.debug("$logIdentifier starting conversation $conversation")
+    log.debug { "$logIdentifier starting conversation $conversation" }
     communicator.startConversation(conversation)
 }
 

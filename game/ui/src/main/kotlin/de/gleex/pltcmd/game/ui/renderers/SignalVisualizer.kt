@@ -9,7 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
+
+private val log = KotlinLogging.logger {}
 
 /**
  * Draws a [Signal] at its origin when activated. When deactivated the last drawn overlays are cleared.
@@ -17,7 +19,6 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 class SignalVisualizer(val world: GameWorld) {
 
     companion object {
-        private val log = LoggerFactory.getLogger(SignalVisualizer::class)
         private val visualizerScope = CoroutineScope(Dispatchers.Default)
     }
 
@@ -29,7 +30,7 @@ class SignalVisualizer(val world: GameWorld) {
      */
     fun deactivate() {
         currentJob?.let {
-            log.debug("Cancelling job")
+            log.debug { "Cancelling draw signal job" }
             it.cancel()
         }
         val blocksToClear = currentBlocks
@@ -49,7 +50,7 @@ class SignalVisualizer(val world: GameWorld) {
      * Draws the given signal at its origin.
      */
     fun activateWith(signal: Signal<*>) {
-        log.debug("Displaying signal at ${signal.origin}")
+        log.debug { "Displaying signal at ${signal.origin}" }
         deactivate()
         draw(signal)
     }

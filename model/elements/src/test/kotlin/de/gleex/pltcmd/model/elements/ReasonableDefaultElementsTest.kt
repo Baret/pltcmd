@@ -17,17 +17,15 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.beEmpty
 import io.kotest.matchers.types.beInstanceOf
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.starProjectedType
 
-class ReasonableDefaultElementsTest : WordSpec() {
+private val log = KotlinLogging.logger {}
 
-    companion object {
-        private val log = LoggerFactory.getLogger(ReasonableDefaultElementsTest::class)
-    }
+class ReasonableDefaultElementsTest : WordSpec() {
 
     init {
         val infantryFireteamSize = 2 to 4
@@ -37,15 +35,15 @@ class ReasonableDefaultElementsTest : WordSpec() {
         val allDefaultElements = Elements.all()
         "The list of ${allDefaultElements.size} default elements" should {
             "result in valid instances" {
-                log.info("The ${allDefaultElements.size} default elements (trying to instantiate each):")
+                log.info { "The ${allDefaultElements.size} default elements (trying to instantiate each):" }
                 allDefaultElements
                         .forEach { entry ->
-                            log.info("\t${entry.key}:")
+                            log.info { "\t${entry.key}:" }
                             val blueprint = entry.value
-                            log.info("\t\t$blueprint")
+                            log.info { "\t\t$blueprint" }
                             if (blueprint is CommandingElementBlueprint) {
                                 blueprint.subordinates.forEach { sub ->
-                                    log.info("\t\t├ ${Elements.nameOf(sub)}")
+                                    log.info { "\t\t├ ${Elements.nameOf(sub)}" }
                                 }
                             }
                             blueprint should beInstanceOf(CommandingElementBlueprint::class)

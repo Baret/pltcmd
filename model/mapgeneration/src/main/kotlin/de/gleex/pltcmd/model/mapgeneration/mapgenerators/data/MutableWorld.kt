@@ -12,9 +12,11 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainData
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import java.util.concurrent.Executors
+
+private val log = KotlinLogging.logger {}
 
 /**
  * A world that is currently being generated. When created it has a size but none of its tiles are filled yet.
@@ -57,8 +59,6 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
     val mainCoordinatesEmpty: Set<MainCoordinate>
         get() = mainCoordinates - mainCoordinatesNotEmpty
 
-    private val log = LoggerFactory.getLogger(this::class)
-
     init {
         require(bottomLeftCoordinate.eastingFromLeft % Sector.TILE_COUNT == 0
                 && bottomLeftCoordinate.northingFromBottom % Sector.TILE_COUNT == 0) {
@@ -77,7 +77,7 @@ class MutableWorld(val bottomLeftCoordinate: Coordinate = Coordinate(0, 0),
      */
     fun toWorldMap(): WorldMap {
         finishGeneration()
-        log.debug("Creating world map from ${terrainMap.size} tiles")
+        log.debug { "Creating world map from ${terrainMap.size} tiles" }
         require(terrainMap.size == completeArea.size) {
             "${terrainMap.size} coordinates have been generated, but ${completeArea.size} are needed."
         }

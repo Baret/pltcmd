@@ -1,10 +1,12 @@
 package de.gleex.pltcmd.game.ui.components
 
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.data.Position
+
+private val log = KotlinLogging.logger {}
 
 /**
  * Workaround to wrap [Fragment]s into a [Panel]. As we can not directly extend [Components] (we would need
@@ -13,7 +15,6 @@ import org.hexworks.zircon.api.data.Position
  * calling `CustomComponent(ourFragment)`.
  */
 object CustomComponent {
-    private val log = LoggerFactory.getLogger(CustomComponent::class)
 
     /**
      * Wraps the given [Fragment] into a [Panel] with the same size and position. This kind of turns [fragmentToWrap]
@@ -21,7 +22,7 @@ object CustomComponent {
      */
     operator fun invoke(fragmentToWrap: Fragment, position: Position): Panel {
         val size = fragmentToWrap.root.size
-        log.debug("Creating custom component with size $size at $position for fragment $fragmentToWrap")
+        log.debug { "Creating custom component with size $size at $position for fragment $fragmentToWrap" }
         return Components.panel()
                 .withSize(size)
                 .withPosition(position)

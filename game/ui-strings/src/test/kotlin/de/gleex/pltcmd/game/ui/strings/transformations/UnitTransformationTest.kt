@@ -9,13 +9,11 @@ import io.kotest.matchers.collections.beUnique
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.beUpperCase
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
+
+private val log = KotlinLogging.logger {}
 
 class UnitTransformationTest : WordSpec() {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(UnitTransformationTest::class)
-    }
 
     init {
         "The unit transformation" should {
@@ -64,7 +62,7 @@ class UnitTransformationTest : WordSpec() {
     private fun Collection<String>.logDuplicates(format: Format) {
         val duplicates = this.duplicates()
         if(duplicates.isNotEmpty()) {
-            log.warn("Non unique $format values: $duplicates")
+            log.warn { "Non unique $format values: $duplicates" }
         }
     }
 

@@ -8,7 +8,7 @@ import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.options.GameConstants.Time.timeSimulatedPerTick
 import de.gleex.pltcmd.util.measure.area.squareMeters
 import de.gleex.pltcmd.util.measure.distance.Distance
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -17,7 +17,7 @@ import kotlin.time.ExperimentalTime
 /**
  * This file contains code for entities that have the [ShootersAttribute].
  */
-private val log = LoggerFactory.getLogger("de.gleex.pltcmd.game.engine.entities.types.Combatant")
+private val log = KotlinLogging.logger {}
 
 interface Combatant : Positionable
 typealias CombatantEntity = GameEntity<Combatant>
@@ -50,7 +50,7 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
             .sumOf { it.fireShots(range, timeSimulatedPerTick, random) }
         val wounded = hitsPerTick * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
         target.shooters.wound(wounded)
-        log.info("$logIdentifier attack with $hitsPerTick hits resulted in ${target.shooters.combatReadyCount} combat-ready units of ${target.logIdentifier}")
+        log.info { "$logIdentifier attack with $hitsPerTick hits resulted in ${target.shooters.combatReadyCount} combat-ready units of ${target.logIdentifier}" }
     }
 }
 
@@ -73,6 +73,6 @@ internal fun Shooter.fireShots(range: Distance, attackDuration: Duration, random
             hits++
         }
     }
-    log.trace("$this firing $shotsPerDuration shots in $attackDuration with accuracy ${weapon.shotAccuracy} results in $hits hits")
+    log.trace { "$this firing $shotsPerDuration shots in $attackDuration with accuracy ${weapon.shotAccuracy} results in $hits hits" }
     return hits
 }

@@ -8,10 +8,12 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.floor
+
+private val log = KotlinLogging.logger {}
 
 /**
  * A signal has an [origin] and an [area] that it can be received in. For every [Coordinate] in [area] the
@@ -23,14 +25,10 @@ import kotlin.math.floor
  * @param power the power of this signal (in the end some arbitrary number of how "powerful" this signal is)
  */
 class Signal<P : SignalPower>(
-        val origin: Coordinate,
-        val area: WorldArea,
-        val power: P
+    val origin: Coordinate,
+    val area: WorldArea,
+    val power: P
 ) {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(Signal::class)
-    }
 
     init {
         require(origin in area) {
@@ -44,7 +42,7 @@ class Signal<P : SignalPower>(
     private val signalCache: MutableMap<Coordinate, SignalStrength> = ConcurrentHashMap()
 
     private val coordinatesByDistanceToOrigin: SortedSet<Coordinate> = area
-            .toSortedSet(compareByDistanceFrom(origin))
+        .toSortedSet(compareByDistanceFrom(origin))
 
     /**
      * A flow of calls to [at] for every coordinate in [area]. It fills the area from inner to outer
@@ -54,20 +52,20 @@ class Signal<P : SignalPower>(
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     val all: Flow<Pair<Coordinate, SignalStrength>> =
-            coordinatesByDistanceToOrigin
-                    .asFlow()
-                    .map { it to at(it) }
-                    .onStart { log.debug("Starting to fill cache (current size ${signalCache.size})...") }
-                    .onCompletion { log.debug("...finished filling cache (current size ${signalCache.size})!") }
-                    .buffer(Channel.UNLIMITED)
-                    .cancellable()
+        coordinatesByDistanceToOrigin
+            .asFlow()
+            .map { it to at(it) }
+            .onStart { log.debug { "Starting to fill cache (current size ${signalCache.size})..." } }
+            .onCompletion { log.debug { "...finished filling cache (current size ${signalCache.size})!" } }
+            .buffer(Channel.UNLIMITED)
+            .cancellable()
 
     /**
      * @return the [SignalStrength] of this signal at the given target. All [Coordinate]s outside
      * of [area] are automatically considered [SignalStrength.NONE].
      */
     infix fun at(target: Coordinate): SignalStrength {
-        log.trace("Calculating signal strength at $target")
+        log.trace { "Calculating signal strength at $target" }
         return if (target in area) {
             signalCache.computeIfAbsent(target) { calculateSignalStrengthAt(it) }
         } else {
@@ -81,16 +79,16 @@ class Signal<P : SignalPower>(
      */
     private fun calculateSignalStrengthAt(target: Coordinate): SignalStrength {
         var start: Long? = null
-        if (log.isTraceEnabled()) {
+        if (log.isTraceEnabled) {
             start = System.currentTimeMillis()
-            log.trace(" - - - calculating signal from $origin to $target")
+            log.trace { " - - - calculating signal from $origin to $target" }
         }
         val terrainList = area[CoordinatePath.line(origin, target)]
-                .map { it.terrain }
+            .map { it.terrain }
         return along(terrainList).also {
-            if (log.isTraceEnabled()) {
+            if (log.isTraceEnabled) {
                 val duration = System.currentTimeMillis() - start!!
-                log.trace(" - - - Finished calculating signal from $origin to $target in $duration ms. Result: $it")
+                log.trace { " - - - Finished calculating signal from $origin to $target in $duration ms. Result: $it" }
             }
         }
     }
@@ -107,11 +105,9 @@ class Signal<P : SignalPower>(
             val startHeight = terrainLine.first().height // b
             val targetHeight = terrainLine.last().height
             val slope = (targetHeight.toDouble() - startHeight.toDouble()) / terrainLine.size.toDouble() // m
-            if (log.isTraceEnabled()) {
-                log.trace("\tStarting terrain: ${terrainLine.first()}")
-                log.trace("\tTarget terrain: ${terrainLine.last()}")
-                log.trace("\tSlope: $slope")
-            }
+            log.trace { "\tStarting terrain: ${terrainLine.first()}" }
+            log.trace { "\tTarget terrain: ${terrainLine.last()}" }
+            log.trace { "\tSlope: $slope" }
             val terrainToTravel = terrainLine.drop(1)
             for ((index, terrain) in terrainToTravel.withIndex()) {
                 // Calculate if the signal is above, at or through the current field
@@ -126,9 +122,7 @@ class Signal<P : SignalPower>(
                     else                                      -> propagator.signalLossThroughTerrain(terrain.type)
                 }
                 if (propagator.signalDepleted) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("\t XXX Short circuit! Signal depleted!")
-                    }
+                    log.trace { "\t XXX Short circuit! Signal depleted!" }
                     break
                 }
             }

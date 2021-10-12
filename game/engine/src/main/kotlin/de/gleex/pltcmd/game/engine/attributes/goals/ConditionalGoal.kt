@@ -2,9 +2,11 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
+
+private val log = KotlinLogging.logger {}
 
 /**
  * This goal consists of two sub-goals. It executes [whenFalse] until [condition] becomes true. Then [whenTrue] is
@@ -17,17 +19,19 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  * @param condition that triggers the switch to the other goal. It is invoked until it returns true. This means it
  *                  is enough to return true once (i.e. on a specific tick), it does not need to stay true.
  */
-data class ConditionalGoal(private val whenTrue: Goal, private val whenFalse: Goal, private val condition: () -> Boolean) : Goal(whenFalse) {
+data class ConditionalGoal(
+    private val whenTrue: Goal,
+    private val whenFalse: Goal,
+    private val condition: () -> Boolean
+) : Goal(whenFalse) {
     private var conditionWasTrue = false
 
-    private val log = LoggerFactory.getLogger(ConditionalGoal::class)
-
     override fun isFinished(element: ElementEntity): Boolean =
-            whenTrue.isFinished(element) && whenFalse.isFinished(element)
+        whenTrue.isFinished(element) && whenFalse.isFinished(element)
 
     override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         if (conditionWasTrue.not() && condition.invoke()) {
-            log.debug(" - - - - - - - - -CONDITION WAS TRUE! SWITCHING GOAL - - - - - - - - -")
+            log.debug { " - - - - - - - - -CONDITION WAS TRUE! SWITCHING GOAL - - - - - - - - -" }
             conditionWasTrue = true
             prependSubGoals(whenTrue)
         }

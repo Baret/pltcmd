@@ -7,20 +7,20 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.model.world.terrain.TerrainType.*
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.random.Random
 
-class TypeFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
+private val log = KotlinLogging.logger {}
 
-    private val log = LoggerFactory.getLogger(this::class)
+class TypeFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         val allTiles = mutableWorld.find(area) {
             mutableWorld.typeAt(it) == null
         }
 
-        log.debug("Found ${allTiles.size} tiles that need a terrain type")
+        log.debug { "Found ${allTiles.size} tiles that need a terrain type" }
 
         // start with highest points in the world
         val highestPoints = findHighestPoints(allTiles, mutableWorld)
@@ -28,7 +28,7 @@ class TypeFiller(override val rand: Random, override val context: GenerationCont
             fillTypeBasedOnHeight(it, MOUNTAIN, mutableWorld)
             processedTiles.add(it)
         }
-        log.debug("Started with ${processedTiles.size} highest points, working downwards from there...")
+        log.debug { "Started with ${processedTiles.size} highest points, working downwards from there..." }
 
         workFrontier(processedTiles, {currentCoordinate ->
             mutableWorld.neighborsOf(currentCoordinate).

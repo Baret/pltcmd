@@ -8,12 +8,12 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.times
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.math.ceil
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-private val log = LoggerFactory.getLogger(WorldMap::visionAt::class)
+private val log = KotlinLogging.logger {}
 
 /**
  * Creates a new [Signal] representing the vision of an entity at [location] with the given [visualRange].
@@ -26,9 +26,9 @@ private val log = LoggerFactory.getLogger(WorldMap::visionAt::class)
 @OptIn(ExperimentalTime::class)
 fun WorldMap.visionAt(location: Coordinate, visualRange: VisionPower): Vision {
     val radius: Distance = ceil(visualRange.power) * WorldTile.edgeLength
-    log.debug("Creating vision at $location with $visualRange. Calculating circle with radius ${radius}...")
+    log.debug { "Creating vision at $location with $visualRange. Calculating circle with radius ${radius}..." }
     val (area, duration) = measureTimedValue { circleAt(location, radius) }
-    log.debug("Created area with ${area.size} tiles in ${duration.inWholeMilliseconds} ms, returning signal.")
+    log.debug { "Created area with ${area.size} tiles in ${duration.inWholeMilliseconds} ms, returning signal." }
     return Vision(
             location,
             area,

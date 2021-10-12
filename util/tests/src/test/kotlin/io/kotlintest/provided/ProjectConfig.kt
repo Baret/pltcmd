@@ -6,11 +6,12 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.reflect.KClass
 
+private val log = KotlinLogging.logger {}
+
 class ProjectConfig: AbstractProjectConfig() {
-    val log = LoggerFactory.getLogger(ProjectConfig::class)
     private var allStartTime = 0L
     val executionTimes = mutableListOf<Long>()
     val heapSizes = mutableListOf<Long>()
@@ -18,17 +19,17 @@ class ProjectConfig: AbstractProjectConfig() {
     override val parallelism: Int? = 1
 
     override fun beforeAll() {
-        log.info("Starting tests, measuring time")
+        log.info { "Starting tests, measuring time" }
         logMemoryUsage()
         allStartTime = System.currentTimeMillis()
     }
 
     override fun afterAll() {
         val executionTime = System.currentTimeMillis() - allStartTime
-        log.info("Tests complete! Execution took $executionTime ms")
-        log.info("Average test execution time: ${executionTimes.average()} ms")
+        log.info { "Tests complete! Execution took $executionTime ms" }
+        log.info { "Average test execution time: ${executionTimes.average()} ms" }
         logMemoryUsage()
-        log.info("Maximum memory usage was ${heapSizes.maxOrNull()} MB")
+        log.info { "Maximum memory usage was ${heapSizes.maxOrNull()} MB" }
     }
 
     override fun listeners(): List<TestListener> =
@@ -36,11 +37,11 @@ class ProjectConfig: AbstractProjectConfig() {
             private var testStartedAt = 0L
 
             override suspend fun prepareSpec(kclass: KClass<out Spec>) {
-                log.info("Starting tests ${kclass.qualifiedName}")
+                log.info { "Starting tests ${kclass.qualifiedName}" }
             }
 
             override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-                log.info("Finished tests ${kclass.qualifiedName}")
+                log.info { "Finished tests ${kclass.qualifiedName}" }
                 logMemoryUsage()
             }
 
@@ -53,8 +54,8 @@ class ProjectConfig: AbstractProjectConfig() {
                     return
                 }
                 val executionTime = System.currentTimeMillis() - testStartedAt
-                log.info("Execution of '${testCase.description.names().drop(1).joinToString(" ") { it.displayName }}' took $executionTime ms")
-                log.info(" - - - - - - - - - - - - - - - - - -")
+                log.info { "Execution of '${testCase.description.names().drop(1).joinToString(" ") { it.displayName }}' took $executionTime ms" }
+                log.info { " - - - - - - - - - - - - - - - - - -" }
                 executionTimes.add(executionTime)
                 heapSizes.add(heapSize())
             }
@@ -63,7 +64,7 @@ class ProjectConfig: AbstractProjectConfig() {
     private fun logMemoryUsage() {
         val heapSize = heapSize()
         val maxHeapSize = Runtime.getRuntime().maxMemory() / 1024 / 1024
-        log.info("Current memory usage: $heapSize / $maxHeapSize MB")
+        log.info { "Current memory usage: $heapSize / $maxHeapSize MB" }
     }
 
     private fun heapSize() = Runtime.getRuntime().totalMemory() / 1024 / 1024
