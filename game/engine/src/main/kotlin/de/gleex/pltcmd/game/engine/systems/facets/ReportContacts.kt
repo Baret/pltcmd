@@ -62,11 +62,11 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
     private fun sendReport(reporter: ElementEntity, what: String, at: Bearing, context: GameContext) {
         // TODO Does non player controlled elements need contact reports? -> sure! But until we have channels (#42) we keep this workaround
         if (reporter.affiliationTo(context.playerFaction) != Affiliation.Self) {
-            log.trace("not reporting contact of non player faction of ${reporter.logIdentifier}: $what at $at")
+            log.trace { "not reporting contact of non player faction of ${reporter.logIdentifier}: $what at $at" }
             return
         }
         val hq = CallSign(GameOptions.commandersCallSign)
-        log.debug("Reporting contact of ${reporter.logIdentifier} to ${hq.name}: $what at $at")
+        log.debug { "Reporting contact of ${reporter.logIdentifier} to ${hq.name}: $what at $at" }
         val report: Conversation = Conversations.Messages.contact(reporter.radioCallSign, hq, what, at)
         reporter.commandersIntent.butNow(RadioGoal(report))
     }
