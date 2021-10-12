@@ -33,7 +33,7 @@ object LookingAround :
     private fun SeeingEntity.updateVision(context: GameContext) {
         if (hasMoved()) {
             visionMutable = context.world.visionAt(currentPosition, visualRange)
-            rememberTerrain()
+            rememberVisibleTerrain()
         }
     }
 
@@ -54,13 +54,10 @@ object LookingAround :
         return true
     }
 
-    private fun SeeingEntity.rememberTerrain() {
-        memory
-            .knownWorld
-            // only unknown terrain that is currently visible needs to be revealed
-            .getUnknownIn(tilesInVisibleRange)
+    private fun SeeingEntity.rememberVisibleTerrain() {
+        val tilesToReveal = tilesInVisibleRange
             .filter { vision.at(it).isAny() }
-            .forEach { memory.knownWorld reveal it }
+        rememberRevealed(tilesToReveal)
     }
 
     private fun SeeingEntity.hasMoved() = vision.origin != currentPosition

@@ -10,7 +10,6 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight.NINE
 import de.gleex.pltcmd.model.world.terrain.TerrainType.MOUNTAIN
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
-import de.gleex.pltcmd.util.knowledge.KnownByBoolean
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.forEachAsClue
 import io.kotest.core.spec.IsolationMode
@@ -136,8 +135,8 @@ class KnownWorldTest : WordSpec() {
                     Coordinate(1, 32)
                 )
 
-                val mergedKnownWorld = knownWorld mergeWith otherKnownWorld
-                mergedKnownWorld.shouldHaveRevealed(
+                knownWorld mergeWith otherKnownWorld
+                knownWorld.shouldHaveRevealed(
                     coordinate3,
                     coordinate2,
                     coordinate1,
@@ -165,8 +164,7 @@ class KnownWorldTest : WordSpec() {
 
                 knownWorld.reveal(toReveal)
 
-                knownWorld.getUnknownIn(area) shouldBeUnknown CoordinateArea(area.filter { it != toReveal }
-                    .toSortedSet())
+                knownWorld.getUnknownIn(area) shouldBeUnknown area.filter { it != toReveal }
                 knownWorld.getUnknownIn(smallArea) shouldBeUnknown CoordinateArea(
                     sortedSetOf(
                         Coordinate(23, 43),
@@ -208,9 +206,10 @@ class KnownWorldTest : WordSpec() {
             originalWorld
                 .asWorldArea()
                 .forEachAsClue { coordinate ->
-                    val expected = KnownByBoolean<WorldTile, KnownByBoolean<WorldTile, *>>(WorldTile(coordinate, defaultTerrain), false)
-                    if (coordinate in revealedCoordinates) {
-                        expected.reveal()
+                    val tile = WorldTile(coordinate, defaultTerrain)
+                    val expected = when (coordinate) {
+                        in revealedCoordinates -> tile.revealed()
+                        else                   -> tile.unrevealed()
                     }
                     this[coordinate] shouldBe expected
                 }

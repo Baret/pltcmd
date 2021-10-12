@@ -22,7 +22,7 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  */
 
 /** Type marker for entities that have the [RadioAttribute] */
-interface Communicating : Factionable
+interface Communicating : Factionable, Remembering
 typealias CommunicatingEntity = GameEntity<Communicating>
 
 private val log = LoggerFactory.getLogger(Communicating::class)
