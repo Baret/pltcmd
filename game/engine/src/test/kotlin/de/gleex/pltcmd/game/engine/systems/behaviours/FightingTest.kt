@@ -6,6 +6,7 @@ import de.gleex.pltcmd.game.engine.attributes.FactionAttribute
 import de.gleex.pltcmd.game.engine.attributes.PositionAttribute
 import de.gleex.pltcmd.game.engine.attributes.SightedAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.elements.*
@@ -85,13 +86,16 @@ class FightingTest : StringSpec({
         val context = createContext()
         val target = createTarget(attacker, opfor, createInfantryElement((Units.Rifleman * 100).new()))
 
-        Fighting.attackNearbyEnemies(attacker, context) // 38 dmg
-        assertCombatResult(attacker, target, 62, true)
+        Fighting.attackNearbyEnemies(attacker, context) // 26 dmg
+        assertCombatResult(attacker, target, 74, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 40 dmg
-        assertCombatResult(attacker, target, 22, true)
+        Fighting.attackNearbyEnemies(attacker, context) // 32 dmg
+        assertCombatResult(attacker, target, 42, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 45 dmg
+        Fighting.attackNearbyEnemies(attacker, context) // 32 dmg
+        assertCombatResult(attacker, target, 10, true)
+
+        Fighting.attackNearbyEnemies(attacker, context) // 32 dmg
         assertCombatResult(attacker, target, 0, false)
     }
 
@@ -102,23 +106,22 @@ class FightingTest : StringSpec({
         val target = createTarget(attacker, opfor, createInfantryElement((Units.Rifleman * 100).new()))
         val singleRifleman = createCombatant(attackerPosition.movedBy(2,2), opfor)
         singleRifleman.attack(attacker, context.random)
-        val attacksAbleToFight = 4
+        val attacksAbleToFight = 6
         attacker.combatReadyCount shouldBe attacksAbleToFight
-        attacker.woundedCount shouldBe 6
+        attacker.woundedCount shouldBe 4
 
         var expectedTargetCombatReady = target.combatReadyCount
         forAll( // shots random hits
-                row(21),
-                row(18),
-                row(16),
-                row(24),
-                row(19)
+                row(22),
+                row(17),
+                row(25),
+                row(27)
         ) { expectedDamage ->
             Fighting.attackNearbyEnemies(attacker, context)
             expectedTargetCombatReady -= expectedDamage
             assertCombatResult(attacker, target, expectedTargetCombatReady, true, attacksAbleToFight)
         }
-        expectedTargetCombatReady shouldBe 2
+        expectedTargetCombatReady shouldBe 9
 
         Fighting.attackNearbyEnemies(attacker, context) // 24 dmg
         assertCombatResult(attacker, target, 0, false, attacksAbleToFight)
@@ -158,7 +161,8 @@ fun createCombatant(position: Coordinate, faction: Faction, element: CommandingE
                 FactionAttribute(faction),
                 PositionAttribute(position.toProperty()),
                 ShootersAttribute(element),
-                SightedAttribute()
+                SightedAttribute(),
+                MovementBaseSpeed(element)
         )
         behaviors(Fighting)
         facets()

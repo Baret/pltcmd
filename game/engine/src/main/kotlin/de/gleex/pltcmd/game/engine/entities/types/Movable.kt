@@ -4,10 +4,7 @@ import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
-import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
-import de.gleex.pltcmd.game.engine.extensions.castToSuspending
-import de.gleex.pltcmd.game.engine.extensions.getAttribute
+import de.gleex.pltcmd.game.engine.extensions.*
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.measure.distance.kilometers
 import de.gleex.pltcmd.util.measure.speed.Speed
@@ -94,3 +91,12 @@ val MovableEntity.canNotMove: Boolean
 suspend fun AnyGameEntity.invokeWhenMovable(whenMovable: suspend (MovableEntity) -> Boolean): Boolean =
     castToSuspending<MovableEntity, Movable, Boolean>(whenMovable)
         .orElse(false)
+
+/**
+ * Invokes [whenElement] if this entity is an [MovableEntity]. When the type is not [Movable],
+ * [Maybe.empty] is returned.
+ *
+ * @param R the type that is returned by [whenElement]
+ */
+fun <R> AnyGameEntity.asMovableEntity(whenElement: (MovableEntity) -> R): Maybe<R> =
+    tryCastTo<MovableEntity, Movable, R>(whenElement)
