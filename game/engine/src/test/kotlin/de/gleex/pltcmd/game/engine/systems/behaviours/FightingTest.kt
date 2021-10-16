@@ -18,6 +18,7 @@ import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.faction.FactionRelations
 import de.gleex.pltcmd.model.signals.vision.Visibility
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.terrain.TerrainType
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.forAll
@@ -105,7 +106,7 @@ class FightingTest : StringSpec({
         val context = createContext()
         val target = createTarget(attacker, opfor, createInfantryElement((Units.Rifleman * 100).new()))
         val singleRifleman = createCombatant(attackerPosition.movedBy(2,2), opfor)
-        singleRifleman.attack(attacker, context.random)
+        singleRifleman.attack(attacker, context.world, context.random)
         val attacksAbleToFight = 6
         attacker.combatReadyCount shouldBe attacksAbleToFight
         attacker.woundedCount shouldBe 4
@@ -131,8 +132,10 @@ class FightingTest : StringSpec({
 private fun createContext(): GameContext {
 
     val context = mockk<GameContext>()
-    every { context.random } returns Random(123L)
+    val random = Random(123L)
+    every { context.random } returns random
     every { context.elementsAt(any()) } returns EntitySet()
+    every { context.world[any<Coordinate>()].type } returns TerrainType.GRASSLAND
 
     return context
 }

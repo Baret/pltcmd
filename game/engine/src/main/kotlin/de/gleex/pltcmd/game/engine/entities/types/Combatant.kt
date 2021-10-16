@@ -7,9 +7,10 @@ import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import de.gleex.pltcmd.game.options.GameConstants.Time.timeSimulatedPerTick
 import de.gleex.pltcmd.model.combat.defense.AwarenessState
-import de.gleex.pltcmd.model.combat.defense.CoverState
 import de.gleex.pltcmd.model.combat.defense.MovementState
 import de.gleex.pltcmd.model.combat.defense.TotalDefense
+import de.gleex.pltcmd.model.combat.defense.cover
+import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.util.measure.area.squareMeters
 import de.gleex.pltcmd.util.measure.distance.Distance
 import mu.KotlinLogging
@@ -41,29 +42,32 @@ val CombatantEntity.combatReadyCount: Int
 val CombatantEntity.woundedCount: Int
     get() = shooters.woundedCount
 
-/** The ratio that the defense reduces the chance of an attacker to hit */
-val CombatantEntity.defense: Double
-    get() {
-        val moving = when {
-            asMovableEntity { it.isMoving }.orElse(false) -> MovementState.MOVING
-            else                                          -> MovementState.STATIONARY
-        }
-        val cover = asFOBEntity { CoverState.MODERATE }.orElse(CoverState.OPEN)
-        val awareness = AwarenessState.OBSERVING
-        return TotalDefense(moving, cover, awareness).attackReduction
+/**
+ * The ratio that the defense reduces the chance of an attacker to hit
+ * @param worldMap the world in which this entity is positioned
+ **/
+fun CombatantEntity.getDefense(worldMap: WorldMap): TotalDefense {
+    val moving = when {
+        asMovableEntity { it.isMoving }.orElse(false) -> MovementState.MOVING
+        else                                          -> MovementState.STATIONARY
     }
+    val cover = worldMap[currentPosition].cover
+    val awareness = AwarenessState.OBSERVING
+    return TotalDefense(moving, cover, awareness)
+}
 
 infix fun CombatantEntity.onDefeat(callback: () -> Unit) {
     shooters.onDefeat(callback)
 }
 
 /** This combatant attacks the given [target] for a full tick */
-internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
+internal fun CombatantEntity.attack(target: CombatantEntity, worldMap: WorldMap, random: Random) {
     if (target.isAbleToFight) {
         val range: Distance = currentPosition distanceTo target.currentPosition
+        val defense = target.getDefense(worldMap)
         val hitsPerTick = shooters
             .combatReady
-            .sumOf { it.fireShots(range, timeSimulatedPerTick, random, target.defense) }
+            .sumOf { it.fireShots(range, timeSimulatedPerTick, random, defense) }
         val wounded = hitsPerTick * 1 // wounded / shot TODO depend on weapon https://github.com/Baret/pltcmd/issues/115
         target.shooters.wound(wounded)
         log.info { "$logIdentifier attack with $hitsPerTick hits resulted in ${target.shooters.combatReadyCount} combat-ready units of ${target.logIdentifier}" }
@@ -76,10 +80,10 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
  * @return number of all hits in the given time.
  **/
 @OptIn(ExperimentalTime::class)
-internal fun Shooter.fireShots(range: Distance, attackDuration: Duration, random: Random, defense: Double): Int {
+internal fun Shooter.fireShots(range: Distance, attackDuration: Duration, random: Random, defense: TotalDefense): Int {
     val shotsPerDuration = weapon.roundsPerMinute * attackDuration.toDouble(DurationUnit.MINUTES) + partialShot
     val chanceToHitMan = weapon.shotAccuracy.chanceToHitAreaAt(1.0.squareMeters, range) // 1.0m² = 2 m tall * 0.5 m wide
-    val chanceToHitDefender = chanceToHitMan * (1 - defense)
+    val chanceToHitDefender = chanceToHitMan * (1 - defense.attackReduction)
 
     // rounding down loses a partial shot that is remembered for the next call.
     val fullShots: Int = shotsPerDuration.toInt()
