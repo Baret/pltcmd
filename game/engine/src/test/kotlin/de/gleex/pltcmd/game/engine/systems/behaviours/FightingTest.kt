@@ -87,16 +87,19 @@ class FightingTest : StringSpec({
         val context = createContext()
         val target = createTarget(attacker, opfor, createInfantryElement((Units.Rifleman * 100).new()))
 
-        Fighting.attackNearbyEnemies(attacker, context) // 26 dmg
-        assertCombatResult(attacker, target, 74, true)
+        Fighting.attackNearbyEnemies(attacker, context) // 20 dmg
+        assertCombatResult(attacker, target, 80, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 32 dmg
-        assertCombatResult(attacker, target, 42, true)
+        Fighting.attackNearbyEnemies(attacker, context) // 23 dmg
+        assertCombatResult(attacker, target, 57, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 32 dmg
-        assertCombatResult(attacker, target, 10, true)
+        Fighting.attackNearbyEnemies(attacker, context) // 21 dmg
+        assertCombatResult(attacker, target, 36, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 32 dmg
+        Fighting.attackNearbyEnemies(attacker, context) // 21 dmg
+        assertCombatResult(attacker, target, 15, true)
+
+        Fighting.attackNearbyEnemies(attacker, context) // 22 dmg
         assertCombatResult(attacker, target, 0, false)
     }
 
@@ -107,25 +110,26 @@ class FightingTest : StringSpec({
         val target = createTarget(attacker, opfor, createInfantryElement((Units.Rifleman * 100).new()))
         val singleRifleman = createCombatant(attackerPosition.movedBy(2,2), opfor)
         singleRifleman.attack(attacker, context.world, context.random)
-        val attacksAbleToFight = 6
-        attacker.combatReadyCount shouldBe attacksAbleToFight
-        attacker.woundedCount shouldBe 4
+        val attackersAbleToFight = 7
+        attacker.combatReadyCount shouldBe attackersAbleToFight
+        attacker.woundedCount shouldBe 3
 
         var expectedTargetCombatReady = target.combatReadyCount
         forAll( // shots random hits
-                row(22),
-                row(17),
-                row(25),
-                row(27)
+                row(19),
+                row(21),
+                row(21),
+                row(13),
+                row(19)
         ) { expectedDamage ->
             Fighting.attackNearbyEnemies(attacker, context)
             expectedTargetCombatReady -= expectedDamage
-            assertCombatResult(attacker, target, expectedTargetCombatReady, true, attacksAbleToFight)
+            assertCombatResult(attacker, target, expectedTargetCombatReady, true, attackersAbleToFight)
         }
-        expectedTargetCombatReady shouldBe 9
+        expectedTargetCombatReady shouldBe 7
 
-        Fighting.attackNearbyEnemies(attacker, context) // 24 dmg
-        assertCombatResult(attacker, target, 0, false, attacksAbleToFight)
+        Fighting.attackNearbyEnemies(attacker, context) // 13 dmg
+        assertCombatResult(attacker, target, 0, false, attackersAbleToFight)
     }
 })
 
@@ -135,7 +139,7 @@ private fun createContext(): GameContext {
     val random = Random(123L)
     every { context.random } returns random
     every { context.elementsAt(any()) } returns EntitySet()
-    every { context.world[any<Coordinate>()].type } returns TerrainType.GRASSLAND
+    every { context.world[any<Coordinate>()].type } returns TerrainType.FOREST
 
     return context
 }
