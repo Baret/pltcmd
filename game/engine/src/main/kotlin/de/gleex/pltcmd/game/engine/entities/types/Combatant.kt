@@ -12,7 +12,6 @@ import de.gleex.pltcmd.model.combat.defense.MovementState
 import de.gleex.pltcmd.model.combat.defense.TotalDefense
 import de.gleex.pltcmd.util.measure.area.squareMeters
 import de.gleex.pltcmd.util.measure.distance.Distance
-import de.gleex.pltcmd.util.measure.speed.Speed
 import mu.KotlinLogging
 import kotlin.random.Random
 import kotlin.time.Duration
@@ -45,10 +44,10 @@ val CombatantEntity.woundedCount: Int
 /** The ratio that the defense reduces the chance of an attacker to hit */
 val CombatantEntity.defense: Double
     get() {
-        val moving =
-            asMovableEntity { if (it.currentSpeed > Speed.ZERO) MovementState.MOVING else MovementState.STATIONARY }.orElse(
-                MovementState.STATIONARY
-            )
+        val moving = when {
+            asMovableEntity { it.isMoving }.orElse(false) -> MovementState.MOVING
+            else                                          -> MovementState.STATIONARY
+        }
         val cover = asFOBEntity { CoverState.MODERATE }.orElse(CoverState.OPEN)
         val awareness = AwarenessState.OBSERVING
         return TotalDefense(moving, cover, awareness).attackReduction

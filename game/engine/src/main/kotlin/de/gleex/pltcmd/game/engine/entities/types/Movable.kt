@@ -55,6 +55,10 @@ val MovableEntity.baseSpeed: Speed
 val MovableEntity.currentSpeed: Speed
     get() = movementModifiers.fold(baseSpeed) { speed: Speed, modifier: MovementModifier -> modifier(speed) }
 
+/** true if [currentSpeed] is not [Speed.ZERO] */
+val MovableEntity.isMoving: Boolean
+    get() = currentSpeed != Speed.ZERO
+
 /** Check if a destination is set. */
 val MovableEntity.hasNoDestination: Boolean
     get() = destination.isEmpty()
