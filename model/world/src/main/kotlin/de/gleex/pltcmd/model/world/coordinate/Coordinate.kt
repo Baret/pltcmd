@@ -104,7 +104,7 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
             )
 
     /** Provides all coordinates in the rectangle between the two points */
-    operator fun rangeTo(other: Coordinate): Progression {
+    operator fun rangeTo(other: Coordinate): CoordinateArea {
         val values: SortedSet<Coordinate> = TreeSet()
         val northingRange = if(northingFromBottom <= other.northingFromBottom) {
                 northingFromBottom..other.northingFromBottom
@@ -121,7 +121,7 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
                 values.add(Coordinate(x, y))
             }
         }
-        return Progression(values)
+        return CoordinateArea(values)
     }
 
     /** Returns the difference of the easting and northing as Coordinate */
@@ -216,11 +216,4 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
         }
     }
 
-    class Progression(private val coordinates: SortedSet<Coordinate>): Iterable<Coordinate> {
-        override fun iterator(): Iterator<Coordinate> {
-            return coordinates.iterator()
-        }
-
-        fun toSortedSet(): SortedSet<Coordinate> = Collections.unmodifiableSortedSet(coordinates)
-    }
 }
