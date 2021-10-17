@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.combat.defense
 
 /**
- * Contains all factors that increase the defense.
+ * Contains all factors that affect the defense (positive and negative).
  */
 class TotalDefense(private vararg val factors: DefenseFactor) {
     val attackReduction: Double
