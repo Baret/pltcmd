@@ -58,7 +58,6 @@ data class MainCoordinate(val eastingFromLeft: Int, val northingFromBottom: Int)
     override fun toString() = "($eastingFromLeft$SEPARATOR$northingFromBottom)"
 }
 
-
 /**
  * Converts this coordinate to a [MainCoordinate]
  */
