@@ -77,15 +77,12 @@ data class CoordinateRectangleIterator(
     private var currentY: Int = yIterator.next()
 
     override fun hasNext(): Boolean {
-        if (yIterator.hasNext()) {
-            return true
-        }
-        return xIterator.hasNext()
+        return yIterator.hasNext() || xIterator.hasNext()
     }
 
     override fun next(): Coordinate {
         if (!xIterator.hasNext()) {
-            // start next horizontal line
+            // start next horizontal row
             currentY = yIterator.next()
             xIterator = xRange.iterator()
         }
