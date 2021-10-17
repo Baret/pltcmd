@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.combat.defense
 
 /**
- * Determines in which movement the element currently is.
+ * Describes the type of movement an actor currently executes.
  */
 enum class MovementState : DefenseFactor {
     MOVING {
