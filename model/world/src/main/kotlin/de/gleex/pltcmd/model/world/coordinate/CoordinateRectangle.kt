@@ -46,6 +46,7 @@ class CoordinateRectangle(
 
 }
 
+/** @see [CoordinateRectangleIterator] */
 data class CoordinateRectangleSequence(
     val firstCoordinate: Coordinate,
     val secondCoordinate: Coordinate
@@ -74,7 +75,6 @@ data class CoordinateRectangleIterator(
 
     // at least the coordinate itself must be iterable (no hasNext() check!)
     private var currentY: Int = yIterator.next()
-
 
     override fun hasNext(): Boolean {
         if (yIterator.hasNext()) {
