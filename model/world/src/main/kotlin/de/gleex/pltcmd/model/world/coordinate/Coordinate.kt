@@ -19,11 +19,6 @@ import kotlin.math.*
 @Serializable
 data class Coordinate private constructor(val eastingFromLeft: Int, val northingFromBottom: Int) :
     Comparable<Coordinate> {
-    /**
-     * Converts this coordinate to a [MainCoordinate]
-     */
-    fun toMainCoordinate() =
-        MainCoordinate(eastingFromLeft / MainCoordinate.TILE_COUNT, northingFromBottom / MainCoordinate.TILE_COUNT)
 
     /** Creates a new [Coordinate] that is moved by the given amount to the east from this coordinate */
     fun withRelativeEasting(toEast: Int) = withEasting(eastingFromLeft + toEast)
