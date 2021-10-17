@@ -2,12 +2,13 @@ package de.gleex.pltcmd.model.world.coordinate
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveMinLength
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.property.checkAll
 
-class MainCoordinateTest: WordSpec({
+class MainCoordinateTest : WordSpec({
     val testCoordinate = MainCoordinate(5, 9)
     "The origin of main coordinate $testCoordinate" should {
         val expectedCoordinate = Coordinate(500, 900)
@@ -38,6 +39,23 @@ class MainCoordinateTest: WordSpec({
 
         "be (5!9) for $testCoordinate" {
             testCoordinate.toString() shouldBe "(5!9)"
+        }
+    }
+
+    "The range between two coordinates " should {
+        val other = MainCoordinate(8, 7)
+        val range = testCoordinate..other
+        "contain all main coordinates of the described rectangle in ascending order" {
+            range shouldContainExactly listOf(
+                MainCoordinate(5, 7), MainCoordinate(6, 7),
+                MainCoordinate(7, 7), MainCoordinate(8, 7),
+
+                MainCoordinate(5, 8), MainCoordinate(6, 8),
+                MainCoordinate(7, 8), MainCoordinate(8, 8),
+
+                MainCoordinate(5, 9), MainCoordinate(6, 9),
+                MainCoordinate(7, 9), MainCoordinate(8, 9),
+            )
         }
     }
 })
