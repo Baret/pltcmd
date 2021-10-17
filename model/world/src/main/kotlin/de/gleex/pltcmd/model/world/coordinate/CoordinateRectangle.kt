@@ -1,7 +1,5 @@
 package de.gleex.pltcmd.model.world.coordinate
 
-import java.util.*
-
 /**
  * A rectangular [CoordinateArea] starting at a bottom left coordinate to a top right coordinate.
  */
@@ -9,7 +7,9 @@ class CoordinateRectangle(
     val bottomLeftCoordinate: Coordinate,
     val topRightCoordinate: Coordinate
 ) :
-    CoordinateArea({ contentOfRectangle(bottomLeftCoordinate, topRightCoordinate) }) {
+    CoordinateArea({
+        CoordinateRectangleIterator(bottomLeftCoordinate, topRightCoordinate).asSequence().toSortedSet()
+    }) {
 
     constructor(bottomLeftCoordinate: Coordinate, width: Int, height: Int) :
             this(bottomLeftCoordinate, bottomLeftCoordinate.movedBy(width - 1, height - 1))
@@ -47,17 +47,38 @@ class CoordinateRectangle(
 }
 
 /**
- * Calculates every [Coordinate] in the rectangle described by the two vertices.
+ * Calculates every [Coordinate] in the rectangle described by the two vertices moving toward the second coordinate.
  */
-private fun contentOfRectangle(
-    bottomLeftCoordinate: Coordinate,
-    topRightCoordinate: Coordinate
-): SortedSet<Coordinate> {
-    val values: SortedSet<Coordinate> = TreeSet()
-    for (y in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom) {
-        for (x in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft) {
-            values += Coordinate(x, y)
+data class CoordinateRectangleIterator(
+    val firstCoordinate: Coordinate,
+    val secondCoordinate: Coordinate
+) : Iterator<Coordinate> {
+    private val yIterator: IntIterator =
+        (if (firstCoordinate.northingFromBottom <= secondCoordinate.northingFromBottom) firstCoordinate.northingFromBottom..secondCoordinate.northingFromBottom
+        else firstCoordinate.northingFromBottom downTo secondCoordinate.northingFromBottom).iterator()
+    private val xRange =
+        (if (firstCoordinate.eastingFromLeft <= secondCoordinate.eastingFromLeft) firstCoordinate.eastingFromLeft..secondCoordinate.eastingFromLeft
+        else firstCoordinate.eastingFromLeft downTo secondCoordinate.eastingFromLeft)
+    private var xIterator: IntIterator = xRange.iterator()
+
+    // at least the coordinate itself must be iterable (no hasNext() check!)
+    private var currentY: Int = yIterator.next()
+
+
+    override fun hasNext(): Boolean {
+        if (yIterator.hasNext()) {
+            return true
         }
+        return xIterator.hasNext()
     }
-    return values
+
+    override fun next(): Coordinate {
+        if (!xIterator.hasNext()) {
+            // start next horizontal line
+            currentY = yIterator.next()
+            xIterator = xRange.iterator()
+        }
+        return Coordinate(xIterator.next(), currentY)
+    }
+
 }

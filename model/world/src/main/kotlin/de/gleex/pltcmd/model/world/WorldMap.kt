@@ -1,9 +1,6 @@
 package de.gleex.pltcmd.model.world
 
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import de.gleex.pltcmd.model.world.coordinate.CoordinateCircle
-import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
+import de.gleex.pltcmd.model.world.coordinate.*
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.measure.distance.Distance
 import java.util.*
@@ -37,7 +34,7 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
      */
     val sectors: SortedSet<Sector> = originToSector.values.toSortedSet()
 
-    private val worldArea: WorldArea by lazy { areaOf(origin..last) }
+    private val worldArea: WorldArea by lazy { areaOf(CoordinateRectangle(origin, last)) }
 
     /**
      * Returns all neighbors of the given coordinate that are inside this world.
