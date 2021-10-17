@@ -6,7 +6,6 @@ import de.gleex.pltcmd.util.measure.compass.bearing.toBearing
 import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.times
 import kotlinx.serialization.Serializable
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.*
 
@@ -104,24 +103,11 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
             )
 
     /** Provides all coordinates in the rectangle between the two points */
-    operator fun rangeTo(other: Coordinate): CoordinateArea {
-        val values: SortedSet<Coordinate> = TreeSet()
-        val northingRange = if(northingFromBottom <= other.northingFromBottom) {
-                northingFromBottom..other.northingFromBottom
-            } else {
-                northingFromBottom downTo other.northingFromBottom
-            }
-        val eastingRange = if(eastingFromLeft <= other.eastingFromLeft) {
-                eastingFromLeft..other.eastingFromLeft
-            } else {
-                eastingFromLeft downTo other.eastingFromLeft
-            }
-        for(y in northingRange) {
-            for(x in eastingRange) {
-                values.add(Coordinate(x, y))
-            }
-        }
-        return CoordinateArea(values)
+    operator fun rangeTo(other: Coordinate): CoordinateRectangle {
+        return if (this <= other)
+            CoordinateRectangle(this, other)
+        else
+            CoordinateRectangle(other, this)
     }
 
     /** Returns the difference of the easting and northing as Coordinate */

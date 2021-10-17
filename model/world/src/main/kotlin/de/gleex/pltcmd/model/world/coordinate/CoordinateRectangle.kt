@@ -1,12 +1,15 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import java.util.*
+
 /**
  * A rectangular [CoordinateArea] starting at a bottom left coordinate to a top right coordinate.
  */
 class CoordinateRectangle(
-        val bottomLeftCoordinate: Coordinate,
-        val topRightCoordinate: Coordinate) :
-        CoordinateArea({ (bottomLeftCoordinate..topRightCoordinate).toSortedSet() }) {
+    val bottomLeftCoordinate: Coordinate,
+    val topRightCoordinate: Coordinate
+) :
+    CoordinateArea({ contentOfRectangle(bottomLeftCoordinate, topRightCoordinate) }) {
 
     constructor(bottomLeftCoordinate: Coordinate, width: Int, height: Int) :
             this(bottomLeftCoordinate, bottomLeftCoordinate.movedBy(width - 1, height - 1))
@@ -33,12 +36,28 @@ class CoordinateRectangle(
     }
 
     override operator fun contains(coordinate: Coordinate): Boolean {
-        return coordinate.eastingFromLeft    in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft &&
-               coordinate.northingFromBottom in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom
+        return coordinate.eastingFromLeft in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft &&
+                coordinate.northingFromBottom in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom
     }
 
     override fun toString(): String {
         return "CoordinateRectangle from $bottomLeftCoordinate to $topRightCoordinate containing $size coordinates"
     }
 
+}
+
+/**
+ * Calculates every [Coordinate] in the rectangle described by the two vertices.
+ */
+private fun contentOfRectangle(
+    bottomLeftCoordinate: Coordinate,
+    topRightCoordinate: Coordinate
+): SortedSet<Coordinate> {
+    val values: SortedSet<Coordinate> = TreeSet()
+    for (y in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom) {
+        for (x in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft) {
+            values += Coordinate(x, y)
+        }
+    }
+    return values
 }
