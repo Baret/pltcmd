@@ -8,7 +8,7 @@ class CoordinateRectangle(
     val topRightCoordinate: Coordinate
 ) :
     CoordinateArea({
-        CoordinateRectangleIterator(bottomLeftCoordinate, topRightCoordinate).asSequence().toSortedSet()
+        CoordinateRectangleSequence(bottomLeftCoordinate, topRightCoordinate).toSortedSet()
     }) {
 
     constructor(bottomLeftCoordinate: Coordinate, width: Int, height: Int) :
@@ -42,6 +42,17 @@ class CoordinateRectangle(
 
     override fun toString(): String {
         return "CoordinateRectangle from $bottomLeftCoordinate to $topRightCoordinate containing $size coordinates"
+    }
+
+}
+
+data class CoordinateRectangleSequence(
+    val firstCoordinate: Coordinate,
+    val secondCoordinate: Coordinate
+) : Sequence<Coordinate> {
+
+    override fun iterator(): Iterator<Coordinate> {
+        return CoordinateRectangleIterator(firstCoordinate, secondCoordinate)
     }
 
 }

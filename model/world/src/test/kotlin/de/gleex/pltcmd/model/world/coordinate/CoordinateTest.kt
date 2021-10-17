@@ -255,7 +255,7 @@ class CoordinateTest : WordSpec({
         val other = Coordinate(125, 342)
         val range = testCoordinate..other
         "contain all coordinates in the rectangle ordered by the direction from the first to the second point" {
-            range.asSequence() shouldContainExactly sequenceOf(
+            range shouldContainExactly sequenceOf(
                 Coordinate(123, 345),
                 Coordinate(124, 345),
                 Coordinate(125, 345),

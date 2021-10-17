@@ -110,7 +110,7 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
      * east-west axis to the other coordinate and then to the next line on the north-sourth axis from this to other
      * (the `CardinalPoint`).
      **/
-    operator fun rangeTo(other: Coordinate) = CoordinateRectangleIterator(this, other)
+    operator fun rangeTo(other: Coordinate) = CoordinateRectangleSequence(this, other)
 
     /** Returns the difference of the easting and northing as Coordinate */
     operator fun minus(other: Coordinate): Coordinate {
