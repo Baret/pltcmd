@@ -9,6 +9,7 @@ import mu.KotlinLogging
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultUndirectedGraph
 import org.jgrapht.graph.concurrent.AsSynchronizedGraph
+import org.jheaps.annotations.VisibleForTesting
 
 /**
  * Holds the [Affiliation] between [Faction]s.
@@ -16,7 +17,8 @@ import org.jgrapht.graph.concurrent.AsSynchronizedGraph
 object FactionRelations {
     private val log = KotlinLogging.logger {  }
 
-    private val relations: Graph<Faction, AffiliationEdge> = AsSynchronizedGraph(DefaultUndirectedGraph(AffiliationEdge::class.java))
+    @VisibleForTesting
+    internal val relations: Graph<Faction, AffiliationEdge> = AsSynchronizedGraph(DefaultUndirectedGraph(AffiliationEdge::class.java))
 
     /**
      * Sets the [Affiliation] between the two given [Faction]s.
