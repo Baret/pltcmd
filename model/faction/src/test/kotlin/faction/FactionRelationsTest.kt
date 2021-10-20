@@ -1,5 +1,8 @@
-package de.gleex.pltcmd.model.faction
+package faction
 
+import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.model.faction.Faction
+import de.gleex.pltcmd.model.faction.FactionRelations
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
