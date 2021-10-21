@@ -31,7 +31,7 @@ object FactionRelations {
      * Gets the [Affiliation] between the given [Faction]s.
      */
     operator fun get(faction1: Faction, faction2: Faction): Affiliation {
-        val edge = relations.getEdge(faction1, faction2)//[faction1, faction2]
+        val edge = relations[faction1, faction2]
         require(edge != null) {
             "Faction relations graph is not complete! No edge found between $faction1 and $faction2"
         }
