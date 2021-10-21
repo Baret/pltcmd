@@ -13,7 +13,7 @@
     <name>Graph Utilities</name>
     <description>
         Provides algorithms and helpers on graphs. This module also provides the single graph library used
-        across the project
+        across the project.
     </description>
 
     <dependencies>
