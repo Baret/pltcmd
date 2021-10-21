@@ -10,7 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>faction</artifactId>
-    <description>The modeling of factions.</description>
+
+    <name>Factions</name>
+    <description>The modeling of factions and their relations.</description>
 
     <dependencies>
         <dependency>
