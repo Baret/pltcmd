@@ -51,8 +51,11 @@ class FactionRelationsTest : FreeSpec({
         FactionRelations[f2, f3] shouldBe Affiliation.Neutral
     }
 
-    "set should be cumulative" {
+    "set should overwrite old values" {
         FactionRelations[f1, f2] = Affiliation.Hostile
+
+        FactionRelations[f1, f2] shouldBe Affiliation.Hostile
+
         FactionRelations[f2, f1] = Affiliation.Friendly
 
         FactionRelations[f1, f2] shouldBe Affiliation.Friendly
