@@ -43,6 +43,12 @@ class FactionRelationsTest : FreeSpec({
 
         FactionRelations[f1, f2] shouldBe Affiliation.Friendly
         FactionRelations[f2, f1] shouldBe Affiliation.Friendly
+
+        FactionRelations[f3, f1] shouldBe Affiliation.Neutral
+        FactionRelations[f1, f3] shouldBe Affiliation.Neutral
+
+        FactionRelations[f3, f2] shouldBe Affiliation.Neutral
+        FactionRelations[f2, f3] shouldBe Affiliation.Neutral
     }
 
     "set should be cumulative" {
