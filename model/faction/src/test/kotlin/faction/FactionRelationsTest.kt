@@ -23,15 +23,19 @@ class FactionRelationsTest : FreeSpec({
     val f2 = Faction("faction 2")
     val f3 = Faction("faction 11")
 
-    "Default relations should be self/neutral" {
-        FactionRelations[f1, f1] shouldBe Affiliation.Self
-        FactionRelations[f2, f2] shouldBe Affiliation.Self
-        FactionRelations[f3, f3] shouldBe Affiliation.Self
+    "Default relations should be" - {
+        "self for each relation to 'itself'" {
+            FactionRelations[f1, f1] shouldBe Affiliation.Self
+            FactionRelations[f2, f2] shouldBe Affiliation.Self
+            FactionRelations[f3, f3] shouldBe Affiliation.Self
+        }
 
-        FactionRelations[f1, f2] shouldBe Affiliation.Neutral
-        FactionRelations[f1, f3] shouldBe Affiliation.Neutral
+        "neutral for all relations to the other factions" {
+            FactionRelations[f1, f2] shouldBe Affiliation.Neutral
+            FactionRelations[f1, f3] shouldBe Affiliation.Neutral
 
-        FactionRelations[f2, f3] shouldBe Affiliation.Neutral
+            FactionRelations[f2, f3] shouldBe Affiliation.Neutral
+        }
     }
 
     "relation should be stored and accessible in any order" {
