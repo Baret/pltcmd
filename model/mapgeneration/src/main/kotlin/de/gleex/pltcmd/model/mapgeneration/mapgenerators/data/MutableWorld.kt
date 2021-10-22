@@ -4,10 +4,7 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.MapGenerationListener
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
-import de.gleex.pltcmd.model.world.coordinate.MainCoordinate
+import de.gleex.pltcmd.model.world.coordinate.*
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainData
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight

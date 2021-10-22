@@ -6,7 +6,6 @@ import de.gleex.pltcmd.util.measure.compass.bearing.toBearing
 import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.times
 import kotlinx.serialization.Serializable
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.*
 
@@ -18,11 +17,8 @@ import kotlin.math.*
  * It is like the numerical location of the Military Grid Reference System (see https://en.wikipedia.org/wiki/Military_Grid_Reference_System#Numerical_location).
  */
 @Serializable
-data class Coordinate private constructor(val eastingFromLeft: Int, val northingFromBottom: Int) : Comparable<Coordinate> {
-    /**
-     * Converts this coordinate to a [MainCoordinate]
-     */
-    fun toMainCoordinate() = MainCoordinate(eastingFromLeft / MainCoordinate.TILE_COUNT, northingFromBottom / MainCoordinate.TILE_COUNT)
+data class Coordinate private constructor(val eastingFromLeft: Int, val northingFromBottom: Int) :
+    Comparable<Coordinate> {
 
     /** Creates a new [Coordinate] that is moved by the given amount to the east from this coordinate */
     fun withRelativeEasting(toEast: Int) = withEasting(eastingFromLeft + toEast)
@@ -41,10 +37,10 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
 
     /** gets the four neighboring coordinates **/
     fun neighbors() = listOf(
-            withRelativeNorthing(-1),
-            withRelativeEasting(-1),
-            withRelativeEasting(1),
-            withRelativeNorthing(1)
+        withRelativeNorthing(-1),
+        withRelativeEasting(-1),
+        withRelativeEasting(1),
+        withRelativeNorthing(1)
     )
 
     /** Checks if the given coordinate is the direct successor in the horizontal coordinate */
@@ -70,9 +66,9 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
     /** @return the euclidean distance */
     infix fun distanceTo(other: Coordinate): Distance {
         val eastingDiffSquared = (eastingFromLeft - other.eastingFromLeft).absoluteValue.toDouble()
-                .pow(2.0)
+            .pow(2.0)
         val northingDiffSquared = (northingFromBottom - other.northingFromBottom).absoluteValue.toDouble()
-                .pow(2.0)
+            .pow(2.0)
         val distance = sqrt(eastingDiffSquared + northingDiffSquared)
         return distance * WorldTile.edgeLength
     }
@@ -96,33 +92,20 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
      * Example: 2|2, 3|2, 1|3
      */
     override fun compareTo(other: Coordinate): Int =
-            compareCoordinateComponents(
-                    northingFromBottom,
-                    eastingFromLeft,
-                    other.northingFromBottom,
-                    other.eastingFromLeft
-            )
+        compareCoordinateComponents(
+            northingFromBottom,
+            eastingFromLeft,
+            other.northingFromBottom,
+            other.eastingFromLeft
+        )
 
-    /** Provides all coordinates in the rectangle between the two points */
-    operator fun rangeTo(other: Coordinate): Progression {
-        val values: SortedSet<Coordinate> = TreeSet()
-        val northingRange = if(northingFromBottom <= other.northingFromBottom) {
-                northingFromBottom..other.northingFromBottom
-            } else {
-                northingFromBottom downTo other.northingFromBottom
-            }
-        val eastingRange = if(eastingFromLeft <= other.eastingFromLeft) {
-                eastingFromLeft..other.eastingFromLeft
-            } else {
-                eastingFromLeft downTo other.eastingFromLeft
-            }
-        for(y in northingRange) {
-            for(x in eastingRange) {
-                values.add(Coordinate(x, y))
-            }
-        }
-        return Progression(values)
-    }
+    /**
+     * Provides all coordinates in the rectangle between the two points in "fill grid order". In that order the
+     * horizontal lines are filled one by one while moving from the start point to the end point. So first move in the
+     * east-west axis to the other coordinate and then to the next line on the north-sourth axis from this to other
+     * (the `CardinalPoint`).
+     **/
+    operator fun rangeTo(other: Coordinate) = CoordinateRectangleSequence(this, other)
 
     /** Returns the difference of the easting and northing as Coordinate */
     operator fun minus(other: Coordinate): Coordinate {
@@ -183,7 +166,7 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
 
         fun compareByDistanceFrom(center: Coordinate) = Comparator { c1: Coordinate, c2: Coordinate ->
             val distanceDiff = c1.distanceTo(center)
-                    .compareTo(c2.distanceTo(center))
+                .compareTo(c2.distanceTo(center))
             if (distanceDiff != 0) {
                 distanceDiff
             } else {
@@ -195,18 +178,17 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
          *  Parses the given string and tries to extract a Coordinate. The string needs to be in the format (123|-456)
          */
         fun fromString(coordinateString: String): Coordinate? {
-            REGEX_STRING.
-                find(coordinateString.trim())?.
-                let { result ->
-                    val (easting, northing) = result.groupValues.subList(1, 3).map(String::toIntOrNull)
-                    if(easting != null && northing != null) {
-                        return Coordinate(easting, northing)
-                    }
+            REGEX_STRING.find(coordinateString.trim())?.let { result ->
+                val (easting, northing) = result.groupValues.subList(1, 3).map(String::toIntOrNull)
+                if (easting != null && northing != null) {
+                    return Coordinate(easting, northing)
                 }
+            }
             return null
         }
 
         private val created: MutableMap<Long, Coordinate> = ConcurrentHashMap()
+
         /**
          * Provides an [Coordinate] object with the given values.
          **/
@@ -216,11 +198,4 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
         }
     }
 
-    class Progression(private val coordinates: SortedSet<Coordinate>): Iterable<Coordinate> {
-        override fun iterator(): Iterator<Coordinate> {
-            return coordinates.iterator()
-        }
-
-        fun toSortedSet(): SortedSet<Coordinate> = Collections.unmodifiableSortedSet(coordinates)
-    }
 }
