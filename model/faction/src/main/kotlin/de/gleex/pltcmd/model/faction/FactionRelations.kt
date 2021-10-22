@@ -54,15 +54,16 @@ object FactionRelations {
      * to every other faction. Individual affiliations may be updated later via [set].
      */
     internal fun register(newFaction: Faction) {
-        relations.addVertex(newFaction)
-        relations.vertexSet().forEach { faction ->
-            val affiliation = if (faction == newFaction) {
-                Self
-            } else {
-                Neutral
-            }
-            check(relations.addEdge(faction, newFaction, affiliation.toEdge())) {
-                "Could not add default affiliation $affiliation between $newFaction and $faction"
+        log.debug { "Registering new faction $newFaction. Current number of factions: ${relations.vertexSet().size}" }
+        if (relations.addVertex(newFaction)) {
+            // only set default relations, when the faction was not yet present in the graph
+            relations.vertexSet().forEach { faction ->
+                val affiliation = if (faction == newFaction) {
+                    Self
+                } else {
+                    Neutral
+                }
+                relations.addEdge(faction, newFaction, affiliation.toEdge())
             }
         }
         log.debug { "New faction $newFaction registered. Total factions: ${relations.vertexSet().size}, Total relations: ${relations.edgeSet().size}" }
