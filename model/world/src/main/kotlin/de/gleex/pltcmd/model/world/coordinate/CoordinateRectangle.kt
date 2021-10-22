@@ -44,4 +44,7 @@ class CoordinateRectangle(
         return "CoordinateRectangle from $bottomLeftCoordinate to $topRightCoordinate containing $size coordinates"
     }
 
+    override fun iterator(): MutableIterator<Coordinate> {
+        return CoordinateRectangleIterator(bottomLeftCoordinate, topRightCoordinate)
+    }
 }

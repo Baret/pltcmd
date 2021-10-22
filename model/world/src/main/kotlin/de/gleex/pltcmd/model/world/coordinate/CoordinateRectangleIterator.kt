@@ -6,7 +6,7 @@ package de.gleex.pltcmd.model.world.coordinate
 data class CoordinateRectangleIterator(
     val firstCoordinate: Coordinate,
     val secondCoordinate: Coordinate
-) : Iterator<Coordinate> {
+) : MutableIterator<Coordinate> {
     private val yIterator: IntIterator =
         (if (firstCoordinate.northingFromBottom <= secondCoordinate.northingFromBottom) firstCoordinate.northingFromBottom..secondCoordinate.northingFromBottom
         else firstCoordinate.northingFromBottom downTo secondCoordinate.northingFromBottom).iterator()
@@ -29,6 +29,10 @@ data class CoordinateRectangleIterator(
             xIterator = xRange.iterator()
         }
         return Coordinate(xIterator.next(), currentY)
+    }
+
+    override fun remove() {
+        throw UnsupportedOperationException()
     }
 
 }
