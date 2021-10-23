@@ -1,26 +1,22 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
+import de.gleex.pltcmd.game.engine.attributes.combat.DefenseAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.Shooter
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
-import de.gleex.pltcmd.game.engine.extensions.GameEntity
-import de.gleex.pltcmd.game.engine.extensions.getAttribute
-import de.gleex.pltcmd.game.engine.extensions.logIdentifier
+import de.gleex.pltcmd.game.engine.extensions.*
 import de.gleex.pltcmd.game.options.GameConstants.Time.timeSimulatedPerTick
-import de.gleex.pltcmd.model.combat.defense.AwarenessState
-import de.gleex.pltcmd.model.combat.defense.MovementState
 import de.gleex.pltcmd.model.combat.defense.TotalDefense
-import de.gleex.pltcmd.model.combat.defense.cover
-import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.util.measure.area.squareMeters
 import de.gleex.pltcmd.util.measure.distance.Distance
 import mu.KotlinLogging
+import org.hexworks.cobalt.datatypes.Maybe
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
 /**
- * This file contains code for entities that have the [ShootersAttribute].
+ * This file contains code for entities that have the [ShootersAttribute] and [DefenseAttribute].
  */
 private val log = KotlinLogging.logger {}
 
@@ -30,6 +26,10 @@ typealias CombatantEntity = GameEntity<Combatant>
 /** Access to [ShootersAttribute] */
 private val CombatantEntity.shooters: ShootersAttribute
     get() = getAttribute(ShootersAttribute::class)
+
+/** Access to [DefenseAttribute] */
+private val CombatantEntity.defense: DefenseAttribute
+    get() = getAttribute(DefenseAttribute::class)
 
 val CombatantEntity.isAbleToFight: Boolean
     get() = shooters.isAbleToFight
@@ -44,27 +44,22 @@ val CombatantEntity.woundedCount: Int
 
 /**
  * The ratio that the defense reduces the chance of an attacker to hit
- * @param worldMap the world in which this entity is positioned
  **/
-fun CombatantEntity.getDefense(worldMap: WorldMap): TotalDefense {
-    val moving = when {
-        asMovableEntity { it.isMoving }.orElse(false) -> MovementState.MOVING
-        else                                          -> MovementState.STATIONARY
+var CombatantEntity.currentDefense: TotalDefense
+    get() = defense.total.value
+    internal set(value) {
+        defense.total.updateValue(value)
     }
-    val cover = worldMap[currentPosition].cover
-    val awareness = AwarenessState.OBSERVING
-    return TotalDefense(moving, cover, awareness)
-}
 
 infix fun CombatantEntity.onDefeat(callback: () -> Unit) {
     shooters.onDefeat(callback)
 }
 
 /** This combatant attacks the given [target] for a full tick */
-internal fun CombatantEntity.attack(target: CombatantEntity, worldMap: WorldMap, random: Random) {
+internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
     if (target.isAbleToFight) {
         val range: Distance = currentPosition distanceTo target.currentPosition
-        val defense = target.getDefense(worldMap)
+        val defense = target.currentDefense
         val hitsPerTick = shooters
             .combatReady
             .sumOf { it.fireShots(range, timeSimulatedPerTick, random, defense) }
@@ -98,3 +93,12 @@ internal fun Shooter.fireShots(range: Distance, attackDuration: Duration, random
     log.trace { "$this firing $shotsPerDuration shots in $attackDuration with accuracy ${weapon.shotAccuracy} at defense $defense results in $hits hits" }
     return hits
 }
+
+/**
+ * Invokes [whenCombatant] if this entity is an [CombatantEntity]. When the type is not [Combatant],
+ * [Maybe.empty] is returned.
+ *
+ * @param R the type that is returned by [whenCombatant]
+ */
+fun <R> AnyGameEntity.asCombatantEntity(whenCombatant: (CombatantEntity) -> R): Maybe<R> =
+    tryCastTo<CombatantEntity, Combatant, R>(whenCombatant)

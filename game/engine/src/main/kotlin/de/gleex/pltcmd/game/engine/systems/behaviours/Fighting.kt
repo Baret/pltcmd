@@ -28,7 +28,7 @@ internal object Fighting :
             .firstOrNull()
             ?.let { enemyToAttack ->
                 log.debug { "${attacker.callsign} attacks ${enemyToAttack.callsign}" }
-                attacker.attack(enemyToAttack, context.world, context.random)
+                attacker.attack(enemyToAttack, context.random)
                 true
             }
             ?: false
