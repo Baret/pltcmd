@@ -95,20 +95,19 @@ class FightingTest : StringSpec({
         val attacker = createCombatant(attackerPosition, playerFaction, context, Elements.rifleSquad.new())
         val target = createTarget(attacker, opfor, context, createInfantryElement((Units.Rifleman * 100).new()))
 
-        Fighting.attackNearbyEnemies(attacker, context) // 20 dmg
-        assertCombatResult(attacker, target, 80, true)
+        assertSoftly {
+            Fighting.attackNearbyEnemies(attacker, context) // 26 dmg
+            assertCombatResult(attacker, target, 74, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 23 dmg
-        assertCombatResult(attacker, target, 57, true)
+            Fighting.attackNearbyEnemies(attacker, context) // 32 dmg
+            assertCombatResult(attacker, target, 42, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 21 dmg
-        assertCombatResult(attacker, target, 36, true)
+            Fighting.attackNearbyEnemies(attacker, context) // 32 dmg
+            assertCombatResult(attacker, target, 10, true)
 
-        Fighting.attackNearbyEnemies(attacker, context) // 21 dmg
-        assertCombatResult(attacker, target, 15, true)
-
-        Fighting.attackNearbyEnemies(attacker, context) // 22 dmg
-        assertCombatResult(attacker, target, 0, false)
+            Fighting.attackNearbyEnemies(attacker, context) // 32 dmg
+            assertCombatResult(attacker, target, 0, false)
+        }
     }
 
     "attackNearbyEnemies with multiple wounded shooters and single enemy with multiple soldiers" {
@@ -118,25 +117,24 @@ class FightingTest : StringSpec({
         val target = createTarget(attacker, opfor, context, createInfantryElement((Units.Rifleman * 100).new()))
         val singleRifleman = createCombatant(attackerPosition.movedBy(2, 2), opfor, context)
         singleRifleman.attack(attacker, context.random)
-        val attackersAbleToFight = 7
+        val attackersAbleToFight = 6
         attacker.combatReadyCount shouldBe attackersAbleToFight
-        attacker.woundedCount shouldBe 3
+        attacker.woundedCount shouldBe 4
 
         var expectedTargetCombatReady = target.combatReadyCount
         forAll( // shots random hits
-            row(19),
-            row(21),
-            row(21),
-            row(13),
-            row(19)
+            row(22),
+            row(17),
+            row(25),
+            row(27)
         ) { expectedDamage ->
             Fighting.attackNearbyEnemies(attacker, context)
             expectedTargetCombatReady -= expectedDamage
             assertCombatResult(attacker, target, expectedTargetCombatReady, true, attackersAbleToFight)
         }
-        expectedTargetCombatReady shouldBe 7
+        expectedTargetCombatReady shouldBe 9
 
-        Fighting.attackNearbyEnemies(attacker, context) // 13 dmg
+        Fighting.attackNearbyEnemies(attacker, context) // 24 dmg
         assertCombatResult(attacker, target, 0, false, attackersAbleToFight)
     }
 })
