@@ -8,6 +8,7 @@ import de.gleex.pltcmd.game.engine.attributes.SightedAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.DefenseAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
+import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
 import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.systems.behaviours.Defending.updateDefense
@@ -140,7 +141,7 @@ class FightingTest : StringSpec({
     }
 })
 
-private fun createContext(): GameContext {
+fun createContext(): GameContext {
 
     val context = mockk<GameContext>()
     val random = Random(123L)
@@ -193,7 +194,8 @@ fun createCombatant(
             ShootersAttribute(element),
             DefenseAttribute(),
             SightedAttribute(),
-            MovementBaseSpeed(element)
+            MovementBaseSpeed(element),
+            MovementPath()
         )
         behaviors(Defending, Fighting)
         facets()
