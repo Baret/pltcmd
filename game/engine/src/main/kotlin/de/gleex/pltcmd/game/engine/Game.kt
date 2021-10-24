@@ -24,29 +24,27 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.util.events.globalEventBus
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
+private val log = KotlinLogging.logger {}
+
 data class Game(val engine: Engine<GameContext>, val world: WorldMap, val playerFaction: Faction, val random: Random) {
 
     private val allEntities: EntitySet<EntityType> = EntitySet()
-
-    companion object {
-        private val log = LoggerFactory.getLogger(Game::class)
-    }
 
     private var previousUpdate: Job? = null
 
     init {
         globalEventBus.subscribeToTicks {
             if (previousUpdate?.isActive == true) {
-                log.warn("processing of previous tick has not finished yet! Waiting before doing tick #${it.id}")
+                log.warn { "processing of previous tick has not finished yet! Waiting before doing tick #${it.id}" }
                 runBlocking {
                     previousUpdate?.join()
                 }
@@ -76,7 +74,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     }
 
     private fun removeEntity(entity: AnyGameEntity) {
-        log.debug("Removing entity ${entity.logIdentifier} from game")
+        log.debug { "Removing entity ${entity.logIdentifier} from game" }
         allEntities.remove(entity)
         engine.removeEntity(entity)
     }
@@ -98,7 +96,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
         } else {
             EntityFactory.newWanderingElement(element, elementPosition, faction, radioSender, world)
         }
-        log.debug("Adding ${element.description} with callsign ${element.callSign} to engine at position $positionInSector")
+        log.debug { "Adding ${element.description} with callsign ${element.callSign} to engine at position $positionInSector" }
         return addEntity(elementEntity)
     }
 
@@ -110,9 +108,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
         val (elements, duration) = measureTimedValue {
             allEntities.elementsAt(location)
         }
-        if (log.isTraceEnabled()) {
-            log.trace("Finding ${elements.size} of ${allEntities.filterElements().size} elements at $location took ${duration.inWholeMilliseconds} ms")
-        }
+        log.trace { "Finding ${elements.size} of ${allEntities.filterElements().size} elements at $location took ${duration.inWholeMilliseconds} ms" }
         return elements
     }
 

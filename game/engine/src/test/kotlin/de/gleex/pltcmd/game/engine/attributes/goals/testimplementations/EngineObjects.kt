@@ -11,11 +11,11 @@ import io.mockk.mockkClass
 import org.hexworks.amethyst.api.newEntityOfType
 import kotlin.random.Random
 
-val goalTestEntity: ElementEntity = newEntityOfType(ElementType) {
+internal val goalTestEntity: ElementEntity = newEntityOfType(ElementType) {
     // no attributes etc. needed yet
 }
 
-val testGameContext: GameContext = GameContext(
+internal val testGameContext: GameContext = GameContext(
         currentTick = TickId(12),
         world = mockkClass(WorldMap::class),
         playerFaction = Faction("player faction"),

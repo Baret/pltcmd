@@ -9,16 +9,18 @@ import de.gleex.pltcmd.model.radio.communication.Conversation
 import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.Conversations.Orders.*
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.binding.bindPlusWith
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
-import org.hexworks.cobalt.databinding.api.extension.createPropertyFrom
+import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.Fragments
 import org.hexworks.zircon.api.data.Position
+import org.hexworks.zircon.api.dsl.fragment.buildSelector
 import org.hexworks.zircon.api.uievent.*
+
+private val log = KotlinLogging.logger {}
 
 /**
  * Displays a list of entities and makes it possible to send them a command from `hq`.
@@ -34,18 +36,16 @@ class ElementCommandFragment(
         private val game: Game
 ) : BaseFragment, (MouseEvent, UIEventPhase) -> UIEventResponse {
 
-    private val elementSelect = Fragments.selector(fragmentWidth, elements)
-            .withToStringMethod { it.callsign.toString() }
-            .build()
+    private val elementSelect = buildSelector<ElementEntity> {
+        width = fragmentWidth
+        valueList = elements
+        toStringMethod = { it.callsign.toString() }
+    }
 
-    private val selectedDestination = createPropertyFrom(elements.first().currentPosition)
+    private val selectedDestination = elements.first().currentPosition.toProperty()
     private val selectedCallsign: ObservableValue<CallSign> = elementSelect
         .selectedValue
         .bindTransform { it.callsign }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(ElementCommandFragment::class)
-    }
 
     override val root = Components.vbox()
             .withSize(fragmentWidth, 5)
@@ -56,7 +56,7 @@ class ElementCommandFragment(
                         .withSize(width, 1)
                         .build()
                         .apply {
-                            textProperty.updateFrom(createPropertyFrom("Move to ") bindPlusWith selectedDestination.bindTransform { it.toString() }, true)
+                            textProperty.updateFrom("Move to ".toProperty() bindPlusWith selectedDestination.bindTransform { it.toString() }, true)
                             onActivated {
                                 sendOrder(MoveTo)
                             }
@@ -65,7 +65,7 @@ class ElementCommandFragment(
                         .withSize(width, 1)
                         .build()
                         .apply {
-                            textProperty.updateFrom(createPropertyFrom("Patrol at ") bindPlusWith selectedDestination.bindTransform { it.toString() }, true)
+                            textProperty.updateFrom("Patrol at ".toProperty() bindPlusWith selectedDestination.bindTransform { it.toString() }, true)
                             onActivated {
                                 sendOrder(PatrolAreaAt)
                             }
@@ -93,7 +93,7 @@ class ElementCommandFragment(
     override fun invoke(event: MouseEvent, phase: UIEventPhase): UIEventResponse =
             if (phase == UIEventPhase.TARGET && event.button == 1) {
                 val coord = world.coordinateAtVisiblePosition(event.position - mapOffset.value)
-                log.debug("MOUSE CLICKED at ${event.position}! Offset is $mapOffset. Updating command fragment value to $coord")
+                log.debug { "MOUSE CLICKED at ${event.position}! Offset is $mapOffset. Updating command fragment value to $coord" }
                 selectedDestination.updateValue(coord)
                 Processed
             } else {
@@ -104,7 +104,7 @@ class ElementCommandFragment(
             sendConversation(order.create(hq.radioCallSign, selectedCallsign.value, selectedDestination.value))
 
     private fun sendConversation(conversation: Conversation) {
-        log.debug("Sending conversation to ${conversation.receiver}: $conversation")
+        log.debug { "Sending conversation to ${conversation.receiver}: $conversation" }
         runBlocking {
             hq.sendMessage(ConversationMessage(conversation, game.context(), hq))
         }

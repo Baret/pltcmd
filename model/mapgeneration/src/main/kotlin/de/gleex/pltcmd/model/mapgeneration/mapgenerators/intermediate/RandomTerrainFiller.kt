@@ -5,15 +5,15 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.random.Random
+
+private val log = KotlinLogging.logger {}
 
 /**
  * Fills an area with random [Terrain] and adds random [TerrainType] to coordinates that only contain a height.
  */
 class RandomTerrainFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
-
-    private val log = LoggerFactory.getLogger(RandomTerrainFiller::class)
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         var emptyOnes = 0
@@ -27,6 +27,6 @@ class RandomTerrainFiller(override val rand: Random, override val context: Gener
                 missingTypeOnes++
             }
         }
-        log.debug("Filled up $missingTypeOnes coordinates with random terrain type, created $emptyOnes full tiles with ranom terrain")
+        log.debug { "Filled up $missingTypeOnes coordinates with random terrain type, created $emptyOnes full tiles with random terrain" }
     }
 }

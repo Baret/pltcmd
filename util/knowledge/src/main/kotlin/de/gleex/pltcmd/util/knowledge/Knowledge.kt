@@ -20,13 +20,16 @@ class Knowledge<T: Any, K: Known<T, K>> {
      * Updates the given [Known] in this knowledge or adds it if it's [Known.origin] is not yet present.
      *
      * @param [newKnowledge] to merge with a possibly already present [Known].
+     * @return true if this knowledge increased, false if nothing new was learned
      */
-    infix fun update(newKnowledge: K) {
-        knownThings
-            .find { it.origin == newKnowledge.origin }
+    infix fun update(newKnowledge: K): Boolean {
+        return get(newKnowledge.origin)
             ?.mergeWith(newKnowledge)
-            ?: _knownThings.add(newKnowledge)
+            ?: _knownThings.updateValue(_knownThings.add(newKnowledge)).successful
     }
+
+    operator fun get(origin: T) =
+        knownThings.find { it.origin == origin }
 
     /**
      * Merges [other] into this knowledge. Everything in [other] will afterwards be obsolete because

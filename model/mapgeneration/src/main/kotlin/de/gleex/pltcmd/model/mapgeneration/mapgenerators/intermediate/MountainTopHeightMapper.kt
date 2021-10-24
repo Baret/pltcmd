@@ -7,9 +7,11 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.coordinate.MainCoordinate
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.math.roundToInt
 import kotlin.random.Random
+
+private val log = KotlinLogging.logger {}
 
 /**
  * Creates a number of mountain tops and slowly decreases the terrain around them.
@@ -17,8 +19,6 @@ import kotlin.random.Random
 class MountainTopHeightMapper(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
     private val MAX_TERRAIN = if (context.hilliness < 0.3) TerrainHeight.MAX - 1 else TerrainHeight.MAX
     private val MIN_TERRAIN = TerrainHeight.FOUR
-
-    private val log = LoggerFactory.getLogger(this::class)
 
     private val mountainTopsPerMainCoordinate: Int = (4.0 * context.hilliness).roundToInt()
 
@@ -33,7 +33,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
         val mountainTopLocations = findMountainTops(area, mutableWorld)
         val frontier = mutableSetOf<Coordinate>()
         if (mountainTopLocations.isNotEmpty()) {
-            log.debug("Generating mountains between height $MAX_TERRAIN and $MIN_TERRAIN")
+            log.debug { "Generating mountains between height $MAX_TERRAIN and $MIN_TERRAIN" }
             // set those to max height
             mountainTopLocations.forEach {
                 mutableWorld[it] = MAX_TERRAIN
@@ -43,7 +43,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
             // from each position find the four neighbours that have no height yet
             generateMountains(frontier, mutableWorld)
         }
-        log.debug("Processed ${processedTiles.size} tiles to create ${mountainTopLocations.size} mountains")
+        log.debug { "Processed ${processedTiles.size} tiles to create ${mountainTopLocations.size} mountains" }
     }
 
     private fun generateMountains(initialFrontier: Set<Coordinate>, mutableWorld: MutableWorld) {
@@ -69,11 +69,11 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
     private fun findMountainTops(area: CoordinateArea, mutableWorld: MutableWorld): Set<Coordinate> {
         val mainCoordinates = mutableWorld.mainCoordinatesEmpty.
             ifEmpty {
-                log.debug("No empty space found for mountains!")
+                log.debug { "No empty space found for mountains!" }
                 return emptySet()
             }
         val mountainTopAreasToFind = (mainCoordinates.size.toDouble() * mainCoordinateQuotaForMountains).toInt()
-        log.debug("Trying to find $mountainTopAreasToFind areas for mountain tops in ${mainCoordinates.size} main coordinates")
+        log.debug { "Trying to find $mountainTopAreasToFind areas for mountain tops in ${mainCoordinates.size} main coordinates" }
         val pickedAreas = mutableSetOf<MainCoordinate>()
         var tries = 0
         while (pickedAreas.size < mountainTopAreasToFind && tries < 1000) {
@@ -91,7 +91,7 @@ class MountainTopHeightMapper(override val rand: Random, override val context: G
                 pickedLocations.add(pickedLocation)
             }
         }
-        log.debug("Found ${pickedLocations.size} mountain top locations: ${pickedLocations.sorted()}")
+        log.debug { "Found ${pickedLocations.size} mountain top locations: ${pickedLocations.sorted()}" }
         return pickedLocations.toSet()
     }
 

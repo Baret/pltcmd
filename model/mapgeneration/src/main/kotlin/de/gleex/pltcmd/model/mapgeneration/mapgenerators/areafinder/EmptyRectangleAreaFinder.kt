@@ -3,16 +3,15 @@ package de.gleex.pltcmd.model.mapgeneration.mapgenerators.areafinder
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
+
+private val log = KotlinLogging.logger {}
 
 /**
  * Groups the empty spaces of a world into rectangles. The rectangles are as wide as possible like lines.
  */
 class EmptyRectangleAreaFinder : AreaFinder {
-    companion object {
-        private val log = LoggerFactory.getLogger(EmptyRectangleAreaFinder::class)
-    }
 
     override fun findAll(partialWorld: MutableWorld): Set<CoordinateRectangle> {
         val start = System.currentTimeMillis()
@@ -24,7 +23,7 @@ class EmptyRectangleAreaFinder : AreaFinder {
             rectangles.add(rectangle)
         }
         val duration = System.currentTimeMillis() - start
-        EmptyRectangleAreaFinder.Companion.log.debug("Found ${rectangles.size} empty rectangles in $duration ms")
+        log.debug { "Found ${rectangles.size} empty rectangles in $duration ms" }
         return rectangles
     }
 

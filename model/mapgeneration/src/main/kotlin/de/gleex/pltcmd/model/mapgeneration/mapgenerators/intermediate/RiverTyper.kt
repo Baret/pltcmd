@@ -5,18 +5,19 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.random.Random
 
+private val log = KotlinLogging.logger {}
+
 class RiverTyper(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
-    private val log = LoggerFactory.getLogger(this::class)
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         // for now create one river on every mountain (expecting every mountain top to be a "target")
         val fullRivers = findRivers()
         fullRivers.forEach {
             val river = it.toList().dropLast(rand.nextInt(2, 6))
-            log.debug("Generating river of length ${river.size} from ${river.first()} to ${river.last()}")
+            log.debug { "Generating river of length ${river.size} from ${river.first()} to ${river.last()}" }
             river.forEach { coordinate ->
                 mutableWorld[coordinate] = TerrainType.WATER_SHALLOW
             }
@@ -29,13 +30,13 @@ class RiverTyper(override val rand: Random, override val context: GenerationCont
     private fun findRivers(): MutableList<List<Coordinate>> {
         val mountainTopsToReach = context.mountainTops.targets.toMutableSet().
             ifEmpty {
-                log.debug("No mountain tops found to create rivers.")
+                log.debug { "No mountain tops found to create rivers." }
                 return emptyList<List<Coordinate>>().toMutableList()
             }
-        log.debug("Creating rivers from ${mountainTopsToReach.size} mountain tops")
+        log.debug { "Creating rivers from ${mountainTopsToReach.size} mountain tops" }
         var tryingDistance = context.mountainTops.maxDistance
         val fullRivers = mutableListOf<List<Coordinate>>()
-        log.debug("Longest distance: $tryingDistance tiles. Starting to search river candidates...")
+        log.debug { "Longest distance: $tryingDistance tiles. Starting to search river candidates..." }
         while (mountainTopsToReach.isNotEmpty() && tryingDistance >= 0) {
             context.mountainTops.allWithDistance(tryingDistance)
                     .shuffled(rand)
@@ -51,7 +52,7 @@ class RiverTyper(override val rand: Random, override val context: GenerationCont
                     }
             tryingDistance--
         }
-        log.debug("Found ${fullRivers.size} full paths to create rivers.")
+        log.debug { "Found ${fullRivers.size} full paths to create rivers." }
         return fullRivers
     }
 }

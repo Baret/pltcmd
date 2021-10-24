@@ -2,9 +2,11 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Message
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
+
+private val log = KotlinLogging.logger {}
 
 /**
  * An element may have a _goal_ that is an abstraction layer on top of the basic capabilities of "a bunch of soldiers".
@@ -19,8 +21,6 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
 abstract class Goal(vararg subGoals: Goal) {
 
     private val subGoals = ArrayDeque<Goal>()
-
-    private val log = LoggerFactory.getLogger(Goal::class)
 
     init {
         appendSubGoals(*subGoals)
@@ -42,7 +42,7 @@ abstract class Goal(vararg subGoals: Goal) {
      * The default implementation simply advances the sub-goals by calling [stepSubGoals].
      */
     open fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> =
-            stepSubGoals(element, context)
+        stepSubGoals(element, context)
 
     /**
      * Calls [step] on the next unfinished sub-goal. All finished sub-goals are removed first.
@@ -50,27 +50,28 @@ abstract class Goal(vararg subGoals: Goal) {
     protected fun stepSubGoals(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
         removeUpcomingSubGoalsThatAreFinished(element)
         return subGoals
-                .firstOrNull()
-                ?.step(element, context)
-                ?: Maybe.empty()
+            .firstOrNull()
+            ?.step(element, context)
+            ?: Maybe.empty()
     }
 
     /**
      * Pops (removes and returns) the current sub-goal from the queue if it is not empty.
      */
     protected fun removeFirstSubGoal(): Maybe<Goal> =
-            Maybe.ofNullable(subGoals.removeFirstOrNull())
+        Maybe.ofNullable(subGoals.removeFirstOrNull())
 
     /**
      * Removes all sub-goals at the head of the queue that are already finished.
      */
     protected fun removeUpcomingSubGoalsThatAreFinished(element: ElementEntity) {
         while (hasSubGoals()
-                && subGoals
-                        .first()
-                        .isFinished(element)) {
+            && subGoals
+                .first()
+                .isFinished(element)
+        ) {
             val popped = removeFirstSubGoal().get()
-            log.debug("Removed first sub-goal $popped from $this because it is  finished")
+            log.debug { "Removed first sub-goal $popped from $this because it is  finished" }
         }
     }
 
@@ -82,13 +83,13 @@ abstract class Goal(vararg subGoals: Goal) {
      */
     protected fun prependSubGoals(vararg additionalSubGoals: Goal) {
         if (additionalSubGoals.isNotEmpty()) {
-            log.debug("Prepending ${additionalSubGoals.size} goals to the front of the sub-goals of $this")
+            log.debug { "Prepending ${additionalSubGoals.size} goals to the front of the sub-goals of $this" }
         }
         additionalSubGoals.reversed()
-                .forEach {
-                    log.debug("\t-> $it")
-                    subGoals.addFirst(it)
-                }
+            .forEach {
+                log.debug { "\t-> $it" }
+                subGoals.addFirst(it)
+            }
     }
 
     /**
@@ -99,20 +100,20 @@ abstract class Goal(vararg subGoals: Goal) {
      */
     protected fun appendSubGoals(vararg additionalSubGoals: Goal) {
         if (additionalSubGoals.isNotEmpty()) {
-            log.debug("Appending ${additionalSubGoals.size} goals to the end of the sub-goals of $this")
+            log.debug { "Appending ${additionalSubGoals.size} goals to the end of the sub-goals of $this" }
         }
         additionalSubGoals
-                .forEach {
-                    log.debug("\t-> $it")
-                    subGoals.addLast(it)
-                }
+            .forEach {
+                log.debug { "\t-> $it" }
+                subGoals.addLast(it)
+            }
     }
 
     /**
      * Returns true if sub-goals are present
      */
     protected fun hasSubGoals(): Boolean =
-            subGoals.isNotEmpty()
+        subGoals.isNotEmpty()
 
     /**
      * Completely clears the sub-goals.

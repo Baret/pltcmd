@@ -12,17 +12,17 @@ import de.gleex.pltcmd.game.options.GameConstants
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.model.world.sectorOrigin
 import de.gleex.pltcmd.util.measure.speed.Speed
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.cobalt.logging.api.LoggerFactory
+
+private val log = KotlinLogging.logger {}
 
 /**
  * When entering a new sector this facet plans a [SecurityHalt] after some tiles.
  */
 object MakesSecurityHalts : BaseFacet<GameContext, UpdatePosition>(UpdatePosition::class) {
-
-    private val log = LoggerFactory.getLogger(MakesSecurityHalts::class)
 
     override suspend fun receive(message: UpdatePosition): Response {
         if (message.oldPosition.sectorOrigin != message.newPosition.sectorOrigin) {
@@ -36,7 +36,7 @@ object MakesSecurityHalts : BaseFacet<GameContext, UpdatePosition>(UpdatePositio
                     val inTurns = (afterTiles * ticksPerTile).toInt()
 
                     if (entity.movementPath.size > afterTiles) {
-                        log.debug("- - - Entered new sector! Planning security halt at Tick ${Ticker.currentTick + inTurns}")
+                        log.debug { "- - - Entered new sector! Planning security halt at Tick ${Ticker.currentTick + inTurns}" }
                         intent.inTurns(inTurns, SecurityHalt(3))
                     }
                 }

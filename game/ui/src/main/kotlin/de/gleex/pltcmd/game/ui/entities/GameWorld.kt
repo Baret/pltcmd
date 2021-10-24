@@ -8,13 +8,15 @@ import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.sectorOrigin
 import kotlinx.collections.immutable.persistentMapOf
+import mu.KotlinLogging
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.base.BaseGameArea
+
+private val log = KotlinLogging.logger {}
 
 /**
  * The game world contains all [GameBlock]s representing the map. It has a visible part and can scroll from [Sector] to sector.
@@ -36,16 +38,12 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
                 initialContents = persistentMapOf(),
                 initialFilters = emptyList()) {
 
-    companion object {
-        private val log = LoggerFactory.getLogger(GameWorld::class)
-    }
-
     private val topLeftOffset: Position
         get() = worldMap.getTopLeftOffset()
 
     init {
         worldMap.sectors.forEach(::putSector)
-        log.debug("Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = $visibleSize")
+        log.debug { "Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = $visibleSize" }
     }
 
     private fun putSector(sector: Sector) {

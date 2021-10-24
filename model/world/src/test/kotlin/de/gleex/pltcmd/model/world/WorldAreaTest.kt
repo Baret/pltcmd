@@ -1,20 +1,20 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateTest
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.shouldNotBe
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
+private val log = KotlinLogging.logger {}
+
 @OptIn(ExperimentalTime::class)
 class WorldAreaTest : StringSpec({
-    val log = LoggerFactory.getLogger(CoordinateTest::class)
 
     "get() must not be slow" {
         val terrain = Terrain.random(Random)
@@ -30,12 +30,12 @@ class WorldAreaTest : StringSpec({
         val duration = measureTime {
             repeat(10) {
                 val wanted = Coordinate(eastingRange.random(), northingRange.random())
-                log.debug("getting tile $wanted")
+                log.debug { "getting tile $wanted" }
                 val result = underTest[wanted]
                 result shouldNotBe null
             }
         }
-        log.info("accessing tile took $duration")
+        log.info { "accessing tile took $duration" }
         duration.inWholeMilliseconds shouldBeLessThan 100
     }
 })

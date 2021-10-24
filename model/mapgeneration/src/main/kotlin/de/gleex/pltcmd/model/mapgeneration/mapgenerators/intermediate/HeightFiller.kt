@@ -8,17 +8,17 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.extensions.lowerOrEqual
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.math.absoluteValue
 import kotlin.math.min
 import kotlin.random.Random
+
+private val log = KotlinLogging.logger {}
 
 /**
  * Finds empty spaces and fills them with more or less smooth height.
  */
 class HeightFiller(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
-
-    private val log = LoggerFactory.getLogger(this::class)
 
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         require(mutableWorld.mainCoordinatesNotEmpty.isNotEmpty()) {
@@ -27,7 +27,7 @@ class HeightFiller(override val rand: Random, override val context: GenerationCo
         val edges = mutableWorld.find(area) {
             coordinate: Coordinate -> mutableWorld.neighborsOf(coordinate).filterNot { it in mutableWorld }.isNotEmpty()
         }
-        log.debug("Found ${edges.size} edge tiles, filling up with terrain height...")
+        log.debug { "Found ${edges.size} edge tiles, filling up with terrain height..." }
         workFrontier(edges, {currentCoordinate ->
             val unprocessedNeighbors =
                     mutableWorld.

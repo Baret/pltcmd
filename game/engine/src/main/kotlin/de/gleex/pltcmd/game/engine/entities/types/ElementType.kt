@@ -12,7 +12,8 @@ import org.hexworks.amethyst.api.base.BaseEntityType
 import org.hexworks.cobalt.datatypes.Maybe
 
 /** Represents an element in an army. */
-object ElementType : BaseEntityType("element", "A movable and communicating element."), Factionable, Movable, Communicating, Combatant, Seeing
+object ElementType : BaseEntityType("element", "A movable and communicating element."), Factionable, Movable,
+    Communicating, Combatant, Seeing, Remembering
 typealias ElementEntity = GameEntity<ElementType>
 
 /**
@@ -42,3 +43,8 @@ internal val ElementEntity.commandersIntent
  */
 fun <R> AnyGameEntity.asElementEntity(whenElement: (ElementEntity) -> R): Maybe<R> =
     tryCastTo<ElementEntity, ElementType, R>(whenElement)
+
+/**
+ * @return true, when this entity is an [ElementEntity].
+ */
+fun AnyGameEntity.isElementEntity(): Boolean = type == ElementType

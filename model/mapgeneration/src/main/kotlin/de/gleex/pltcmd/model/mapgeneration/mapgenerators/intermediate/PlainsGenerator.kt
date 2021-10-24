@@ -10,9 +10,11 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.math.roundToInt
 import kotlin.random.Random
+
+private val log = KotlinLogging.logger {}
 
 /**
  * Generates multiple plains in an area. Plains are rectangles of grass land with a height between two to five. They have a minimum height/width of at least 5 tiles and a maximum of 50.
@@ -20,7 +22,6 @@ import kotlin.random.Random
 class PlainsGenerator(override val rand: Random, override val context: GenerationContext) : IntermediateGenerator() {
 
     companion object {
-        private val log = LoggerFactory.getLogger(PlainsGenerator::class)
         private const val MIN_WIDTH = 5  // tiles
         private const val MAX_WIDTH = 50 // tiles
         private const val FADING_BORDER = 3 // tiles
@@ -30,7 +31,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
     override fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld) {
         val totalPlainsTiles = totalTiles(area)
         val plainsRectangles = findPlainsLocations(totalPlainsTiles, area, mutableWorld)
-        log.debug("Generating ${plainsRectangles.size} plains with a maximum size of $totalPlainsTiles coordinates")
+        log.debug { "Generating ${plainsRectangles.size} plains with a maximum size of $totalPlainsTiles coordinates" }
         plainsRectangles.forEach {
             generatePlains(it, mutableWorld)
         }
@@ -39,24 +40,24 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
     /** Return the number of tiles in the given area that should be plains */
     private fun totalTiles(area: CoordinateArea): Int {
         val plainsRatio = 1.0 - context.hilliness
-        log.debug("Using $plainsRatio of the area for plains")
+        log.debug { "Using $plainsRatio of the area for plains" }
         return (area.size * plainsRatio).roundToInt()
     }
 
     /** Searches empty spaces in the given area that can be used for plains (must have the required size) */
     private fun findPlainsLocations(totalPlainsTiles: Int, area: CoordinateArea, mutableWorld: MutableWorld): Set<CoordinateRectangle> {
         // TODO respect area. But currently the area is the full world anyway o_O
-        log.debug("Finding empty rectangles that span a total of $totalPlainsTiles coordinates")
+        log.debug { "Finding empty rectangles that span a total of $totalPlainsTiles coordinates" }
         val start = System.currentTimeMillis()
         val emptyRectangles = SizedEmptyRectangleAreaFinder(MIN_WIDTH, MIN_WIDTH, MAX_WIDTH, MAX_WIDTH).findAll(mutableWorld)
         val duration = System.currentTimeMillis() - start
-        log.debug("Took $duration ms to find ${emptyRectangles.size} empty rectangles")
+        log.debug { "Took $duration ms to find ${emptyRectangles.size} empty rectangles" }
         var sum = 0
         val result = emptyRectangles
                 .shuffled(rand)
                 .takeWhile { sum += it.size; sum < totalPlainsTiles }
                 .toSet()
-        log.debug("found a total of $sum tiles: $result")
+        log.debug { "found a total of $sum tiles: $result" }
         return result
     }
 
@@ -122,7 +123,7 @@ class PlainsGenerator(override val rand: Random, override val context: Generatio
     private fun createPlainsArea(emptyRectangle: CoordinateRectangle): CoordinateRectangle {
         val plainsWidth = randomGauss(emptyRectangle.width)
         val plainsHeight = randomGauss(emptyRectangle.height)
-        log.debug("Creating plains $plainsWidth x $plainsHeight in area ${emptyRectangle.width} x ${emptyRectangle.height} = $emptyRectangle")
+        log.debug { "Creating plains $plainsWidth x $plainsHeight in area ${emptyRectangle.width} x ${emptyRectangle.height} = $emptyRectangle" }
         return centerInRectangle(emptyRectangle, plainsWidth, plainsHeight)
     }
 

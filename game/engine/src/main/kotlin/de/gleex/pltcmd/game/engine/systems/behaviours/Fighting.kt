@@ -7,14 +7,14 @@ import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.model.faction.Affiliation
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.base.BaseBehavior
-import org.hexworks.cobalt.logging.api.LoggerFactory
+
+private val log = KotlinLogging.logger {}
 
 /** Attacks nearby enemies. */
 internal object Fighting :
     BaseBehavior<GameContext>(ShootersAttribute::class, PositionAttribute::class, ElementAttribute::class) {
-
-    private val log = LoggerFactory.getLogger(Fighting::class)
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean =
         entity.asElementEntity { attackNearbyEnemies(it, context) }
@@ -27,7 +27,7 @@ internal object Fighting :
             .filterElements { it.isEnemyFor(attacker) }
             .firstOrNull()
             ?.let { enemyToAttack ->
-                log.debug("${attacker.callsign} attacks ${enemyToAttack.callsign}")
+                log.debug { "${attacker.callsign} attacks ${enemyToAttack.callsign}" }
                 attacker.attack(enemyToAttack, context.random)
                 true
             }

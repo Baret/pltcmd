@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.Transformation
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.MainCoordinate
+import de.gleex.pltcmd.model.world.coordinate.toMainCoordinate
 
 /**
  * Transformation used to display [Coordinate]s.

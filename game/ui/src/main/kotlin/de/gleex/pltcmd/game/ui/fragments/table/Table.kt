@@ -1,15 +1,17 @@
 package de.gleex.pltcmd.game.ui.fragments.table
 
 import de.gleex.pltcmd.game.ui.fragments.table.column.Column
+import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.logging.api.LoggerFactory
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.*
 import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.uievent.MouseEventType
 import org.hexworks.zircon.api.uievent.UIEventPhase
+
+private val log = KotlinLogging.logger {}
 
 /**
  * A table lists values of type [M] in columns defined by [columns].
@@ -55,7 +57,7 @@ class Table<M : Any>(
                         .apply {
                             processMouseEvents(MouseEventType.MOUSE_CLICKED) { _, phase ->
                                 if (phase == UIEventPhase.TARGET) {
-                                    log.debug("Column header '${column.name}' has been clicked. A filter modal might have opened now :O")
+                                    log.debug { "Column header '${column.name}' has been clicked. A filter modal might have opened now :O" }
                                 }
                             }
                         }
@@ -83,7 +85,7 @@ class Table<M : Any>(
     private val maxRows: Int = (rowPanel.height.toDouble() / (1 + rowSpacing)).toInt()
 
     init {
-        log.debug("Creating table with ${Size.create(height, width)} for ${columns.size} columns and ${values.size} values. rowPanel.height = ${rowPanel.height}, maxRows = $maxRows")
+        log.debug { "Creating table with ${Size.create(height, width)} for ${columns.size} columns and ${values.size} values. rowPanel.height = ${rowPanel.height}, maxRows = $maxRows" }
         fillTable(values)
     }
 
@@ -136,7 +138,5 @@ class Table<M : Any>(
          * The minimum height this fragment needs.
          */
         const val MIN_HEIGHT = 6
-
-        private val log = LoggerFactory.getLogger(Table::class)
     }
 }

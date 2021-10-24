@@ -19,7 +19,7 @@ import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.isOpening
 import de.gleex.pltcmd.model.world.Sector
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.LogArea
@@ -28,6 +28,8 @@ import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.uievent.*
 import org.hexworks.zircon.api.view.base.BaseView
+
+private val log = KotlinLogging.logger {}
 
 /**
  * The view to display the map, radio log and interaction panel
@@ -42,8 +44,6 @@ class GameView(
     BaseView(theme = UiOptions.THEME, tileGrid = tileGrid) {
 
     companion object {
-        private val log = LoggerFactory.getLogger(GameView::class)
-
         private const val LOG_AREA_HEIGHT = WINDOW_HEIGHT - MAP_VIEW_HEIGHT
         private const val LOG_AREA_WIDTH = WINDOW_WIDTH
         private const val SIDEBAR_HEIGHT = WINDOW_HEIGHT - LOG_AREA_HEIGHT
@@ -80,10 +80,10 @@ class GameView(
         leftSidebar.connectTo(map.mapPanel)
         rightSidebar.connectTo(map.mapPanel)
 
-        log.debug("Created map view with size ${mapComponent.size}, content size ${mapComponent.contentSize} and position ${mapComponent.position}")
-        log.debug("It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}")
+        log.debug { "Created map view with size ${mapComponent.size}, content size ${mapComponent.contentSize} and position ${mapComponent.position}" }
+        log.debug { "It currently shows ${gameWorld.visibleSize} offset by ${gameWorld.visibleOffset}" }
 
-        log.debug("Adding keyboard listener to screen")
+        log.debug { "Adding keyboard listener to screen" }
         screen.handleKeyboardEvents(KeyboardEventType.KEY_PRESSED) { event, phase ->
             if (phase == UIEventPhase.TARGET) {
                 when (event.code) {
@@ -105,7 +105,7 @@ class GameView(
                     }
                     KeyCode.KEY_Q -> {
                         GameOptions.displayRadioSignals.value = GameOptions.displayRadioSignals.value.not()
-                        log.debug("Toggled radio signal display to ${if (GameOptions.displayRadioSignals.value) "ON" else "OFF"}")
+                        log.debug { "Toggled radio signal display to ${if (GameOptions.displayRadioSignals.value) "ON" else "OFF"}" }
                         Processed
                     }
                     KeyCode.KEY_P -> {

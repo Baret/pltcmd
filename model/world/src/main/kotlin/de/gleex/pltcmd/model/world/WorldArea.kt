@@ -33,6 +33,19 @@ open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
         return byCoordinate.containsKey(coordinate)
     }
 
+    // overwrites for return type
+    override fun filter(predicate: (Coordinate) -> Boolean): WorldArea {
+        return filterTiles { predicate(it.coordinate) }
+    }
+
+    open fun filterTiles(predicate: (WorldTile) -> Boolean): WorldArea {
+        return WorldArea(
+            tiles
+                .filter(predicate)
+                .toSortedSet()
+        )
+    }
+
     /**
      * Gets the [WorldTile] with the given [Coordinate].
      *

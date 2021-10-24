@@ -11,17 +11,19 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.sequences.shouldContainExactly
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldHaveMinLength
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.property.checkAll
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
+
+private val log = KotlinLogging.logger {}
 
 class CoordinateTest : WordSpec({
 
-    val log = LoggerFactory.getLogger(CoordinateTest::class)
     val testCoordinate = Coordinate(123, 345)
 
     "A coordinate $testCoordinate" should {
@@ -124,7 +126,7 @@ class CoordinateTest : WordSpec({
                 }
                 checkedCoordinates++
             }
-            log.info("checked $checkedCoordinates different string representations of Coordinate")
+            log.info { "checked $checkedCoordinates different string representations of Coordinate" }
         }
 
         val expectedString = "(123|345)"
@@ -246,6 +248,30 @@ class CoordinateTest : WordSpec({
                         isDue shouldBe true
                     }
             }
+        }
+    }
+
+    "The range between two coordinates" should {
+        val other = Coordinate(125, 342)
+        val range = testCoordinate..other
+        "contain all coordinates in the rectangle ordered by the direction from the first to the second point" {
+            range shouldContainExactly sequenceOf(
+                Coordinate(123, 345),
+                Coordinate(124, 345),
+                Coordinate(125, 345),
+
+                Coordinate(123, 344),
+                Coordinate(124, 344),
+                Coordinate(125, 344),
+
+                Coordinate(123, 343),
+                Coordinate(124, 343),
+                Coordinate(125, 343),
+
+                Coordinate(123, 342),
+                Coordinate(124, 342),
+                Coordinate(125, 342)
+            )
         }
     }
 })

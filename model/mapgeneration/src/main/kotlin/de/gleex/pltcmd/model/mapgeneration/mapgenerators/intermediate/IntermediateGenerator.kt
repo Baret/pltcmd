@@ -4,8 +4,10 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.GenerationContext
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import kotlin.random.Random
+
+private val log = KotlinLogging.logger {}
 
 /**
  * An intermediate generator generates a part of the final world. It may be called before or after other
@@ -16,8 +18,6 @@ abstract class IntermediateGenerator {
     abstract val context: GenerationContext
 
     abstract fun generateArea(area: CoordinateArea, mutableWorld: MutableWorld)
-
-    private val log = LoggerFactory.getLogger(this::class)
 
     val processedTiles = mutableSetOf<Coordinate>()
     private val frontier = mutableSetOf<Coordinate>()
@@ -42,14 +42,14 @@ abstract class IntermediateGenerator {
     ) {
         frontier.clear()
         frontier.addAll(initialFrontier)
-        log.debug("Starting to process frontier starting with ${frontier.size} tiles")
+        log.debug { "Starting to process frontier starting with ${frontier.size} tiles" }
         var frontiersProcessed = 1
         while(frontier.isNotEmpty()) {
             nextFrontier.clear()
             frontier.forEach(atEachNode)
             afterFrontier.invoke()
             processedTiles.addAll(frontier)
-            log.debug("Processed ${processedTiles.size} tiles after $frontiersProcessed iterations")
+            log.debug { "Processed ${processedTiles.size} tiles after $frontiersProcessed iterations" }
             frontiersProcessed++
             frontier.clear()
             frontier.addAll(nextFrontier)

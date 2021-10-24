@@ -4,15 +4,16 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
-import org.hexworks.cobalt.logging.api.LoggerFactory
+import mu.KotlinLogging
 import java.io.File
+
+private val log = KotlinLogging.logger {}
 
 /**
  * Manages persistent data.
  */
 @OptIn(ExperimentalSerializationApi::class)
 internal object Storage {
-    private val log = LoggerFactory.getLogger(Storage::class)
     private val dataFolder = File("data")
 
     init {
@@ -32,7 +33,7 @@ internal object Storage {
     inline fun <reified R> load(id: StorageId): R? {
         val file = id.file
         if (!file.canRead()) {
-            log.warn("Cannot load data from $file because it is not readable!")
+            log.warn { "Cannot load data from $file because it is not readable!" }
             return null
         }
         val bytes = file.readBytes()

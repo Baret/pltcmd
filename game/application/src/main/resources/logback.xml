@@ -31,7 +31,7 @@
 
 <!--    <logger name="de.gleex.pltcmd.game" level="DEBUG"/>-->
     <logger name="de.gleex.pltcmd.game.application" level="DEBUG"/>
-<!--    <logger name="de.gleex.pltcmd.game.engine.systems.behaviours.MovingForOneMinute" level="INFO"/>-->
+    <logger name="de.gleex.pltcmd.game.ticks.Ticker" level="DEBUG"/>
 <!--    <logger name="de.gleex.pltcmd.model" level="DEBUG"/>-->
 <!--    <logger name="de.gleex.pltcmd.game.ui" level="DEBUG"/>-->
 <!--    <logger name="de.gleex.pltcmd.game.engine.systems" level="DEBUG"/>-->

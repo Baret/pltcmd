@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.util.graph
 
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.logging.api.LoggerFactory
 
 /**
  * A generic and rather simple implementation of a DijkstraMap (http://www.roguebasin.com/index.php?title=Dijkstra_Maps_Visualized)
@@ -10,8 +9,6 @@ import org.hexworks.cobalt.logging.api.LoggerFactory
  *
  */
 class DijkstraMap<T>(vararg initialTargets: T) {
-
-    private val log = LoggerFactory.getLogger(this::class)
 
     private val _targets = initialTargets.toMutableSet()
     val targets
