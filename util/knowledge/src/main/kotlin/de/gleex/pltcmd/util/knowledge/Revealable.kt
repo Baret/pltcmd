@@ -1,20 +1,31 @@
 package de.gleex.pltcmd.util.knowledge
 
+import org.hexworks.cobalt.databinding.api.extension.toProperty
+import org.hexworks.cobalt.databinding.api.value.ObservableValue
+
 /**
  * Represents a [Known] bit that is either fully [revealed] or not.
  *
  * @param origin the knowledge bit that may be known
- * @param [isRevealed] sets the initial state.
+ * @param [initialRevealed] sets the initial state.
  */
 abstract class Revealable<T : Any, SELF : Revealable<T, SELF>>(
     override val origin: T,
-    private var isRevealed: Boolean
+    initialRevealed: Boolean
 ) : Known<T, SELF> {
+
+    private var isRevealed = initialRevealed.toProperty()
 
     /**
      * When true, [origin] is the source of information.
      */
     val revealed: Boolean
+        get() = isRevealed.value
+
+    /**
+     * When true, [origin] is the source of information.
+     */
+    val revealedProperty: ObservableValue<Boolean>
         get() = isRevealed
 
     /**
@@ -31,7 +42,7 @@ abstract class Revealable<T : Any, SELF : Revealable<T, SELF>>(
      * Marks this [Revealable] as [revealed].
      */
     fun reveal() {
-        isRevealed = true
+        isRevealed.updateValue(true)
     }
 
     /**
@@ -52,14 +63,14 @@ abstract class Revealable<T : Any, SELF : Revealable<T, SELF>>(
         if (other !is Revealable<*, *>) return false
 
         if (origin != other.origin) return false
-        if (isRevealed != other.isRevealed) return false
+        if (isRevealed.value != other.isRevealed.value) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = origin.hashCode()
-        result = 31 * result + isRevealed.hashCode()
+        result = 31 * result + isRevealed.value.hashCode()
         return result
     }
 
