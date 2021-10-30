@@ -39,8 +39,7 @@ class CombatMain : Main() {
         return listOf(alpha)
     }
 
-    override fun addHostiles(game: Game, gameWorld: GameWorld) {
-        val opfor = Faction("opposing force")
+    override fun addHostiles(opfor: Faction, game: Game, gameWorld: GameWorld) {
         FactionRelations[opfor, game.playerFaction] = Affiliation.Hostile
         val worldMap = game.world
         val position = getBattlefield(worldMap).movedBy(1, 0)

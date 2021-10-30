@@ -101,15 +101,18 @@ open class Main {
         }
     }
 
-    protected open fun loadFaction(gameId: String): Faction {
-        val faction = FactionStorage.load(gameId)?.get(0)
-        return if (faction != null) {
-            faction
-        } else {
-            val newFaction = Faction("player faction")
-            FactionStorage.save(listOf(newFaction), gameId)
-            newFaction
-        }
+    /** first entry is the player faction the second is the hostile faction */
+    protected open fun loadFaction(gameId: String): List<Faction> {
+        return FactionStorage.load(gameId) ?: createFactions(gameId)
+    }
+
+    protected open fun createFactions(gameId: String): List<Faction> {
+        val factions = listOf(
+            Faction("player faction"),
+            Faction("opposing force")
+        )
+        FactionStorage.save(factions, gameId)
+        return factions
     }
 
     /**
@@ -118,12 +121,13 @@ open class Main {
      */
     protected open fun runGame(gameId: String, generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
         // model
-        val playerFaction = loadFaction(gameId)
+        val factions = loadFaction(gameId)
+        val playerFaction = factions[0]
         val game = Game(Engine.create(), generatedMap, playerFaction, random)
         // ui
         val gameWorld = GameWorld(generatedMap, playerFaction)
 
-        val (elementsToCommand, hq) = prepareGame(game, gameWorld)
+        val (elementsToCommand, hq) = prepareGame(factions[1], game, gameWorld)
 
         screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
@@ -139,14 +143,14 @@ open class Main {
      *
      * @return the elements to command in the UI and the HQ entity for sending messages from the UI.
      */
-    protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
+    protected open fun prepareGame(opfor: Faction, game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
         val visibleSector = game.world.sectors.first {
             it.origin == gameWorld.visibleTopLeftCoordinate().sectorOrigin
         }
         val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
         val hq = game.newHQIn(visibleSector, game.playerFaction)
             .also { gameWorld.showBase(it) }
-        addHostiles(game, gameWorld)
+        addHostiles(opfor, game, gameWorld)
         return Pair(elementsToCommand, hq)
     }
 
@@ -184,8 +188,7 @@ open class Main {
     /**
      * Add elements to the game that are not controlled by the player. This implementation adds 2 rifle squads per [Sector].
      */
-    protected open fun addHostiles(game: Game, gameWorld: GameWorld) {
-        val opfor = Faction("opposing force")
+    protected open fun addHostiles(opfor: Faction, game: Game, gameWorld: GameWorld) {
         FactionRelations[opfor, game.playerFaction] = Affiliation.Hostile
         // Adding some elements to every sector
         val elementsPerSector = 2
