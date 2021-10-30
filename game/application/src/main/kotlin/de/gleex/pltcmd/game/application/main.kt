@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.serialization.GameStorage
 import de.gleex.pltcmd.game.serialization.StorageId
 import de.gleex.pltcmd.game.serialization.world.MapStorage
 import de.gleex.pltcmd.game.ticks.Ticker
@@ -60,8 +61,8 @@ open class Main {
     }
 
     protected open fun selectMap(screen: Screen, tileGrid: TileGrid) {
-        val availableMaps = MapStorage.list
-        if (availableMaps.isEmpty() && UiOptions.SKIP_INTRO.not()) {
+        val availableGames = GameStorage.list
+        if (availableGames.isEmpty() && UiOptions.SKIP_INTRO.not()) {
             // give title some time before switching to menu when not loading a map
             TimeUnit.MILLISECONDS.sleep(4000)
         }
@@ -69,26 +70,26 @@ open class Main {
         val loadMapChoice = CompletableDeferred<StorageId?>()
         val menuEntries = mutableListOf<MenuEntry>()
         menuEntries.addAll(
-            availableMaps.map { (mapId, mapName) ->
-                MenuEntry("Load map $mapName", enabled = true) { event ->
+            availableGames.map { (storageId, gameName) ->
+                MenuEntry("Load game $gameName", enabled = true) { event ->
                     if (ComponentEventType.ACTIVATED == event.type) {
-                        loadMapChoice.complete(mapId)
+                        loadMapChoice.complete(storageId)
                     }
                 }
             }
         )
         menuEntries.add(
-            MenuEntry("Generate new map", enabled = true) { event ->
+            MenuEntry("Generate new game", enabled = true) { event ->
                 if (ComponentEventType.ACTIVATED == event.type) {
                     loadMapChoice.complete(null)
                 }
             }
         )
         screen.dock(MenuView(tileGrid, menuEntries))
-        val mapToLoad = runBlocking { loadMapChoice.await() }
+        val gameToLoad = runBlocking { loadMapChoice.await() }
 
-        if (mapToLoad != null) {
-            val loadedMap = MapStorage.load(mapToLoad)
+        if (gameToLoad != null) {
+            val loadedMap = MapStorage.load(gameToLoad)
             runGame(loadedMap!!, screen, tileGrid)
         } else {
             val mapFile = GameOptions.MAP_FILE
