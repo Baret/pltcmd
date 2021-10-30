@@ -30,7 +30,7 @@ internal object Storage {
         if (idFolder.canWrite() || idFolder.mkdirs()) {
             file.writeBytes(bytes)
         } else {
-            throw RuntimeException("failed to write to folder " + idFolder.absolutePath)
+            throw StorageException("failed to write to folder " + idFolder.absolutePath)
         }
     }
 
