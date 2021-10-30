@@ -19,6 +19,10 @@
             <artifactId>world</artifactId>
         </dependency>
         <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>faction</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-serialization-protobuf</artifactId>
             <version>${serialization.version}</version>

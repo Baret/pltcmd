@@ -42,16 +42,21 @@ internal object Storage {
 
     /** lists all stored entries of the given type */
     fun listAll(type: String): List<StorageId> {
-        return dataFolder.listFiles { file -> file.extension == type }
-            .map {
-                val sanitizedName = it.nameWithoutExtension
-                val id = unsanitizeName(sanitizedName)
-                StorageId(id, type)
-            }
+        return dataFolder.listFiles { file -> file.isDirectory }.flatMap { folder ->
+            folder.listFiles { file -> file.name == type }
+                .map {
+                    val sanitizedName = it.parentFile.nameWithoutExtension
+                    val id = unsanitizeName(sanitizedName)
+                    StorageId(id, type)
+                }
+        }
     }
 
     private val StorageId.file
-        get() = File(dataFolder, sanitizeFilename(id) + "." + type)
+        get() = File(folder, type)
+
+    private val StorageId.folder
+        get() = File(dataFolder, sanitizeFilename(id))
 }
 
 /** Create a String safe for file names that are almost as unique as the given text */
