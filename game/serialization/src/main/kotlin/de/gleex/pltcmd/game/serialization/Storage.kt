@@ -26,7 +26,12 @@ internal object Storage {
     inline fun <reified T> save(dao: T, id: StorageId) {
         val bytes = ProtoBuf.encodeToByteArray(dao)
         val file = id.file
-        file.writeBytes(bytes)
+        val idFolder = file.parentFile
+        if (idFolder.canWrite() || idFolder.mkdirs()) {
+            file.writeBytes(bytes)
+        } else {
+            throw RuntimeException("failed to write to folder " + idFolder.absolutePath)
+        }
     }
 
     /** Loads the object from the identified storage (file). */
