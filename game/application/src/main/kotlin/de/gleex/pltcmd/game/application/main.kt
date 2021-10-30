@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.serialization.FactionStorage
 import de.gleex.pltcmd.game.serialization.GameStorage
 import de.gleex.pltcmd.game.serialization.StorageId
 import de.gleex.pltcmd.game.serialization.world.MapStorage
@@ -90,13 +91,24 @@ open class Main {
 
         if (gameToLoad != null) {
             val loadedMap = MapStorage.load(gameToLoad)
-            runGame(loadedMap!!, screen, tileGrid)
+            runGame(gameToLoad.id, loadedMap!!, screen, tileGrid)
         } else {
-            val mapFile = GameOptions.MAP_FILE
+            val gameId = GameOptions.MAP_FILE
             generateMap(screen, tileGrid) { generatedMap ->
-                MapStorage.save(generatedMap, mapFile)
-                runGame(generatedMap, screen, tileGrid)
+                MapStorage.save(generatedMap, gameId)
+                runGame(gameId, generatedMap, screen, tileGrid)
             }
+        }
+    }
+
+    protected open fun loadFaction(gameId: String): Faction {
+        val faction = FactionStorage.load(gameId)?.get(0)
+        return if (faction != null) {
+            faction
+        } else {
+            val newFaction = Faction("player faction")
+            FactionStorage.save(listOf(newFaction), gameId)
+            newFaction
         }
     }
 
@@ -104,9 +116,9 @@ open class Main {
      * Creates a [Game] with the given map. Initializes that game and creates a [GameView] on the given [Screen].
      * Then the [Ticker] runs the game.
      */
-    protected open fun runGame(generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
+    protected open fun runGame(gameId: String, generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
         // model
-        val playerFaction = Faction("player faction")
+        val playerFaction = loadFaction(gameId)
         val game = Game(Engine.create(), generatedMap, playerFaction, random)
         // ui
         val gameWorld = GameWorld(generatedMap, playerFaction)
