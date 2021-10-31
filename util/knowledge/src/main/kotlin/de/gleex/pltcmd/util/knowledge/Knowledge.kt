@@ -6,7 +6,7 @@ import org.hexworks.cobalt.databinding.api.extension.toProperty
 /**
  * A collection of [Known] things of the same type.
  */
-class Knowledge<T: Any, K: Known<T, K>> {
+class Knowledge<T : Any, K : Known<T, K>> {
 
     private val _knownThings: ListProperty<K> = listOf<K>().toProperty()
 
@@ -33,10 +33,11 @@ class Knowledge<T: Any, K: Known<T, K>> {
 
     /**
      * Merges [other] into this knowledge. Everything in [other] will afterwards be obsolete because
-     * for every known thing in [other] [update] will be called.
+     * for every known thing in [other] function [update] will be called.
      */
-    fun mergeWith(other: Knowledge<T, K>) =
+    fun mergeWith(other: Knowledge<T, K>): Boolean =
         other
             .knownThings
-            .forEach{ this.update(it) }
+            .map { this.update(it) }
+            .reduce { a, b -> a || b }
 }

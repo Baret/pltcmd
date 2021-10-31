@@ -38,6 +38,14 @@ fun RememberingEntity.rememberRevealed(tilesToReveal: CoordinateArea) {
 }
 
 /**
+ * Gives all knowledge of others memory to this entity.
+ * @return true if at least one additional information was added to this memory
+ **/
+fun RememberingEntity.transferMemoryFrom(other: RememberingEntity): Boolean {
+    return memory.mergeWith(other.memory)
+}
+
+/**
  * Invokes [whenRemembering] if this entity is an [RememberingEntity]. When the type is not [Remembering],
  * [Maybe.empty] is returned.
  *
