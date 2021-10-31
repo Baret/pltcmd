@@ -21,8 +21,8 @@ class KnownWorld(override val origin: WorldArea) : Known<WorldArea, KnownWorld> 
      */
     private val unrevealed: SortedSet<Coordinate> =
         origin
-        // create a local copy
-        .toSortedSet()
+            // create a local copy
+            .toSortedSet()
 
     /**
      * @return the [KnownTerrain] at the given location.
