@@ -34,6 +34,10 @@ class KnownContact(private val reporter: ElementEntity, contact: ElementEntity, 
         get() = revealAt(KnowledgeGrade.LOW) { it.element.rung }
     val unitCount: Maybe<Int>
         get() = revealAt(KnowledgeGrade.HIGH) { it.element.totalUnits }
+
+    override fun copy(): KnownContact {
+        return KnownContact(reporter, origin, revealed)
+    }
 }
 
 /**

@@ -25,7 +25,7 @@ class Knowledge<T : Any, K : Known<T, K>> {
     infix fun update(newKnowledge: K): Boolean {
         return get(newKnowledge.origin)
             ?.mergeWith(newKnowledge)
-            ?: _knownThings.updateValue(_knownThings.add(newKnowledge)).successful
+            ?: _knownThings.updateValue(_knownThings.add(newKnowledge.copy())).successful
     }
 
     operator fun get(origin: T) =
@@ -39,5 +39,5 @@ class Knowledge<T : Any, K : Known<T, K>> {
         other
             .knownThings
             .map { this.update(it) }
-            .reduce { a, b -> a || b }
+            .reduceOrNull { a, b -> a || b } ?: false
 }

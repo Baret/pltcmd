@@ -12,17 +12,17 @@ import java.util.*
  * Knowledge about the [WorldArea] defining the whole [WorldMap]. It is initialized as completely unrevealed
  * and get revealed over time.
  */
-class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
+class KnownWorld(override val origin: WorldArea) : Known<WorldArea, KnownWorld> {
 
-    override val origin: WorldArea = world.asWorldArea()
+    constructor(world: WorldMap) : this(world.asWorldArea())
 
     /**
      * All not yet revealed (aka. unknown) [Coordinate]s.
      */
     private val unrevealed: SortedSet<Coordinate> =
         origin
-            // create a local copy
-            .toSortedSet()
+        // create a local copy
+        .toSortedSet()
 
     /**
      * @return the [KnownTerrain] at the given location.
@@ -59,6 +59,10 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     override fun mergeWith(other: KnownWorld): Boolean {
         return unrevealed
             .removeAll { it !in other.unrevealed }
+    }
+
+    override fun copy(): KnownWorld {
+        return KnownWorld(origin)
     }
 
     /**
