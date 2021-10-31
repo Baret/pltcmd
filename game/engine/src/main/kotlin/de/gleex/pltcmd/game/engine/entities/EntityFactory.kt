@@ -59,7 +59,7 @@ object EntityFactory {
             behaviors(
                 Communicating,
                 LookingAround,
-                TransferMemory
+                SharingKnowledge
             )
             facets(
                 ConversationSender,
@@ -110,7 +110,7 @@ object EntityFactory {
         val behaviors: MutableList<Behavior<GameContext>> = mutableListOf(
             IntentPursuing,
             LookingAround,
-            TransferMemory,
+            SharingKnowledge,
             MovingForOneMinute,
             Communicating,
             Fighting

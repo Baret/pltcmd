@@ -17,7 +17,7 @@ private val log = KotlinLogging.logger {}
 /**
  * If two or more entities of the same faction are on the same tile, the updated entity sends its knowledge to the others.
  */
-internal object TransferMemory :
+internal object SharingKnowledge :
     BaseBehavior<GameContext>(PositionAttribute::class, FactionAttribute::class, Memory::class) {
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
