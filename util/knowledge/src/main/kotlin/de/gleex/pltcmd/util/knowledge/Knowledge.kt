@@ -39,5 +39,5 @@ class Knowledge<T : Any, K : Known<T, K>> {
         other
             .knownThings
             .map { this.update(it) }
-            .reduceOrNull { a, b -> a || b } ?: false
+            .any { it }
 }
