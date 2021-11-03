@@ -1,10 +1,12 @@
 package de.gleex.pltcmd.game.ui.entities
 
+import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.sectorOrigin
 import kotlinx.collections.immutable.persistentMapOf
 import mu.KotlinLogging
 import org.hexworks.cobalt.datatypes.Maybe
@@ -27,8 +29,9 @@ private val log = KotlinLogging.logger {}
  * - An optional overlay, currently used for debug purposes (radio signal strength), but might later be used by the player to "paint on the map".
  *
  * @param factionViewToPresent used to color element markers. See [ColorRepository.forAffiliation].
+ * @param mapKnowledge determines which terrain will be drawn
  */
-class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent:Faction) :
+class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent:Faction, private val mapKnowledge: KnownWorld) :
         BaseGameArea<Tile, GameBlock>(
                 initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
                 initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
@@ -46,7 +49,8 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
     private fun putSector(sector: Sector) {
         sector.tiles.forEach {
             val position = it.coordinate.toPosition()
-            val block = GameBlock(it.terrain)
+            val revealed = mapKnowledge[it.coordinate].revealedProperty
+            val block = GameBlock(it.terrain, revealed)
             setBlockAt(position, block)
         }
     }
@@ -114,6 +118,11 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
      */
     fun fetchBlockAt(coordinate: Coordinate): Maybe<GameBlock> =
             fetchBlockAt(coordinate.toPosition())
+
+    fun scrollTo(coordinate: Coordinate) {
+        val sectorTopLeft = coordinate.sectorOrigin.withRelativeNorthing(Sector.TILE_COUNT - 1)
+        scrollTo(sectorTopLeft.toPosition())
+    }
 
     private fun Coordinate.toPosition(): Position3D {
         // translate to 0,0 based grid then invert y axis

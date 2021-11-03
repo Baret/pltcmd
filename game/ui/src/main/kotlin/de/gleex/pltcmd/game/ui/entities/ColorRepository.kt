@@ -19,17 +19,20 @@ object ColorRepository {
     val HQ = TileColor.create(172, 244, 83)
     val HQ_TRANSPARENT = HQ.withAlpha(ALPHA_BG)
 
-    val FRIENDLY = TileColor.create(42, 42, 254)
-    val FRIENDLY_TRANSPARENT = FRIENDLY.withAlpha(ALPHA_BG)
+    private val FRIENDLY = TileColor.create(42, 42, 254)
+    private val FRIENDLY_TRANSPARENT = FRIENDLY.withAlpha(ALPHA_BG)
 
-    val HOSTILE = TileColor.create(251, 4, 33)
-    val HOSTILE_TRANSPARENT = HOSTILE.withAlpha(ALPHA_BG)
+    private val HOSTILE = TileColor.create(251, 4, 33)
+    private val HOSTILE_TRANSPARENT = HOSTILE.withAlpha(ALPHA_BG)
 
-    val UNKNOWN = TileColor.create(245, 241, 132)
-    val UNKNOWN_TRANSPARENT = UNKNOWN.withAlpha(ALPHA_BG)
+    private val UNKNOWN = TileColor.create(245, 241, 132)
+    private val UNKNOWN_TRANSPARENT = UNKNOWN.withAlpha(ALPHA_BG)
+
+    private val NEUTRAL = TileColor.create(150, 255, 150)
+    private val NEUTRAL_TRANSPARENT = NEUTRAL.withAlpha(ALPHA_BG)
 
     /**
-     * Returns the foreground and background color for the given [Affiliation] as [Pair] (forgreound, background)
+     * Returns the foreground and background color for the given [Affiliation] as [Pair] (foreground, background)
      */
     fun forAffiliation(affiliation: Affiliation) = when (affiliation) {
         Affiliation.Friendly -> FRIENDLY to FRIENDLY_TRANSPARENT

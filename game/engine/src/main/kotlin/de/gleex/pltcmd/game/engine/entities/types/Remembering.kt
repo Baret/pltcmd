@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.engine.entities.types
 
+import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
 import de.gleex.pltcmd.game.engine.attributes.memory.Memory
 import de.gleex.pltcmd.game.engine.attributes.memory.elements.KnownContact
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
@@ -45,3 +46,8 @@ fun RememberingEntity.rememberRevealed(tilesToReveal: CoordinateArea) {
  */
 fun <R> AnyGameEntity.asRememberingEntity(whenRemembering: (RememberingEntity) -> R): Maybe<R> =
     tryCastTo<RememberingEntity, Remembering, R>(whenRemembering)
+
+
+/** The world as this entity knows it. */
+val RememberingEntity.knownWorld: KnownWorld
+    get() = memory.knownWorld

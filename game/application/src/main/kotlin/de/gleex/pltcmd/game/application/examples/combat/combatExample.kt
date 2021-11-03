@@ -5,7 +5,6 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.toEntity
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.element
-import de.gleex.pltcmd.game.ui.entities.GameWorld
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import de.gleex.pltcmd.model.elements.Elements
@@ -32,25 +31,23 @@ class CombatMain : Main() {
         doneCallback(generatedMap)
     }
 
-    override fun createElementsToCommand(visibleSector: Sector, game: Game, gameWorld: GameWorld): List<ElementEntity> {
+    override fun createElementsToCommand(visibleSector: Sector, game: Game): List<ElementEntity> {
         val enemy1 = Elements.rifleSquad.new()
                 .apply { callSign = CallSign("Alpha") }
-        val alpha = visibleSector.createFriendly(enemy1, game.playerFaction, game, gameWorld, getBattlefield(game.world))
+        val alpha = visibleSector.createFriendly(enemy1, game.playerFaction, game, getBattlefield(game.world))
         return listOf(alpha)
     }
 
-    override fun addHostiles(game: Game, gameWorld: GameWorld) {
+    override fun addHostiles(game: Game): Set<ElementEntity> {
         val opfor = Faction("opposing force")
         FactionRelations[opfor, game.playerFaction] = Affiliation.Hostile
         val worldMap = game.world
         val position = getBattlefield(worldMap).movedBy(1, 0)
-        addHostile(position, worldMap, opfor)
-                .also {
-                    it.element.callSign = CallSign("Enemy rifle squad")
-                    game.addEntity(it)
-                    gameWorld.trackUnit(it)
-                }
-
+        return setOf(addHostile(position, worldMap, opfor)
+            .also {
+                it.element.callSign = CallSign("Enemy rifle squad")
+                game.addEntity(it)
+            })
     }
 
     private fun getBattlefield(generatedMap: WorldMap) =
