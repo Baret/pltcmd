@@ -53,9 +53,20 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
         logger.debug { "Size before: ${graph.vertexSet().size}" }
         GridGraphGenerator<WorldTile, DefaultEdge>(height, width).generateGraph(graph)
         logger.debug { "Size after: ${graph.vertexSet().size}" }
-        val tile = graph.vertexSet().first { it.coordinate == Coordinate(888, 1237) }
-        val neighbors = Graphs.neighborSetOf(graph, tile)
-        logger.debug { "Neighbors of $tile: $neighbors" }
+        logNeighbors(867, 985)
+        logNeighbors(0, 0)
+        logNeighbors(850, 800)
+        logNeighbors(850, 999)
+    }
+
+    private fun logNeighbors(easting: Int, northing: Int) {
+        val tile = graph.vertexSet().firstOrNull { it.coordinate == Coordinate(easting, northing) }
+        if(tile != null) {
+            val neighbors = Graphs.neighborSetOf(graph, tile)
+            logger.debug { "${neighbors.size} neighbors of $tile: $neighbors" }
+        } else {
+            logger.debug { "Coordinate ($easting|$northing) not found in graph" }
+        }
     }
 
     /**
