@@ -17,10 +17,12 @@ import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.debug.DebugFeature
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
 
+@DebugFeature
 fun main() {
     CombatMain().run()
 }
