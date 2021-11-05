@@ -3,6 +3,11 @@ package de.gleex.pltcmd.model.world
 import de.gleex.pltcmd.model.world.coordinate.*
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.measure.distance.Distance
+import mu.KLogging
+import org.jgrapht.Graphs
+import org.jgrapht.generate.GridGraphGenerator
+import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.SimpleDirectedGraph
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -29,12 +34,29 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
     /** Returns the height of this map in [WorldTile]s */
     val height = 1 + last.northingFromBottom - origin.northingFromBottom // 1 = origin itself
 
+    private val worldArea: WorldArea by lazy { areaOf(CoordinateRectangle(origin, last)) }
+
     /**
      * All sectors of the world.
      */
     val sectors: SortedSet<Sector> = originToSector.values.toSortedSet()
 
-    private val worldArea: WorldArea by lazy { areaOf(CoordinateRectangle(origin, last)) }
+    private val iterator = worldArea.iterator()
+    val graph = SimpleDirectedGraph(
+        { worldArea[iterator.next()].get() },
+        { DefaultEdge() },
+        false
+    )
+
+    init {
+        logger.debug { "Creating grid graph with rows=$height, cols=$width in $graph" }
+        logger.debug { "Size before: ${graph.vertexSet().size}" }
+        GridGraphGenerator<WorldTile, DefaultEdge>(height, width).generateGraph(graph)
+        logger.debug { "Size after: ${graph.vertexSet().size}" }
+        val tile = graph.vertexSet().first { it.coordinate == Coordinate(888, 1237) }
+        val neighbors = Graphs.neighborSetOf(graph, tile)
+        logger.debug { "Neighbors of $tile: $neighbors" }
+    }
 
     /**
      * Returns all neighbors of the given coordinate that are inside this world.
@@ -119,7 +141,7 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
             .first { it.contains(position) }
     }
 
-    companion object {
+    companion object: KLogging() {
         fun create(sectors: Iterable<Sector>): WorldMap = WorldMap(sectors.associateByTo(TreeMap(), Sector::origin))
     }
 

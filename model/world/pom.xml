@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>graph</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.util</groupId>
             <artifactId>tests</artifactId>
             <type>test-jar</type>
         </dependency>
