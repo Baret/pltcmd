@@ -60,12 +60,13 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
     }
 
     private fun logNeighbors(easting: Int, northing: Int) {
-        val tile = graph.vertexSet().firstOrNull { it.coordinate == Coordinate(easting, northing) }
+        val coordinate = Coordinate(easting, northing)
+        val tile = graph.vertexSet().firstOrNull { it.coordinate == coordinate }
         if(tile != null) {
             val neighbors = Graphs.neighborSetOf(graph, tile)
             logger.debug { "${neighbors.size} neighbors of $tile: $neighbors" }
         } else {
-            logger.debug { "Coordinate ($easting|$northing) not found in graph" }
+            logger.debug { "Coordinate $coordinate not found in graph" }
         }
     }
 
