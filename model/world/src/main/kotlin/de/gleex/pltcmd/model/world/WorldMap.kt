@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.*
+import de.gleex.pltcmd.model.world.graph.SectorGraph
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.measure.distance.Distance
 import mu.KLogging
@@ -17,8 +18,11 @@ import kotlin.math.min
  */
 data class WorldMap private constructor(private val originToSector: SortedMap<Coordinate, Sector>) {
 
+    private val sectorGraph = SectorGraph.of(originToSector.values)
+
     init {
-        require(originToSector.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one Sector." }
+        require(originToSector.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one sector." }
+
         checkFullyConnected()
     }
 

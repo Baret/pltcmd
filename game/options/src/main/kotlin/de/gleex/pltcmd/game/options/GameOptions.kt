@@ -55,10 +55,10 @@ object GameOptions {
     /**
      * Horizontal number of sectors in the world.
      */
-    const val SECTORS_COUNT_H: Int = 4
+    const val SECTORS_COUNT_H: Int = 10
 
     /**
      * Vertical number of sectors in the world.
      */
-    const val SECTORS_COUNT_V: Int = 4
+    const val SECTORS_COUNT_V: Int = 10
 }
