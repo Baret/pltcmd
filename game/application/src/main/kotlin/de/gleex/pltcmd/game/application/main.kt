@@ -106,6 +106,8 @@ open class Main {
     protected open fun runGame(generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
         // model
         val playerFaction = Faction("player faction")
+        // just adding another faction to FactionRelations
+        Faction("Civilian")
         val game = Game(Engine.create(), generatedMap, playerFaction, random)
         // ui
         val gameWorld = GameWorld(generatedMap, playerFaction)

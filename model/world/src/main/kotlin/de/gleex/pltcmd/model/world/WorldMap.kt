@@ -6,7 +6,6 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.measure.distance.Distance
 import mu.KLogging
 import org.jgrapht.Graphs
-import org.jgrapht.generate.GridGraphGenerator
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.SimpleDirectedGraph
 import java.util.*
@@ -22,7 +21,6 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
 
     init {
         require(originToSector.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one sector." }
-
         checkFullyConnected()
     }
 
@@ -51,17 +49,6 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
         { DefaultEdge() },
         false
     )
-
-    init {
-        logger.debug { "Creating grid graph with rows=$height, cols=$width in $graph" }
-        logger.debug { "Size before: ${graph.vertexSet().size}" }
-        GridGraphGenerator<WorldTile, DefaultEdge>(height, width).generateGraph(graph)
-        logger.debug { "Size after: ${graph.vertexSet().size}" }
-        logNeighbors(867, 985)
-        logNeighbors(0, 0)
-        logNeighbors(850, 800)
-        logNeighbors(850, 999)
-    }
 
     private fun logNeighbors(easting: Int, northing: Int) {
         val coordinate = Coordinate(easting, northing)
