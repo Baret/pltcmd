@@ -20,6 +20,15 @@ private val log = KotlinLogging.logger { }
  */
 @DebugFeature("to quickly draw a graph")
 object GraphDisplayer {
+    /**
+     * Display a graph in a more or less reasonable layeouted manner.
+     *
+     * This method instantly opens a new window displaying the given graph.
+     *
+     * @param graph the graph that you would like to see.
+     * @param vertexLabelProvider used to get the label to display for each vertex
+     * @param edgeLabelProvider used to get the optional label for every edge
+     */
     fun <V : Any, E : Any> displayGraph(
         graph: Graph<V, E>,
         vertexLabelProvider: (V) -> String = { it.toString() },
@@ -62,7 +71,6 @@ object GraphDisplayer {
         adapter.isCellsDeletable = false
         adapter.isCellsEditable = false
         adapter.isCellsMovable = true
-        adapter.isAutoOrigin = true
         adapter.cellToVertexMap.forEach { (cell, vertex) ->
             adapter.cellLabelChanged(
                 cell,
@@ -75,7 +83,7 @@ object GraphDisplayer {
         adapter.cellToEdgeMap.forEach { (cell, edge) ->
             adapter.cellLabelChanged(
                 cell,
-                edgeLabelProvider(edge),
+                edgeLabelProvider(edge) ?: "${graph.getEdgeWeight(edge)}",
                 true
             )
             if (redEdge) {
