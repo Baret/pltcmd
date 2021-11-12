@@ -1,11 +1,10 @@
 package de.gleex.pltcmd.model.faction
 
-import de.gleex.pltcmd.model.faction.Affiliation.*
+import de.gleex.pltcmd.model.faction.Affiliation.Neutral
+import de.gleex.pltcmd.model.faction.Affiliation.Self
 import de.gleex.pltcmd.model.faction.graph.AffiliationEdge
 import de.gleex.pltcmd.model.faction.graph.toEdge
-import de.gleex.pltcmd.util.debug.DebugFeature
 import de.gleex.pltcmd.util.graph.get
-import de.gleex.pltcmd.util.graph.visualization.GraphDisplayer
 import mu.KotlinLogging
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultUndirectedGraph
@@ -26,14 +25,6 @@ object FactionRelations {
      */
     operator fun set(faction1: Faction, faction2: Faction, state: Affiliation) {
         relations[faction1, faction2]?.affiliation = state
-        @DebugFeature
-        if(relations.edgeSet().any { it.affiliation == Hostile }) {
-            log.debug { "Displaying factions graph..." }
-            GraphDisplayer.displayGraph(
-                relations,
-                vertexLabelProvider = { it.name },
-                edgeLabelProvider = { it.affiliation.toString() })
-        }
     }
 
     /**
