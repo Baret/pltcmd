@@ -120,12 +120,12 @@ open class Main {
         val factions = loaded?.second ?: createFactions()
         val playerFaction = factions[0]
         val game = Game(Engine.create(), generatedMap, playerFaction, random)
-        // save current game
-        game.context().save(gameId)
         // ui
         val gameWorld = GameWorld(generatedMap, playerFaction)
 
         val (elementsToCommand, hq) = prepareGame(factions[1], game, gameWorld)
+        // save new game
+        if (loaded == null) game.context().save(gameId)
 
         screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
