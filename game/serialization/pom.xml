@@ -15,8 +15,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.gleex.pltcmd.model</groupId>
-            <artifactId>world</artifactId>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>engine</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>

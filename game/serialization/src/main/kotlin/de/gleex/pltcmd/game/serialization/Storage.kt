@@ -26,7 +26,12 @@ internal object Storage {
     inline fun <reified T> save(dao: T, id: StorageId) {
         val bytes = ProtoBuf.encodeToByteArray(dao)
         val file = id.file
-        file.writeBytes(bytes)
+        val idFolder = file.parentFile
+        if (idFolder.canWrite() || idFolder.mkdirs()) {
+            file.writeBytes(bytes)
+        } else {
+            throw StorageException("failed to write to folder " + idFolder.absolutePath)
+        }
     }
 
     /** Loads the object from the identified storage (file). */
@@ -42,16 +47,29 @@ internal object Storage {
 
     /** lists all stored entries of the given type */
     fun listAll(type: String): List<StorageId> {
-        return dataFolder.listFiles { file -> file.extension == type }
-            .map {
-                val sanitizedName = it.nameWithoutExtension
-                val id = unsanitizeName(sanitizedName)
-                StorageId(id, type)
-            }
+        return dataFolder.listFiles { file -> file.isDirectory }.flatMap { folder ->
+            folder.listFiles { file -> file.name == type }
+                .map {
+                    val sanitizedName = it.parentFile.nameWithoutExtension
+                    val id = unsanitizeName(sanitizedName)
+                    StorageId(id, type)
+                }
+        }
+    }
+
+    /**
+     * Checks if anything is stored for the given game id.
+     */
+    fun exists(gameId: String): Boolean {
+        val folder = StorageId(gameId, "any").folder
+        return folder.exists() && folder.listFiles().isNotEmpty()
     }
 
     private val StorageId.file
-        get() = File(dataFolder, sanitizeFilename(id) + "." + type)
+        get() = File(folder, type)
+
+    private val StorageId.folder
+        get() = File(dataFolder, sanitizeFilename(id))
 }
 
 /** Create a String safe for file names that are almost as unique as the given text */

@@ -4,7 +4,9 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
+import de.gleex.pltcmd.game.serialization.GameStorage
 import de.gleex.pltcmd.game.serialization.StorageId
+import de.gleex.pltcmd.game.serialization.save
 import de.gleex.pltcmd.game.serialization.world.MapStorage
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
@@ -35,7 +37,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 private val log = KotlinLogging.logger {}
-private val random = Random(GameOptions.MAP_SEED)
 
 fun main() {
     Main().run()
@@ -60,8 +61,8 @@ open class Main {
     }
 
     protected open fun selectMap(screen: Screen, tileGrid: TileGrid) {
-        val availableMaps = MapStorage.list
-        if (availableMaps.isEmpty() && UiOptions.SKIP_INTRO.not()) {
+        val availableGames = GameStorage.list
+        if (availableGames.isEmpty() && UiOptions.SKIP_INTRO.not()) {
             // give title some time before switching to menu when not loading a map
             TimeUnit.MILLISECONDS.sleep(4000)
         }
@@ -69,48 +70,62 @@ open class Main {
         val loadMapChoice = CompletableDeferred<StorageId?>()
         val menuEntries = mutableListOf<MenuEntry>()
         menuEntries.addAll(
-            availableMaps.map { (mapId, mapName) ->
-                MenuEntry("Load map $mapName", enabled = true) { event ->
+            availableGames.map { (storageId, gameName) ->
+                MenuEntry("Load game $gameName", enabled = true) { event ->
                     if (ComponentEventType.ACTIVATED == event.type) {
-                        loadMapChoice.complete(mapId)
+                        loadMapChoice.complete(storageId)
                     }
                 }
             }
         )
         menuEntries.add(
-            MenuEntry("Generate new map", enabled = true) { event ->
+            MenuEntry("Generate new game", enabled = true) { event ->
                 if (ComponentEventType.ACTIVATED == event.type) {
                     loadMapChoice.complete(null)
                 }
             }
         )
         screen.dock(MenuView(tileGrid, menuEntries))
-        val mapToLoad = runBlocking { loadMapChoice.await() }
+        val gameToLoad = runBlocking { loadMapChoice.await() }
 
-        if (mapToLoad != null) {
-            val loadedMap = MapStorage.load(mapToLoad)
-            runGame(loadedMap!!, screen, tileGrid)
+        if (gameToLoad != null) {
+            val loadedMap = MapStorage.load(gameToLoad)
+            runGame(gameToLoad.id, loadedMap!!, screen, tileGrid)
         } else {
-            val mapFile = GameOptions.MAP_FILE
+            val gameId = GameOptions.MAP_FILE
             generateMap(screen, tileGrid) { generatedMap ->
-                MapStorage.save(generatedMap, mapFile)
-                runGame(generatedMap, screen, tileGrid)
+                runGame(gameId, generatedMap, screen, tileGrid)
             }
         }
+    }
+
+    /** first entry is the player faction the second is the hostile faction */
+    protected open fun createFactions(): List<Faction> {
+        return listOf(
+            Faction("player faction"),
+            Faction("opposing force")
+        )
     }
 
     /**
      * Creates a [Game] with the given map. Initializes that game and creates a [GameView] on the given [Screen].
      * Then the [Ticker] runs the game.
      */
-    protected open fun runGame(generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
+    protected open fun runGame(gameId: String, generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
         // model
-        val playerFaction = Faction("player faction")
+        val loaded = GameStorage.load(gameId)
+        val oldContext = loaded?.first
+        if (oldContext != null) Ticker.jumpTo(oldContext.currentTick)
+        val random = oldContext?.random ?: Random(GameOptions.MAP_SEED)
+        val factions = loaded?.second ?: createFactions()
+        val playerFaction = factions[0]
         val game = Game(Engine.create(), generatedMap, playerFaction, random)
         // ui
         val gameWorld = GameWorld(generatedMap, playerFaction)
 
-        val (elementsToCommand, hq) = prepareGame(game, gameWorld)
+        val (elementsToCommand, hq) = prepareGame(factions[1], game, gameWorld)
+        // save new game
+        if (loaded == null) game.context().save(gameId)
 
         screen.dock(GameView(gameWorld, tileGrid, game, hq, elementsToCommand))
 
@@ -126,14 +141,14 @@ open class Main {
      *
      * @return the elements to command in the UI and the HQ entity for sending messages from the UI.
      */
-    protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
+    protected open fun prepareGame(opfor: Faction, game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
         val visibleSector = game.world.sectors.first {
             it.origin == gameWorld.visibleTopLeftCoordinate().sectorOrigin
         }
         val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
         val hq = game.newHQIn(visibleSector, game.playerFaction)
             .also { gameWorld.showBase(it) }
-        addHostiles(game, gameWorld)
+        addHostiles(opfor, game, gameWorld)
         return Pair(elementsToCommand, hq)
     }
 
@@ -171,8 +186,7 @@ open class Main {
     /**
      * Add elements to the game that are not controlled by the player. This implementation adds 2 rifle squads per [Sector].
      */
-    protected open fun addHostiles(game: Game, gameWorld: GameWorld) {
-        val opfor = Faction("opposing force")
+    protected open fun addHostiles(opfor: Faction, game: Game, gameWorld: GameWorld) {
         FactionRelations[opfor, game.playerFaction] = Affiliation.Hostile
         // Adding some elements to every sector
         val elementsPerSector = 2
@@ -194,7 +208,7 @@ open class Main {
         faction: Faction,
         game: Game,
         gameWorld: GameWorld,
-        position: Coordinate = this.randomCoordinate(random)
+        position: Coordinate = this.randomCoordinate(game.random)
     ): ElementEntity {
         return game.addElementInSector(this, element, position, faction, true)
             .also(gameWorld::trackUnit)
