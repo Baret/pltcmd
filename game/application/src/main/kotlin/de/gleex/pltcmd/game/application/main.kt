@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 private val log = KotlinLogging.logger {}
-private val random = Random(GameOptions.MAP_SEED)
 
 fun main() {
     Main().run()
@@ -102,10 +101,6 @@ open class Main {
     }
 
     /** first entry is the player faction the second is the hostile faction */
-    protected open fun loadFaction(gameId: String): List<Faction> {
-        return FactionStorage.load(gameId) ?: createFactions(gameId)
-    }
-
     protected open fun createFactions(gameId: String): List<Faction> {
         val factions = listOf(
             Faction("player faction"),
@@ -121,7 +116,10 @@ open class Main {
      */
     protected open fun runGame(gameId: String, generatedMap: WorldMap, screen: Screen, tileGrid: TileGrid) {
         // model
-        val factions = loadFaction(gameId)
+        val loaded = GameStorage.load(gameId)
+        val oldContext = loaded?.first
+        val random = oldContext?.random ?: Random(GameOptions.MAP_SEED)
+        val factions = loaded?.second ?: createFactions(gameId)
         val playerFaction = factions[0]
         val game = Game(Engine.create(), generatedMap, playerFaction, random)
         // ui
@@ -210,7 +208,7 @@ open class Main {
         faction: Faction,
         game: Game,
         gameWorld: GameWorld,
-        position: Coordinate = this.randomCoordinate(random)
+        position: Coordinate = this.randomCoordinate(game.random)
     ): ElementEntity {
         return game.addElementInSector(this, element, position, faction, true)
             .also(gameWorld::trackUnit)

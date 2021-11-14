@@ -44,7 +44,15 @@ object GameStorage {
             return factions
         }
 
-    fun load(gameId: String): Pair<GameContext, List<Faction>> {
+    /**
+     * Returns null if the given gameId does not exist.
+     * @throws StorageException if a game exists but cannot be loaded completely
+     */
+    fun load(gameId: String): Pair<GameContext, List<Faction>>? {
+        if (!Storage.exists(gameId)) {
+            return null
+        }
+        // throw exception if anything is missing
         val random = RandomStorage.load(gameId) ?: throw StorageException("failed to load random of $gameId")
         val tick = TickStorage.load(gameId) ?: throw StorageException("failed to load tick id of $gameId")
         val factions = FactionStorage.load(gameId) ?: throw StorageException("failed to load factions of $gameId")

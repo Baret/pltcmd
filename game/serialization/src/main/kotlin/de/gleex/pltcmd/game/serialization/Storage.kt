@@ -57,6 +57,14 @@ internal object Storage {
         }
     }
 
+    /**
+     * Checks if anything is stored for the given game id.
+     */
+    fun exists(gameId: String): Boolean {
+        val folder = StorageId(gameId, "any").folder
+        return folder.exists() && folder.listFiles().isNotEmpty()
+    }
+
     private val StorageId.file
         get() = File(folder, type)
 
