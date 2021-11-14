@@ -23,21 +23,6 @@ class SectorGraph private constructor() : CoordinateGraph<SectorVertex>() {
             val mark = TimeSource.Monotonic.markNow()
             sectors.map { SectorVertex(it) }
                 .forEach { graph.addVertex(it) }
-            var lastDuration = mark.elapsedNow()
-            logger.debug { "Filling ${graph.vertexSet().size} vertices took $lastDuration" }
-            val rows: MutableMap<Int, MutableSet<SectorVertex>> = mutableMapOf()
-            val cols: MutableMap<Int, MutableSet<SectorVertex>> = mutableMapOf()
-            graph.vertexSet().forEach { vertex ->
-                rows.computeIfAbsent(vertex.coordinate.northingFromBottom) { mutableSetOf() }
-                    .add(vertex)
-                cols.computeIfAbsent(vertex.coordinate.eastingFromLeft) { mutableSetOf() }
-                    .add(vertex)
-            }
-            logger.debug { "Building ${rows.size} rows and ${cols.size} cols took ${mark.plus(lastDuration).elapsedNow()}" }
-            lastDuration = mark.elapsedNow()
-            rows.forEach { (_, vertices) -> vertices.zipWithNext { a, b -> graph.addEdge(a, b) } }
-            cols.forEach { (_, vertices) -> vertices.zipWithNext { a, b -> graph.addEdge(a, b) } }
-            logger.debug { "Adding ${graph.edgeSet().size} edges took ${mark.plus(lastDuration).elapsedNow()}" }
             logger.debug { "Total time taken building the graph: ${mark.elapsedNow()}" }
             check(GraphTests.isConnected(graph)) {
                 "Built an invalid sector graph from ${sectors.size} sectors."
