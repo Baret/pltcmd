@@ -15,12 +15,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.gleex.pltcmd.model</groupId>
-            <artifactId>world</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.gleex.pltcmd.model</groupId>
-            <artifactId>faction</artifactId>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>engine</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
