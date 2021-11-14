@@ -5,7 +5,6 @@ import de.gleex.pltcmd.game.engine.entities.EntitySet
 import de.gleex.pltcmd.game.engine.entities.types.asFactionEntity
 import de.gleex.pltcmd.game.engine.entities.types.faction
 import de.gleex.pltcmd.game.serialization.world.MapStorage
-import de.gleex.pltcmd.game.ticks.TickId
 import de.gleex.pltcmd.model.faction.Faction
 import org.hexworks.amethyst.api.entity.EntityType
 import kotlin.random.Random
@@ -22,7 +21,7 @@ object GameStorage {
     fun save(game: GameContext, gameId: String) {
         MapStorage.save(game.world, gameId)
         FactionStorage.save(game.factions, gameId)
-        //TickStorage.save(game.currentTick, gameId)
+        TickStorage.save(game.currentTick, gameId)
         //RandomStorage.save(game.random, gameId)
         //EntityStorage.save(game.entities, gameId)
     }
@@ -47,9 +46,9 @@ object GameStorage {
         }
 
     fun load(gameId: String): Pair<GameContext, List<Faction>> {
-        // TODO store random and tick
+        // TODO store random
         val random = Random.Default
-        val tick = TickId(1)
+        val tick = TickStorage.load(gameId) ?: throw StorageException("failed to load tick id of $gameId")
         val factions = FactionStorage.load(gameId) ?: throw StorageException("failed to load factions of $gameId")
         val map = MapStorage.load(gameId) ?: throw StorageException("failed to load map of $gameId")
         // TODO save entities
