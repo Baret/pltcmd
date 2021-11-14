@@ -42,9 +42,11 @@ class SectorGraph private constructor() : CoordinateGraph<SectorVertex>() {
             check(GraphTests.isConnected(graph)) {
                 "Built an invalid sector graph from ${sectors.size} sectors."
             }
-            logger.debug { "Displaying graph..." }
-            GraphDisplayer.displayGraph(graph, vertexLabelProvider = { "${it.coordinate}" })
             return graph
+                .also {
+                    logger.debug { "Displaying graph..." }
+                    GraphDisplayer.displayGraph(graph, vertexLabelProvider = { "${it.coordinate}" })
+                }
         }
     }
 }
