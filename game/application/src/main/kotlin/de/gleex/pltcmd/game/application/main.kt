@@ -4,9 +4,9 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.options.GameOptions
 import de.gleex.pltcmd.game.options.UiOptions
-import de.gleex.pltcmd.game.serialization.FactionStorage
 import de.gleex.pltcmd.game.serialization.GameStorage
 import de.gleex.pltcmd.game.serialization.StorageId
+import de.gleex.pltcmd.game.serialization.save
 import de.gleex.pltcmd.game.serialization.world.MapStorage
 import de.gleex.pltcmd.game.ticks.Ticker
 import de.gleex.pltcmd.game.ui.entities.GameWorld
@@ -94,20 +94,17 @@ open class Main {
         } else {
             val gameId = GameOptions.MAP_FILE
             generateMap(screen, tileGrid) { generatedMap ->
-                MapStorage.save(generatedMap, gameId)
                 runGame(gameId, generatedMap, screen, tileGrid)
             }
         }
     }
 
     /** first entry is the player faction the second is the hostile faction */
-    protected open fun createFactions(gameId: String): List<Faction> {
-        val factions = listOf(
+    protected open fun createFactions(): List<Faction> {
+        return listOf(
             Faction("player faction"),
             Faction("opposing force")
         )
-        FactionStorage.save(factions, gameId)
-        return factions
     }
 
     /**
@@ -118,10 +115,13 @@ open class Main {
         // model
         val loaded = GameStorage.load(gameId)
         val oldContext = loaded?.first
+        if (oldContext != null) Ticker.jumpTo(oldContext.currentTick)
         val random = oldContext?.random ?: Random(GameOptions.MAP_SEED)
-        val factions = loaded?.second ?: createFactions(gameId)
+        val factions = loaded?.second ?: createFactions()
         val playerFaction = factions[0]
         val game = Game(Engine.create(), generatedMap, playerFaction, random)
+        // save current game
+        game.context().save(gameId)
         // ui
         val gameWorld = GameWorld(generatedMap, playerFaction)
 
