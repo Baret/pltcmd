@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.model.world.graph
 
 import de.gleex.pltcmd.model.world.Sector
-import de.gleex.pltcmd.util.graph.visualization.GraphDisplayer
 import mu.KLogging
 import org.jgrapht.GraphTests
 import kotlin.time.ExperimentalTime
@@ -28,10 +27,6 @@ class SectorGraph private constructor() : CoordinateGraph<SectorVertex>() {
                 "Built an invalid sector graph from ${sectors.size} sectors."
             }
             return graph
-                .also {
-                    logger.debug { "Displaying graph..." }
-                    GraphDisplayer.displayGraph(graph, vertexLabelProvider = { "${it.coordinate}" })
-                }
         }
     }
 }

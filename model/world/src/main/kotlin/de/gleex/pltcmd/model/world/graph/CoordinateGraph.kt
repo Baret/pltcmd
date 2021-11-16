@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world.graph
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.sectorOrigin
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.SimpleGraph
 
@@ -14,6 +15,30 @@ import org.jgrapht.graph.SimpleGraph
 open class CoordinateGraph<V: CoordinateVertex> : SimpleGraph<V, DefaultEdge>(DefaultEdge::class.java) {
 
     /**
+     * The smallest aka "south-western most" coordinate in this graph.
+     *
+     * **Important**: This is set to [Coordinate.maximum] for an empty graph!
+     */
+    var min: Coordinate = Coordinate.maximum
+        private set
+
+    /**
+     * The largest aka "north-eastern most" coordinate in this graph.
+     *
+     * **Important**: This is set to [Coordinate.minimum] for an empty graph!
+     */
+    var max: Coordinate = Coordinate.minimum
+        private set
+
+    private val sectorOriginsMutable: MutableSet<Coordinate> = mutableSetOf()
+
+    /**
+     * All sector origins contained in this graph.
+     */
+    val sectorOrigins: Set<Coordinate>
+        get() = sectorOriginsMutable
+
+    /**
      * Adds the given vector to the graph and automatically connects it to every neighbor that
      * is already present.
      *
@@ -24,11 +49,21 @@ open class CoordinateGraph<V: CoordinateVertex> : SimpleGraph<V, DefaultEdge>(De
     override fun addVertex(v: V): Boolean {
         val added = super.addVertex(v)
         if(added) {
+            updateMinAndMax(v.coordinate)
+            sectorOriginsMutable.add(v.coordinate.sectorOrigin)
             v.neighborCoordinates
                 .mapNotNull { this[it] }
                 .forEach { addEdge(v, it) }
         }
         return added
+    }
+
+    /**
+     * Checks if the given coordinate is smaller/larger that [min]/[max] and updates accordingly.
+     */
+    private fun updateMinAndMax(coordinate: Coordinate) {
+        if (coordinate < min) min = coordinate
+        if (coordinate > max) max = coordinate
     }
 
     /**

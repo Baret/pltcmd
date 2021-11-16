@@ -13,10 +13,14 @@ import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.property.Exhaustive
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.collection
+import mu.KLogging
 import kotlin.math.ceil
 import kotlin.math.sqrt
 import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
+@OptIn(ExperimentalTime::class)
 class WorldMapTest : WordSpec({
     "A WorldMap" should {
         "not be empty" {
@@ -27,19 +31,33 @@ class WorldMapTest : WordSpec({
             forAll(
                     row(1, 1),
                     row(4, 2),
-                    row(9, 3),
-                    row(16, 4),
-                    row(25, 5),
-                    row(36, 6),
-                    row(49, 7),
-                    row(100, 10),
-                    row(900, 30)
+//                    row(9, 3),
+//                    row(16, 4),
+//                    row(25, 5),
+//                    row(36, 6),
+//                    row(49, 7),
+//                    row(100, 10),
+//                    row(900, 30)
             ) { sectorCount, sideLengthInSectors ->
                 val expectedEdgeLength = sideLengthInSectors * Sector.TILE_COUNT
                 val sectors = sectorCount.sectors()
                 sectors shouldHaveSize sectorCount
-                WorldMap.create(sectors).width shouldBe expectedEdgeLength
-                WorldMap.create(sectors).height shouldBe expectedEdgeLength
+                val (map, duration) = measureTimedValue { WorldMap.create(sectors) }
+                logger.info { "Creating a world with $sectorCount sectors took $duration" }
+                map.width shouldBe expectedEdgeLength
+                map.height shouldBe expectedEdgeLength
+            }
+        }
+
+        "be invalid when not square" {
+            shouldThrow<IllegalArgumentException> {
+                WorldMap.create(3.sectors())
+            }
+        }
+
+        "be invalid when not fully connected" {
+            shouldThrow<IllegalArgumentException> {
+                WorldMap.create(3.sectors().filterIndexed { index, _ -> index % 2 == 0 })
             }
         }
 
@@ -105,7 +123,9 @@ class WorldMapTest : WordSpec({
             }
         }
     }
-})
+}) {
+    companion object: KLogging()
+}
 
 /**
  * Creates this amount of sectors. The sectors are placed in a square. The square is filled line by line and only full

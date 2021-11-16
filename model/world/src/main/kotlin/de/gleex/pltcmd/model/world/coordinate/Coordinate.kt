@@ -152,6 +152,12 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
         val maximum = Coordinate(Int.MAX_VALUE, Int.MAX_VALUE)
 
         /**
+         * A [Coordinate] with Int.MIN_VALUE values. Rather a placeholder for an "invalid coordinate" than
+         * a normally used [Coordinate].
+         */
+        val minimum = Coordinate(Int.MIN_VALUE, Int.MIN_VALUE)
+
+        /**
          * The separator used in the string representation.
          */
         const val SEPARATOR = "|"

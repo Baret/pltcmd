@@ -2,12 +2,13 @@ package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.*
 import de.gleex.pltcmd.model.world.graph.SectorGraph
+import de.gleex.pltcmd.model.world.graph.TerrainGraph
+import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.terrain.Terrain
+import de.gleex.pltcmd.util.graph.isConnected
 import de.gleex.pltcmd.util.measure.distance.Distance
 import mu.KLogging
-import org.jgrapht.Graphs
-import org.jgrapht.graph.DefaultEdge
-import org.jgrapht.graph.SimpleDirectedGraph
+import org.jgrapht.traverse.ClosestFirstIterator
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -15,20 +16,46 @@ import kotlin.math.min
 /**
  * The world contains all map tiles. The world is divided into [Sector]s.
  */
-data class WorldMap private constructor(private val originToSector: SortedMap<Coordinate, Sector>) {
+@OptIn(ExperimentalStdlibApi::class)
+class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
 
-    private val sectorGraph = SectorGraph.of(originToSector.values)
+    private val terrainGraph: TerrainGraph<TileVertex>
 
-    init {
-        require(originToSector.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one sector." }
-        checkFullyConnected()
-    }
+    private val sectorGraph: SectorGraph
 
     /** the most south-west [Coordinate] of this world */
-    val origin = originToSector.firstKey()!!
+    val origin: Coordinate
 
     /** the most north-east [Coordinate] of this world */
-    val last = originToSector[originToSector.lastKey()!!]!!.tiles.last()!!.coordinate
+    val last: Coordinate
+
+    init {
+        require(allTiles.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one sector." }
+        terrainGraph = TerrainGraph.of(allTiles) { TileVertex(it) }
+        val sectors: List<Sector> = terrainGraph.sectorOrigins
+            .map { currentOrigin ->
+                val sectorIterator = ClosestFirstIterator(
+                    terrainGraph,
+                    terrainGraph[currentOrigin],
+                    (Sector.TILE_COUNT + Sector.TILE_COUNT).toDouble()
+                )
+                val coords: Set<WorldTile> = buildSet {
+                    sectorIterator.forEachRemaining { visited ->
+                        if (visited.coordinate.sectorOrigin == currentOrigin) {
+                            add(visited.tile)
+                        }
+                        if(size >= Sector.TILE_COUNT * Sector.TILE_COUNT) {
+                            return@forEachRemaining
+                        }
+                    }
+                }
+                Sector(currentOrigin, coords.toSortedSet())
+            }
+        sectorGraph = SectorGraph.of(sectors)
+        origin = terrainGraph.min
+        last = terrainGraph.max
+        checkFullyConnected()
+    }
 
     /** Returns the width of this map in [WorldTile]s */
     val width = 1 + last.eastingFromLeft - origin.eastingFromLeft // 1 = origin itself
@@ -41,67 +68,47 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
     /**
      * All sectors of the world.
      */
-    val sectors: SortedSet<Sector> = originToSector.values.toSortedSet()
-
-    private val iterator = worldArea.iterator()
-    val graph = SimpleDirectedGraph(
-        { worldArea[iterator.next()].get() },
-        { DefaultEdge() },
-        false
-    )
-
-    private fun logNeighbors(easting: Int, northing: Int) {
-        val coordinate = Coordinate(easting, northing)
-        val tile = graph.vertexSet().firstOrNull { it.coordinate == coordinate }
-        if(tile != null) {
-            val neighbors = Graphs.neighborSetOf(graph, tile)
-            logger.debug { "${neighbors.size} neighbors of $tile: $neighbors" }
-        } else {
-            logger.debug { "Coordinate $coordinate not found in graph" }
-        }
-    }
+    val sectors: SortedSet<Sector> = sectorGraph.vertexSet().map { it.sector }.toSortedSet()
 
     /**
      * Returns all neighbors of the given coordinate that are inside this world.
      */
     fun neighborsOf(coordinate: Coordinate): List<Coordinate> {
-        return coordinate.neighbors()
-                .filter { contains(it) }
+        return coordinate.neighbors().filter { it in this }
     }
 
-    fun contains(coordinate: Coordinate): Boolean {
-        return originToSector.contains(coordinate.sectorOrigin)
+    operator fun contains(coordinate: Coordinate): Boolean {
+        return coordinate.sectorOrigin in terrainGraph.sectorOrigins
     }
 
-    override fun toString() = "WorldMap[${originToSector.size} sectors, size = $width * $height tiles]"
+    override fun toString() = "WorldMap[origin = $origin, ${sectors.size} sectors, size = $width * $height tiles]"
 
-    /** Checks if next sector is in the same row or starts the the first column */
-    // TODO check if all rows have the same length to ensure a rectangle (#106)
+    /** Checks that all coordinates and all sectors are connected and that the world map is a rectangle */
     private fun checkFullyConnected() {
-        val origins = originToSector.keys.iterator()
-        val first = origins.next()
-        var previous = first
-        while (origins.hasNext()) {
-            val current = origins.next()
-            require(current == previous.withRelativeEasting(Sector.TILE_COUNT) ||
-                    (current == previous.withEasting(first.eastingFromLeft)
-                            .withRelativeNorthing(Sector.TILE_COUNT))) {
-                "Sector origins must be next to each other: $previous and $current"
-            }
-            previous = current
+        require(terrainGraph.isConnected()) {
+            "Terrain is not fully connected!"
+        }
+        require(sectorGraph.isConnected()) {
+            "Sectors are not fully connected!"
+        }
+        val isRect = terrainGraph.vertexSet().size == (width * height)
+                && (origin.eastingFromLeft + width - 1) == last.eastingFromLeft
+                && (origin.northingFromBottom + height - 1) == last.northingFromBottom
+        require(isRect) {
+            "WorldMap is not a rectangle! Got ${terrainGraph.vertexSet().size} coordinates ($width * $height, from $origin to $last) in ${sectorGraph.vertexSet().size} sector origins: ${terrainGraph.sectorOrigins}"
         }
     }
 
     /** @return the [Terrain] of the tile at the given location or throws an exception if the given coordinate does not belong to this world */
     operator fun get(coordinate: Coordinate): Terrain {
-        val sector = originToSector[coordinate.sectorOrigin]!!
-        return sector.getTerrainAt(coordinate) ?: throw IllegalStateException("no terrain for $coordinate in $sector")
+        return terrainGraph[coordinate]?.tile?.terrain
+            ?: throw IllegalStateException("no terrain for $coordinate")
     }
 
     /** @return the [Terrain] of this world at the given path */
     operator fun get(path: CoordinatePath): List<Terrain> {
-        return path.filter { contains(it) }
-                .map { get(it) }
+        return path.filter { it in this }
+            .map { get(it) }
     }
 
     /**
@@ -124,10 +131,10 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
      */
     fun areaOf(coordinateArea: CoordinateArea): WorldArea {
         return WorldArea(sectors
-                .filter { sector ->  sector.origin in coordinateArea.sectorOrigins }
-                .flatMap { sector -> sector.tiles }
-                .filter { worldTile -> worldTile.coordinate in coordinateArea }
-                .toSortedSet())
+            .filter { sector -> sector.origin in coordinateArea.sectorOrigins }
+            .flatMap { sector -> sector.tiles }
+            .filter { worldTile -> worldTile.coordinate in coordinateArea }
+            .toSortedSet())
     }
 
     /**
@@ -144,8 +151,12 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
             .first { it.contains(position) }
     }
 
-    companion object: KLogging() {
-        fun create(sectors: Iterable<Sector>): WorldMap = WorldMap(sectors.associateByTo(TreeMap(), Sector::origin))
+    companion object : KLogging() {
+        /**
+         * Create a [WorldMap] consisting of the given sectors. All coordinates inside must be connected. There
+         * may not be a disconnected world!
+         */
+        fun create(sectors: Iterable<Sector>): WorldMap = WorldMap(sectors.flatMap { it.tiles }.toSortedSet())
     }
 
     object Utils {
@@ -156,7 +167,8 @@ data class WorldMap private constructor(private val originToSector: SortedMap<Co
         fun moveInside(location: Coordinate, bottomLeft: Coordinate, topRight: Coordinate): Coordinate {
             require(bottomLeft <= topRight)
             val easting = min(max(bottomLeft.eastingFromLeft, location.eastingFromLeft), topRight.eastingFromLeft)
-            val northing = min(max(bottomLeft.northingFromBottom, location.northingFromBottom), topRight.northingFromBottom)
+            val northing =
+                min(max(bottomLeft.northingFromBottom, location.northingFromBottom), topRight.northingFromBottom)
             if (location.eastingFromLeft == easting && location.northingFromBottom == northing) {
                 return location
             }
