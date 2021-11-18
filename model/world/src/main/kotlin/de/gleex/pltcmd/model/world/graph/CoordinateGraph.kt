@@ -12,7 +12,7 @@ import org.jgrapht.graph.SimpleGraph
  * This graph connects all vertices automatically. Every [CoordinateVertex] is connected by an edge to all its
  * [CoordinateVertex.neighborCoordinates] that are already present in the graph.
  */
-open class CoordinateGraph<V: CoordinateVertex> : SimpleGraph<V, DefaultEdge>(DefaultEdge::class.java) {
+open class CoordinateGraph<V : CoordinateVertex> : SimpleGraph<V, DefaultEdge>(DefaultEdge::class.java) {
 
     /**
      * The smallest aka "south-western most" coordinate in this graph.
@@ -20,7 +20,11 @@ open class CoordinateGraph<V: CoordinateVertex> : SimpleGraph<V, DefaultEdge>(De
      * **Important**: This is set to [Coordinate.maximum] for an empty graph!
      */
     var min: Coordinate = Coordinate.maximum
-        private set
+        private set(value) {
+            if (value < field) {
+                field = value
+            }
+        }
 
     /**
      * The largest aka "north-eastern most" coordinate in this graph.
@@ -28,7 +32,11 @@ open class CoordinateGraph<V: CoordinateVertex> : SimpleGraph<V, DefaultEdge>(De
      * **Important**: This is set to [Coordinate.minimum] for an empty graph!
      */
     var max: Coordinate = Coordinate.minimum
-        private set
+        private set(value) {
+            if (value > field) {
+                field = value
+            }
+        }
 
     private val sectorOriginsMutable: MutableSet<Coordinate> = mutableSetOf()
 
@@ -48,7 +56,7 @@ open class CoordinateGraph<V: CoordinateVertex> : SimpleGraph<V, DefaultEdge>(De
      */
     override fun addVertex(v: V): Boolean {
         val added = super.addVertex(v)
-        if(added) {
+        if (added) {
             updateMinAndMax(v.coordinate)
             sectorOriginsMutable.add(v.coordinate.sectorOrigin)
             v.neighborCoordinates
@@ -62,8 +70,8 @@ open class CoordinateGraph<V: CoordinateVertex> : SimpleGraph<V, DefaultEdge>(De
      * Checks if the given coordinate is smaller/larger that [min]/[max] and updates accordingly.
      */
     private fun updateMinAndMax(coordinate: Coordinate) {
-        if (coordinate < min) min = coordinate
-        if (coordinate > max) max = coordinate
+        min = coordinate
+        max = coordinate
     }
 
     /**

@@ -2,10 +2,7 @@ package de.gleex.pltcmd.model.world.graph
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.should
-import io.kotest.matchers.shouldNot
+import io.kotest.matchers.*
 import mu.KotlinLogging
 import org.jgrapht.Graph
 import org.jgrapht.GraphTests
@@ -26,6 +23,34 @@ class CoordinateGraphTest : WordSpec({
 
             g.addWithLog(50, 51)
             g should beConnected()
+        }
+        
+        "always have the correct min coordinate" {
+            val g = CoordinateGraph<CoordinateVertex>()
+            log.info { "min vs max: ${g.min.compareTo(Coordinate.maximum)}" }
+            g.min shouldBe Coordinate.maximum
+            g.addVertex(v(-9_999, -88_888))
+            val other = Coordinate(-9_999, -88_888)
+            log.info { "${g.min} vs $other: ${g.min.compareTo(other)} so < == ${g.min < other}" }
+            g.min shouldBe other
+            g.addVertex(v(10, 10))
+            g.min shouldBe other
+            g.addVertex(v(-10_000, -88_888))
+            g.min shouldBe Coordinate(-10_000, -88_888)
+        }
+
+        "always have the correct max coordinate" {
+            val g = CoordinateGraph<CoordinateVertex>()
+            log.info { "min vs max: ${g.min.compareTo(Coordinate.maximum)}" }
+            g.min shouldBe Coordinate.maximum
+            g.addVertex(v(-9_999, -88_888))
+            val other = Coordinate(-9_999, -88_888)
+            log.info { "${g.min} vs $other: ${g.min.compareTo(other)} so < == ${g.min < other}" }
+            g.min shouldBe other
+            g.addVertex(v(10, 10))
+            g.min shouldBe other
+            g.addVertex(v(-10_000, -88_888))
+            g.min shouldBe Coordinate(-10_000, -88_888)
         }
     }
 })

@@ -54,7 +54,6 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
         sectorGraph = SectorGraph.of(sectors)
         origin = terrainGraph.min
         last = terrainGraph.max
-        checkFullyConnected()
     }
 
     /** Returns the width of this map in [WorldTile]s */
@@ -62,6 +61,10 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
 
     /** Returns the height of this map in [WorldTile]s */
     val height = 1 + last.northingFromBottom - origin.northingFromBottom // 1 = origin itself
+
+    init {
+        checkFullyConnected()
+    }
 
     private val worldArea: WorldArea by lazy { areaOf(CoordinateRectangle(origin, last)) }
 

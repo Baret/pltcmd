@@ -9,6 +9,8 @@ import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.property.Exhaustive
 import io.kotest.property.checkAll
@@ -50,14 +52,22 @@ class WorldMapTest : WordSpec({
         }
 
         "be invalid when not square" {
-            shouldThrow<IllegalArgumentException> {
+            val exception = shouldThrow<IllegalArgumentException> {
                 WorldMap.create(3.sectors())
             }
+            exception.message shouldContain "rectangle"
         }
 
         "be invalid when not fully connected" {
-            shouldThrow<IllegalArgumentException> {
-                WorldMap.create(3.sectors().filterIndexed { index, _ -> index % 2 == 0 })
+            val sevenSectors = 7.sectors()
+            val first = sevenSectors[0]
+            val second = sevenSectors[4]
+
+            first.origin.eastingFromLeft shouldNotBe second.origin.eastingFromLeft
+            first.origin.northingFromBottom shouldNotBe second.origin.northingFromBottom
+
+            shouldThrow<IllegalStateException> {
+                WorldMap.create(listOf(first, second))
             }
         }
 
@@ -65,7 +75,7 @@ class WorldMapTest : WordSpec({
         val testSectors = setOf(randomSectorAt(origin))
         val map = WorldMap.create(testSectors)
         "coerce its coordinates to themselves" {
-            val allCoordinates = testSectors.first().tiles.map { it.coordinate }
+            val allCoordinates = testSectors.flatMap{ it.tiles }.map { it.coordinate }
             checkAll(allCoordinates.size, Exhaustive.collection(allCoordinates)) { coordinate ->
                 map.moveInside(coordinate) shouldBeSameInstanceAs coordinate
             }
