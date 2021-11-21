@@ -38,7 +38,7 @@ class TerrainHeightGraph(tiles: SortedSet<WorldTile>) {
 
             graph = graphBuilder.buildAsUnmodifiable()
         }.also {
-            println("TerrainGraph init took $it for ${graph.vertexSet().size} vertices and ${graph.edgeSet().size} edges")
+            log.debug { "TerrainGraph init took $it for ${graph.vertexSet().size} vertices and ${graph.edgeSet().size} edges" }
         }
     }
 

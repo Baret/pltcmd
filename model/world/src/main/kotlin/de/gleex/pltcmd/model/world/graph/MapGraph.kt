@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.world.graph
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import mu.KotlinLogging
 import org.jgrapht.Graph
 import org.jgrapht.GraphPath
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath
@@ -10,6 +11,8 @@ import org.jgrapht.graph.builder.GraphBuilder
 import org.jgrapht.graph.builder.GraphTypeBuilder
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
+
+private val log = KotlinLogging.logger {  }
 
 /**
  * This map contains all coordinates. Internally a graph is used as data structure.
@@ -32,7 +35,7 @@ class MapGraph(coordinates: CoordinateArea) {
 
             graph = graphBuilder.buildAsUnmodifiable()
         }.also {
-            println("map init took $it for ${graph.vertexSet().size} vertices and ${graph.edgeSet().size} edges")
+            log.debug { "map init took $it for ${graph.vertexSet().size} vertices and ${graph.edgeSet().size} edges" }
         }
     }
 
