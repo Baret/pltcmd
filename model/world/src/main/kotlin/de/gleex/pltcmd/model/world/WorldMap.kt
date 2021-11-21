@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.*
+import de.gleex.pltcmd.model.world.graph.MapGraph
 import de.gleex.pltcmd.model.world.graph.SectorGraph
 import de.gleex.pltcmd.model.world.graph.TerrainGraph
 import de.gleex.pltcmd.model.world.graph.TileVertex
@@ -22,6 +23,7 @@ import kotlin.math.min
 @OptIn(ExperimentalStdlibApi::class)
 class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
 
+    private val coordinateGraph: MapGraph
     private val terrainGraph: TerrainGraph<TileVertex>
 
     private val sectorGraph: SectorGraph
@@ -35,6 +37,15 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
     init {
         require(allTiles.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one sector." }
         logger.info { "Creating terrain graph with ${allTiles.size} tiles" }
+        // TODO provide Set of coordinates to constructor instead of recreating it here
+        val coordinates = allTiles.map { it.coordinate }.toSortedSet()
+        coordinateGraph = MapGraph(coordinates)
+        // TODO remove testing code
+        val start = coordinates.random()
+        val destination = coordinates.random()
+        logger.info { "Path from $start to $destination is " + coordinateGraph.pathBetween(start, destination) }
+        // end testing code
+
         terrainGraph = TerrainGraph.of(allTiles) { TileVertex(it) }
         logger.info { "Starting sector graph creation..." }
         sectorGraph = runBlocking {
