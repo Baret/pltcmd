@@ -7,6 +7,9 @@ import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.graph.isConnected
 import de.gleex.pltcmd.util.measure.distance.Distance
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import mu.KLogging
 import org.jgrapht.traverse.ClosestFirstIterator
 import java.util.*
@@ -31,27 +34,37 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
 
     init {
         require(allTiles.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one sector." }
+        logger.info { "Creating terrain graph with ${allTiles.size} tiles" }
         terrainGraph = TerrainGraph.of(allTiles) { TileVertex(it) }
-        val sectors: List<Sector> = terrainGraph.sectorOrigins
-            .map { currentOrigin ->
-                val sectorIterator = ClosestFirstIterator(
-                    terrainGraph,
-                    terrainGraph[currentOrigin],
-                    (Sector.TILE_COUNT + Sector.TILE_COUNT).toDouble()
-                )
-                val coords: Set<WorldTile> = buildSet {
-                    sectorIterator.forEachRemaining { visited ->
-                        if (visited.coordinate.sectorOrigin == currentOrigin) {
-                            add(visited.tile)
+        logger.info { "Starting sector graph creation..." }
+        sectorGraph = runBlocking {
+            val sectors: List<Sector> = terrainGraph.sectorOrigins
+                .map { currentOrigin ->
+                    logger.info { "Launching sector coordinate collection for $currentOrigin" }
+                    async {
+                        val sectorIterator = ClosestFirstIterator(
+                            terrainGraph,
+                            terrainGraph[currentOrigin],
+                            (Sector.TILE_COUNT + Sector.TILE_COUNT).toDouble()
+                        )
+                        val coords = buildSet {
+                            sectorIterator.forEachRemaining { visited ->
+                                if (visited.coordinate.sectorOrigin == currentOrigin) {
+                                    add(visited.tile)
+                                }
+                                if (size >= Sector.TILE_COUNT * Sector.TILE_COUNT) {
+                                    return@forEachRemaining
+                                }
+                            }
                         }
-                        if(size >= Sector.TILE_COUNT * Sector.TILE_COUNT) {
-                            return@forEachRemaining
-                        }
+                        Sector(currentOrigin, coords.toSortedSet())
                     }
                 }
-                Sector(currentOrigin, coords.toSortedSet())
-            }
-        sectorGraph = SectorGraph.of(sectors)
+                .awaitAll()
+            logger.info { "Creating sector graph with ${sectors.size} sectors" }
+            SectorGraph.of(sectors)
+        }
+        logger.info { "Graphs complete." }
         origin = terrainGraph.min
         last = terrainGraph.max
     }

@@ -9,12 +9,16 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
  * The base class offers no additional information associated with the coordinate. Extending classes may add further
  * members to enrich the graph.
  */
-open class CoordinateVertex(val coordinate: Coordinate) {
+open class CoordinateVertex(val coordinate: Coordinate): Comparable<CoordinateVertex> {
 
     /**
      * The coordinates that  are neighbors of the one represented by this vertex.
      */
     open val neighborCoordinates: List<Coordinate> = coordinate.neighbors()
+
+    override fun compareTo(other: CoordinateVertex): Int {
+        return coordinate.compareTo(other.coordinate)
+    }
 
     override fun toString(): String {
         return "CoordinateVertex(coordinate=$coordinate)"
