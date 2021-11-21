@@ -1,10 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.*
-import de.gleex.pltcmd.model.world.graph.MapGraph
-import de.gleex.pltcmd.model.world.graph.SectorGraph
-import de.gleex.pltcmd.model.world.graph.TerrainGraph
-import de.gleex.pltcmd.model.world.graph.TileVertex
+import de.gleex.pltcmd.model.world.graph.*
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.graph.isConnected
 import de.gleex.pltcmd.util.measure.distance.Distance
@@ -38,12 +35,14 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
         require(allTiles.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one sector." }
         logger.info { "Creating terrain graph with ${allTiles.size} tiles" }
         // TODO provide Set of coordinates to constructor instead of recreating it here
-        val coordinates = allTiles.map { it.coordinate }.toSortedSet()
+        val coordinates = CoordinateArea(allTiles.map { it.coordinate }.toSortedSet())
         coordinateGraph = MapGraph(coordinates)
+        val terrainHeightGraph = TerrainHeightGraph.of(allTiles)
         // TODO remove testing code
-        val start = coordinates.random()
-        val destination = coordinates.random()
-        logger.info { "Path from $start to $destination is " + coordinateGraph.pathBetween(start, destination) }
+        val start = allTiles.random()
+        val destination = allTiles.random()
+        logger.info { "Path from ${start.coordinate} to ${destination.coordinate} is " + coordinateGraph.pathBetween(start.coordinate, destination.coordinate) }
+        logger.info { "Path on heights from $start to $destination is " + terrainHeightGraph.pathBetween(start, destination) }
         // end testing code
 
         terrainGraph = TerrainGraph.of(allTiles) { TileVertex(it) }

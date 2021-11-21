@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world.graph
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import org.jgrapht.Graph
 import org.jgrapht.GraphPath
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath
@@ -14,7 +15,7 @@ import kotlin.time.measureTime
  * This map contains all coordinates. Internally a graph is used as data structure.
  */
 @OptIn(ExperimentalTime::class)
-class MapGraph(coordinates: Set<Coordinate>) {
+class MapGraph(coordinates: CoordinateArea) {
     private val graph: Graph<Coordinate, DefaultEdge>
 
     init {
@@ -36,7 +37,7 @@ class MapGraph(coordinates: Set<Coordinate>) {
     }
 
     // build grid between coordinates
-    private fun GraphBuilder<Coordinate, DefaultEdge, Graph<Coordinate, DefaultEdge>>.addEdges(coordinates: Set<Coordinate>) {
+    private fun GraphBuilder<Coordinate, DefaultEdge, Graph<Coordinate, DefaultEdge>>.addEdges(coordinates: CoordinateArea) {
         coordinates.forEach { coordinate ->
             coordinate.withRelativeEasting(1).also { eastNeighbor ->
                 if (coordinates.contains(eastNeighbor))
