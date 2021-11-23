@@ -38,7 +38,7 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     /**
      * All [MainCoordinate]s contained in this area.
      */
-    open val mainCoordinates: Set<MainCoordinate> by lazy {
+    val mainCoordinates: Set<MainCoordinate> by lazy {
         coordinates
             .map { it.toMainCoordinate() }
             .toSortedSet()
@@ -47,7 +47,7 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     /**
      * All sector origins contained in this area.
      */
-    open val sectorOrigins: SortedSet<Coordinate> by lazy {
+    val sectorOrigins: SortedSet<Coordinate> by lazy {
         coordinates
             .map { it.sectorOrigin }
             .toSortedSet()

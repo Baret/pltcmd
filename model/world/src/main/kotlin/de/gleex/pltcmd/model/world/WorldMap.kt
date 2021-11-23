@@ -1,15 +1,12 @@
 package de.gleex.pltcmd.model.world
 
-import de.gleex.pltcmd.model.world.coordinate.*
-import de.gleex.pltcmd.model.world.graph.*
+import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.world.coordinate.CoordinateCircle
+import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
-import de.gleex.pltcmd.util.graph.isConnected
 import de.gleex.pltcmd.util.measure.distance.Distance
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import mu.KLogging
-import org.jgrapht.traverse.ClosestFirstIterator
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -20,63 +17,22 @@ import kotlin.math.min
 @OptIn(ExperimentalStdlibApi::class)
 class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
 
-    private val coordinateGraph: MapGraph
-    private val terrainGraph: TerrainGraph<TileVertex>
-
-    private val sectorGraph: SectorGraph
-
     /** the most south-west [Coordinate] of this world */
     val origin: Coordinate
 
     /** the most north-east [Coordinate] of this world */
     val last: Coordinate
 
+    private val worldArea: WorldArea
+
     init {
         require(allTiles.isNotEmpty()) { "WorldMap cannot be empty! Please provide at least one sector." }
-        logger.info { "Creating terrain graph with ${allTiles.size} tiles" }
-        // TODO provide Set of coordinates to constructor instead of recreating it here
-        val coordinates = CoordinateArea(allTiles.map { it.coordinate }.toSortedSet())
-        coordinateGraph = MapGraph(coordinates)
-        val terrainHeightGraph = TerrainHeightGraph.of(allTiles)
-        // TODO remove testing code
-        val start = allTiles.random()
-        val destination = allTiles.random()
-        logger.info { "Path from ${start.coordinate} to ${destination.coordinate} is " + coordinateGraph.pathBetween(start.coordinate, destination.coordinate) }
-        logger.info { "Path on heights from $start to $destination is " + terrainHeightGraph.pathBetween(start, destination) }
-        // end testing code
-
-        terrainGraph = TerrainGraph.of(allTiles) { TileVertex(it) }
-        logger.info { "Starting sector graph creation..." }
-        sectorGraph = runBlocking {
-            val sectors: List<Sector> = terrainGraph.sectorOrigins
-                .map { currentOrigin ->
-                    logger.info { "Launching sector coordinate collection for $currentOrigin" }
-                    async {
-                        val sectorIterator = ClosestFirstIterator(
-                            terrainGraph,
-                            terrainGraph[currentOrigin],
-                            (Sector.TILE_COUNT + Sector.TILE_COUNT).toDouble()
-                        )
-                        val coords = buildSet {
-                            sectorIterator.forEachRemaining { visited ->
-                                if (visited.coordinate.sectorOrigin == currentOrigin) {
-                                    add(visited.tile)
-                                }
-                                if (size >= Sector.TILE_COUNT * Sector.TILE_COUNT) {
-                                    return@forEachRemaining
-                                }
-                            }
-                        }
-                        Sector(currentOrigin, coords.toSortedSet())
-                    }
-                }
-                .awaitAll()
-            logger.info { "Creating sector graph with ${sectors.size} sectors" }
-            SectorGraph.of(sectors)
-        }
+        logger.info { "Creating the world area for the world map with ${allTiles.size} tiles" }
+        // TODO: create special WorldMapArea...
+        worldArea = WorldArea(allTiles)
         logger.info { "Graphs complete." }
-        origin = terrainGraph.min
-        last = terrainGraph.max
+        origin = allTiles.first().coordinate
+        last = allTiles.last().coordinate
     }
 
     /** Returns the width of this map in [WorldTile]s */
@@ -89,12 +45,11 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
         checkFullyConnected()
     }
 
-    private val worldArea: WorldArea by lazy { areaOf(CoordinateRectangle(origin, last)) }
-
     /**
      * All sectors of the world.
      */
-    val sectors: SortedSet<Sector> = sectorGraph.vertexSet().map { it.sector }.toSortedSet()
+    // TODO: get the sectors from the WorldArea
+    val sectors: SortedSet<Sector> = emptySet<Sector>().toSortedSet()
 
     /**
      * Returns all neighbors of the given coordinate that are inside this world.
@@ -104,31 +59,29 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
     }
 
     operator fun contains(coordinate: Coordinate): Boolean {
-        return coordinate.sectorOrigin in terrainGraph.sectorOrigins
+        return coordinate in worldArea
     }
 
     override fun toString() = "WorldMap[origin = $origin, ${sectors.size} sectors, size = $width * $height tiles]"
 
     /** Checks that all coordinates and all sectors are connected and that the world map is a rectangle */
     private fun checkFullyConnected() {
-        require(terrainGraph.isConnected()) {
+        require(worldArea.isConnected()) {
             "Terrain is not fully connected!"
         }
-        require(sectorGraph.isConnected()) {
-            "Sectors are not fully connected!"
-        }
-        val isRect = terrainGraph.vertexSet().size == (width * height)
+        val isRect = worldArea.size == (width * height)
                 && (origin.eastingFromLeft + width - 1) == last.eastingFromLeft
                 && (origin.northingFromBottom + height - 1) == last.northingFromBottom
         require(isRect) {
-            "WorldMap is not a rectangle! Got ${terrainGraph.vertexSet().size} coordinates ($width * $height, from $origin to $last) in ${sectorGraph.vertexSet().size} sector origins: ${terrainGraph.sectorOrigins}"
+            "WorldMap is not a rectangle! Got ${worldArea.size} coordinates ($width * $height, from $origin to $last) in ${worldArea.sectorOrigins.size} sector origins: ${worldArea.sectorOrigins}"
         }
     }
 
     /** @return the [Terrain] of the tile at the given location or throws an exception if the given coordinate does not belong to this world */
     operator fun get(coordinate: Coordinate): Terrain {
-        return terrainGraph[coordinate]?.tile?.terrain
-            ?: throw IllegalStateException("no terrain for $coordinate")
+        return worldArea[coordinate].map { it.terrain }.orElseThrow {
+            throw IllegalStateException("no terrain for $coordinate")
+        }
     }
 
     /** @return the [Terrain] of this world at the given path */

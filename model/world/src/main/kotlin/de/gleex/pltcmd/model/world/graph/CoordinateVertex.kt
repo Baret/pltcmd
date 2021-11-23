@@ -11,11 +11,6 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
  */
 open class CoordinateVertex(val coordinate: Coordinate): Comparable<CoordinateVertex> {
 
-    /**
-     * The coordinates that  are neighbors of the one represented by this vertex.
-     */
-    open val neighborCoordinates: List<Coordinate> = coordinate.neighbors()
-
     override fun compareTo(other: CoordinateVertex): Int {
         return coordinate.compareTo(other.coordinate)
     }
