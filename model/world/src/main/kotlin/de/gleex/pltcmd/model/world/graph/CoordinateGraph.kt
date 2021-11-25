@@ -20,7 +20,10 @@ private val log = KotlinLogging.logger { }
  *
  * This graph is immutable and created by a factory method like [CoordinateGraph.of].
  */
-open class CoordinateGraph<V : CoordinateVertex> internal constructor(protected val graph: Graph<V, CoordinateEdge>) {
+open class CoordinateGraph<V : CoordinateVertex>
+    internal constructor(
+        @DebugFeature("just to play around. may be protected")
+        internal val graph: Graph<V, CoordinateEdge>) {
 
     /**
      * The smallest aka "south-western most" coordinate in this graph. May be null for an empty graph.
