@@ -1,14 +1,16 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.graph.CoordinateGraph
+import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.terrain.Terrain
-import java.util.*
 import kotlin.random.Random
 
 /**
  * A sector has 50 by 50 [WorldTile]s (it is a square).
  */
-class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<Sector>, WorldArea(tiles) {
+// TODO: make constructor internal (only the worldMap creates sectors!)
+class Sector(graph: CoordinateGraph<TileVertex>) : Comparable<Sector>, WorldArea(graph) {
 
     companion object {
         /** edge length of a sector (in each directon of the map rectangle) */
@@ -16,18 +18,24 @@ class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<S
     }
 
     init {
+        // validate that a full sector is given and all tiles belong to the same sector
+        require(graph.size == TILE_COUNT * TILE_COUNT) {
+            "Could not create sector at origin ${graph.min}: A sector must consist of ${TILE_COUNT * TILE_COUNT} tiles, but ${graph.size} given!"
+        }
+    }
+
+    /**
+     * The origin of this sector. It is the south-western "starting point" of the area.
+     */
+    val origin: Coordinate = graph.min!!
+
+    init {
         // sectors must have full 50s as origin
         require(origin == origin.sectorOrigin) {
             "Origin of a sector must be on a 50th of the map. Given: $origin"
         }
-
-        // validate that a full sector is given and all tiles belong to the same sector
-        require(tiles.size == TILE_COUNT * TILE_COUNT) {
-            "Could not create sector at origin ${origin}: A sector must consist of ${TILE_COUNT * TILE_COUNT} tiles, but ${tiles.size} given!"
-        }
-        val firstTile = tiles.first()
-        require(tiles.all { it.inSameSector(firstTile) }) {
-            "Could not create sector at origin ${origin}: All tiles must be part of the same sector! Given: $tiles"
+        require(graph.coordinates.all { it inSameSector origin }) {
+            "Could not create sector at origin ${origin}: All tiles must be part of the same sector!"
         }
     }
 
@@ -98,7 +106,7 @@ class Sector(val origin: Coordinate, tiles: SortedSet<WorldTile>) : Comparable<S
 }
 
 // extensions for WorldTile
-fun WorldTile.inSameSector(other: WorldTile) = sectorOrigin == other.sectorOrigin
+private infix fun Coordinate.inSameSector(other: Coordinate) = sectorOrigin == other.sectorOrigin
 
 val WorldTile.sectorOrigin get() = coordinate.sectorOrigin
 

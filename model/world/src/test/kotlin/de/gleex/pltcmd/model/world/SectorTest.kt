@@ -2,13 +2,14 @@ package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.Sector.Companion.TILE_COUNT
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.graph.CoordinateGraph
+import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.testhelpers.randomSectorAt
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.forEachAsClue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.row
-import io.kotest.inspectors.forAll
-import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.shouldBe
 
@@ -17,20 +18,20 @@ class SectorTest : WordSpec() {
     init {
         val validOrigin = Coordinate(150, 700)
         "A sector created at origin $validOrigin" should {
-            val sector = randomSectorAt(validOrigin)
+            val sector = newSectorAt(validOrigin)
 
             val expectedTilecount = TILE_COUNT * TILE_COUNT
             "have $expectedTilecount tiles" {
-                sector.tiles shouldHaveSize expectedTilecount
+                sector.size shouldBe expectedTilecount
             }
 
             val validEastings = validOrigin.eastingFromLeft until validOrigin.eastingFromLeft + TILE_COUNT
             val validNorthings = validOrigin.northingFromBottom until validOrigin.northingFromBottom + TILE_COUNT
             "have only tiles with easting in $validEastings and northing in $validNorthings" {
-                sector.tiles.forAll { tile ->
+                sector.forEachAsClue { coordinate ->
                     assertSoftly {
-                        tile.coordinate.eastingFromLeft shouldBeInRange validEastings
-                        tile.coordinate.northingFromBottom shouldBeInRange validNorthings
+                        coordinate.eastingFromLeft shouldBeInRange validEastings
+                        coordinate.northingFromBottom shouldBeInRange validNorthings
                     }
                 }
             }
@@ -48,16 +49,27 @@ class SectorTest : WordSpec() {
         "A sector" should {
             "fail to generate if the origin is not a sector origin" {
                 shouldThrow<IllegalArgumentException> {
-                    randomSectorAt(Coordinate(123, 450))
+                    newSectorAt(Coordinate(123, 450))
                 }
                 shouldThrow<IllegalArgumentException> {
-                    randomSectorAt(Coordinate(120, 459))
+                    newSectorAt(Coordinate(120, 459))
                 }
             }
 
             "not be valid with only one tile" {
                 shouldThrow<IllegalArgumentException> {
-                    Sector(validOrigin, sortedSetOf(WorldTile(validOrigin.eastingFromLeft, validOrigin.northingFromBottom)))
+                    Sector(
+                        CoordinateGraph.of(
+                            sortedSetOf(
+                                TileVertex(
+                                    WorldTile(
+                                        validOrigin.eastingFromLeft,
+                                        validOrigin.northingFromBottom
+                                    )
+                                )
+                            )
+                        )
+                    )
                 }
             }
         }
@@ -101,4 +113,9 @@ class SectorTest : WordSpec() {
             }
         }
     }
+}
+
+private fun newSectorAt(coordinate: Coordinate): Sector {
+    // TODO: Make a protected constructor(Iterable<WorldTile>) for the tests?
+    return Sector(CoordinateGraph.of(randomSectorAt(coordinate).map { TileVertex(it) }.toSortedSet()))
 }

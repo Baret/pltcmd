@@ -14,7 +14,7 @@ import java.util.*
  */
 class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
 
-    override val origin: WorldArea = world.asWorldArea()
+    override val origin: WorldArea = world.area
 
     /**
      * All not yet revealed (aka. unknown) [Coordinate]s.

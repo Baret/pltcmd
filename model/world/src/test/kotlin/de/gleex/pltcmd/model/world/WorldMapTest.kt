@@ -9,13 +9,13 @@ import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.property.Exhaustive
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.collection
 import mu.KLogging
+import java.util.*
 import kotlin.math.ceil
 import kotlin.math.sqrt
 import kotlin.system.measureTimeMillis
@@ -26,24 +26,24 @@ import kotlin.time.measureTimedValue
 class WorldMapTest : WordSpec({
     "A WorldMap" should {
         "not be empty" {
-            shouldThrow<IllegalArgumentException> { WorldMap.create(setOf()) }
+            shouldThrow<IllegalArgumentException> { WorldMap.create(setOf<WorldTile>().toSortedSet()) }
         }
 
         "be square when calculating its size" {
             forAll(
                     row(1, 1),
                     row(4, 2),
-//                    row(9, 3),
-//                    row(16, 4),
-//                    row(25, 5),
-//                    row(36, 6),
-//                    row(49, 7),
-//                    row(100, 10),
-//                    row(900, 30)
+                    row(9, 3),
+                    row(16, 4),
+                    row(25, 5),
+                    row(36, 6),
+                    row(49, 7),
+                    row(100, 10),
+                    row(900, 30)
             ) { sectorCount, sideLengthInSectors ->
                 val expectedEdgeLength = sideLengthInSectors * Sector.TILE_COUNT
                 val sectors = sectorCount.sectors()
-                sectors shouldHaveSize sectorCount
+                sectors shouldHaveSize sectorCount * Sector.TILE_COUNT * Sector.TILE_COUNT
                 val (map, duration) = measureTimedValue { WorldMap.create(sectors) }
                 logger.info { "Creating a world with $sectorCount sectors took $duration" }
                 map.width shouldBe expectedEdgeLength
@@ -59,23 +59,19 @@ class WorldMapTest : WordSpec({
         }
 
         "be invalid when not fully connected" {
-            val sevenSectors = 7.sectors()
-            val first = sevenSectors[0]
-            val second = sevenSectors[4]
+            val first = randomSectorAt(Coordinate(150, 200))
+            val second = randomSectorAt(Coordinate(200, 250))
 
-            first.origin.eastingFromLeft shouldNotBe second.origin.eastingFromLeft
-            first.origin.northingFromBottom shouldNotBe second.origin.northingFromBottom
-
-            shouldThrow<IllegalStateException> {
-                WorldMap.create(listOf(first, second))
+            shouldThrow<IllegalArgumentException> {
+                WorldMap.create((first + second).toSortedSet())
             }
         }
 
         val origin = Coordinate(150, 200)
-        val testSectors = setOf(randomSectorAt(origin))
-        val map = WorldMap.create(testSectors)
+        val testSector = randomSectorAt(origin)
+        val map = WorldMap.create(testSector)
         "coerce its coordinates to themselves" {
-            val allCoordinates = testSectors.flatMap{ it.tiles }.map { it.coordinate }
+            val allCoordinates = testSector.map{ it.coordinate }
             checkAll(allCoordinates.size, Exhaustive.collection(allCoordinates)) { coordinate ->
                 map.moveInside(coordinate) shouldBeSameInstanceAs coordinate
             }
@@ -105,7 +101,7 @@ class WorldMapTest : WordSpec({
                 origin.movedBy(0 * s, 0 * s), origin.movedBy(1 * s, 0 * s), origin.movedBy(2 * s, 0 * s),
                 origin.movedBy(0 * s, 1 * s), origin.movedBy(1 * s, 1 * s), origin.movedBy(2 * s, 1 * s),
                 origin.movedBy(0 * s, 2 * s), origin.movedBy(1 * s, 2 * s), origin.movedBy(2 * s, 2 * s)
-            ).map { randomSectorAt(it) }
+            ).map { randomSectorAt(it) }.flatten().toSortedSet()
             val largeMap = WorldMap.create(manySectors)
             val center = origin.movedBy(123, 57)
 
@@ -141,13 +137,13 @@ class WorldMapTest : WordSpec({
  * Creates this amount of sectors. The sectors are placed in a square. The square is filled line by line and only full
  * if the amount is a square number.
  **/
-private fun Int.sectors(): List<Sector> {
-    val sectors = mutableListOf<Sector>()
+private fun Int.sectors(): SortedSet<WorldTile> {
+    val sectors = mutableListOf<SortedSet<WorldTile>>()
     val width = ceil(sqrt(toDouble())).toInt()
     (0 until this).forEach { i ->
         val row = i / width
         val column = i - (row * width)
         sectors.add(randomSectorAt(Coordinate(row * Sector.TILE_COUNT, column * Sector.TILE_COUNT)))
     }
-    return sectors
+    return sectors.flatten().toSortedSet()
 }

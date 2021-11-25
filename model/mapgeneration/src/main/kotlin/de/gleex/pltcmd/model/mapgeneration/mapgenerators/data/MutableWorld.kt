@@ -82,25 +82,9 @@ class MutableWorld(
             "Not all coordinates contain generated terrain."
         }
 
-        // generate sectors out of terrainMap
-        val sectors = mutableSetOf<Sector>()
-        for (sectorOriginNorthing in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom step Sector.TILE_COUNT) {
-            for (sectorOriginEasting in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft step Sector.TILE_COUNT) {
-                val tiles: SortedSet<WorldTile> = TreeSet()
-                val sectorEndEasting = sectorOriginEasting + Sector.TILE_COUNT - 1
-                val sectorEndNorthing = sectorOriginNorthing + Sector.TILE_COUNT - 1
-                for (y in sectorOriginNorthing..sectorEndNorthing) {
-                    for (x in sectorOriginEasting..sectorEndEasting) {
-                        val currentCoordinate = Coordinate(x, y)
-                        // expecting no null values here
-                        val terrain = Terrain.of(terrainMap[currentCoordinate]!!)
-                        tiles.add(WorldTile(currentCoordinate, terrain))
-                    }
-                }
-                sectors.add(Sector(Coordinate(sectorOriginEasting, sectorOriginNorthing), tiles))
-            }
-        }
-        return WorldMap.create(sectors)
+        val tiles: SortedSet<WorldTile> =
+            terrainMap.map { (c, terrainData) -> WorldTile(c, Terrain.of(terrainData)) }.toSortedSet()
+        return WorldMap.create(tiles)
     }
 
     private fun finishGeneration() {

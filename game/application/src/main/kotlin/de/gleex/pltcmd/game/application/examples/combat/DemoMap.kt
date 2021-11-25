@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.application.examples.combat
 
 import de.gleex.pltcmd.game.options.GameOptions
-import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.Sector.Companion.TILE_COUNT
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
@@ -14,11 +13,11 @@ import java.util.*
 object DemoMap {
     fun create(): WorldMap {
         val origin = GameOptions.MAP_ORIGIN
-        val sector = createDemoSector(origin)
-        return WorldMap.create(setOf(sector))
+        val tiles = createDemoSector(origin)
+        return WorldMap.create(tiles)
     }
 
-    private fun createDemoSector(origin: Coordinate): Sector {
+    private fun createDemoSector(origin: Coordinate): TreeSet<WorldTile> {
         // create all tiles for this sector
         val sectorTiles = TreeSet<WorldTile>()
         for (x in 0 until TILE_COUNT) {
@@ -39,7 +38,7 @@ object DemoMap {
 
             }
         }
-        return Sector(origin, sectorTiles)
+        return sectorTiles
     }
 
 }

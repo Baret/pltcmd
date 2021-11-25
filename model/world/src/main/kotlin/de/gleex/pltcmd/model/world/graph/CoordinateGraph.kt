@@ -1,12 +1,12 @@
 package de.gleex.pltcmd.model.world.graph
 
-import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.sectorOrigin
+import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.util.debug.DebugFeature
 import de.gleex.pltcmd.util.graph.isConnected
 import mu.KotlinLogging
 import org.jgrapht.Graph
-import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.MaskSubgraph
 import org.jgrapht.graph.builder.GraphTypeBuilder
 import java.util.*
 import kotlin.time.ExperimentalTime
@@ -20,7 +20,7 @@ private val log = KotlinLogging.logger { }
  *
  * This graph is immutable and created by a factory method like [CoordinateGraph.of].
  */
-open class CoordinateGraph<V : CoordinateVertex> protected constructor(private val graph: Graph<V, DefaultEdge>) {
+open class CoordinateGraph<V : CoordinateVertex> internal constructor(protected val graph: Graph<V, CoordinateEdge>) {
 
     /**
      * The smallest aka "south-western most" coordinate in this graph. May be null for an empty graph.
@@ -33,17 +33,11 @@ open class CoordinateGraph<V : CoordinateVertex> protected constructor(private v
     val max: Coordinate?
 
     /**
-     * All sector origins contained in this graph.
-     */
-    val sectorOrigins: Set<Coordinate>
-
-    /**
      * For better performance remember all coordinates in this graph.
      */
-    private val coordinates: Set<Coordinate>
+    internal val coordinates: Set<Coordinate>
 
     init {
-        val sectorOriginsMutable = mutableSetOf<Coordinate>()
         val allCoordinates = mutableSetOf<Coordinate>()
         var min: Coordinate = Coordinate.maximum
         var max: Coordinate = Coordinate.minimum
@@ -51,7 +45,6 @@ open class CoordinateGraph<V : CoordinateVertex> protected constructor(private v
             with(it.coordinate) {
                 min = minOf(min, this)
                 max = maxOf(max, this)
-                sectorOriginsMutable += sectorOrigin
                 allCoordinates += this
             }
         }
@@ -62,9 +55,13 @@ open class CoordinateGraph<V : CoordinateVertex> protected constructor(private v
             this.min = null
             this.max = null
         }
-        sectorOrigins = sectorOriginsMutable
         coordinates = allCoordinates
     }
+
+    /**
+     * The number of vertices in this graph.
+     */
+    val size: Int = graph.vertexSet().size
 
     /**
      * Checks if this graph contains a vertex with the given coordinate.
@@ -84,59 +81,96 @@ open class CoordinateGraph<V : CoordinateVertex> protected constructor(private v
         return graph.vertexSet().firstOrNull { it.coordinate == coordinate }
     }
 
+    /**
+     * @return true if this graph is connected.
+     */
     fun isConnected() = graph.isConnected()
+
+    /**
+     * Creates a new [CoordinateGraph] that contains all vertices of this graph that are also contained in the given
+     * [CoordinateArea], and their corresponding edges.
+     */
+    fun subGraphFor(coordinateArea: CoordinateArea): CoordinateGraph<V> {
+        val maskGraph = MaskSubgraph(
+            graph,
+            // vertexMask
+            { it.coordinate !in coordinateArea },
+            // edgeMask
+            { edge ->
+                val maskFirst = edge.first?.let { it !in coordinateArea } ?: false
+                val maskSecond = edge.second?.let { it !in coordinateArea } ?: false
+                maskFirst && maskSecond
+            }
+        )
+        return CoordinateGraph(maskGraph)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is CoordinateGraph<*>) return false
+
+        if (graph != other.graph) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return graph.hashCode()
+    }
+
+    override fun toString(): String {
+        return "CoordinateGraph(min=$min, max=$max, size=$size)"
+    }
 
     companion object {
 
         /**
          * Creates a new [CoordinateGraph] containing the given vertices and edges between all neighboring ones.
          */
-        @OptIn(ExperimentalTime::class)
         fun <V : CoordinateVertex> of(vertices: SortedSet<V> = emptyList<V>().toSortedSet()): CoordinateGraph<V> {
+            return CoordinateGraph(buildGraph(vertices.toList()))
+        }
+
+        /**
+         * Builds a [Graph] out of the given vertices. All vertices are connected to their neighbors.
+         *
+         * @param vertices the list of vertices. **Must be sorted! Binary search is being performed on this list!**
+         */
+        @JvmStatic
+        @OptIn(ExperimentalTime::class)
+        protected fun <V : CoordinateVertex> buildGraph(vertices: List<V>): Graph<V, CoordinateEdge> {
             val graphBuilder = GraphTypeBuilder
-                .undirected<V, DefaultEdge>()
+                .undirected<V, CoordinateEdge>()
                 .weighted(false)
                 .allowingSelfLoops(false)
                 .allowingMultipleEdges(false)
-                .edgeSupplier { DefaultEdge() }
+                .edgeSupplier { CoordinateEdge() }
                 .buildGraphBuilder()
 
             log.debug { "Building coordinate graph with ${vertices.size} vertices" }
 
-            val sortedList = vertices.toList()
-
+            @DebugFeature("Just for initial performance measurement")
             val duration = measureTime {
                 vertices.forEach { v ->
                     graphBuilder.addVertex(v)
                     // as we move through the vertices W to E and S to N we connect to already present ones
                     val east = v.coordinate.withRelativeEasting(1)
                     val north = v.coordinate.withRelativeNorthing(1)
-                    val eastIndex = sortedList.binarySearchBy(east) { it.coordinate }
+                    val eastIndex = vertices.binarySearchBy(east) { it.coordinate }
                     if (eastIndex >= 0) {
-                        graphBuilder.addEdge(v, sortedList[eastIndex])
+                        graphBuilder.addEdge(v, vertices[eastIndex])
                     }
-                    val northIndex = sortedList.binarySearchBy(north) { it.coordinate }
+                    val northIndex = vertices.binarySearchBy(north) { it.coordinate }
                     if (northIndex >= 0) {
-                        graphBuilder.addEdge(v, sortedList[northIndex])
+                        graphBuilder.addEdge(v, vertices[northIndex])
                     }
                 }
             }
             log.debug { "Filling graph builder took $duration" }
 
-            return CoordinateGraph(graphBuilder.buildAsUnmodifiable())
+            return graphBuilder.buildAsUnmodifiable()
         }
 
-        /**
-         * Maps all given [WorldTile]s to a vertex and creates a [CoordinateGraph].
-         *
-         * @see of
-         */
-        fun <V : CoordinateVertex> ofTiles(
-            tiles: SortedSet<WorldTile>,
-            tileTransformation: (WorldTile) -> V
-        ): CoordinateGraph<V> {
-            return of(tiles.map { tileTransformation(it) }.toSortedSet())
-        }
     }
 
 }

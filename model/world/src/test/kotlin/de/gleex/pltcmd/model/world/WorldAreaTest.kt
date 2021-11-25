@@ -1,6 +1,8 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.graph.CoordinateGraph
+import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
 import io.kotest.core.spec.style.StringSpec
@@ -25,7 +27,8 @@ class WorldAreaTest : StringSpec({
         }
         val eastingRange = 1..(sectorCount * Sector.TILE_COUNT)
         val northingRange = 0..Sector.TILE_COUNT
-        val underTest = WorldArea(sectors.flatMap { it.tiles }.toSortedSet())
+        val underTest =
+            WorldArea(CoordinateGraph.of(sectors.flatMap { it.map { tile -> TileVertex(tile) } }.toSortedSet()))
 
         val duration = measureTime {
             repeat(10) {

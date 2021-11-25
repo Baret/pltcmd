@@ -25,9 +25,9 @@ class KnownWorldTest : WordSpec() {
     private val defaultTerrain = Terrain.of(MOUNTAIN, NINE)
 
     private val originalWorld = WorldMap.create(
-        listOf(sectorAtWithTerrain(
+        sectorAtWithTerrain(
             Coordinate.zero
-        ) { defaultTerrain })
+        ) { defaultTerrain }
     )
 
     private val knownWorld = KnownWorld(originalWorld)
@@ -152,7 +152,7 @@ class KnownWorldTest : WordSpec() {
             }
 
             "find unknown areas correctly" {
-                val area = originalWorld.asWorldArea()
+                val area = originalWorld.area
                 val toReveal = Coordinate(23, 42)
                 val smallArea = CoordinateRectangle(
                     bottomLeftCoordinate = toReveal,
@@ -204,7 +204,7 @@ class KnownWorldTest : WordSpec() {
         }
         assertSoftly {
             originalWorld
-                .asWorldArea()
+                .area
                 .forEachAsClue { coordinate ->
                     val tile = WorldTile(coordinate, defaultTerrain)
                     val expected = when (coordinate) {

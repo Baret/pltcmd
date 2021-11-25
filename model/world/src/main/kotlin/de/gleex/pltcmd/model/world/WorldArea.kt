@@ -6,43 +6,30 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.graph.CoordinateGraph
 import de.gleex.pltcmd.model.world.graph.TileVertex
 import org.hexworks.cobalt.datatypes.Maybe
-import java.util.*
 
 /**
  * A part of the [WorldMap] containing a set of [WorldTile]s. As world tiles map a terrain to a coordinate, a world
  * area is also a [CoordinateArea].
  */
-open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
-    tiles.map { it.coordinate }
-        .toSortedSet()
-}) {
-
+open class WorldArea internal constructor(
     /**
      * The internal data structure holding all [WorldTile]s.
      */
-    protected val graph: CoordinateGraph<TileVertex> = CoordinateGraph.ofTiles(tiles) { TileVertex(it) }
+    protected val graph: CoordinateGraph<TileVertex>
+) : CoordinateArea(graph.coordinates.toSortedSet()) {
 
     companion object {
-        val EMPTY = WorldArea(emptySet<WorldTile>().toSortedSet())
+        val EMPTY = WorldArea(CoordinateGraph.of())
     }
 
-    override val size: Int
-        get() = tiles.size
-
-    override val isEmpty: Boolean
-        get() = tiles.isEmpty()
+    /**
+     * A sequence of tiles in this area.
+     */
+    val tiles: Sequence<WorldTile> = graph.coordinates.asSequence().map { this[it].get() }
 
     // overwrites for return type
     override fun filter(predicate: (Coordinate) -> Boolean): WorldArea {
-        return filterTiles { predicate(it.coordinate) }
-    }
-
-    open fun filterTiles(predicate: (WorldTile) -> Boolean): WorldArea {
-        return WorldArea(
-            tiles
-                .filter(predicate)
-                .toSortedSet()
-        )
+        return intersect(super.filter(predicate))
     }
 
     /**
@@ -57,10 +44,10 @@ open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
      * @return a list of [WorldTile]s along the given path that are present in this area.
      */
     open operator fun get(path: CoordinatePath): List<WorldTile> =
-            path
-                    .map { this[it] }
-                    .filter { it.isPresent }
-                    .map { it.get() }
+        path
+            .map { this[it] }
+            .filter { it.isPresent }
+            .map { it.get() }
 
     open operator fun contains(worldTile: WorldTile) =
             super.contains(worldTile.coordinate)
@@ -71,14 +58,11 @@ open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
      * @see CoordinateArea.intersect
      */
     override infix fun intersect(otherArea: CoordinateArea): WorldArea {
-        return WorldArea(
-            tiles
-                .filter { it.coordinate in otherArea }
-                .toSortedSet())
+        return WorldArea(graph.subGraphFor(otherArea))
     }
 
     override fun toString(): String {
-        return "WorldArea(${tiles.size} tiles)"
+        return "WorldArea(${graph.size} tiles, min=${graph.min}, max=${graph.max})"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -86,16 +70,15 @@ open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
         if (other !is WorldArea) return false
         if (!super.equals(other)) return false
 
-        if (tiles != other.tiles) return false
+        if (graph != other.graph) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + tiles.hashCode()
+        result = 31 * result + graph.hashCode()
         return result
     }
 
-    fun isConnected() = graph.isConnected()
 }

@@ -40,13 +40,13 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
 
     init {
         worldMap.sectors.forEach(::putSector)
-        log.debug { "Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = $visibleSize" }
+        log.debug { "Created GameWorld. Visible size = $visibleSize" }
     }
 
     private fun putSector(sector: Sector) {
-        sector.tiles.forEach {
-            val position = it.coordinate.toPosition()
-            val block = GameBlock(it.terrain)
+        sector.forEach {
+            val position = it.toPosition()
+            val block = GameBlock(sector.getTerrainAt(it)!!)
             setBlockAt(position, block)
         }
     }

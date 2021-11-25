@@ -56,8 +56,7 @@ fun main() {
     val tiles = CoordinateRectangle(origin, Sector.TILE_COUNT, Sector.TILE_COUNT).
             map { coordinate -> WorldTile(coordinate, Terrain.of(TerrainType.FOREST, TerrainHeight.FIVE)) }.
             toSortedSet()
-    val sector = Sector(origin, tiles)
-    val map = WorldMap.create(setOf(sector))
+    val map = WorldMap.create(tiles)
 
     val commandFaction = Faction("player faction")
     val friends = Faction("friendly faction")
