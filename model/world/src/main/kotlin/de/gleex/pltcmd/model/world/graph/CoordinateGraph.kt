@@ -98,12 +98,9 @@ open class CoordinateGraph<V : CoordinateVertex>
             graph,
             // vertexMask
             { it.coordinate !in coordinateArea },
-            // edgeMask
-            { edge ->
-                val maskFirst = edge.first?.let { it !in coordinateArea } ?: false
-                val maskSecond = edge.second?.let { it !in coordinateArea } ?: false
-                maskFirst && maskSecond
-            }
+            // do not mask any edges
+            // edges that are not on the unmasked vertices are filtered out automatically
+            { false }
         )
         return CoordinateGraph(maskGraph)
     }

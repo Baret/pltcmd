@@ -18,16 +18,27 @@ fun main() {
         .toSortedSet()
     val largeGraph = CoordinateGraph.of(verticesLarge)
     log.debug { "Displaying large graph with size ${largeGraph.size}" }
-    val vertexLabelProvider: (TileVertex) -> String = { "${it.coordinate}\n${it.terrainType}\n${it.terrainHeight}" }
-    GraphDisplayer.displayGraph(largeGraph.graph, vertexLabelProvider)
+    largeGraph.display()
 
     log.debug { "Deriving subgraph" }
     val subGraph = largeGraph.subGraphFor(CoordinateRectangle(Coordinate(12, 12), 3, 3))
     log.debug { "Displaying sub graph with size ${subGraph.size}" }
-    GraphDisplayer.displayGraph(subGraph.graph, vertexLabelProvider)
+    subGraph.display()
 
-    log.debug { "Deriving another subgraph" }
+    log.debug { "Deriving another subgraph that only partially overlaps" }
     val subGraph2 = largeGraph.subGraphFor(CoordinateRectangle(Coordinate(5, 5), 7, 7))
     log.debug { "Displaying sub graph with size ${subGraph2.size}" }
-    GraphDisplayer.displayGraph(subGraph2.graph, vertexLabelProvider)
+    subGraph2.display()
+
+    log.debug { "A subgraph outside of the large rectangle should be empty" }
+    val outside = largeGraph.subGraphFor(CoordinateRectangle(Coordinate(20, 20), 100, 100))
+    log.debug { "Is it empty? ${outside.size == 0}" }
+}
+
+private fun CoordinateGraph<TileVertex>.display() {
+    GraphDisplayer.displayGraph(
+        graph = graph,
+        vertexLabelProvider = { "${it.coordinate}\n${it.terrainType}\n${it.terrainHeight}" },
+        edgeLabelProvider = { "${it.first} - ${it.second}" }
+    )
 }
