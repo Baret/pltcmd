@@ -61,6 +61,13 @@ open class WorldArea internal constructor(
         return WorldArea(graph.subGraphFor(otherArea))
     }
 
+    /**
+     * Creates a new [WorldArea] that contains all tiles of this and the other one.
+     */
+    operator fun plus(otherArea: WorldArea): WorldArea {
+        return WorldArea(graph + otherArea.graph)
+    }
+
     override fun toString(): String {
         return "WorldArea(${graph.size} tiles, min=${graph.min}, max=${graph.max})"
     }

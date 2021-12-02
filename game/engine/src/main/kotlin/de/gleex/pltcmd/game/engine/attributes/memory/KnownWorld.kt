@@ -6,23 +6,19 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.util.knowledge.Known
-import java.util.*
 
 /**
  * Knowledge about the [WorldArea] defining the whole [WorldMap]. It is initialized as completely unrevealed
- * and get revealed over time.
+ * and gets revealed over time.
  */
 class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
 
     override val origin: WorldArea = world.area
 
     /**
-     * All not yet revealed (aka. unknown) [Coordinate]s.
+     * The revealed area. It is a growing view onto [origin].
      */
-    private val unrevealed: SortedSet<Coordinate> =
-        origin
-            // create a local copy
-            .toSortedSet()
+    private var revealed: WorldArea = WorldArea.EMPTY
 
     /**
      * @return the [KnownTerrain] at the given location.
@@ -39,26 +35,26 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     /**
      * @return true if this [Coordinate] is not contained in [unrevealed]
      */
-    private fun Coordinate.isRevealed(): Boolean =
-        unrevealed.contains(this).not()
+    private fun Coordinate.isRevealed(): Boolean = this in revealed
 
     /**
      * Reveals the given [Coordinate].
      */
     infix fun reveal(toReveal: Coordinate) {
-        unrevealed.remove(toReveal)
+        reveal(CoordinateArea(toReveal))
     }
 
     /**
      * Reveals the complete [WorldArea].
      */
     infix fun reveal(areaToReveal: CoordinateArea) {
-        unrevealed.removeAll(areaToReveal)
+        revealed += origin.intersect(areaToReveal)
     }
 
     override fun mergeWith(other: KnownWorld): Boolean {
-        return unrevealed
-            .removeAll { it !in other.unrevealed }
+        val knowPreviously = revealed.size
+        revealed += other.revealed
+        return knowPreviously != revealed.size
     }
 
     /**
@@ -67,7 +63,7 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
      * All returned [Coordinate]s are not revealed.
      */
     fun getUnknownIn(area: CoordinateArea): CoordinateArea =
-        area intersect CoordinateArea(this::unrevealed)
+        CoordinateArea { area.filter { it !in revealed }.toSortedSet() }
 
     companion object
 

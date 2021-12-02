@@ -11,6 +11,11 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
  */
 open class CoordinateVertex(val coordinate: Coordinate): Comparable<CoordinateVertex> {
 
+    /**
+     * Returns true if the given vertex is a neighbor of this one, and thus they should be connected by an edge.
+     */
+    open infix fun isNeighborOf(other: CoordinateVertex) = other.coordinate in coordinate.neighbors()
+
     override fun compareTo(other: CoordinateVertex): Int {
         return coordinate.compareTo(other.coordinate)
     }

@@ -129,9 +129,12 @@ open class Main {
      * @return the elements to command in the UI and the HQ entity for sending messages from the UI.
      */
     protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
+        log.debug { "Finding visible sector for coordinate ${gameWorld.visibleTopLeftCoordinate()}" }
         val visibleSector = game.world.sectors.first {
+            log.debug { "Checking sector ${it.origin}" }
             it.origin == gameWorld.visibleTopLeftCoordinate().sectorOrigin
         }
+        log.debug { "Creating elements to command" }
         val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
         val hq = game.newHQIn(visibleSector, game.playerFaction)
             .also { gameWorld.showBase(it) }
@@ -174,11 +177,13 @@ open class Main {
      * Add elements to the game that are not controlled by the player. This implementation adds 2 rifle squads per [Sector].
      */
     protected open fun addHostiles(game: Game, gameWorld: GameWorld) {
+        log.debug { "Creating hostiles" }
         val opfor = Faction("opposing force")
         FactionRelations[opfor, game.playerFaction] = Affiliation.Hostile
         // Adding some elements to every sector
         val elementsPerSector = 2
         game.world.sectors.forEach { sector ->
+            log.debug { "Creating $elementsPerSector hostile elements in sector ${sector.origin}" }
             repeat(elementsPerSector) {
                 game.addElementInSector(sector, Elements.rifleSquad.new(), faction = opfor, playerControlled = false)
                     .also(gameWorld::trackUnit)

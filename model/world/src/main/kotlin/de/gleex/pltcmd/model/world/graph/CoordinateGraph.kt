@@ -7,6 +7,7 @@ import de.gleex.pltcmd.util.graph.isConnected
 import mu.KotlinLogging
 import org.jgrapht.Graph
 import org.jgrapht.graph.MaskSubgraph
+import org.jgrapht.graph.builder.GraphBuilder
 import org.jgrapht.graph.builder.GraphTypeBuilder
 import java.util.*
 import kotlin.time.ExperimentalTime
@@ -25,46 +26,39 @@ open class CoordinateGraph<V : CoordinateVertex>
         @DebugFeature("just to play around. may be protected")
         internal val graph: Graph<V, CoordinateEdge>) {
 
-    /**
-     * The smallest aka "south-western most" coordinate in this graph. May be null for an empty graph.
-     */
-    val min: Coordinate?
+    init {
+        log.debug { "Creating vertex lookup for ${graph.vertexSet().size} vertices" }
+    }
 
-    /**
-     * The largest aka "north-eastern most" coordinate in this graph. May be null for an empty graph.
-     */
-    val max: Coordinate?
+    private val vertexLookup: Map<Coordinate, V> by lazy { graph.vertexSet().associateBy { it.coordinate } }
+
+    init {
+        log.debug { "Creating remaining CoordinateGraph fields" }
+    }
 
     /**
      * For better performance remember all coordinates in this graph.
      */
-    internal val coordinates: Set<Coordinate>
+    internal val coordinates: Set<Coordinate> = vertexLookup.keys
 
-    init {
-        val allCoordinates = mutableSetOf<Coordinate>()
-        var min: Coordinate = Coordinate.maximum
-        var max: Coordinate = Coordinate.minimum
-        graph.vertexSet().forEach {
-            with(it.coordinate) {
-                min = minOf(min, this)
-                max = maxOf(max, this)
-                allCoordinates += this
-            }
-        }
-        if (graph.vertexSet().isNotEmpty()) {
-            this.min = min
-            this.max = max
-        } else {
-            this.min = null
-            this.max = null
-        }
-        coordinates = allCoordinates
-    }
+    /**
+     * The smallest aka "south-western most" coordinate in this graph. May be null for an empty graph.
+     */
+    val min: Coordinate? by lazy { coordinates.minOrNull() }
+
+    /**
+     * The largest aka "north-eastern most" coordinate in this graph. May be null for an empty graph.
+     */
+    val max: Coordinate? by lazy { coordinates.maxOrNull() }
 
     /**
      * The number of vertices in this graph.
      */
     val size: Int = graph.vertexSet().size
+
+    init {
+        log.debug { "Other fields set: min = $min, max = $max, size = $size" }
+    }
 
     /**
      * Checks if this graph contains a vertex with the given coordinate.
@@ -81,13 +75,36 @@ open class CoordinateGraph<V : CoordinateVertex>
      * coordinate exists.
      */
     operator fun get(coordinate: Coordinate): V? {
-        return graph.vertexSet().firstOrNull { it.coordinate == coordinate }
+        return vertexLookup[coordinate]
     }
 
     /**
      * @return true if this graph is connected.
      */
     fun isConnected() = graph.isConnected()
+
+    /**
+     * Creates a new [CoordinateGraph] that contains all edges and vertices of this and [otherGraph] AND any missing
+     * edges between neighboring vertices.
+     */
+    operator fun plus(otherGraph: CoordinateGraph<V>): CoordinateGraph<V> {
+        // TODO: Improve this: create a view onto both graphs PLUS the missing edges in between
+        // The problem with JGraphT provided means: AsGraphUnion is read only, Graphs.addGraph() creates a new graph
+
+        val newInternalGraph = newGraphBuilder<V>()
+            .addGraph(graph)
+            .addGraph(otherGraph.graph)
+        graph.vertexSet().forEach { vertex ->
+            otherGraph.graph
+                .vertexSet()
+                .filter { it.coordinate in vertex.coordinate.neighbors() }
+                .forEach { newInternalGraph.addEdge(vertex, it) }
+        }
+
+        return CoordinateGraph(newInternalGraph.buildAsUnmodifiable())
+        // ...or a completely new graph with new edges
+        //return of((graph.vertexSet() + otherGraph.graph.vertexSet()).toSortedSet())
+    }
 
     /**
      * Creates a new [CoordinateGraph] that contains all vertices of this graph that are also contained in the given
@@ -139,13 +156,7 @@ open class CoordinateGraph<V : CoordinateVertex>
         @JvmStatic
         @OptIn(ExperimentalTime::class)
         protected fun <V : CoordinateVertex> buildGraph(vertices: List<V>): Graph<V, CoordinateEdge> {
-            val graphBuilder = GraphTypeBuilder
-                .undirected<V, CoordinateEdge>()
-                .weighted(false)
-                .allowingSelfLoops(false)
-                .allowingMultipleEdges(false)
-                .edgeSupplier { CoordinateEdge() }
-                .buildGraphBuilder()
+            val graphBuilder = newGraphBuilder<V>()
 
             log.debug { "Building coordinate graph with ${vertices.size} vertices" }
 
@@ -170,6 +181,15 @@ open class CoordinateGraph<V : CoordinateVertex>
 
             return graphBuilder.buildAsUnmodifiable()
         }
+
+        private fun <V : CoordinateVertex> newGraphBuilder(): GraphBuilder<V, CoordinateEdge, Graph<V, CoordinateEdge>> =
+            GraphTypeBuilder
+                .undirected<V, CoordinateEdge>()
+                .weighted(false)
+                .allowingSelfLoops(false)
+                .allowingMultipleEdges(false)
+                .edgeSupplier { CoordinateEdge() }
+                .buildGraphBuilder()
 
     }
 
