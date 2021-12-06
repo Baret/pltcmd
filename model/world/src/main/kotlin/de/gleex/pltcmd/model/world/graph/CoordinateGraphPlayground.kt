@@ -21,7 +21,7 @@ fun main() {
     largeGraph.display()
 
     log.debug { "Deriving subgraph" }
-    val subGraph = largeGraph.subGraphFor(CoordinateRectangle(Coordinate(12, 12), 3, 3))
+    val subGraph = largeGraph.subGraphFor(CoordinateRectangle(Coordinate(12, 10), 3, 3))
     log.debug { "Displaying sub graph with size ${subGraph.size}" }
     subGraph.display()
 
@@ -30,15 +30,15 @@ fun main() {
     log.debug { "Displaying sub graph with size ${subGraph2.size}" }
     subGraph2.display()
 
-    log.debug { "A subgraph outside of the large rectangle should be empty" }
-    val outside = largeGraph.subGraphFor(CoordinateRectangle(Coordinate(20, 20), 100, 100))
-    log.debug { "Is it empty? ${outside.size == 0}" }
+    val plusGraph = subGraph + subGraph2
+    log.debug { "subgraph + subgraph2 = $plusGraph" }
+    plusGraph.display()
 }
 
 private fun CoordinateGraph<TileVertex>.display() {
     GraphDisplayer.displayGraph(
         graph = graph,
         vertexLabelProvider = { "${it.coordinate}\n${it.terrainType}\n${it.terrainHeight}" },
-        edgeLabelProvider = { "${it.first} - ${it.second}" }
+//        edgeLabelProvider = { "${it.first} - ${it.second}" }
     )
 }

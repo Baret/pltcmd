@@ -6,7 +6,6 @@ import de.gleex.pltcmd.util.debug.DebugFeature
 import de.gleex.pltcmd.util.graph.isConnected
 import mu.KotlinLogging
 import org.jgrapht.Graph
-import org.jgrapht.graph.MaskSubgraph
 import org.jgrapht.graph.builder.GraphBuilder
 import org.jgrapht.graph.builder.GraphTypeBuilder
 import java.util.*
@@ -63,18 +62,18 @@ open class CoordinateGraph<V : CoordinateVertex>
     /**
      * Checks if this graph contains a vertex with the given coordinate.
      */
-    operator fun contains(coordinate: Coordinate) = coordinate in coordinates
+    open operator fun contains(coordinate: Coordinate) = coordinate in coordinates
 
     /**
      * Checks if this graph contains the given vertex.
      */
-    operator fun contains(vertex: V) = vertex in graph.vertexSet()
+    open operator fun contains(vertex: V) = vertex in graph.vertexSet()
 
     /**
      * Returns the vertex of this graph with the given [Coordinate] or `null` if no vertex with that
      * coordinate exists.
      */
-    operator fun get(coordinate: Coordinate): V? {
+    open operator fun get(coordinate: Coordinate): V? {
         return vertexLookup[coordinate]
     }
 
@@ -111,15 +110,7 @@ open class CoordinateGraph<V : CoordinateVertex>
      * [CoordinateArea], and their corresponding edges.
      */
     fun subGraphFor(coordinateArea: CoordinateArea): CoordinateGraph<V> {
-        val maskGraph = MaskSubgraph(
-            graph,
-            // vertexMask
-            { it.coordinate !in coordinateArea },
-            // do not mask any edges
-            // edges that are not on the unmasked vertices are filtered out automatically
-            { false }
-        )
-        return CoordinateGraph(maskGraph)
+        return CoordinateGraphView(graph) { it.coordinate in coordinateArea }
     }
 
     override fun equals(other: Any?): Boolean {
