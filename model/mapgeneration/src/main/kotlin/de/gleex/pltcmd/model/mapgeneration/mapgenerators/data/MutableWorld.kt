@@ -169,7 +169,7 @@ class MutableWorld(
      */
     fun find(
         area: CoordinateArea = completeArea,
-        predicate: (Coordinate) -> Boolean = { true }
+        predicate: CoordinateFilter = { true }
     ): SortedSet<Coordinate> {
         return terrainMap.keys.filter { it in area }.filter(predicate).toSortedSet()
     }
@@ -180,7 +180,7 @@ class MutableWorld(
      */
     fun findEmpty(
         area: CoordinateArea = completeArea,
-        predicate: (Coordinate) -> Boolean = { true }
+        predicate: CoordinateFilter = { true }
     ): SortedSet<Coordinate> {
         val empty = area - terrainMap.keys
         return empty.filter { it in area }.filter(predicate).toSortedSet()

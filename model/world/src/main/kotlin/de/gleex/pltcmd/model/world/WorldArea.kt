@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.world.coordinate.CoordinateFilter
 import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.graph.CoordinateGraphView
 import de.gleex.pltcmd.model.world.graph.TileVertex
@@ -24,7 +25,7 @@ open class WorldArea internal constructor(
     val tiles: Sequence<WorldTile> = graph.coordinates.asSequence().map { this[it].get() }
 
     // overwrites for return type
-    override fun filter(predicate: (Coordinate) -> Boolean): WorldArea {
+    override fun filter(predicate: CoordinateFilter): WorldArea {
         return intersect(super.filter(predicate))
     }
 

@@ -1,17 +1,16 @@
 package de.gleex.pltcmd.model.world.graph
 
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.world.coordinate.*
 
 /**
  * A reduced view on the given graph.
  */
 class CoordinateGraphView<V : CoordinateVertex>(
     private val graph: CoordinateGraph<V>,
-    private val filteredCoordinates: CoordinateArea
+    private val viewedCoordinates: CoordinateFilter
 ) {
 
-    val coordinates: Set<Coordinate> by lazy { filteredCoordinates.toSet() }
+    val coordinates: CoordinateArea by lazy { graph.area(viewedCoordinates) }
 
     /**
      * The smallest aka "south-western most" coordinate in this graph. May be null for an empty graph.
@@ -24,7 +23,7 @@ class CoordinateGraphView<V : CoordinateVertex>(
     val max: Coordinate? by lazy { coordinates.maxOrNull() }
 
     operator fun get(coordinate: Coordinate): V? {
-        return coordinate.takeIf { it in filteredCoordinates }
+        return coordinate.takeIf { viewedCoordinates(it) }
             ?.let { graph[it] }
     }
 
@@ -34,11 +33,11 @@ class CoordinateGraphView<V : CoordinateVertex>(
      */
     operator fun plus(otherGraph: CoordinateGraphView<V>): CoordinateGraphView<V> {
         require(otherGraph.graph == graph) { "Can only add views of the same graph together!" }
-        return CoordinateGraphView(graph, filteredCoordinates + otherGraph.filteredCoordinates)
+        return CoordinateGraphView(graph, viewedCoordinates or otherGraph.viewedCoordinates)
     }
 
     infix fun intersect(coordinateArea: CoordinateArea): CoordinateGraphView<V> {
-        return CoordinateGraphView(graph, filteredCoordinates intersect coordinateArea)
+        return CoordinateGraphView(graph, viewedCoordinates intersect coordinateArea)
     }
 
     override fun toString(): String {

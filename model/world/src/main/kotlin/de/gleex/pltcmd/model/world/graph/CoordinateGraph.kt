@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.world.graph
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.world.coordinate.CoordinateFilter
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.util.debug.DebugFeature
 import de.gleex.pltcmd.util.graph.isConnected
@@ -22,9 +23,10 @@ private val log = KotlinLogging.logger { }
  * This graph is immutable and created by a factory method like [CoordinateGraph.of].
  */
 open class CoordinateGraph<V : CoordinateVertex>
-    internal constructor(
-        @DebugFeature("just to play around. may be protected")
-        internal val graph: Graph<V, CoordinateEdge>) {
+internal constructor(
+    @DebugFeature("just to play around. may be protected")
+    internal val graph: Graph<V, CoordinateEdge>
+) {
 
     init {
         require(graph.vertexSet().isEmpty().not()) { "CoordinateGraph must contain coordinates!" }
@@ -95,6 +97,14 @@ open class CoordinateGraph<V : CoordinateVertex>
     fun asView(): CoordinateGraphView<V> {
         val fullArea = CoordinateRectangle(min, max)
         return subGraphFor(fullArea)
+    }
+
+    /** Creates an area of coordinates in this graph by applying the given filter */
+    fun area(filteredCoordinates: CoordinateFilter): CoordinateArea {
+        return CoordinateArea {
+            graph.vertexSet().mapNotNull { if (filteredCoordinates(it.coordinate)) it.coordinate else null }
+                .toSortedSet()
+        }
     }
 
     override fun equals(other: Any?): Boolean {

@@ -6,7 +6,7 @@ import java.util.*
 /**
  * An immutable set of coordinates that should be connected, but there is no check for that.
  */
-open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Iterable<Coordinate> {
+open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Iterable<Coordinate>, CoordinateFilter {
     constructor(coordinates: SortedSet<Coordinate>) : this({ coordinates })
     constructor(coordinate: Coordinate) : this({ sortedSetOf(coordinate) })
 
@@ -94,7 +94,7 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     open infix fun covers(otherArea: CoordinateArea): Boolean =
         coordinates.containsAll(otherArea.coordinates)
 
-    open fun filter(predicate: (Coordinate) -> Boolean): CoordinateArea {
+    open fun filter(predicate: CoordinateFilter): CoordinateArea {
         return CoordinateArea { coordinates.filter(predicate).toSortedSet() }
     }
 
@@ -110,6 +110,9 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     override fun toString(): String {
         return "CoordinateArea with $size coordinates"
     }
+
+    // CoordinateFilter
+    override fun invoke(filterCandidate: Coordinate): Boolean = contains(filterCandidate)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
