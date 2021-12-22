@@ -18,7 +18,7 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     /**
      * The revealed area. It is a growing view onto [origin].
      */
-    private var revealed: WorldArea = origin.intersect(CoordinateArea.EMPTY)
+    private val revealed: MutableSet<Coordinate> = mutableSetOf()
 
     /**
      * @return the [KnownTerrain] at the given location.
@@ -48,12 +48,12 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
      * Reveals the complete [WorldArea].
      */
     infix fun reveal(areaToReveal: CoordinateArea) {
-        revealed += origin.intersect(areaToReveal)
+        revealed.addAll(areaToReveal)
     }
 
     override fun mergeWith(other: KnownWorld): Boolean {
         val knowPreviously = revealed.size
-        revealed += other.revealed
+        revealed.addAll(other.revealed)
         return knowPreviously != revealed.size
     }
 
@@ -64,7 +64,5 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
      */
     fun getUnknownIn(area: CoordinateArea): CoordinateArea =
         CoordinateArea { area.filter { it !in revealed }.toSortedSet() }
-
-    companion object
 
 }
