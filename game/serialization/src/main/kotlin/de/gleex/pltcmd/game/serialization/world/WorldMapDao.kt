@@ -24,7 +24,7 @@ data class WorldMapDao(val tiles: Collection<WorldTile>, val name: String = "leg
         fun of(map: WorldMap, name: String): WorldMapDao {
             val tilesPerOrigin: MutableList<WorldTile> = mutableListOf()
             runBlocking {
-                map.area.tiles.asFlow().flowOn(Dispatchers.Default).buffer().toList(tilesPerOrigin)
+                map.allTiles.asFlow().flowOn(Dispatchers.Default).buffer().toList(tilesPerOrigin)
             }
             return WorldMapDao(tilesPerOrigin, name)
         }

@@ -1,8 +1,6 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.graph.CoordinateGraphView
-import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import kotlin.random.Random
 
@@ -10,34 +8,27 @@ import kotlin.random.Random
  * A sector has 50 by 50 [WorldTile]s (it is a square).
  */
 // TODO: make constructor internal (only the worldMap creates sectors!)
-class Sector(graph: CoordinateGraphView<TileVertex>) : Comparable<Sector>, WorldArea(graph) {
-
-    companion object {
-        /** edge length of a sector (in each directon of the map rectangle) */
-        const val TILE_COUNT = 50
-    }
-
-    init {
-        // validate that a full sector is given and all tiles belong to the same sector
-        require(graph.coordinates.size == TILE_COUNT * TILE_COUNT) {
-            "Could not create sector at origin ${graph.min}: A sector must consist of ${TILE_COUNT * TILE_COUNT} tiles, but $graph given!"
-        }
-    }
-
+class Sector(
     /**
      * The origin of this sector. It is the south-western "starting point" of the area.
      */
-    val origin: Coordinate = graph.min!!
+    val origin: Coordinate,
+    map: WorldMap
+) : Comparable<Sector>, WorldArea(map, { origin == it.sectorOrigin }) {
+
+    companion object {
+        /** edge length of a sector (in each direction of the map rectangle) */
+        const val TILE_COUNT = 50
+    }
 
     init {
         // sectors must have full 50s as origin
         require(origin == origin.sectorOrigin) {
             "Origin of a sector must be on a 50th of the map. Given: $origin"
         }
-        require(graph.coordinates.all { it inSameSector origin }) {
-            "Could not create sector at origin ${origin}: All tiles must be part of the same sector!"
-        }
     }
+
+    override val tiles: Sequence<WorldTile> = map.allTiles.asSequence().filter { contains(it.coordinate) }
 
     /**
      * The [Coordinate] in the center of this sector.

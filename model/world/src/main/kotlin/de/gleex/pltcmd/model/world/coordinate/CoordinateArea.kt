@@ -95,7 +95,7 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
         coordinates.containsAll(otherArea.coordinates)
 
     open fun filter(predicate: CoordinateFilter): CoordinateArea {
-        return FilteredCoordinateArea(predicate, this)
+        return CoordinateArea { coordinates.filter(predicate).toSortedSet() }
     }
 
     /**

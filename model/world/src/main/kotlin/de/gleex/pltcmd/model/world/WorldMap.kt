@@ -1,9 +1,6 @@
 package de.gleex.pltcmd.model.world
 
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import de.gleex.pltcmd.model.world.coordinate.CoordinateCircle
-import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
+import de.gleex.pltcmd.model.world.coordinate.*
 import de.gleex.pltcmd.model.world.graph.WorldMapGraph
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.measure.distance.Distance
@@ -16,7 +13,7 @@ import kotlin.math.min
  * The world contains all map tiles. The world is divided into [Sector]s.
  */
 @OptIn(ExperimentalStdlibApi::class)
-class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
+class WorldMap private constructor(val allTiles: SortedSet<WorldTile>) {
 
     private val worldGraph: WorldMapGraph
 
@@ -29,7 +26,7 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
     /**
      * The world map as [WorldArea].
      */
-    val area: WorldArea = WorldArea(worldGraph.asView())
+    val area: CoordinateRectangle by lazy { CoordinateRectangle(origin, last) }
 
     /** the most south-west [Coordinate] of this world */
     val origin: Coordinate = worldGraph.origin
@@ -50,7 +47,7 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
         worldGraph
             .sectorOrigins
             .asSequence()
-            .map { worldGraph.sectorAt(it) }
+            .map { sectorAt(it) }
 
     init {
         logger.info { "Created WorldMap from $origin to $last, width=$width, height=$height, contains ${worldGraph.sectorOrigins.size} sectors." }
@@ -71,10 +68,10 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
         return coordinate in area
     }
 
-    /** @return the [Terrain] of the tile at the given location or throws an exception if the given coordinate does not belong to this world */
-    operator fun get(coordinate: Coordinate): Terrain {
-        return worldGraph[coordinate]?.tile?.terrain
-            ?: throw IllegalStateException("no terrain for $coordinate")
+    /** @return the [WorldTile] at the given location or throws an exception if the given coordinate does not belong to this world */
+    operator fun get(coordinate: Coordinate): WorldTile {
+        return worldGraph[coordinate]?.tile
+            ?: throw IllegalStateException("no tile for $coordinate")
     }
 
     /** @return the [Terrain] of this world at the given path */
@@ -101,14 +98,14 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
      * Returns a [WorldArea] containing all [WorldTile]s contained in the given [CoordinateArea]
      */
     fun areaOf(coordinateArea: CoordinateArea): WorldArea {
-        return area.intersect(coordinateArea)
+        return WorldArea(this) { it in coordinateArea }
     }
 
     /**
      * @return the [Sector] containing the given [Coordinate]
      */
     fun sectorAt(position: Coordinate): Sector {
-        return worldGraph.sectorAt(position)
+        return Sector(position.sectorOrigin, this)
     }
 
     override fun toString() = "WorldMap[origin = $origin, ${worldGraph.sectorOrigins.size} sectors, size = $width * $height tiles]"

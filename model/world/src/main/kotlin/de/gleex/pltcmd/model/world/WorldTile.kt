@@ -20,6 +20,9 @@ data class WorldTile(val coordinate: Coordinate, val terrain: Terrain) : Compara
             Terrain.of(TerrainType.GRASSLAND, TerrainHeight.THREE)
     )
 
+    val height: TerrainHeight = terrain.height
+    val type: TerrainType = terrain.type
+
     /** Only a single tile per coordinate, as the place on the map is unique */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

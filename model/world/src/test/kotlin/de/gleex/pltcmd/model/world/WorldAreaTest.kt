@@ -1,10 +1,6 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import de.gleex.pltcmd.model.world.graph.CoordinateGraph
-import de.gleex.pltcmd.model.world.graph.CoordinateGraphView
-import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
 import io.kotest.core.spec.style.StringSpec
@@ -23,16 +19,15 @@ class WorldAreaTest : StringSpec({
     "get() must not be slow" {
         val terrain = Terrain.random(Random)
         val sectorCount = 500
-        val sectors = (1..sectorCount).map {
+        val tiles = (1..sectorCount).flatMap {
             val origin = Coordinate(it * Sector.TILE_COUNT, 0)
             sectorAtWithTerrain(origin) { terrain }
-        }
+        }.toSortedSet()
         val eastingRange = 1..(sectorCount * Sector.TILE_COUNT)
         val northingRange = 0..Sector.TILE_COUNT
+        val worldMap = WorldMap.create(tiles)
         val underTest =
-            WorldArea(CoordinateGraphView(CoordinateGraph.of(sectors.flatMap { it.map { tile -> TileVertex(tile) } }.toSortedSet()),
-                CoordinateArea { sectors.flatMap { it.map { tile -> tile.coordinate } }.toSortedSet() }
-            ))
+            WorldArea(worldMap) { areaCoordinate -> tiles.any { areaCoordinate == it.coordinate } }
 
         val duration = measureTime {
             repeat(10) {

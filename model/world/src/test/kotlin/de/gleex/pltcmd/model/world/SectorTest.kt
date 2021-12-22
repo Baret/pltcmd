@@ -2,10 +2,6 @@ package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.Sector.Companion.TILE_COUNT
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import de.gleex.pltcmd.model.world.graph.CoordinateGraph
-import de.gleex.pltcmd.model.world.graph.CoordinateGraphView
-import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.testhelpers.randomSectorAt
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.forEachAsClue
@@ -57,25 +53,6 @@ class SectorTest : WordSpec() {
                     newSectorAt(Coordinate(120, 459))
                 }
             }
-
-            "not be valid with only one tile" {
-                shouldThrow<IllegalArgumentException> {
-                    Sector(
-                        CoordinateGraphView(
-                            CoordinateGraph.of(
-                                sortedSetOf(
-                                    TileVertex(
-                                        WorldTile(
-                                            validOrigin.eastingFromLeft,
-                                            validOrigin.northingFromBottom
-                                        )
-                                    )
-                                )
-                            ), CoordinateArea(validOrigin)
-                        )
-                    )
-                }
-            }
         }
 
         "Coordinates" should {
@@ -123,13 +100,7 @@ class SectorTest : WordSpec() {
 }
 
 private fun newSectorAt(coordinate: Coordinate): Sector {
-    // TODO: Make a protected constructor(Iterable<WorldTile>) for the tests?
-    val sectorCoordinates = randomSectorAt(coordinate)
-    return Sector(
-        CoordinateGraphView(
-            CoordinateGraph.of(sectorCoordinates.map { TileVertex(it) }.toSortedSet()),
-            CoordinateArea {
-                sectorCoordinates.map { it.coordinate }.toSortedSet()
-            })
-    )
+    val sectorTiles = randomSectorAt(coordinate)
+    val worldMap = WorldMap.create(sectorTiles)
+    return Sector(coordinate, worldMap)
 }

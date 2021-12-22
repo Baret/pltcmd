@@ -4,7 +4,6 @@ import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.sectorOrigin
 import kotlinx.collections.immutable.toImmutableSet
 import java.util.*
@@ -67,22 +66,5 @@ class WorldMapGraph(tiles: SortedSet<WorldTile>) :
      * As the sectors are fixed for the whole world we only need to calculate them once.
      */
     private val sectorCache: MutableMap<Coordinate, Sector> = mutableMapOf()
-
-    /**
-     * Returns the [Sector] that contains the given [Coordinate].
-     */
-    fun sectorAt(position: Coordinate): Sector {
-        return sectorCache.computeIfAbsent(position.sectorOrigin) {
-            Sector(
-                subGraphFor(
-                    CoordinateRectangle(
-                        position.sectorOrigin,
-                        Sector.TILE_COUNT,
-                        Sector.TILE_COUNT
-                    )
-                )
-            )
-        }
-    }
 
 }
