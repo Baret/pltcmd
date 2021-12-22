@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.graph.CoordinateGraph
+import de.gleex.pltcmd.model.world.graph.CoordinateGraphView
 import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import kotlin.random.Random
@@ -10,7 +10,7 @@ import kotlin.random.Random
  * A sector has 50 by 50 [WorldTile]s (it is a square).
  */
 // TODO: make constructor internal (only the worldMap creates sectors!)
-class Sector(graph: CoordinateGraph<TileVertex>) : Comparable<Sector>, WorldArea(graph) {
+class Sector(graph: CoordinateGraphView<TileVertex>) : Comparable<Sector>, WorldArea(graph) {
 
     companion object {
         /** edge length of a sector (in each directon of the map rectangle) */
@@ -19,8 +19,8 @@ class Sector(graph: CoordinateGraph<TileVertex>) : Comparable<Sector>, WorldArea
 
     init {
         // validate that a full sector is given and all tiles belong to the same sector
-        require(graph.size == TILE_COUNT * TILE_COUNT) {
-            "Could not create sector at origin ${graph.min}: A sector must consist of ${TILE_COUNT * TILE_COUNT} tiles, but ${graph.size} given!"
+        require(graph.coordinates.size == TILE_COUNT * TILE_COUNT) {
+            "Could not create sector at origin ${graph.min}: A sector must consist of ${TILE_COUNT * TILE_COUNT} tiles, but $graph given!"
         }
     }
 

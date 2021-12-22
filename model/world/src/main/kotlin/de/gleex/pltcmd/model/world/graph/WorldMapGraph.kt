@@ -36,8 +36,8 @@ class WorldMapGraph(tiles: SortedSet<WorldTile>) :
             "WorldMapGraph is not connected. Got ${graph.vertexSet()} vertices and ${graph.edgeSet()} edges."
         }
 
-        origin = super.min!!
-        last =  super.max!!
+        origin = super.min
+        last = super.max
 
         width = 1 + last.eastingFromLeft - origin.eastingFromLeft
         height = 1 + last.northingFromBottom - origin.northingFromBottom

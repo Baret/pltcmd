@@ -22,17 +22,17 @@ fun main() {
 
     log.debug { "Deriving subgraph" }
     val subGraph = largeGraph.subGraphFor(CoordinateRectangle(Coordinate(12, 10), 3, 3))
-    log.debug { "Displaying sub graph with size ${subGraph.size}" }
-    subGraph.display()
+    log.debug { "Displaying sub graph $subGraph" }
+//    subGraph.display()
 
     log.debug { "Deriving another subgraph that only partially overlaps" }
     val subGraph2 = largeGraph.subGraphFor(CoordinateRectangle(Coordinate(5, 5), 7, 7))
-    log.debug { "Displaying sub graph with size ${subGraph2.size}" }
-    subGraph2.display()
+    log.debug { "Displaying sub graph $subGraph2" }
+//    subGraph2.display()
 
     val plusGraph = subGraph + subGraph2
     log.debug { "subgraph + subgraph2 = $plusGraph" }
-    plusGraph.display()
+//    plusGraph.display()
 }
 
 private fun CoordinateGraph<TileVertex>.display() {

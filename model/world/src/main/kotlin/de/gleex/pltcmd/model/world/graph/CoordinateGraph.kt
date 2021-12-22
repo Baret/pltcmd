@@ -2,6 +2,7 @@ package de.gleex.pltcmd.model.world.graph
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.util.debug.DebugFeature
 import de.gleex.pltcmd.util.graph.isConnected
 import mu.KotlinLogging
@@ -26,6 +27,7 @@ open class CoordinateGraph<V : CoordinateVertex>
         internal val graph: Graph<V, CoordinateEdge>) {
 
     init {
+        require(graph.vertexSet().isEmpty().not()) { "CoordinateGraph must contain coordinates!" }
         log.debug { "Creating vertex lookup for ${graph.vertexSet().size} vertices" }
     }
 
@@ -43,12 +45,12 @@ open class CoordinateGraph<V : CoordinateVertex>
     /**
      * The smallest aka "south-western most" coordinate in this graph. May be null for an empty graph.
      */
-    val min: Coordinate? by lazy { coordinates.minOrNull() }
+    val min: Coordinate by lazy { coordinates.minOrNull()!! }
 
     /**
      * The largest aka "north-eastern most" coordinate in this graph. May be null for an empty graph.
      */
-    val max: Coordinate? by lazy { coordinates.maxOrNull() }
+    val max: Coordinate by lazy { coordinates.maxOrNull()!! }
 
     /**
      * The number of vertices in this graph.
@@ -62,18 +64,18 @@ open class CoordinateGraph<V : CoordinateVertex>
     /**
      * Checks if this graph contains a vertex with the given coordinate.
      */
-    open operator fun contains(coordinate: Coordinate) = coordinate in coordinates
+    operator fun contains(coordinate: Coordinate) = coordinate in coordinates
 
     /**
      * Checks if this graph contains the given vertex.
      */
-    open operator fun contains(vertex: V) = vertex in graph.vertexSet()
+    operator fun contains(vertex: V) = vertex in graph.vertexSet()
 
     /**
      * Returns the vertex of this graph with the given [Coordinate] or `null` if no vertex with that
      * coordinate exists.
      */
-    open operator fun get(coordinate: Coordinate): V? {
+    operator fun get(coordinate: Coordinate): V? {
         return vertexLookup[coordinate]
     }
 
@@ -83,34 +85,16 @@ open class CoordinateGraph<V : CoordinateVertex>
     fun isConnected() = graph.isConnected()
 
     /**
-     * Creates a new [CoordinateGraph] that contains all edges and vertices of this and [otherGraph] AND any missing
-     * edges between neighboring vertices.
-     */
-    operator fun plus(otherGraph: CoordinateGraph<V>): CoordinateGraph<V> {
-        // TODO: Improve this: create a view onto both graphs PLUS the missing edges in between
-        // The problem with JGraphT provided means: AsGraphUnion is read only, Graphs.addGraph() creates a new graph
-
-        val newInternalGraph = newGraphBuilder<V>()
-            .addGraph(graph)
-            .addGraph(otherGraph.graph)
-        graph.vertexSet().forEach { vertex ->
-            otherGraph.graph
-                .vertexSet()
-                .filter { it.coordinate in vertex.coordinate.neighbors() }
-                .forEach { newInternalGraph.addEdge(vertex, it) }
-        }
-
-        return CoordinateGraph(newInternalGraph.buildAsUnmodifiable())
-        // ...or a completely new graph with new edges
-        //return of((graph.vertexSet() + otherGraph.graph.vertexSet()).toSortedSet())
-    }
-
-    /**
      * Creates a new [CoordinateGraph] that contains all vertices of this graph that are also contained in the given
      * [CoordinateArea], and their corresponding edges.
      */
-    fun subGraphFor(coordinateArea: CoordinateArea): CoordinateGraph<V> {
-        return CoordinateGraphView(graph) { it.coordinate in coordinateArea }
+    fun subGraphFor(coordinateArea: CoordinateArea): CoordinateGraphView<V> {
+        return CoordinateGraphView(this, coordinateArea)
+    }
+
+    fun asView(): CoordinateGraphView<V> {
+        val fullArea = CoordinateRectangle(min, max)
+        return subGraphFor(fullArea)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -173,7 +157,7 @@ open class CoordinateGraph<V : CoordinateVertex>
             return graphBuilder.buildAsUnmodifiable()
         }
 
-        private fun <V : CoordinateVertex> newGraphBuilder(): GraphBuilder<V, CoordinateEdge, Graph<V, CoordinateEdge>> =
+        internal fun <V : CoordinateVertex> newGraphBuilder(): GraphBuilder<V, CoordinateEdge, Graph<V, CoordinateEdge>> =
             GraphTypeBuilder
                 .undirected<V, CoordinateEdge>()
                 .weighted(false)

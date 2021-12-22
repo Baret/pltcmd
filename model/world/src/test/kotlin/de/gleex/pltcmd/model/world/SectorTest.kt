@@ -2,7 +2,9 @@ package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.Sector.Companion.TILE_COUNT
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.graph.CoordinateGraph
+import de.gleex.pltcmd.model.world.graph.CoordinateGraphView
 import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.testhelpers.randomSectorAt
 import io.kotest.assertions.assertSoftly
@@ -59,15 +61,17 @@ class SectorTest : WordSpec() {
             "not be valid with only one tile" {
                 shouldThrow<IllegalArgumentException> {
                     Sector(
-                        CoordinateGraph.of(
-                            sortedSetOf(
-                                TileVertex(
-                                    WorldTile(
-                                        validOrigin.eastingFromLeft,
-                                        validOrigin.northingFromBottom
+                        CoordinateGraphView(
+                            CoordinateGraph.of(
+                                sortedSetOf(
+                                    TileVertex(
+                                        WorldTile(
+                                            validOrigin.eastingFromLeft,
+                                            validOrigin.northingFromBottom
+                                        )
                                     )
                                 )
-                            )
+                            ), CoordinateArea(validOrigin)
                         )
                     )
                 }
@@ -79,12 +83,12 @@ class SectorTest : WordSpec() {
             "in the same sector should be mapped to the sector origin" {
                 validOrigin.sectorOrigin shouldBe validOrigin
                 io.kotest.data.forAll(
-                        row(0, 0),
-                        row(1, 0),
-                        row(0, 1),
-                        row(1, 1),
-                        row(17, 31),
-                        row(TILE_COUNT - 1, TILE_COUNT - 1)
+                    row(0, 0),
+                    row(1, 0),
+                    row(0, 1),
+                    row(1, 1),
+                    row(17, 31),
+                    row(TILE_COUNT - 1, TILE_COUNT - 1)
                 ) { offsetOriginEast, offsetOriginNorth ->
                     val coordinate = validOrigin.movedBy(offsetOriginEast, offsetOriginNorth)
                     coordinate.sectorOrigin shouldBe validOrigin
@@ -92,17 +96,20 @@ class SectorTest : WordSpec() {
             }
             "in a neighbor sector should be mapped to that sector origin" {
                 io.kotest.data.forAll(
-                        row(TILE_COUNT, 0, 1, 0),
-                        row(0, TILE_COUNT, 0, 1),
-                        row(TILE_COUNT, TILE_COUNT, 1, 1),
-                        row(0, -1, 0, -1),
-                        row(TILE_COUNT / 2, -1, 0, -1),
-                        row(-1, 0, -1, 0),
-                        row(-1, -1, -1, -1),
-                        row(-37, -17, -1, -1)
+                    row(TILE_COUNT, 0, 1, 0),
+                    row(0, TILE_COUNT, 0, 1),
+                    row(TILE_COUNT, TILE_COUNT, 1, 1),
+                    row(0, -1, 0, -1),
+                    row(TILE_COUNT / 2, -1, 0, -1),
+                    row(-1, 0, -1, 0),
+                    row(-1, -1, -1, -1),
+                    row(-37, -17, -1, -1)
                 ) { offsetOriginEast, offsetOriginNorth, expectedSectorOffsetEast, expectedSectorOffsetNorth ->
                     val coordinate = validOrigin.movedBy(offsetOriginEast, offsetOriginNorth)
-                    val expectedOrigin = validOrigin.movedBy(expectedSectorOffsetEast * TILE_COUNT, expectedSectorOffsetNorth * TILE_COUNT)
+                    val expectedOrigin = validOrigin.movedBy(
+                        expectedSectorOffsetEast * TILE_COUNT,
+                        expectedSectorOffsetNorth * TILE_COUNT
+                    )
                     coordinate.sectorOrigin shouldBe expectedOrigin
                 }
             }
@@ -117,5 +124,12 @@ class SectorTest : WordSpec() {
 
 private fun newSectorAt(coordinate: Coordinate): Sector {
     // TODO: Make a protected constructor(Iterable<WorldTile>) for the tests?
-    return Sector(CoordinateGraph.of(randomSectorAt(coordinate).map { TileVertex(it) }.toSortedSet()))
+    val sectorCoordinates = randomSectorAt(coordinate)
+    return Sector(
+        CoordinateGraphView(
+            CoordinateGraph.of(sectorCoordinates.map { TileVertex(it) }.toSortedSet()),
+            CoordinateArea {
+                sectorCoordinates.map { it.coordinate }.toSortedSet()
+            })
+    )
 }

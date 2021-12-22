@@ -77,6 +77,17 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     }
 
     /**
+     * Creates a new [CoordinateArea] containing all [Coordinate]s that are present in this or [otherArea].
+     */
+    open infix operator fun plus(otherArea: CoordinateArea): CoordinateArea {
+        return CoordinateArea {
+            val union = toSet().toSortedSet()
+            union.addAll(otherArea.toSet())
+            union
+        }
+    }
+
+    /**
      * @return true when this area completely covers the other area. This is the case when this area
      * contains at least every [Coordinate] of the other area.
      */

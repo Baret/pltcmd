@@ -18,7 +18,7 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
     /**
      * The revealed area. It is a growing view onto [origin].
      */
-    private var revealed: WorldArea = WorldArea.EMPTY
+    private var revealed: WorldArea = origin.intersect(CoordinateArea.EMPTY)
 
     /**
      * @return the [KnownTerrain] at the given location.

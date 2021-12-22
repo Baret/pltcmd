@@ -33,6 +33,8 @@ import org.hexworks.zircon.api.screen.Screen
 import org.hexworks.zircon.api.uievent.ComponentEventType
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 private val log = KotlinLogging.logger {}
 private val random = Random(GameOptions.MAP_SEED)
@@ -128,6 +130,7 @@ open class Main {
      *
      * @return the elements to command in the UI and the HQ entity for sending messages from the UI.
      */
+    @OptIn(ExperimentalTime::class)
     protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
         log.debug { "Finding visible sector for coordinate ${gameWorld.visibleTopLeftCoordinate()}" }
         val visibleSector = game.world.sectors.first {
@@ -135,11 +138,15 @@ open class Main {
             it.origin == gameWorld.visibleTopLeftCoordinate().sectorOrigin
         }
         log.debug { "Creating elements to command" }
-        val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
-        val hq = game.newHQIn(visibleSector, game.playerFaction)
-            .also { gameWorld.showBase(it) }
-        addHostiles(game, gameWorld)
-        return Pair(elementsToCommand, hq)
+        val (result, duration) = measureTimedValue {
+            val elementsToCommand = createElementsToCommand(visibleSector, game, gameWorld)
+            val hq = game.newHQIn(visibleSector, game.playerFaction)
+                .also { gameWorld.showBase(it) }
+            addHostiles(game, gameWorld)
+            Pair(elementsToCommand, hq)
+        }
+        log.debug { "Created elements after $duration" }
+        return result
     }
 
     /**

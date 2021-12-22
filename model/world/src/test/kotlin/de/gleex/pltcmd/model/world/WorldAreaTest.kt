@@ -1,7 +1,9 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.graph.CoordinateGraph
+import de.gleex.pltcmd.model.world.graph.CoordinateGraphView
 import de.gleex.pltcmd.model.world.graph.TileVertex
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
@@ -28,7 +30,9 @@ class WorldAreaTest : StringSpec({
         val eastingRange = 1..(sectorCount * Sector.TILE_COUNT)
         val northingRange = 0..Sector.TILE_COUNT
         val underTest =
-            WorldArea(CoordinateGraph.of(sectors.flatMap { it.map { tile -> TileVertex(tile) } }.toSortedSet()))
+            WorldArea(CoordinateGraphView(CoordinateGraph.of(sectors.flatMap { it.map { tile -> TileVertex(tile) } }.toSortedSet()),
+                CoordinateArea { sectors.flatMap { it.map { tile -> tile.coordinate } }.toSortedSet() }
+            ))
 
         val duration = measureTime {
             repeat(10) {

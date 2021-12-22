@@ -29,7 +29,7 @@ class WorldMap private constructor(allTiles: SortedSet<WorldTile>) {
     /**
      * The world map as [WorldArea].
      */
-    val area: WorldArea = WorldArea(worldGraph)
+    val area: WorldArea = WorldArea(worldGraph.asView())
 
     /** the most south-west [Coordinate] of this world */
     val origin: Coordinate = worldGraph.origin

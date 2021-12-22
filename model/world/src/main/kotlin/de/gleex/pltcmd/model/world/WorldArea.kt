@@ -3,7 +3,7 @@ package de.gleex.pltcmd.model.world
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
-import de.gleex.pltcmd.model.world.graph.CoordinateGraph
+import de.gleex.pltcmd.model.world.graph.CoordinateGraphView
 import de.gleex.pltcmd.model.world.graph.TileVertex
 import org.hexworks.cobalt.datatypes.Maybe
 
@@ -15,12 +15,8 @@ open class WorldArea internal constructor(
     /**
      * The internal data structure holding all [WorldTile]s.
      */
-    protected val graph: CoordinateGraph<TileVertex>
+    protected val graph: CoordinateGraphView<TileVertex>
 ) : CoordinateArea(graph.coordinates.toSortedSet()) {
-
-    companion object {
-        val EMPTY = WorldArea(CoordinateGraph.of())
-    }
 
     /**
      * A sequence of tiles in this area.
@@ -50,7 +46,7 @@ open class WorldArea internal constructor(
             .map { it.get() }
 
     open operator fun contains(worldTile: WorldTile) =
-            super.contains(worldTile.coordinate)
+        super.contains(worldTile.coordinate)
 
     /**
      * @return a new [WorldArea] containing all tiles of this area that are contained in [otherArea].
@@ -58,7 +54,7 @@ open class WorldArea internal constructor(
      * @see CoordinateArea.intersect
      */
     override infix fun intersect(otherArea: CoordinateArea): WorldArea {
-        return WorldArea(graph.subGraphFor(otherArea))
+        return WorldArea(graph.intersect(otherArea))
     }
 
     /**
@@ -69,7 +65,7 @@ open class WorldArea internal constructor(
     }
 
     override fun toString(): String {
-        return "WorldArea(${graph.size} tiles, min=${graph.min}, max=${graph.max})"
+        return "WorldArea(graph: ${graph})"
     }
 
     override fun equals(other: Any?): Boolean {

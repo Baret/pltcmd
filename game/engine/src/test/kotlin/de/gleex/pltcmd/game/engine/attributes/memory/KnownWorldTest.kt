@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.game.engine.attributes.memory
 
-import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -184,7 +183,7 @@ class KnownWorldTest : WordSpec() {
 
                 knownWorld.reveal(area)
 
-                knownWorld.getUnknownIn(area) shouldBe WorldArea.EMPTY
+                knownWorld.getUnknownIn(area) shouldBe area.intersect(CoordinateArea.EMPTY)
             }
         }
 
