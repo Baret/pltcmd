@@ -3,12 +3,14 @@ package de.gleex.pltcmd.model.world.coordinate
 import de.gleex.pltcmd.model.world.graph.CoordinateGraph
 import de.gleex.pltcmd.model.world.sectorOrigin
 import java.util.*
+import kotlin.random.Random
 
 /**
  * An immutable set of coordinates that should be connected, but there is no check for that.
  */
 open class CoordinateArea(coordinateProvider: () -> CoordinateGraph) : Iterable<Coordinate>, CoordinateFilter {
     constructor(coordinates: CoordinateGraph) : this({ coordinates })
+
     @Deprecated("use CoordinateGraph instead")
     constructor(coordinates: SortedSet<Coordinate>) : this({ CoordinateGraph.of(coordinates) })
     constructor(coordinate: Coordinate) : this({ CoordinateGraph.of(setOf(coordinate).toSortedSet()) })
@@ -29,9 +31,9 @@ open class CoordinateArea(coordinateProvider: () -> CoordinateGraph) : Iterable<
 
     open val description: String
         get() = when {
-            isEmpty   -> "empty area"
+            isEmpty -> "empty area"
             size == 1 -> first!!.toString()
-            else      -> "area between $first and $last"
+            else -> "area between $first and $last"
         }
 
     /**
@@ -86,6 +88,12 @@ open class CoordinateArea(coordinateProvider: () -> CoordinateGraph) : Iterable<
         }
     }
 
+    open infix operator fun minus(otherArea: CoordinateArea): CoordinateArea {
+        return CoordinateArea {
+            coordinates - otherArea.coordinates
+        }
+    }
+
     /**
      * @return true when this area completely covers the other area. This is the case when this area
      * contains at least every [Coordinate] of the other area.
@@ -100,13 +108,11 @@ open class CoordinateArea(coordinateProvider: () -> CoordinateGraph) : Iterable<
     /**
      * Returns an ordered sequence of all [Coordinate]s in this area.
      */
-    open fun asSequence() = coordinates.asSequence()
+    open fun asSequence() = coordinates.asSequence().sorted()
 
-    override operator fun iterator() = coordinates.iterator()
+    override operator fun iterator() = asSequence().iterator()
 
-    // TODO remove or make an internal toGraph()
-    @Deprecated("use CoordinateGraph instead")
-    open fun toSet(): SortedSet<Coordinate> = coordinates.coordinates.toSortedSet()
+    fun random(random: Random): Coordinate = coordinates.coordinates.random(random)
 
     override fun toString(): String {
         return "CoordinateArea $description with $size coordinates"

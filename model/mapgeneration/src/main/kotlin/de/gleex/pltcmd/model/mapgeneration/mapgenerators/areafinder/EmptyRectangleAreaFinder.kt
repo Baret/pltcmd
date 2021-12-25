@@ -4,7 +4,6 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import mu.KotlinLogging
-import java.util.*
 
 private val log = KotlinLogging.logger {}
 
@@ -16,7 +15,7 @@ class EmptyRectangleAreaFinder : AreaFinder {
     override fun findAll(partialWorld: MutableWorld): Set<CoordinateRectangle> {
         val start = System.currentTimeMillis()
         val rectangles = mutableSetOf<CoordinateRectangle>()
-        val allEmpty: SortedSet<Coordinate> = partialWorld.findEmpty()
+        val allEmpty: MutableCollection<Coordinate> = partialWorld.findEmpty().toMutableSet()
         while (allEmpty.isNotEmpty()) {
             val rectangle = getEmptyRectangle(allEmpty.iterator())
             allEmpty.removeAll(rectangle.toSet())

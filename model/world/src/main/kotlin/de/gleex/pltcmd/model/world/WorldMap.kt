@@ -1,6 +1,7 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.*
+import de.gleex.pltcmd.model.world.graph.CoordinateGraph
 import de.gleex.pltcmd.model.world.graph.WorldMapGraph
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.util.measure.distance.Distance
@@ -13,13 +14,15 @@ import kotlin.math.min
  * The world contains all map tiles. The world is divided into [Sector]s.
  */
 @OptIn(ExperimentalStdlibApi::class)
-class WorldMap private constructor(val allTiles: SortedSet<WorldTile>) {
+class WorldMap private constructor(coordinateGraph: CoordinateGraph, tileFactory: (Coordinate) -> WorldTile) {
 
     private val worldGraph: WorldMapGraph
+    // TODO provide accessors
+    val allTiles: SortedSet<WorldTile> by lazy { coordinateGraph.coordinates.map(tileFactory).toSortedSet() }
 
     init {
-        logger.info { "Creating the world graph for the world map with ${allTiles.size} tiles" }
-        worldGraph = WorldMapGraph(allTiles)
+        logger.info { "Creating the world graph for the world map with ${coordinateGraph.size} tiles" }
+        worldGraph = WorldMapGraph(coordinateGraph, tileFactory)
         logger.debug { "Graph complete." }
     }
 
@@ -108,14 +111,32 @@ class WorldMap private constructor(val allTiles: SortedSet<WorldTile>) {
         return Sector(position.sectorOrigin, this)
     }
 
-    override fun toString() = "WorldMap[origin = $origin, ${worldGraph.sectorOrigins.size} sectors, size = $width * $height tiles]"
+    override fun toString() =
+        "WorldMap[origin = $origin, ${worldGraph.sectorOrigins.size} sectors, size = $width * $height tiles]"
 
     companion object : KLogging() {
         /**
          * Create a [WorldMap] consisting of the given [WorldTile]s. All coordinates inside must be connected. There
          * may not be a disconnected world!
          */
-        fun create(tiles: SortedSet<WorldTile>): WorldMap = WorldMap(tiles)
+        @Deprecated("use CoordinateGraph and tileFactory")
+        fun create(tiles: SortedSet<WorldTile>): WorldMap =
+            WorldMap(CoordinateGraph.of(tiles.asSequence().map { it.coordinate }
+                .toSortedSet())) { tiles.find { tile -> tile.coordinate == it }!! }
+
+        /**
+         * Create a [WorldMap] consisting of the given [WorldTile]s. All coordinates inside must be connected. There
+         * may not be a disconnected world!
+         */
+        fun create(area: CoordinateArea, tileFactory: (Coordinate) -> WorldTile): WorldMap =
+            WorldMap(area.coordinates, tileFactory)
+
+        /**
+         * Create a [WorldMap] consisting of the given [WorldTile]s. All coordinates inside must be connected. There
+         * may not be a disconnected world!
+         */
+        internal fun create(coordinateGraph: CoordinateGraph, tileFactory: (Coordinate) -> WorldTile): WorldMap =
+            WorldMap(coordinateGraph, tileFactory)
     }
 
     object Utils {

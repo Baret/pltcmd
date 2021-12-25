@@ -14,20 +14,21 @@ private val log = KotlinLogging.logger {  }
 
 @DebugFeature("Just to play around with coordinate graph and to display simple ones")
 fun main() {
+    val tileGenerator = { it: Coordinate -> WorldTile(it, Terrain.random(Random)) }
     val sectorTiles = CoordinateRectangle(Coordinate(100, 200), Sector.TILE_COUNT, Sector.TILE_COUNT)
-        .map { WorldTile(it, Terrain.random(Random)) }
         .toSortedSet()
-    val largeGraph = WorldMapGraph(sectorTiles)
-    log.debug { "Displaying large graph with size ${largeGraph.size}" }
+    val coordinateGraph = CoordinateGraph.of(sectorTiles)
+    val largeGraph = WorldMapGraph(coordinateGraph, tileGenerator)
+    log.debug { "Displaying large graph with size ${coordinateGraph.size}" }
 //    largeGraph.display()
 
     log.debug { "Deriving subgraph" }
-    val subGraph = largeGraph.subGraphFor(CoordinateRectangle(Coordinate(112, 210), 3, 3))
+    val subGraph = coordinateGraph.subGraphFor(CoordinateRectangle(Coordinate(112, 210), 3, 3))
     log.debug { "Displaying sub graph $subGraph" }
     subGraph.display()
 
     log.debug { "Deriving another subgraph that only partially overlaps" }
-    val subGraph2 = largeGraph.subGraphFor(CoordinateRectangle(Coordinate(95, 195), 7, 7))
+    val subGraph2 = coordinateGraph.subGraphFor(CoordinateRectangle(Coordinate(95, 195), 7, 7))
     log.debug { "Displaying sub graph $subGraph2" }
     subGraph2.display()
 
@@ -38,7 +39,7 @@ fun main() {
 
 private fun WorldMapGraph.display() {
     GraphDisplayer.displayGraph(
-        graph = graph,
+        graph = coordinateGraph.graph,
         vertexLabelProvider = { "${it}\n${this[it]?.terrain}" },
 //        edgeLabelProvider = { "${it.source} - ${it.destination}" }
     )
@@ -53,6 +54,6 @@ private fun CoordinateGraph.display() {
 }
 
 private fun CoordinateGraphView.display() {
-    CoordinateGraph.of(coordinates.toSet()).display()
+    coordinates.coordinates.display()
 }
 

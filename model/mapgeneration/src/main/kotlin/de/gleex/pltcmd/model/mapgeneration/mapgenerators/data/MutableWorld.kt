@@ -82,9 +82,7 @@ class MutableWorld(
             "Not all coordinates contain generated terrain."
         }
 
-        val tiles: SortedSet<WorldTile> =
-            terrainMap.map { (c, terrainData) -> WorldTile(c, Terrain.of(terrainData)) }.toSortedSet()
-        return WorldMap.create(tiles)
+        return WorldMap.create(completeArea) { WorldTile(it, Terrain.of(terrainMap[it]!!)) }
     }
 
     private fun finishGeneration() {
@@ -181,9 +179,9 @@ class MutableWorld(
     fun findEmpty(
         area: CoordinateArea = completeArea,
         predicate: CoordinateFilter = { true }
-    ): SortedSet<Coordinate> {
-        val empty = area - terrainMap.keys
-        return empty.filter { it in area }.filter(predicate).toSortedSet()
+    ): Sequence<Coordinate> {
+        val empty = area.asSequence() - terrainMap.keys
+        return empty.filter(predicate)
     }
 
     private fun requireInBounds(coordinate: Coordinate) {

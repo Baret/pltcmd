@@ -1,8 +1,10 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
+import de.gleex.pltcmd.model.world.graph.CoordinateGraph
 import de.gleex.pltcmd.model.world.terrain.Terrain
-import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.shouldNotBe
@@ -17,17 +19,20 @@ private val log = KotlinLogging.logger {}
 class WorldAreaTest : StringSpec({
 
     "get() must not be slow" {
-        val terrain = Terrain.random(Random)
+        val terrainGenerator = { it: Coordinate -> WorldTile(it, Terrain.random(Random)) }
         val sectorCount = 500
-        val tiles = (1..sectorCount).flatMap {
+        val coordinates = (1..sectorCount).flatMap {
             val origin = Coordinate(it * Sector.TILE_COUNT, 0)
-            sectorAtWithTerrain(origin) { terrain }
+            val sector = CoordinateRectangle(origin, Sector.TILE_COUNT, Sector.TILE_COUNT)
+            sector.asSequence()
         }.toSortedSet()
+        val map = CoordinateGraph.of(coordinates)
+        val area = CoordinateArea(map)
         val eastingRange = 1..(sectorCount * Sector.TILE_COUNT)
         val northingRange = 0..Sector.TILE_COUNT
-        val worldMap = WorldMap.create(tiles)
+        val worldMap = WorldMap.create(map, terrainGenerator)
         val underTest =
-            WorldArea(worldMap) { areaCoordinate -> tiles.any { areaCoordinate == it.coordinate } }
+            WorldArea(worldMap) { area.contains(it) }
 
         val duration = measureTime {
             repeat(10) {

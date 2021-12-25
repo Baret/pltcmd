@@ -5,6 +5,7 @@ import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.sectorOrigin
+import de.gleex.pltcmd.util.debug.DebugFeature
 import kotlinx.collections.immutable.toImmutableSet
 import mu.KotlinLogging
 import java.util.*
@@ -12,23 +13,23 @@ import java.util.*
 private val log = KotlinLogging.logger { }
 
 /**
- * This specific [CoordinateGraph] has the special responsibility to contain all [WorlTile]s of the [WorldMap].
+ * This maps a [CoordinateGraph] to all [WorlTile]s of the [WorldMap].
  *
  * It offers methods to derive [WorldArea]s from it, which are simply views onto the whole graph.
  *
  * At creation time it checks that the given tiles form a valid world map (rectangle of full sectors).
  */
-class WorldMapGraph(tiles: SortedSet<WorldTile>) :
-    CoordinateGraph(
-        buildGraph(tiles.asSequence().map { it.coordinate }.toSet()),
-        { tiles.first().coordinate },
-        { tiles.last().coordinate }) {
+class WorldMapGraph(
+    @DebugFeature("accessible for the playground to visualize the ")
+    internal val coordinateGraph: CoordinateGraph,
+    tiles: (Coordinate) -> WorldTile
+) {
 
     init {
-        log.debug { "Creating tile lookup for ${tiles.size} coordinates" }
+        log.debug { "Creating tile lookup for ${coordinateGraph.size} coordinates" }
     }
 
-    private val tileLookup: Map<Coordinate, WorldTile> by lazy { tiles.associateBy { it.coordinate } }
+    private val tileLookup: Map<Coordinate, WorldTile> by lazy { coordinateGraph.coordinates.associateWith(tiles) }
 
     val width: Int
 
@@ -40,15 +41,15 @@ class WorldMapGraph(tiles: SortedSet<WorldTile>) :
 
     init {
         // Map validation
-        require(tiles.isNotEmpty()) {
+        require(coordinateGraph.isEmpty().not()) {
             "WorldMap cannot be empty! Please provide at least one sector."
         }
-        require(isConnected()) {
-            "WorldMapGraph is not connected. Got ${graph.vertexSet()} vertices and ${graph.edgeSet()} edges."
+        require(coordinateGraph.isConnected()) {
+            "WorldMapGraph is not connected. Got ${coordinateGraph.coordinates} vertices and ${coordinateGraph.graph.edgeSet()} edges."
         }
 
-        origin = super.min!!
-        last = super.max!!
+        origin = coordinateGraph.min!!
+        last = coordinateGraph.max!!
 
         width = 1 + last.eastingFromLeft - origin.eastingFromLeft
         height = 1 + last.northingFromBottom - origin.northingFromBottom
@@ -62,15 +63,15 @@ class WorldMapGraph(tiles: SortedSet<WorldTile>) :
             "WorldMap must have a sector origin as origin but got $origin"
         }
         val expectedSize = width * height
-        require(graph.vertexSet().size == expectedSize) {
-            "WorldMap must be a rectangle of size $width by $height ($expectedSize tiles) but it contains ${graph.vertexSet().size} vertices."
+        require(coordinateGraph.size == expectedSize) {
+            "WorldMap must be a rectangle of size $width by $height ($expectedSize tiles) but it contains ${coordinateGraph.size} vertices."
         }
     }
 
     /**
      * All sector origins contained in this graph.
      */
-    val sectorOrigins: Set<Coordinate> = coordinates.map { it.sectorOrigin }.toImmutableSet()
+    val sectorOrigins: Set<Coordinate> = coordinateGraph.coordinates.map { it.sectorOrigin }.toImmutableSet()
 
     /**
      * Returns the tile of this graph with the given [Coordinate] or `null` if no tile with that

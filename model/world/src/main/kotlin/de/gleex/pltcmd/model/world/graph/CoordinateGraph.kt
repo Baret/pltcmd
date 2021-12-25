@@ -39,8 +39,10 @@ internal constructor(
     /**
      * For better performance remember all coordinates in this graph.
      */
-    internal val coordinates: Set<Coordinate>
-        get() = graph.vertexSet()
+    /**
+     * For better performance remember all coordinates in this graph.
+     */
+    internal val coordinates: Set<Coordinate> = graph.vertexSet()
 
     /**
      * The smallest aka "south-western most" coordinate in this graph. May be null for an empty graph.
@@ -70,6 +72,11 @@ internal constructor(
     fun isEmpty() = size == 0
 
     infix operator fun plus(other: CoordinateGraph): CoordinateGraph = CoordinateGraph(AsGraphUnion(graph, other.graph))
+
+    /** Returns a new graph based on this graph but without the given [other] graph. It is like a `removeAll(other)` for a collection. */
+    infix operator fun minus(other: CoordinateGraph): CoordinateGraph = CoordinateGraph(MaskSubgraph(graph,
+        { other.coordinates.contains(it) }, { other.graph.edgeSet().contains(it) })
+    )
 
     /** Returns a sub graph with all vertices and edges that both graphs have in common. */
     infix fun intersect(other: CoordinateGraph): CoordinateGraph =
@@ -108,7 +115,8 @@ internal constructor(
         if (this === other) return true
         if (other !is CoordinateGraph) return false
 
-        if (graph != other.graph) return false
+        // TODO why are graphs not equal if they have the same coordinates?
+        if (coordinates != other.coordinates) return false
 
         return true
     }
