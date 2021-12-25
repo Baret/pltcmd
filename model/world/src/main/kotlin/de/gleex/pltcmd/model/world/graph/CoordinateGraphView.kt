@@ -5,8 +5,8 @@ import de.gleex.pltcmd.model.world.coordinate.*
 /**
  * A reduced view on the given graph.
  */
-class CoordinateGraphView<V : CoordinateVertex>(
-    private val graph: CoordinateGraph<V>,
+class CoordinateGraphView(
+    private val graph: CoordinateGraph,
     private val viewedCoordinates: CoordinateFilter
 ) {
 
@@ -22,21 +22,20 @@ class CoordinateGraphView<V : CoordinateVertex>(
      */
     val max: Coordinate? by lazy { coordinates.maxOrNull() }
 
-    operator fun get(coordinate: Coordinate): V? {
+    operator fun get(coordinate: Coordinate): Coordinate? {
         return coordinate.takeIf { viewedCoordinates(it) }
-            ?.let { graph[it] }
     }
 
     /**
      * Creates a new [CoordinateGraph] that contains all edges and vertices of this and [otherGraph] AND any missing
      * edges between neighboring vertices.
      */
-    operator fun plus(otherGraph: CoordinateGraphView<V>): CoordinateGraphView<V> {
+    operator fun plus(otherGraph: CoordinateGraphView): CoordinateGraphView {
         require(otherGraph.graph == graph) { "Can only add views of the same graph together!" }
         return CoordinateGraphView(graph, viewedCoordinates or otherGraph.viewedCoordinates)
     }
 
-    infix fun intersect(coordinateArea: CoordinateArea): CoordinateGraphView<V> {
+    infix fun intersect(coordinateArea: CoordinateArea): CoordinateGraphView {
         return CoordinateGraphView(graph, viewedCoordinates intersect coordinateArea)
     }
 

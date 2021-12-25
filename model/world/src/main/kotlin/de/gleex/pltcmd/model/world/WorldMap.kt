@@ -70,13 +70,13 @@ class WorldMap private constructor(val allTiles: SortedSet<WorldTile>) {
 
     /** @return the [WorldTile] at the given location or throws an exception if the given coordinate does not belong to this world */
     operator fun get(coordinate: Coordinate): WorldTile {
-        return worldGraph[coordinate]?.tile
+        return worldGraph[coordinate]
             ?: throw IllegalStateException("no tile for $coordinate")
     }
 
     /** @return the [Terrain] of this world at the given path */
     operator fun get(path: CoordinatePath): List<Terrain> {
-        return path.mapNotNull { worldGraph[it] }.map { it.tile.terrain }
+        return path.mapNotNull { worldGraph[it] }.map { it.terrain }
     }
 
     /**

@@ -6,7 +6,10 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.sectorOrigin
 import kotlinx.collections.immutable.toImmutableSet
+import mu.KotlinLogging
 import java.util.*
+
+private val log = KotlinLogging.logger { }
 
 /**
  * This specific [CoordinateGraph] has the special responsibility to contain all [WorlTile]s of the [WorldMap].
@@ -16,7 +19,13 @@ import java.util.*
  * At creation time it checks that the given tiles form a valid world map (rectangle of full sectors).
  */
 class WorldMapGraph(tiles: SortedSet<WorldTile>) :
-    CoordinateGraph<TileVertex>(buildGraph(tiles.map { TileVertex(it) })) {
+    CoordinateGraph(buildGraph(tiles.asSequence().map { it.coordinate }.toSet())) {
+
+    init {
+        log.debug { "Creating tile lookup for ${tiles.size} coordinates" }
+    }
+
+    private val tileLookup: Map<Coordinate, WorldTile> by lazy { tiles.associateBy { it.coordinate } }
 
     val width: Int
 
@@ -61,10 +70,11 @@ class WorldMapGraph(tiles: SortedSet<WorldTile>) :
     val sectorOrigins: Set<Coordinate> = coordinates.map { it.sectorOrigin }.toImmutableSet()
 
     /**
-     * The keys are [Coordinate.sectorOrigin]. They are mapped to the corresponding sector.
-     *
-     * As the sectors are fixed for the whole world we only need to calculate them once.
+     * Returns the tile of this graph with the given [Coordinate] or `null` if no tile with that
+     * coordinate exists.
      */
-    private val sectorCache: MutableMap<Coordinate, Sector> = mutableMapOf()
+    operator fun get(coordinate: Coordinate): WorldTile? {
+        return tileLookup[coordinate]
+    }
 
 }
