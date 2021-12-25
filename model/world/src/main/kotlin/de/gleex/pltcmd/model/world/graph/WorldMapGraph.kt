@@ -19,7 +19,10 @@ private val log = KotlinLogging.logger { }
  * At creation time it checks that the given tiles form a valid world map (rectangle of full sectors).
  */
 class WorldMapGraph(tiles: SortedSet<WorldTile>) :
-    CoordinateGraph(buildGraph(tiles.asSequence().map { it.coordinate }.toSet())) {
+    CoordinateGraph(
+        buildGraph(tiles.asSequence().map { it.coordinate }.toSet()),
+        { tiles.first().coordinate },
+        { tiles.last().coordinate }) {
 
     init {
         log.debug { "Creating tile lookup for ${tiles.size} coordinates" }
@@ -44,8 +47,8 @@ class WorldMapGraph(tiles: SortedSet<WorldTile>) :
             "WorldMapGraph is not connected. Got ${graph.vertexSet()} vertices and ${graph.edgeSet()} edges."
         }
 
-        origin = super.min
-        last = super.max
+        origin = super.min!!
+        last = super.max!!
 
         width = 1 + last.eastingFromLeft - origin.eastingFromLeft
         height = 1 + last.northingFromBottom - origin.northingFromBottom

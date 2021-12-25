@@ -3,11 +3,15 @@ package de.gleex.pltcmd.model.world.graph
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.coordinate.CoordinateFilter
+import de.gleex.pltcmd.model.world.coordinate.FilteredCoordinateArea
 import de.gleex.pltcmd.util.debug.DebugFeature
 import de.gleex.pltcmd.util.graph.isConnected
 import mu.KotlinLogging
 import org.jgrapht.Graph
+import org.jgrapht.graph.AsGraphUnion
+import org.jgrapht.graph.AsSubgraph
 import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.MaskSubgraph
 import org.jgrapht.graph.builder.GraphBuilder
 import org.jgrapht.graph.builder.GraphTypeBuilder
 import java.util.*
@@ -25,12 +29,12 @@ private val log = KotlinLogging.logger { }
 open class CoordinateGraph
 internal constructor(
     @DebugFeature("just to play around. may be protected")
-    internal val graph: Graph<Coordinate, DefaultEdge>
-) {
-
-    init {
-        require(graph.vertexSet().isEmpty().not()) { "CoordinateGraph must contain coordinates!" }
-    }
+    internal val graph: Graph<Coordinate, DefaultEdge>,
+    /** Provides the smallest aka "south-western most" coordinate in this graph. May be null for an empty graph. */
+    minProvider: () -> Coordinate? = { graph.vertexSet().toSortedSet().firstOrNull() },
+    /** Provides the largest aka "north-eastern most" coordinate in this graph. May be null for an empty graph. */
+    maxProvider: () -> Coordinate? = { graph.vertexSet().toSortedSet().lastOrNull() }
+) : Iterable<Coordinate> {
 
     /**
      * For better performance remember all coordinates in this graph.
@@ -41,31 +45,46 @@ internal constructor(
     /**
      * The smallest aka "south-western most" coordinate in this graph. May be null for an empty graph.
      */
-    val min: Coordinate by lazy { coordinates.minOrNull()!! }
+    val min: Coordinate? by lazy(minProvider)
 
     /**
      * The largest aka "north-eastern most" coordinate in this graph. May be null for an empty graph.
      */
-    val max: Coordinate by lazy { coordinates.maxOrNull()!! }
+    val max: Coordinate? by lazy(maxProvider)
 
     /**
      * The number of vertices in this graph.
      */
-    val size: Int = graph.vertexSet().size
-
-    init {
-        log.debug { "Other fields set: min = $min, max = $max, size = $size" }
-    }
+    val size: Int by lazy { coordinates.size }
 
     /**
      * Checks if this graph contains a vertex with the given coordinate.
      */
-    operator fun contains(coordinate: Coordinate) = coordinate in graph.vertexSet()
+    operator fun contains(coordinate: Coordinate) = coordinate in coordinates
 
     /**
      * @return true if this graph is connected.
      */
-    fun isConnected() = graph.isConnected()
+    internal fun isConnected() = graph.isConnected()
+
+    fun isEmpty() = size == 0
+
+    infix operator fun plus(other: CoordinateGraph): CoordinateGraph = CoordinateGraph(AsGraphUnion(graph, other.graph))
+
+    /** Returns a sub graph with all vertices and edges that both graphs have in common. */
+    infix fun intersect(other: CoordinateGraph): CoordinateGraph =
+        CoordinateGraph(AsSubgraph(graph, other.coordinates, other.graph.edgeSet()))
+
+    fun filter(coordinatesToMaintain: CoordinateFilter): CoordinateGraph {
+        val filteredGraph = MaskSubgraph(graph, { !coordinatesToMaintain(it) }, { false })
+        return CoordinateGraph(filteredGraph)
+    }
+
+    /** Checks that all given [Coordinate]s are also inside this graph. */
+    infix fun containsAll(other: CoordinateGraph): Boolean {
+        // to check edges too, use VF2SubgraphIsomorphismInspector to ensure sub graph exists
+        return coordinates.containsAll(other.coordinates)
+    }
 
     /**
      * Creates a new [CoordinateGraph] that contains all vertices of this graph that are also contained in the given
@@ -77,10 +96,12 @@ internal constructor(
 
     /** Creates an area of coordinates in this graph by applying the given filter */
     fun area(filteredCoordinates: CoordinateFilter): CoordinateArea {
-        return CoordinateArea {
-            graph.vertexSet().mapNotNull { it.takeIf (filteredCoordinates) }
-                .toSortedSet()
-        }
+        return FilteredCoordinateArea(CoordinateArea(this), filteredCoordinates)
+    }
+
+    /** no ordering is guaranteed */
+    override fun iterator(): Iterator<Coordinate> {
+        return coordinates.iterator()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -106,7 +127,18 @@ internal constructor(
          * Creates a new [CoordinateGraph] containing the given vertices and edges between all neighboring ones.
          */
         fun of(vertices: SortedSet<Coordinate> = emptyList<Coordinate>().toSortedSet()): CoordinateGraph {
-            return CoordinateGraph(buildGraph(vertices))
+            // Java interface is not null safe :(
+            if (vertices.isEmpty()) {
+                return CoordinateGraph(buildGraph(vertices), { null }, { null })
+            }
+            return CoordinateGraph(buildGraph(vertices), { vertices.first() }, { vertices.last() })
+        }
+
+        /**
+         * Creates a new [CoordinateGraph] containing the given [Coordinate] only.
+         */
+        fun of(vertex: Coordinate): CoordinateGraph {
+            return of(setOf(vertex).toSortedSet())
         }
 
         /**

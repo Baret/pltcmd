@@ -1,11 +1,11 @@
 package de.gleex.pltcmd.model.world.coordinate
 
 import de.gleex.pltcmd.model.world.WorldTile
+import de.gleex.pltcmd.model.world.graph.CoordinateGraph
 import de.gleex.pltcmd.util.geometry.circleOffsetFromGrid
 import de.gleex.pltcmd.util.geometry.circleWithRadius
 import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.times
-import java.util.*
 import java.util.concurrent.ConcurrentSkipListSet
 
 /** A filled circle around a center. */
@@ -17,11 +17,12 @@ class CoordinateCircle(val center: Coordinate, val radius: Distance) : Coordinat
 
 }
 
-fun Coordinate.fillCircle(radius: Distance): SortedSet<Coordinate> {
+fun Coordinate.fillCircle(radius: Distance): CoordinateGraph {
+    // TODO directly create a graph instead of a Set
     val circle = ConcurrentSkipListSet<Coordinate>()
     val radiusInTiles = (radius / WorldTile.edgeLength).toInt()
     circleWithRadius(eastingFromLeft, northingFromBottom, radiusInTiles) { x, y ->
         circle.add(Coordinate(x, y))
     }
-    return circle
+    return CoordinateGraph.of(circle)
 }

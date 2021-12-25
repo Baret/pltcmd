@@ -1,20 +1,19 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import de.gleex.pltcmd.model.world.graph.CoordinateGraph
 import de.gleex.pltcmd.model.world.sectorOrigin
 import java.util.*
 
 /**
  * An immutable set of coordinates that should be connected, but there is no check for that.
  */
-open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Iterable<Coordinate>, CoordinateFilter {
-    constructor(coordinates: SortedSet<Coordinate>) : this({ coordinates })
-    constructor(coordinate: Coordinate) : this({ sortedSetOf(coordinate) })
+open class CoordinateArea(coordinateProvider: () -> CoordinateGraph) : Iterable<Coordinate>, CoordinateFilter {
+    constructor(coordinates: CoordinateGraph) : this({ coordinates })
+    @Deprecated("use CoordinateGraph instead")
+    constructor(coordinates: SortedSet<Coordinate>) : this({ CoordinateGraph.of(coordinates) })
+    constructor(coordinate: Coordinate) : this({ CoordinateGraph.of(setOf(coordinate).toSortedSet()) })
 
-    companion object {
-        val EMPTY = CoordinateArea(sortedSetOf())
-    }
-
-    private val coordinates: SortedSet<Coordinate> by lazy(coordinateProvider)
+    internal val coordinates: CoordinateGraph by lazy(coordinateProvider)
 
     open val size
         get() = coordinates.size
@@ -23,10 +22,10 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
         get() = coordinates.isEmpty()
 
     open val first: Coordinate?
-        get() = coordinates.first()
+        get() = coordinates.min
 
     open val last: Coordinate?
-        get() = coordinates.last()
+        get() = coordinates.max
 
     open val description: String
         get() = when {
@@ -47,10 +46,12 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     /**
      * All sector origins contained in this area.
      */
-    val sectorOrigins: SortedSet<Coordinate> by lazy {
-        coordinates
-            .map { it.sectorOrigin }
-            .toSortedSet()
+    val sectorOrigins: CoordinateGraph by lazy {
+        // TODO make a connected graph instead just a set of coordinates
+        CoordinateGraph.of(
+            coordinates
+                .map { it.sectorOrigin }
+                .toSortedSet())
     }
 
     /**
@@ -72,7 +73,7 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
      */
     open infix fun intersect(otherArea: CoordinateArea): CoordinateArea {
         return CoordinateArea {
-            (coordinates intersect otherArea).toSortedSet()
+            coordinates intersect otherArea.coordinates
         }
     }
 
@@ -81,9 +82,7 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
      */
     open infix operator fun plus(otherArea: CoordinateArea): CoordinateArea {
         return CoordinateArea {
-            val union = toSet().toSortedSet()
-            union.addAll(otherArea.toSet())
-            union
+            coordinates + otherArea.coordinates
         }
     }
 
@@ -95,7 +94,7 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
         coordinates.containsAll(otherArea.coordinates)
 
     open fun filter(predicate: CoordinateFilter): CoordinateArea {
-        return CoordinateArea { coordinates.filter(predicate).toSortedSet() }
+        return CoordinateArea { coordinates.filter(predicate) }
     }
 
     /**
@@ -105,10 +104,12 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
 
     override operator fun iterator() = coordinates.iterator()
 
-    open fun toSet() = coordinates
+    // TODO remove or make an internal toGraph()
+    @Deprecated("use CoordinateGraph instead")
+    open fun toSet(): SortedSet<Coordinate> = coordinates.coordinates.toSortedSet()
 
     override fun toString(): String {
-        return "CoordinateArea with $size coordinates"
+        return "CoordinateArea $description with $size coordinates"
     }
 
     // CoordinateFilter

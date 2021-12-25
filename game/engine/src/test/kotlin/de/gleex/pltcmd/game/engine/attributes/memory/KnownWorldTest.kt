@@ -183,7 +183,7 @@ class KnownWorldTest : WordSpec() {
 
                 knownWorld.reveal(area)
 
-                knownWorld.getUnknownIn(area) shouldBe area.intersect(CoordinateArea.EMPTY)
+                knownWorld.getUnknownIn(area).size shouldBe 0
             }
         }
 
@@ -220,7 +220,7 @@ class KnownWorldTest : WordSpec() {
      */
     private infix fun CoordinateArea.shouldBeUnknown(area: CoordinateArea) {
         assertSoftly {
-            this shouldContainExactly area
+            this.toSet() shouldContainExactly area.toSet()
             this.map { knownWorld[it] }
                 .forAll { it.revealed shouldBe false }
         }
