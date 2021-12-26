@@ -56,7 +56,7 @@ class CombatMain : Main() {
     }
 
     private fun getBattlefield(generatedMap: WorldMap) =
-            generatedMap.sectors.first().origin.movedBy(20, 30)
+            generatedMap.sectors.sorted().first().origin.movedBy(20, 30)
 
     fun addHostile(position: Coordinate, map: WorldMap, faction: Faction, element: CommandingElement = Elements.rifleSquad.new()): ElementEntity {
         val elementPosition = position.toProperty()
