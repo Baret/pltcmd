@@ -22,14 +22,11 @@ private val log = KotlinLogging.logger { }
 class WorldMapGraph(
     @DebugFeature("accessible for the playground to visualize the ")
     internal val coordinateGraph: CoordinateGraph,
-    tiles: (Coordinate) -> WorldTile
+    private val tileLookup: Map<Coordinate, WorldTile>
 ) {
 
     init {
-        log.debug { "Creating tile lookup for ${coordinateGraph.size} coordinates" }
     }
-
-    private val tileLookup: Map<Coordinate, WorldTile> = coordinateGraph.coordinates.associateWith(tiles)
 
     val width: Int
 

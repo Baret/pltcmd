@@ -15,10 +15,11 @@ private val log = KotlinLogging.logger {  }
 @DebugFeature("Just to play around with coordinate graph and to display simple ones")
 fun main() {
     val tileGenerator = { it: Coordinate -> WorldTile(it, Terrain.random(Random)) }
-    val sectorTiles = CoordinateRectangle(Coordinate(100, 200), Sector.TILE_COUNT, Sector.TILE_COUNT)
+    val sectorCoordinates = CoordinateRectangle(Coordinate(100, 200), Sector.TILE_COUNT, Sector.TILE_COUNT)
         .toSortedSet()
-    val coordinateGraph = CoordinateGraph.of(sectorTiles)
-    val largeGraph = WorldMapGraph(coordinateGraph, tileGenerator)
+    val coordinateGraph = CoordinateGraph.of(sectorCoordinates)
+    val sectorTiles: Map<Coordinate, WorldTile> = coordinateGraph.coordinates.associateWith { tileGenerator(it) }
+    val largeGraph = WorldMapGraph(coordinateGraph, sectorTiles)
     log.debug { "Displaying large graph with size ${coordinateGraph.size}" }
 //    largeGraph.display()
 
