@@ -7,6 +7,7 @@ import de.gleex.pltcmd.model.world.graph.CoordinateGraph
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.longs.shouldBeLessThan
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import mu.KotlinLogging
 import kotlin.random.Random
@@ -40,6 +41,8 @@ class WorldAreaTest : StringSpec({
                 log.debug { "getting tile $wanted" }
                 val result = underTest[wanted]
                 result shouldNotBe null
+                result.isPresent shouldBe true
+                result.get().coordinate shouldBe wanted
             }
         }
         log.info { "accessing tile took $duration" }

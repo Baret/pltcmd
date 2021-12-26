@@ -29,7 +29,7 @@ class WorldMapGraph(
         log.debug { "Creating tile lookup for ${coordinateGraph.size} coordinates" }
     }
 
-    private val tileLookup: Map<Coordinate, WorldTile> by lazy { coordinateGraph.coordinates.associateWith(tiles) }
+    private val tileLookup: Map<Coordinate, WorldTile> = coordinateGraph.coordinates.associateWith(tiles)
 
     val width: Int
 
