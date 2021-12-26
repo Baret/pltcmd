@@ -78,4 +78,22 @@ class WorldMapGraph(
         return tileLookup[coordinate]
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as WorldMapGraph
+
+        if (coordinateGraph != other.coordinateGraph) return false
+        if (tileLookup != other.tileLookup) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = coordinateGraph.hashCode()
+        result = 31 * result + tileLookup.hashCode()
+        return result
+    }
+
 }

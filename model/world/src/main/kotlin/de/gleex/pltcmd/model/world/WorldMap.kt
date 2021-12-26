@@ -120,6 +120,21 @@ class WorldMap private constructor(coordinateGraph: CoordinateGraph, tiles: Map<
     override fun toString() =
         "WorldMap[origin = $origin, ${worldGraph.sectorOrigins.size} sectors, size = $width * $height tiles]"
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as WorldMap
+
+        if (worldGraph != other.worldGraph) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return worldGraph.hashCode()
+    }
+
     companion object : KLogging() {
         /**
          * Create a [WorldMap] consisting of the given [WorldTile]s. All coordinates inside must be connected. There

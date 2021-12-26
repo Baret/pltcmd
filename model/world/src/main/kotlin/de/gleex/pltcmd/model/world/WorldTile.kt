@@ -16,24 +16,27 @@ data class WorldTile(val coordinate: Coordinate, val terrain: Terrain) : Compara
 
     /** creates a tile at the given location with a default terrain (useful for tests) */
     constructor(east: Int, north: Int) : this(
-            Coordinate(east, north),
-            Terrain.of(TerrainType.GRASSLAND, TerrainHeight.THREE)
+        Coordinate(east, north),
+        Terrain.of(TerrainType.GRASSLAND, TerrainHeight.THREE)
     )
 
     val height: TerrainHeight = terrain.height
     val type: TerrainType = terrain.type
 
-    /** Only a single tile per coordinate, as the place on the map is unique */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other?.javaClass != javaClass) return false
+        if (javaClass != other?.javaClass) return false
+
         other as WorldTile
-        return coordinate.equals(other.coordinate)
+
+        return (coordinate == other.coordinate) &&
+                (terrain == other.terrain)
     }
 
-    /** Only a single tile per coordinate, as the place on the map is unique */
     override fun hashCode(): Int {
-        return coordinate.hashCode()
+        var result = coordinate.hashCode()
+        result = 31 * result + terrain.hashCode()
+        return result
     }
 
     /** sorted by coordinate and then by terrain height */

@@ -76,14 +76,14 @@ open class WorldArea internal constructor(
         if (other !is WorldArea) return false
         if (!super.equals(other)) return false
 
-        if (world != other.world) return false
+        if (tiles.toSet() != other.tiles.toSet()) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + world.hashCode()
+        result = 31 * result + tiles.toSet().hashCode()
         return result
     }
 

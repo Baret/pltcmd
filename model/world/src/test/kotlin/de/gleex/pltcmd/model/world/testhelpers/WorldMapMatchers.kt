@@ -14,8 +14,8 @@ infix fun WorldMap.shouldHaveSameTerrain(other: WorldMap) = this should haveSame
 
 fun haveSameTerrain(expected: WorldMap) = object: Matcher<WorldMap> {
     override fun test(value: WorldMap): MatcherResult {
-        val sectors = value.sectors.toList()
-        val expectedSectors = expected.sectors.toList()
+        val sectors = value.sectors.sorted().toList()
+        val expectedSectors = expected.sectors.sorted().toList()
         val errorMessage = when {
             value.origin != expected.origin -> {
                 Maybe.of("origin ${value.origin} does not equal expected ${expected.origin}")

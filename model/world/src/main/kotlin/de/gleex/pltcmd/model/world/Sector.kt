@@ -82,9 +82,8 @@ class Sector(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Sector) return false
-        if (!super.equals(other)) return false
-
         if (origin != other.origin) return false
+        if (!super.equals(other)) return false
 
         return true
     }

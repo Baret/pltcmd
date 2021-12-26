@@ -122,7 +122,7 @@ internal constructor(
     }
 
     override fun hashCode(): Int {
-        return graph.hashCode()
+        return coordinates.hashCode()
     }
 
     override fun toString(): String {
