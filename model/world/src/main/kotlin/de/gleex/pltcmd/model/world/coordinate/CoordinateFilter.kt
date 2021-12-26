@@ -27,4 +27,4 @@ infix fun CoordinateFilter.or(other: CoordinateFilter): CoordinateFilter = {
 /** Creates a filter that checks that a [Coordinate] satisfies this filter and is in the given [area] */
 infix fun CoordinateFilter.intersect(area: CoordinateArea): CoordinateFilter = (and {
     area.contains(it)
-}).cached()
+})
