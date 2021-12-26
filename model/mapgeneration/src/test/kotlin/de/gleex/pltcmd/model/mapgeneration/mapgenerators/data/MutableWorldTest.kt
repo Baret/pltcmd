@@ -7,7 +7,6 @@ import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.sequences.shouldHaveCount
 import io.kotest.matchers.shouldBe
 
 class MutableWorldTest: WordSpec()
@@ -64,9 +63,9 @@ class MutableWorldTest: WordSpec()
                 world.find() shouldHaveSize 0
             }
             "find all coordinates as empty" {
-                val emptyCoordinates = world.findEmpty()
-                emptyCoordinates shouldBe CoordinateRectangle(world.bottomLeftCoordinate, world.topRightCoordinate).asSequence()
-                emptyCoordinates shouldHaveCount world.worldSizeWidthInTiles * world.worldSizeHeightInTiles
+                val emptyCoordinates = world.findEmpty().toSet()
+                emptyCoordinates shouldHaveSize world.worldSizeWidthInTiles * world.worldSizeHeightInTiles
+                emptyCoordinates shouldBe CoordinateRectangle(world.bottomLeftCoordinate, world.topRightCoordinate).toSet()
             }
         }
     }
