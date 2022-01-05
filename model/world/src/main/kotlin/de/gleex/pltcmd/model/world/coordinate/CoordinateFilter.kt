@@ -9,8 +9,8 @@ typealias CoordinateFilter = (Coordinate) -> Boolean
 class CachedCoordinateFilter(private val filter: CoordinateFilter) : CoordinateFilter {
     private val cache: MutableMap<Coordinate, Boolean> = mutableMapOf()
 
-    override fun invoke(p1: Coordinate): Boolean {
-        return cache.computeIfAbsent(p1, filter)
+    override fun invoke(coordinate: Coordinate): Boolean {
+        return cache.computeIfAbsent(coordinate, filter)
     }
 }
 

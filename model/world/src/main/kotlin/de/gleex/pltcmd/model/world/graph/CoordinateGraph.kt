@@ -39,9 +39,6 @@ internal constructor(
     /**
      * For better performance remember all coordinates in this graph.
      */
-    /**
-     * For better performance remember all coordinates in this graph.
-     */
     internal val coordinates: Set<Coordinate> = graph.vertexSet()
 
     /**

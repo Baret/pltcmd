@@ -25,9 +25,6 @@ class WorldMapGraph(
     private val tileLookup: Map<Coordinate, WorldTile>
 ) {
 
-    init {
-    }
-
     val width: Int
 
     val height: Int
