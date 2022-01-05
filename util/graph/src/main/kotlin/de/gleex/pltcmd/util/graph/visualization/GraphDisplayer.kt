@@ -4,9 +4,15 @@ import com.mxgraph.layout.mxFastOrganicLayout
 import com.mxgraph.layout.mxParallelEdgeLayout
 import com.mxgraph.util.mxConstants
 import de.gleex.pltcmd.util.debug.DebugFeature
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.jgrapht.Graph
+import org.jgrapht.Graphs
+import org.jgrapht.ListenableGraph
 import org.jgrapht.ext.JGraphXAdapter
+import org.jgrapht.graph.AbstractBaseGraph
+import org.jgrapht.graph.DefaultListenableGraph
+import org.jgrapht.graph.SimpleGraph
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Toolkit
@@ -34,7 +40,8 @@ object GraphDisplayer {
         vertexLabelProvider: (V) -> String = { it.toString() },
         edgeLabelProvider: (E) -> String? = { null }
     ) {
-        val adapter = buildAdapter(graph, vertexLabelProvider, edgeLabelProvider)
+        val listenableGraph = listenableEmptyGraphOf(graph)
+        val adapter = buildAdapter(listenableGraph, vertexLabelProvider, edgeLabelProvider)
         val component = com.mxgraph.swing.mxGraphComponent(adapter)
         layout(adapter)
 
@@ -56,10 +63,32 @@ object GraphDisplayer {
         frame.defaultCloseOperation = JFrame.DISPOSE_ON_CLOSE
         frame.pack()
         frame.isVisible = true
+        runBlocking {
+            graph.edgeSet().forEachIndexed { index, e ->
+                Graphs.addEdgeWithVertices(listenableGraph, graph, e)
+                if (index % 20 == 0) {
+                    layout(adapter)
+                }
+            }
+        }
+    }
+
+    private fun <V, E> listenableEmptyGraphOf(graph: Graph<V, E>): ListenableGraph<V, E> {
+        if(graph is AbstractBaseGraph) {
+            return DefaultListenableGraph(graph.clone() as Graph<V, E>)
+        }
+        val vertexIterator = graph.vertexSet().iterator()
+        val edgeIterator = graph.edgeSet().iterator()
+        val simple: SimpleGraph<V, E> = SimpleGraph({
+            vertexIterator.next()
+        }, {
+            edgeIterator.next()
+        }, graph.type.isWeighted)
+        return DefaultListenableGraph(simple)
     }
 
     private fun <E : Any, V : Any> buildAdapter(
-        graph: Graph<V, E>,
+        graph: ListenableGraph<V, E>,
         vertexLabelProvider: (V) -> String,
         edgeLabelProvider: (E) -> String?
     ): JGraphXAdapter<V, E> {

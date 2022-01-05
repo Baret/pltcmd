@@ -6,6 +6,7 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.sectorOrigin
 import de.gleex.pltcmd.util.debug.DebugFeature
+import de.gleex.pltcmd.util.graph.visualization.GraphDisplayer
 import kotlinx.collections.immutable.toImmutableSet
 import mu.KotlinLogging
 import java.util.*
@@ -60,6 +61,10 @@ class WorldMapGraph(
         require(coordinateGraph.size == expectedSize) {
             "WorldMap must be a rectangle of size $width by $height ($expectedSize tiles) but it contains ${coordinateGraph.size} vertices."
         }
+
+        log.debug { "World is valid! Displaying graph..." }
+        GraphDisplayer.displayGraph(coordinateGraph.graph)
+        log.debug { "Voila!" }
     }
 
     /**
