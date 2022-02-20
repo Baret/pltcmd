@@ -7,8 +7,8 @@ import kotlin.random.Random
 /**
  * A sector has 50 by 50 [WorldTile]s (it is a square).
  */
-// TODO: make constructor internal (only the worldMap creates sectors!)
-class Sector(
+// only the worldMap creates sectors!
+class Sector internal constructor(
     /**
      * The origin of this sector. It is the south-western "starting point" of the area.
      */
