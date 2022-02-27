@@ -32,16 +32,16 @@ class WorldMap private constructor(coordinateGraph: CoordinateGraph, tiles: Map<
     // TODO provide accessors
     val allTiles: SortedSet<WorldTile> by lazy { tiles.values.toSortedSet() }
 
-    /**
-     * The world map as [WorldArea].
-     */
-    val area: CoordinateRectangle by lazy { CoordinateRectangle(origin, last) }
-
     /** the most south-west [Coordinate] of this world */
     val origin: Coordinate = worldGraph.origin
 
     /** the most north-east [Coordinate] of this world */
     val last: Coordinate = worldGraph.last
+
+    /**
+     * The world map as [WorldArea].
+     */
+    val area: CoordinateRectangle by lazy { CoordinateRectangle(origin, last) }
 
     /** Returns the width of this map in [WorldTile]s */
     val width: Int = worldGraph.width
