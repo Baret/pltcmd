@@ -29,14 +29,17 @@ class WorldAreaTest : StringSpec({
         }.toSortedSet()
         val map = CoordinateGraph.of(coordinates)
         val area = CoordinateArea(map)
-        val eastingRange = 1..(sectorCount * Sector.TILE_COUNT)
-        val northingRange = 0..Sector.TILE_COUNT
+        val first = area.first!!
+        val last = area.last!!
+        val eastingRange = first.eastingFromLeft..last.eastingFromLeft
+        val northingRange = first.northingFromBottom..last.northingFromBottom
         val worldMap = WorldMap.create(map, terrainGenerator)
         val underTest =
             WorldArea(worldMap) { area.contains(it) }
 
+        val invocationCount = 200
         val duration = measureTime {
-            repeat(10) {
+            repeat(invocationCount) {
                 val wanted = Coordinate(eastingRange.random(), northingRange.random())
                 log.debug { "getting tile $wanted" }
                 val result = underTest[wanted]
@@ -45,7 +48,8 @@ class WorldAreaTest : StringSpec({
                 result.get().coordinate shouldBe wanted
             }
         }
-        log.info { "accessing tile took $duration" }
-        duration.inWholeMilliseconds shouldBeLessThan 100
+        val maxDurationInMs: Long = 100
+        log.info { "Accessing a random tile of ${map.size} tiles $invocationCount times took a total of $duration and should be less than $maxDurationInMs ms" }
+        duration.inWholeMilliseconds shouldBeLessThan maxDurationInMs
     }
 })
