@@ -15,12 +15,15 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.collection
 import mu.KLogging
+import mu.KotlinLogging
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.sqrt
 import kotlin.system.measureTimeMillis
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
+
+private val log = KotlinLogging.logger {  }
 
 @OptIn(ExperimentalTime::class)
 class WorldMapTest : WordSpec({
@@ -121,11 +124,10 @@ class WorldMapTest : WordSpec({
                         }
                     )
                 }
-                println("Values for radius $radius")
-                println(allDurations.joinToString(", "))
+                log.info { "Performance information for radius $radius" }
+                log.info { allDurations.joinToString(", ", prefix = "Durations in ms:") }
                 val average = allDurations.average()
-                println("Average: $average ms")
-                println()
+                log.info { "Average of ${allDurations.size} durations: $average ms" }
             }
         }
     }
