@@ -48,7 +48,7 @@ class WorldAreaTest : StringSpec({
                 result.get().coordinate shouldBe wanted
             }
         }
-        val maxDurationInMs: Long = 100
+        val maxDurationInMs: Long = 115
         log.info { "Accessing a random tile of ${map.size} tiles $invocationCount times took a total of $duration and should be less than $maxDurationInMs ms" }
         duration.inWholeMilliseconds shouldBeLessThan maxDurationInMs
     }
