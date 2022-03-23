@@ -41,11 +41,12 @@ open class WorldArea internal constructor(
 
     /**
      * @return a list of [WorldTile]s along the given path that are present in this area.
+     * The path is cut off as soon as it leaves this area.
      */
     open operator fun get(path: CoordinatePath): List<WorldTile> =
         path
             .map { this[it] }
-            .filter { it.isPresent }
+            .takeWhile { it.isPresent }
             .map { it.get() }
 
     open operator fun contains(worldTile: WorldTile) =
