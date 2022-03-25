@@ -14,7 +14,14 @@ class CachedCoordinateFilter(private val filter: CoordinateFilter) : CoordinateF
     }
 }
 
-fun CoordinateFilter.cached() = CachedCoordinateFilter(this)
+/**
+ * Creates a cached version of this [CoordinateFilter]. Returns this if it already is cached.
+ */
+fun CoordinateFilter.cached() = if (this is CachedCoordinateFilter) {
+    this
+} else {
+    CachedCoordinateFilter(this)
+}
 
 infix fun CoordinateFilter.and(other: CoordinateFilter): CoordinateFilter = {
     this(it) && other(it)

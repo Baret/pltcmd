@@ -12,8 +12,8 @@ open class WorldArea internal constructor(
      * The internal data structure holding all [WorldTile]s.
      */
     protected val world: WorldMap,
-    private val areaFilter: CoordinateFilter
-) : FilteredCoordinateArea(world.area, areaFilter) {
+    areaFilter: CoordinateFilter
+) : FilteredCoordinateArea(world.area, areaFilter.cached()) {
 
     /**
      * A sequence of tiles in this area.
@@ -33,7 +33,7 @@ open class WorldArea internal constructor(
      * @return a [Maybe] containing the tile if it present in this area or an empty [Maybe] otherwise.
      */
     open operator fun get(coordinate: Coordinate): Maybe<WorldTile> =
-        if (areaFilter(coordinate)) {
+        if (filter(coordinate)) {
             Maybe.of(world[coordinate])
         } else {
             Maybe.empty()
@@ -58,14 +58,14 @@ open class WorldArea internal constructor(
      * @see CoordinateArea.intersect
      */
     override infix fun intersect(otherArea: CoordinateArea): WorldArea {
-        return WorldArea(world, areaFilter intersect otherArea)
+        return WorldArea(world, filter intersect otherArea)
     }
 
     /**
      * Creates a new [WorldArea] that contains all tiles of this and the other one.
      */
     operator fun plus(otherArea: WorldArea): WorldArea {
-        return WorldArea(world, areaFilter or otherArea.areaFilter)
+        return WorldArea(world, filter or otherArea.filter)
     }
 
     override fun toString(): String {

@@ -3,7 +3,7 @@ package de.gleex.pltcmd.model.world.coordinate
 /**
  * Applies a [CoordinateFilter] to a [CoordinateArea] to create a view on that area.
  */
-open class FilteredCoordinateArea(private val area: CoordinateArea, private val filter: CoordinateFilter) :
+open class FilteredCoordinateArea(private val area: CoordinateArea, protected val filter: CoordinateFilter) :
     CoordinateArea({
         area.coordinates.filter(filter)
     }) {
