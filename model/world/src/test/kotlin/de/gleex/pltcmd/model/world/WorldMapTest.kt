@@ -1,12 +1,21 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
+import de.gleex.pltcmd.model.world.coordinate.c
+import de.gleex.pltcmd.model.world.terrain.Terrain
+import de.gleex.pltcmd.model.world.terrain.TerrainHeight.FIVE
+import de.gleex.pltcmd.model.world.terrain.TerrainHeight.FOUR
+import de.gleex.pltcmd.model.world.terrain.TerrainType.FOREST
+import de.gleex.pltcmd.model.world.terrain.TerrainType.GRASSLAND
 import de.gleex.pltcmd.model.world.testhelpers.randomSectorAt
+import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
 import de.gleex.pltcmd.util.measure.distance.times
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -130,6 +139,69 @@ class WorldMapTest : WordSpec({
                 val average = allDurations.average()
                 log.info { "Average of ${allDurations.size} durations: $average ms" }
             }
+        }
+    }
+
+    "A coordinate path" should {
+        val origin = Coordinate(0, 0)
+        val testSector = sectorAtWithTerrain(origin) { coordinate ->
+            if(coordinate.eastingFromLeft <= 10) {
+                Terrain.of(FOREST, FIVE)
+            } else {
+                Terrain.of(GRASSLAND, FOUR)
+            }
+        }
+        val map = WorldMap.create(testSector)
+        "result in all the terrain when completely inside the map" {
+            val path = CoordinatePath(listOf(
+                c(8, 5),
+                c(9, 5),
+                c(10, 5),
+                c(11, 5)
+            ))
+            val terrain = map[path]
+            terrain shouldContainExactly listOf(
+                Terrain.of(FOREST, FIVE),
+                Terrain.of(FOREST, FIVE),
+                Terrain.of(FOREST, FIVE),
+                Terrain.of(GRASSLAND, FOUR),
+            )
+        }
+        "stop at the world's edge" {
+            val path = CoordinatePath(listOf(
+                c(9, 2),
+                c(10, 1),
+                c(11, 0),
+                c(12, -1),
+                c(13, -2),
+                c(14, -3)
+            ))
+            val terrain = map[path]
+            terrain shouldContainExactly listOf(
+                Terrain.of(FOREST, FIVE),
+                Terrain.of(FOREST, FIVE),
+                Terrain.of(GRASSLAND, FOUR)
+            )
+        }
+        "stop at the world's edge even when it returns into the world" {
+            val path = CoordinatePath(listOf(
+                c(9, 2),
+                c(10, 1),
+                c(11, 0),
+                c(12, -1),
+                c(13, -2),
+                c(15, -1),
+                c(16, 0),
+                c(17, 1),
+                c(18, 2),
+                c(19, 3)
+            ))
+            val terrain = map[path]
+            terrain shouldContainExactly listOf(
+                Terrain.of(FOREST, FIVE),
+                Terrain.of(FOREST, FIVE),
+                Terrain.of(GRASSLAND, FOUR)
+            )
         }
     }
 }) {

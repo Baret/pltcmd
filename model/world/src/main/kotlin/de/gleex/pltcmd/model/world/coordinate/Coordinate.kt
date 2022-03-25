@@ -203,5 +203,9 @@ data class Coordinate private constructor(val eastingFromLeft: Int, val northing
             return created.computeIfAbsent(key) { Coordinate(eastingFromLeft, northingFromBottom) }
         }
     }
-
 }
+
+/**
+ * Shortcut method to create a [Coordinate].
+ */
+fun c(easting: Int, northing: Int) = Coordinate(easting, northing)
