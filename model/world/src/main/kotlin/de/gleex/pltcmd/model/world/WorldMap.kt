@@ -39,9 +39,9 @@ class WorldMap private constructor(coordinateGraph: CoordinateGraph, tiles: Map<
     val last: Coordinate = worldGraph.last
 
     /**
-     * The world map as [WorldArea].
+     * The world map as [CoordinateArea].
      */
-    val area: CoordinateRectangle by lazy { CoordinateRectangle(origin, last) }
+    val area: CoordinateArea by lazy { CoordinateRectangle(origin, last) }
 
     /** Returns the width of this map in [WorldTile]s */
     val width: Int = worldGraph.width
@@ -85,7 +85,12 @@ class WorldMap private constructor(coordinateGraph: CoordinateGraph, tiles: Map<
 
     /** @return the [Terrain] of this world at the given path */
     operator fun get(path: CoordinatePath): List<Terrain> {
-        return path.mapNotNull { worldGraph[it] }.map { it.terrain }
+        return path
+            .asSequence()
+            .takeWhile { it in this }
+            .map { this[it] }
+            .map { it.terrain }
+            .toList()
     }
 
     /**
