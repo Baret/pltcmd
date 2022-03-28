@@ -132,11 +132,7 @@ internal constructor(
          * Creates a new [CoordinateGraph] containing the given vertices and edges between all neighboring ones.
          */
         fun of(vertices: SortedSet<Coordinate> = emptyList<Coordinate>().toSortedSet()): CoordinateGraph {
-            // Java interface is not null safe :(
-            if (vertices.isEmpty()) {
-                return CoordinateGraph(buildGraph(vertices), { null }, { null })
-            }
-            return CoordinateGraph(buildGraph(vertices), { vertices.first() }, { vertices.last() })
+            return CoordinateGraph(buildGraph(vertices), { vertices.firstOrNull() }, { vertices.lastOrNull() })
         }
 
         /**
