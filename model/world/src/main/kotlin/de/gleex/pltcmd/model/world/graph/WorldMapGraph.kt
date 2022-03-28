@@ -20,7 +20,7 @@ private val log = KotlinLogging.logger { }
  * At creation time it checks that the given tiles form a valid world map (rectangle of full sectors).
  */
 class WorldMapGraph(
-    @DebugFeature("accessible for the playground to visualize the ")
+    @DebugFeature("accessible for the playground to visualize the graph")
     internal val coordinateGraph: CoordinateGraph,
     private val tileLookup: Map<Coordinate, WorldTile>
 ) {
