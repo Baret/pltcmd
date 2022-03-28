@@ -35,10 +35,10 @@ class WorldMapGraph(
 
     init {
         // Map validation
-        require(coordinateGraph.isEmpty().not()) {
+        require(coordinateGraph.isEmpty.not()) {
             "WorldMap cannot be empty! Please provide at least one sector."
         }
-        require(coordinateGraph.isConnected()) {
+        require(coordinateGraph.isConnected) {
             "WorldMapGraph is not connected. Got ${coordinateGraph.coordinates} vertices and ${coordinateGraph.graph.edgeSet()} edges."
         }
 

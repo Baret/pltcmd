@@ -62,11 +62,14 @@ internal constructor(
     operator fun contains(coordinate: Coordinate) = coordinate in coordinates
 
     /**
-     * @return true if this graph is connected.
+     * True if this graph is connected.
      */
-    internal fun isConnected() = graph.isConnected()
+    internal val isConnected = graph.isConnected()
 
-    fun isEmpty() = size == 0
+    /**
+     * True if there are no vertices in this graph.
+     */
+    val isEmpty = size == 0
 
     infix operator fun plus(other: CoordinateGraph): CoordinateGraph = CoordinateGraph(AsGraphUnion(graph, other.graph))
 

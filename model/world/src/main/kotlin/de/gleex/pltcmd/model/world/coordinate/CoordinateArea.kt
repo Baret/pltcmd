@@ -21,7 +21,7 @@ open class CoordinateArea(coordinateProvider: () -> CoordinateGraph) : Iterable<
         get() = coordinates.size
 
     open val isEmpty: Boolean
-        get() = coordinates.isEmpty()
+        get() = coordinates.isEmpty
 
     open val first: Coordinate?
         get() = coordinates.min
