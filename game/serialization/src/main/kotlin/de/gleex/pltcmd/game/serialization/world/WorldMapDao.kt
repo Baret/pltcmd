@@ -1,9 +1,13 @@
 package de.gleex.pltcmd.game.serialization.world
 
-import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
-import de.gleex.pltcmd.model.world.sectorOrigin
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 
 /** Stores/loads map data. */
@@ -12,16 +16,16 @@ data class WorldMapDao(val tiles: Collection<WorldTile>, val name: String = "leg
 
     /** Convert this data back to a model. */
     fun toMap(): WorldMap {
-        val sectors = tiles
-            .groupBy { it.sectorOrigin }
-            .map { Sector(it.key, it.value.toSortedSet()) }
-        return WorldMap.create(sectors)
+        return WorldMap.create(tiles.toSortedSet())
     }
 
     companion object {
         /** Returns only the basic data of the map */
         fun of(map: WorldMap, name: String): WorldMapDao {
-            val tilesPerOrigin = map.sectors.flatMap { sector -> sector.tiles.toList() }
+            val tilesPerOrigin: MutableList<WorldTile> = mutableListOf()
+            runBlocking {
+                map.allTiles.asFlow().flowOn(Dispatchers.Default).buffer().toList(tilesPerOrigin)
+            }
             return WorldMapDao(tilesPerOrigin, name)
         }
     }

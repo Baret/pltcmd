@@ -63,9 +63,9 @@ class MutableWorldTest: WordSpec()
                 world.find() shouldHaveSize 0
             }
             "find all coordinates as empty" {
-                val emptyCoordinates = world.findEmpty()
-                emptyCoordinates shouldBe CoordinateRectangle(world.bottomLeftCoordinate, world.topRightCoordinate).toSet()
+                val emptyCoordinates = world.findEmpty().toSet()
                 emptyCoordinates shouldHaveSize world.worldSizeWidthInTiles * world.worldSizeHeightInTiles
+                emptyCoordinates shouldBe CoordinateRectangle(world.bottomLeftCoordinate, world.topRightCoordinate).toSet()
             }
         }
     }

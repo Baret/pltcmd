@@ -20,7 +20,7 @@ class TerrainDetailsFragment(
 ) : InfoSidebarFragment(currentTile, title = "Terrain", neededHeight = 1) {
 
     init {
-        val terrainProperty: ObservableValue<Terrain> = currentInfoTile.bindTransform { world[it] }
+        val terrainProperty: ObservableValue<Terrain> = currentInfoTile.bindTransform { world[it].terrain }
         componentsContainer.addComponent(
                 Components.hbox()
                         .withSpacing(1)
