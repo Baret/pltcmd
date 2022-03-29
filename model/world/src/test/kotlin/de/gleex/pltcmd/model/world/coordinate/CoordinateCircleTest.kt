@@ -110,7 +110,6 @@ class CoordinateCircleTest : StringSpec() {
     }
 
     private fun shouldContain(movedBy: Coordinate) {
-        println(movedBy)
         withClue("should contain $movedBy") {
             underTest.contains(movedBy) shouldBe true
         }

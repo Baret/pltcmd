@@ -17,10 +17,12 @@ import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.debug.DebugFeature
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.screen.Screen
 
+@DebugFeature
 fun main() {
     CombatMain().run()
 }
@@ -54,7 +56,7 @@ class CombatMain : Main() {
     }
 
     private fun getBattlefield(generatedMap: WorldMap) =
-            generatedMap.sectors.first().origin.movedBy(20, 30)
+            generatedMap.sectors.sorted().first().origin.movedBy(20, 30)
 
     fun addHostile(position: Coordinate, map: WorldMap, faction: Faction, element: CommandingElement = Elements.rifleSquad.new()): ElementEntity {
         val elementPosition = position.toProperty()

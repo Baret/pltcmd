@@ -3,7 +3,9 @@ package de.gleex.pltcmd.game.application.examples.units
 import de.gleex.pltcmd.game.ui.strings.Format
 import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.model.elements.units.Units
+import de.gleex.pltcmd.util.debug.DebugFeature
 
+@DebugFeature("Just to see all FrontendStrings of the units")
 fun main() {
     val formatsFormat = Format.values()
             .joinToString("", "", "|") { it.asFormatString() }

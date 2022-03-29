@@ -20,6 +20,7 @@ private val log = KotlinLogging.logger {}
  * @param values each value is displayed in a table row
  * @param M the type of the underlying model
  */
+@Deprecated("zircon comes with an own table, so this can be replaced")
 class Table<M : Any>(
     private val columns: List<Column<M, *>>,
     private val values: List<M>,

@@ -8,12 +8,10 @@ import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementModifier
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementPath
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementProgress
-import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
-import de.gleex.pltcmd.game.engine.entities.types.ElementType
-import de.gleex.pltcmd.game.engine.entities.types.FOBEntity
-import de.gleex.pltcmd.game.engine.entities.types.FOBType
+import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.engine.extensions.addIfMissing
 import de.gleex.pltcmd.game.engine.systems.behaviours.*
+import de.gleex.pltcmd.game.engine.systems.behaviours.Communicating
 import de.gleex.pltcmd.game.engine.systems.facets.*
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
@@ -28,12 +26,15 @@ import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.measure.distance.kilometers
 import de.gleex.pltcmd.util.measure.speed.perHour
+import mu.KotlinLogging
 import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.extensions.FacetWithContext
 import org.hexworks.amethyst.api.newEntityOfType
 import org.hexworks.amethyst.api.system.Behavior
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
+
+private val log = KotlinLogging.logger {  }
 
 /**
  * The factory to create all entities.
@@ -43,8 +44,9 @@ object EntityFactory {
     /**
      * Creates a new base (aka FOB = Forward operating base)
      */
-    fun newBaseAt(position: Coordinate, map: WorldMap, faction: Faction, callSign: CallSign): FOBEntity =
-        newEntityOfType(FOBType) {
+    fun newBaseAt(position: Coordinate, map: WorldMap, faction: Faction, callSign: CallSign): FOBEntity {
+        log.debug { "Spawning new FOB at $position" }
+        return newEntityOfType<FOBType, GameContext>(FOBType) {
             val positionProperty = position.toProperty()
             attributes(
                 FactionAttribute(faction),
@@ -66,7 +68,10 @@ object EntityFactory {
                 Detects,
                 ExecuteOrder
             )
+        }.also {
+            log.debug { "Created FOB at $position: $it" }
         }
+    }
 
     /**
      * Creates a new entity representing a [CommandingElement] in the game world.
@@ -78,6 +83,7 @@ object EntityFactory {
         radioSender: RadioSender,
         world: WorldMap
     ): ElementEntity {
+        log.debug { "Spawning new element at ${initialPosition.value} for faction $faction: $element" }
         val visualRange = if (element.kind == ElementKind.Aerial) {
             VisionPower(25.0)
         } else {
@@ -130,10 +136,12 @@ object EntityFactory {
         if (element.kind == ElementKind.Infantry) {
             facets.add(0, MakesSecurityHalts)
         }
-        return newEntityOfType(ElementType) {
+        return newEntityOfType<ElementType, GameContext>(ElementType) {
             attributes(*attributes.toTypedArray())
             behaviors(*behaviors.toTypedArray())
             facets(*facets.toTypedArray())
+        }.also {
+            log.debug { "Spawned ${it.element.description} for faction $faction at ${initialPosition.value}" }
         }
     }
 

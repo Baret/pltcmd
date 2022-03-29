@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import kotlinx.collections.immutable.persistentMapOf
 import mu.KotlinLogging
@@ -28,27 +29,26 @@ private val log = KotlinLogging.logger {}
  *
  * @param factionViewToPresent used to color element markers. See [ColorRepository.forAffiliation].
  */
-class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent:Faction) :
-        BaseGameArea<Tile, GameBlock>(
-                initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
-                initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
-                initialContents = persistentMapOf(),
-                initialFilters = emptyList()) {
+class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent: Faction) :
+    BaseGameArea<Tile, GameBlock>(
+        initialVisibleSize = Size3D.create(Sector.TILE_COUNT, Sector.TILE_COUNT, 1),
+        initialActualSize = Size3D.create(worldMap.width, worldMap.height, 1),
+        initialContents = persistentMapOf(),
+        initialFilters = emptyList()
+    ) {
 
     private val topLeftOffset: Position
         get() = worldMap.getTopLeftOffset()
 
     init {
-        worldMap.sectors.forEach(::putSector)
-        log.debug { "Created GameWorld with ${worldMap.sectors.size} sectors. Visible size = $visibleSize" }
+        worldMap.allTiles.forEach(::createTile)
+        log.debug { "Created GameWorld. Visible size = $visibleSize" }
     }
 
-    private fun putSector(sector: Sector) {
-        sector.tiles.forEach {
-            val position = it.coordinate.toPosition()
-            val block = GameBlock(it.terrain)
-            setBlockAt(position, block)
-        }
+    private fun createTile(tile: WorldTile) {
+        val position = tile.coordinate.toPosition()
+        val block = GameBlock(tile.terrain)
+        setBlockAt(position, block)
     }
 
     /** adds a marker to the map which is synced with the position of the given element */
@@ -113,7 +113,7 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
      * @return the [GameBlock] at the given [Coordinate] if it is contained in this world.
      */
     fun fetchBlockAt(coordinate: Coordinate): Maybe<GameBlock> =
-            fetchBlockAt(coordinate.toPosition())
+        fetchBlockAt(coordinate.toPosition())
 
     private fun Coordinate.toPosition(): Position3D {
         // translate to 0,0 based grid then invert y axis
@@ -139,9 +139,9 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
      * @see fetchBlockAtVisiblePosition
      */
     fun coordinateAtVisiblePosition(position: Position) =
-            position
-                    .toVisiblePosition3D()
-                    .toCoordinate()
+        position
+            .toVisiblePosition3D()
+            .toCoordinate()
 
     private fun Position.toVisiblePosition3D() = visibleOffset.plus(this.toPosition3D(0))
 }

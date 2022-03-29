@@ -1,10 +1,13 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
+import de.gleex.pltcmd.model.world.graph.CoordinateGraph
 import de.gleex.pltcmd.model.world.terrain.Terrain
-import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.longs.shouldBeLessThan
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import mu.KotlinLogging
 import kotlin.random.Random
@@ -17,25 +20,36 @@ private val log = KotlinLogging.logger {}
 class WorldAreaTest : StringSpec({
 
     "get() must not be slow" {
-        val terrain = Terrain.random(Random)
+        val terrainGenerator = { it: Coordinate -> WorldTile(it, Terrain.random(Random)) }
         val sectorCount = 500
-        val sectors = (1..sectorCount).map {
+        val coordinates = (1..sectorCount).flatMap {
             val origin = Coordinate(it * Sector.TILE_COUNT, 0)
-            sectorAtWithTerrain(origin) { terrain }
-        }
-        val eastingRange = 1..(sectorCount * Sector.TILE_COUNT)
-        val northingRange = 0..Sector.TILE_COUNT
-        val underTest = WorldArea(sectors.flatMap { it.tiles }.toSortedSet())
+            val sector = CoordinateRectangle(origin, Sector.TILE_COUNT, Sector.TILE_COUNT)
+            sector.asSequence()
+        }.toSortedSet()
+        val map = CoordinateGraph.of(coordinates)
+        val area = CoordinateArea(map)
+        val first = area.first!!
+        val last = area.last!!
+        val eastingRange = first.eastingFromLeft..last.eastingFromLeft
+        val northingRange = first.northingFromBottom..last.northingFromBottom
+        val worldMap = WorldMap.create(map, terrainGenerator)
+        val underTest =
+            WorldArea(worldMap) { area.contains(it) }
 
+        val invocationCount = 200
         val duration = measureTime {
-            repeat(10) {
+            repeat(invocationCount) {
                 val wanted = Coordinate(eastingRange.random(), northingRange.random())
                 log.debug { "getting tile $wanted" }
                 val result = underTest[wanted]
                 result shouldNotBe null
+                result.isPresent shouldBe true
+                result.get().coordinate shouldBe wanted
             }
         }
-        log.info { "accessing tile took $duration" }
-        duration.inWholeMilliseconds shouldBeLessThan 100
+        val maxDurationInMs: Long = 115
+        log.info { "Accessing a random tile of ${map.size} tiles $invocationCount times took a total of $duration and should be less than $maxDurationInMs ms" }
+        duration.inWholeMilliseconds shouldBeLessThan maxDurationInMs
     }
 })

@@ -82,25 +82,7 @@ class MutableWorld(
             "Not all coordinates contain generated terrain."
         }
 
-        // generate sectors out of terrainMap
-        val sectors = mutableSetOf<Sector>()
-        for (sectorOriginNorthing in bottomLeftCoordinate.northingFromBottom..topRightCoordinate.northingFromBottom step Sector.TILE_COUNT) {
-            for (sectorOriginEasting in bottomLeftCoordinate.eastingFromLeft..topRightCoordinate.eastingFromLeft step Sector.TILE_COUNT) {
-                val tiles: SortedSet<WorldTile> = TreeSet()
-                val sectorEndEasting = sectorOriginEasting + Sector.TILE_COUNT - 1
-                val sectorEndNorthing = sectorOriginNorthing + Sector.TILE_COUNT - 1
-                for (y in sectorOriginNorthing..sectorEndNorthing) {
-                    for (x in sectorOriginEasting..sectorEndEasting) {
-                        val currentCoordinate = Coordinate(x, y)
-                        // expecting no null values here
-                        val terrain = Terrain.of(terrainMap[currentCoordinate]!!)
-                        tiles.add(WorldTile(currentCoordinate, terrain))
-                    }
-                }
-                sectors.add(Sector(Coordinate(sectorOriginEasting, sectorOriginNorthing), tiles))
-            }
-        }
-        return WorldMap.create(sectors)
+        return WorldMap.create(completeArea) { WorldTile(it, Terrain.of(terrainMap[it]!!)) }
     }
 
     private fun finishGeneration() {
@@ -185,7 +167,7 @@ class MutableWorld(
      */
     fun find(
         area: CoordinateArea = completeArea,
-        predicate: (Coordinate) -> Boolean = { true }
+        predicate: CoordinateFilter = { true }
     ): SortedSet<Coordinate> {
         return terrainMap.keys.filter { it in area }.filter(predicate).toSortedSet()
     }
@@ -196,10 +178,10 @@ class MutableWorld(
      */
     fun findEmpty(
         area: CoordinateArea = completeArea,
-        predicate: (Coordinate) -> Boolean = { true }
-    ): SortedSet<Coordinate> {
-        val empty = area - terrainMap.keys
-        return empty.filter { it in area }.filter(predicate).toSortedSet()
+        predicate: CoordinateFilter = { true }
+    ): Sequence<Coordinate> {
+        val empty = area.asSequence() - terrainMap.keys
+        return empty.filter(predicate)
     }
 
     private fun requireInBounds(coordinate: Coordinate) {

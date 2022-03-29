@@ -34,7 +34,7 @@ fun RememberingEntity.rememberRevealed(tilesToReveal: CoordinateArea) {
         .knownWorld
         // only unknown terrain that is currently visible needs to be revealed
         .getUnknownIn(tilesToReveal)
-        .forEach { memory.knownWorld reveal it }
+        .let { memory.knownWorld reveal it }
 }
 
 /**

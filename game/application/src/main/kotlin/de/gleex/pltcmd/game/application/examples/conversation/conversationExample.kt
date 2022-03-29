@@ -27,6 +27,7 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateRectangle
 import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
+import de.gleex.pltcmd.util.debug.DebugFeature
 import de.gleex.pltcmd.util.events.globalEventBus
 import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.Engine
@@ -49,13 +50,13 @@ import kotlin.random.Random
  * 3 [RadioSender]s and the conversations are built before the UI starts. Later it might be possible
  * to dynamically build conversations in the UI.
  */
+@DebugFeature
 fun main() {
     val origin = Coordinate(100, 250)
     val tiles = CoordinateRectangle(origin, Sector.TILE_COUNT, Sector.TILE_COUNT).
             map { coordinate -> WorldTile(coordinate, Terrain.of(TerrainType.FOREST, TerrainHeight.FIVE)) }.
             toSortedSet()
-    val sector = Sector(origin, tiles)
-    val map = WorldMap.create(setOf(sector))
+    val map = WorldMap.create(tiles)
 
     val commandFaction = Faction("player faction")
     val friends = Faction("friendly faction")

@@ -6,8 +6,10 @@ import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.Units.*
 import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.elements.units.times
+import de.gleex.pltcmd.util.debug.DebugFeature
 import org.hexworks.cobalt.datatypes.Maybe
 
+@DebugFeature("I was playing around with the elements model in the early days")
 fun main() {
     print("Lets assume the engine applies combat stats like 'firepower' to units.")
 

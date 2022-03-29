@@ -1,5 +1,7 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import de.gleex.pltcmd.model.world.graph.CoordinateGraph
+
 /**
  * A rectangular [CoordinateArea] starting at a bottom left coordinate to a top right coordinate.
  */
@@ -8,7 +10,8 @@ class CoordinateRectangle(
     val topRightCoordinate: Coordinate
 ) :
     CoordinateArea({
-        CoordinateRectangleSequence(bottomLeftCoordinate, topRightCoordinate).toSortedSet()
+        // TODO directly create a graph
+        CoordinateGraph.of(CoordinateRectangleSequence(bottomLeftCoordinate, topRightCoordinate).toSortedSet())
     }) {
 
     constructor(bottomLeftCoordinate: Coordinate, width: Int, height: Int) :

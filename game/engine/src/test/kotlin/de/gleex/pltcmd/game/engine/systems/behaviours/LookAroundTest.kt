@@ -1,14 +1,8 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
-import de.gleex.pltcmd.model.world.Sector
-import de.gleex.pltcmd.model.world.WorldTile
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
-import de.gleex.pltcmd.model.world.terrain.TerrainType
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
-import java.util.*
 
 class LookAroundTest : StringSpec({
 
@@ -20,6 +14,7 @@ class LookAroundTest : StringSpec({
     // # # ###
     // #######
     // 0123456
+/*
     val origin = Coordinate(0, 0)
     val tiles: SortedSet<WorldTile> = TreeSet()
     for (x in 0 until Sector.TILE_COUNT) {
@@ -30,7 +25,6 @@ class LookAroundTest : StringSpec({
         }
     }
     val sector = Sector(origin, tiles)
-/*
     val world = WorldMap.create(setOf(sector))
     "isVisibleFrom straight" {
         val straightVisible = Coordinate(2, 0)
