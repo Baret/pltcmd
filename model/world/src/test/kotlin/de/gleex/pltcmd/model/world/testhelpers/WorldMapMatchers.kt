@@ -49,17 +49,5 @@ fun haveSameTerrain(expected: WorldMap) = object: Matcher<WorldMap> {
 }
 
 private fun Sector.isNotEqualTo(otherSector: Sector) = this != otherSector
-    // The old implementation seems to rely on a bad Sector.equals(). Maybe we fixed that now...?
-//        if(this != otherSector) {
-//            true
-//        } else {
-//            // The coordinates are the same, but the terrain might differ
-//            tiles.
-//                firstOrNone { (coordinate, terrain) ->
-//                    val otherTerrain = otherSector.tiles.find { it.coordinate == coordinate }!!.terrain
-//                    otherTerrain != terrain
-//                }.
-//                isDefined()
-//        }
 
 // - - -
