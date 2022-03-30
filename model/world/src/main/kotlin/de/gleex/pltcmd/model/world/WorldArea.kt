@@ -13,7 +13,7 @@ open class WorldArea internal constructor(
      */
     protected val world: WorldMap,
     areaFilter: CoordinateFilter
-) : FilteredCoordinateArea(world.area, areaFilter.cached()) {
+) : FilteredCoordinateArea(world.area, areaFilter) {
 
     /**
      * A sequence of tiles in this area.

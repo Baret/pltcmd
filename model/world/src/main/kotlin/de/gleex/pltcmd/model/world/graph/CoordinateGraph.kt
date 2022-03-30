@@ -64,12 +64,12 @@ internal constructor(
     /**
      * True if this graph is connected.
      */
-    internal val isConnected = graph.isConnected()
+    internal val isConnected by lazy { graph.isConnected() }
 
     /**
      * True if there are no vertices in this graph.
      */
-    val isEmpty = size == 0
+    val isEmpty by lazy { size == 0 }
 
     infix operator fun plus(other: CoordinateGraph): CoordinateGraph = CoordinateGraph(AsGraphUnion(graph, other.graph))
 
