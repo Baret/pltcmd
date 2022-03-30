@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.engine.attributes.memory
 
 import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.WorldMap
+import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import de.gleex.pltcmd.model.world.coordinate.FilteredCoordinateArea
@@ -22,7 +23,11 @@ class KnownWorld(world: WorldMap) : Known<WorldMap, KnownWorld> {
      */
     operator fun get(coordinate: Coordinate): KnownTerrain {
         return knowTerrainMap.getOrPut(coordinate) {
-            KnownTerrain(origin[coordinate], isRevealed = false)
+            if(coordinate in origin) {
+                KnownTerrain(origin[coordinate], isRevealed = false)
+            } else {
+                WorldTile(coordinate.eastingFromLeft, coordinate.northingFromBottom).unrevealed()
+            }
         }
     }
 
