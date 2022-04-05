@@ -44,8 +44,7 @@ class WorldAreaTest : StringSpec({
                 log.debug { "getting tile $wanted" }
                 val result = underTest[wanted]
                 result shouldNotBe null
-                result.isPresent shouldBe true
-                result.get().coordinate shouldBe wanted
+                result?.coordinate shouldBe wanted
             }
         }
         val maxDurationInMs: Long = 115
