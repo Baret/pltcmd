@@ -41,7 +41,7 @@ class Sector internal constructor(
     /**
      * The [WorldTile] at the [center].
      */
-    val center: WorldTile = this[centerCoordinate].get()
+    val center: WorldTile = this[centerCoordinate]!!
 
     /**
      * Returns a random [Coordinate] that lies inside this sector.
@@ -67,7 +67,7 @@ class Sector internal constructor(
         if (!contains(coordinate)) {
             return null
         }
-        return get(coordinate).get().terrain
+        return get(coordinate)?.terrain
     }
 
     /** sorted by origin */
