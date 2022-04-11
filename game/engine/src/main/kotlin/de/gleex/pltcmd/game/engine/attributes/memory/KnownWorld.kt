@@ -51,6 +51,10 @@ class KnownWorld(world: WorldMap) : Known<WorldMap, KnownWorld> {
         return knowPreviously != knowTerrainMap.size
     }
 
+    override fun copy(): KnownWorld {
+        return KnownWorld(origin)
+    }
+
     /**
      * Gets all unknown tiles in the given [CoordinateArea].
      *

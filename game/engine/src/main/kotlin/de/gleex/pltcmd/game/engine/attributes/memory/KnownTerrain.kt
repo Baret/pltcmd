@@ -22,6 +22,10 @@ class KnownTerrain internal constructor(knownTile: WorldTile, isRevealed: Boolea
     /** The [Coordinate] of this [KnownTerrain]. It is always "the truth" independent of the revealed state. */
     val coordinate: Coordinate
         get() = origin.coordinate
+
+    override fun copy(): KnownTerrain {
+        return KnownTerrain(origin, revealed)
+    }
 }
 
 /**

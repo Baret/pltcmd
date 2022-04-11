@@ -49,6 +49,17 @@ class ContactsKnowledgeTest : WordSpec({
     val partialInfantry = KnownContact(reporter, squadAtPos1, KnowledgeGrade.MEDIUM)
     val infantryPlatoon = KnownContact(reporter, platoonAtPos1, KnowledgeGrade.FULL)
 
+    "hasKnown without contact" should {
+        val underTest = Knowledge<ElementEntity, KnownContact>()
+        underTest.knownThings.size shouldBe 0
+
+        "be false for all elements" {
+            underTest[squadAtPos1] shouldBe null
+            underTest[squad2AtPos1] shouldBe null
+            underTest[platoonAtPos1] shouldBe null
+        }
+    }
+
     "hasKnown with single contact" should {
         val underTest = Knowledge<ElementEntity, KnownContact>()
         underTest.update(infantrySquad)
@@ -81,12 +92,61 @@ class ContactsKnowledgeTest : WordSpec({
         val underTest = Knowledge<ElementEntity, KnownContact>()
         underTest.update(partialInfantry)
 
-        underTest[squadAtPos1]?.revealed shouldBe KnowledgeGrade.MEDIUM
-
         "increase existing knowledge" {
-            underTest.update(infantrySquad)
+            underTest[squadAtPos1] shouldBe partialInfantry
+            underTest[squadAtPos1]?.revealed shouldBe KnowledgeGrade.MEDIUM
 
+            underTest.update(infantrySquad) shouldBe true
+
+            underTest[squadAtPos1] shouldBe infantrySquad
             underTest[squadAtPos1]?.revealed shouldBe KnowledgeGrade.FULL
+            // original input must not be modified
+            partialInfantry.revealed shouldBe KnowledgeGrade.MEDIUM
+        }
+    }
+
+    "mergeWith" should {
+        val underTest = Knowledge<ElementEntity, KnownContact>()
+        val other = Knowledge<ElementEntity, KnownContact>()
+
+        "not fail for empty knowledge" {
+            underTest.mergeWith(other) shouldBe false
+        }
+
+        "add new element" {
+            other.update(partialInfantry)
+            other.knownThings.size shouldBe 1
+            underTest[squadAtPos1] shouldBe null
+
+            underTest.mergeWith(other) shouldBe true
+            underTest[squadAtPos1] shouldBe partialInfantry
+            underTest.knownThings.size shouldBe 1
+            other.knownThings.size shouldBe 1
+        }
+
+        "not add known element" {
+            underTest[squadAtPos1] shouldBe partialInfantry
+            underTest.mergeWith(other) shouldBe false
+            underTest.knownThings.size shouldBe 1
+            other.knownThings.size shouldBe 1
+        }
+
+        "keep own and update existing element" {
+            // add platoon to underTest
+            underTest.update(infantryPlatoon)
+            underTest[platoonAtPos1] shouldBe infantryPlatoon
+            underTest.knownThings.size shouldBe 2
+            // increase squad knowledge in other
+            other[squadAtPos1] shouldBe partialInfantry
+            other.update(infantrySquad) shouldBe true
+            other[squadAtPos1] shouldBe infantrySquad
+            underTest[squadAtPos1]?.revealed shouldBe KnowledgeGrade.MEDIUM
+
+            underTest.mergeWith(other) shouldBe true
+            underTest[squadAtPos1] shouldBe infantrySquad
+            underTest[platoonAtPos1] shouldBe infantryPlatoon
+            underTest.knownThings.size shouldBe 2
+            other.knownThings.size shouldBe 1
         }
     }
 
