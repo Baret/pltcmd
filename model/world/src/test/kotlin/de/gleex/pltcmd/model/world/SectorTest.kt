@@ -40,7 +40,7 @@ class SectorTest : WordSpec() {
             }
 
             "have the the correct center world tile" {
-                sector.center shouldBe sector[expectedCenter].get()
+                sector.center shouldBe sector[expectedCenter]
             }
         }
 

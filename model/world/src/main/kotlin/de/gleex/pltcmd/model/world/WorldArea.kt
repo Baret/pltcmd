@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.*
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * A part of the [WorldMap] containing a set of [WorldTile]s. As world tiles map a terrain to a coordinate, a world
@@ -13,7 +12,7 @@ open class WorldArea internal constructor(
      */
     protected val world: WorldMap,
     areaFilter: CoordinateFilter
-) : FilteredCoordinateArea(world.area, areaFilter.cached()) {
+) : FilteredCoordinateArea(world.area, areaFilter) {
 
     /**
      * A sequence of tiles in this area.
@@ -30,13 +29,13 @@ open class WorldArea internal constructor(
     /**
      * Gets the [WorldTile] with the given [Coordinate].
      *
-     * @return a [Maybe] containing the tile if it present in this area or an empty [Maybe] otherwise.
+     * @return the [WorldTile] at the given [Coordinate] or null, if no tile is present in this area.
      */
-    open operator fun get(coordinate: Coordinate): Maybe<WorldTile> =
+    open operator fun get(coordinate: Coordinate): WorldTile? =
         if (filter(coordinate)) {
-            Maybe.of(world[coordinate])
+            world[coordinate]
         } else {
-            Maybe.empty()
+            null
         }
 
     /**
@@ -45,9 +44,11 @@ open class WorldArea internal constructor(
      */
     open operator fun get(path: CoordinatePath): List<WorldTile> =
         path
+            .asSequence()
             .map { this[it] }
-            .takeWhile { it.isPresent }
-            .map { it.get() }
+            .takeWhile { it != null }
+            .map { it as WorldTile }
+            .toList()
 
     open operator fun contains(worldTile: WorldTile) =
         super.contains(worldTile.coordinate)

@@ -24,7 +24,7 @@ class WorldMap private constructor(coordinateGraph: CoordinateGraph, tiles: Map<
     private val worldGraph: WorldMapGraph
 
     init {
-        logger.info { "Creating the world graph for the world map with ${coordinateGraph.size} tiles" }
+        logger.debug { "Creating the world graph..." }
         worldGraph = WorldMapGraph(coordinateGraph, tiles)
         logger.debug { "Graph complete." }
     }
