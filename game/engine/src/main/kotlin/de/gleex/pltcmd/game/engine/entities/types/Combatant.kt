@@ -46,9 +46,9 @@ val CombatantEntity.woundedCount: Int
  * The ratio that the defense reduces the chance of an attacker to hit
  **/
 var CombatantEntity.currentDefense: TotalDefense
-    get() = defense.total.value
+    get() = defense.total
     internal set(value) {
-        defense.total.updateValue(value)
+        defense.total = value
     }
 
 infix fun CombatantEntity.onDefeat(callback: () -> Unit) {
