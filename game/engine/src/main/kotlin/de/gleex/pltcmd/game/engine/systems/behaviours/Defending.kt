@@ -24,7 +24,7 @@ internal object Defending : BaseBehavior<GameContext>(DefenseAttribute::class, P
 
     override suspend fun update(entity: Entity<EntityType, GameContext>, context: GameContext): Boolean {
         return entity.asCombatantEntity {
-            it.updateDefense(context.world);
+            it.updateDefense(context.world)
             true
         }.orElse(false)
     }
