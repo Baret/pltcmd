@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.game.engine.attributes.memory
 
-import de.gleex.pltcmd.model.world.WorldArea
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -25,9 +24,9 @@ class KnownWorldTest : WordSpec() {
     private val defaultTerrain = Terrain.of(MOUNTAIN, NINE)
 
     private val originalWorld = WorldMap.create(
-        listOf(sectorAtWithTerrain(
+        sectorAtWithTerrain(
             Coordinate.zero
-        ) { defaultTerrain })
+        ) { defaultTerrain }
     )
 
     private val knownWorld = KnownWorld(originalWorld)
@@ -152,7 +151,7 @@ class KnownWorldTest : WordSpec() {
             }
 
             "find unknown areas correctly" {
-                val area = originalWorld.asWorldArea()
+                val area = originalWorld.area
                 val toReveal = Coordinate(23, 42)
                 val smallArea = CoordinateRectangle(
                     bottomLeftCoordinate = toReveal,
@@ -184,7 +183,7 @@ class KnownWorldTest : WordSpec() {
 
                 knownWorld.reveal(area)
 
-                knownWorld.getUnknownIn(area) shouldBe WorldArea.EMPTY
+                knownWorld.getUnknownIn(area).size shouldBe 0
             }
         }
 
@@ -204,7 +203,7 @@ class KnownWorldTest : WordSpec() {
         }
         assertSoftly {
             originalWorld
-                .asWorldArea()
+                .area
                 .forEachAsClue { coordinate ->
                     val tile = WorldTile(coordinate, defaultTerrain)
                     val expected = when (coordinate) {
@@ -221,7 +220,7 @@ class KnownWorldTest : WordSpec() {
      */
     private infix fun CoordinateArea.shouldBeUnknown(area: CoordinateArea) {
         assertSoftly {
-            this shouldContainExactly area
+            this.toSet() shouldContainExactly area.toSet()
             this.map { knownWorld[it] }
                 .forAll { it.revealed shouldBe false }
         }

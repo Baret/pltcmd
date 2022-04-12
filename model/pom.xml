@@ -25,6 +25,14 @@
         <module>pathfinding</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.pltcmd.util</groupId>
+            <artifactId>debug</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <!-- modules -->

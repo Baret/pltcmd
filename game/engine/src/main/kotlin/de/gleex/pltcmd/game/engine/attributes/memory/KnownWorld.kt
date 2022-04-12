@@ -5,60 +5,54 @@ import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
+import de.gleex.pltcmd.model.world.coordinate.FilteredCoordinateArea
 import de.gleex.pltcmd.util.knowledge.Known
-import java.util.*
 
 /**
- * Knowledge about the [WorldArea] defining the whole [WorldMap]. It is initialized as completely unrevealed
- * and get revealed over time.
+ * Knowledge about the [WorldMap]. It is initialized as completely unrevealed
+ * and gets revealed over time.
  */
-class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
+class KnownWorld(world: WorldMap) : Known<WorldMap, KnownWorld> {
 
-    override val origin: WorldArea = world.asWorldArea()
+    override val origin: WorldMap = world
 
-    /**
-     * All not yet revealed (aka. unknown) [Coordinate]s.
-     */
-    private val unrevealed: SortedSet<Coordinate> =
-        origin
-            // create a local copy
-            .toSortedSet()
+    private val knowTerrainMap = mutableMapOf<Coordinate, KnownTerrain>()
 
     /**
      * @return the [KnownTerrain] at the given location.
      */
     operator fun get(coordinate: Coordinate): KnownTerrain {
-        val originalTerrain = origin[coordinate]
-            .orElseGet { WorldTile(coordinate.eastingFromLeft, coordinate.northingFromBottom) }
-        return when {
-            coordinate.isRevealed() -> originalTerrain.revealed()
-            else                    -> originalTerrain.unrevealed()
+        return knowTerrainMap.getOrPut(coordinate) {
+            if(coordinate in origin) {
+                KnownTerrain(origin[coordinate], isRevealed = false)
+            } else {
+                WorldTile(coordinate.eastingFromLeft, coordinate.northingFromBottom).unrevealed()
+            }
         }
     }
-
-    /**
-     * @return true if this [Coordinate] is not contained in [unrevealed]
-     */
-    private fun Coordinate.isRevealed(): Boolean =
-        unrevealed.contains(this).not()
 
     /**
      * Reveals the given [Coordinate].
      */
     infix fun reveal(toReveal: Coordinate) {
-        unrevealed.remove(toReveal)
+        get(toReveal).reveal()
     }
 
     /**
      * Reveals the complete [WorldArea].
      */
     infix fun reveal(areaToReveal: CoordinateArea) {
-        unrevealed.removeAll(areaToReveal)
+        areaToReveal.asSequence().forEach { reveal(it) }
     }
 
     override fun mergeWith(other: KnownWorld): Boolean {
-        return unrevealed
-            .removeAll { it !in other.unrevealed }
+        val knowPreviously = knowTerrainMap.size
+        knowTerrainMap.putAll(other.knowTerrainMap.filter { it.value.revealed })
+        return knowPreviously != knowTerrainMap.size
+    }
+
+    override fun copy(): KnownWorld {
+        return KnownWorld(origin)
     }
 
     /**
@@ -67,8 +61,6 @@ class KnownWorld(world: WorldMap) : Known<WorldArea, KnownWorld> {
      * All returned [Coordinate]s are not revealed.
      */
     fun getUnknownIn(area: CoordinateArea): CoordinateArea =
-        area intersect CoordinateArea(this::unrevealed)
-
-    companion object
+        FilteredCoordinateArea(area) { get(it).revealed.not() }
 
 }

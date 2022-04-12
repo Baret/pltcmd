@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.engine.Game
 import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.ui.renderers.SignalVisualizer
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.util.debug.DebugFeature
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.databinding.internal.binding.ComputedDualBinding
 import org.hexworks.zircon.api.dsl.fragment.buildSelector
@@ -11,6 +12,7 @@ import org.hexworks.zircon.api.dsl.fragment.buildSelector
 /**
  * A fragment that uses a [SignalVisualizer] to draw signals of the currently selected element (if present).
  */
+@DebugFeature
 class SignalVisualizationFragment(
     currentTile: ObservableValue<Coordinate>,
     private val game: Game,

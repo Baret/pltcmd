@@ -22,6 +22,7 @@
         <module>knowledge</module>
         <module>graph</module>
         <module>measure</module>
+        <module>debug</module>
     </modules>
 
 </project>

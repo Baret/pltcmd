@@ -93,6 +93,36 @@ class CoordinateTest : WordSpec({
         }
     }
 
+    "The minimum coordinate" should {
+        "be less than zero" {
+            Coordinate.minimum should beLessThan(Coordinate.zero)
+        }
+        "be less than one" {
+            Coordinate.minimum should beLessThan(Coordinate.one)
+        }
+        "be less than minusOne" {
+            Coordinate.minimum should beLessThan(Coordinate.minusOne)
+        }
+        "be less than maximum" {
+            Coordinate.minimum should beLessThan(Coordinate.maximum)
+        }
+    }
+
+    "The maximum coordinate" should {
+        "be greater than zero" {
+            Coordinate.maximum should beGreaterThan(Coordinate.zero)
+        }
+        "be greater than one" {
+            Coordinate.maximum should beGreaterThan(Coordinate.one)
+        }
+        "be greater than minusOne" {
+            Coordinate.maximum should beGreaterThan(Coordinate.minusOne)
+        }
+        "be greater than minimum" {
+            Coordinate.maximum should beGreaterThan(Coordinate.minimum)
+        }
+    }
+
     val c11 = Coordinate.one
     val c12 = Coordinate(1, 2)
     val c13 = Coordinate(1, 3)

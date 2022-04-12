@@ -17,7 +17,7 @@ data class PatrolAreaGoal(private val patrolAt: CoordinateArea) : EndlessGoal() 
         if (hasSubGoals().not()) {
             val randomDestination = context
                     .world
-                    .moveInside(patrolAt.toSet()
+                    .moveInside(patrolAt
                             .random(context.random))
             prependSubGoals(
                     ReachDestination(randomDestination),

@@ -1,70 +1,57 @@
 package de.gleex.pltcmd.model.world
 
-import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
-import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
-import org.hexworks.cobalt.datatypes.Maybe
-import java.util.*
+import de.gleex.pltcmd.model.world.coordinate.*
 
 /**
  * A part of the [WorldMap] containing a set of [WorldTile]s. As world tiles map a terrain to a coordinate, a world
  * area is also a [CoordinateArea].
  */
-open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
-    tiles.map { it.coordinate }
-        .toSortedSet()
-}) {
+open class WorldArea internal constructor(
+    /**
+     * The internal data structure holding all [WorldTile]s.
+     */
+    protected val world: WorldMap,
+    areaFilter: CoordinateFilter
+) : FilteredCoordinateArea(world.area, areaFilter) {
 
-    companion object {
-        val EMPTY = WorldArea(emptySet<WorldTile>().toSortedSet())
-    }
-
-    // just iterate once over all to find the coordinates
-    private val byCoordinate: Map<Coordinate, WorldTile> = tiles.associateBy { it.coordinate }
-
-    override val size: Int
-        get() = tiles.size
-
-    override val isEmpty: Boolean
-        get() = tiles.isEmpty()
-
-    // overwrites for performance
-    override fun contains(coordinate: Coordinate): Boolean {
-        return byCoordinate.containsKey(coordinate)
+    /**
+     * A sequence of tiles in this area.
+     */
+    open val tiles: Sequence<WorldTile> by lazy {
+        asSequence().map { world[it] }
     }
 
     // overwrites for return type
-    override fun filter(predicate: (Coordinate) -> Boolean): WorldArea {
-        return filterTiles { predicate(it.coordinate) }
-    }
-
-    open fun filterTiles(predicate: (WorldTile) -> Boolean): WorldArea {
-        return WorldArea(
-            tiles
-                .filter(predicate)
-                .toSortedSet()
-        )
+    override fun filter(predicate: CoordinateFilter): WorldArea {
+        return intersect(super.filter(predicate))
     }
 
     /**
      * Gets the [WorldTile] with the given [Coordinate].
      *
-     * @return a [Maybe] containing the tile if it present in this area or an empty [Maybe] otherwise.
+     * @return the [WorldTile] at the given [Coordinate] or null, if no tile is present in this area.
      */
-    open operator fun get(coordinate: Coordinate): Maybe<WorldTile> =
-        Maybe.ofNullable(byCoordinate[coordinate])
+    open operator fun get(coordinate: Coordinate): WorldTile? =
+        if (filter(coordinate)) {
+            world[coordinate]
+        } else {
+            null
+        }
 
     /**
      * @return a list of [WorldTile]s along the given path that are present in this area.
+     * The path is cut off as soon as it leaves this area.
      */
     open operator fun get(path: CoordinatePath): List<WorldTile> =
-            path
-                    .map { this[it] }
-                    .filter { it.isPresent }
-                    .map { it.get() }
+        path
+            .asSequence()
+            .map { this[it] }
+            .takeWhile { it != null }
+            .map { it as WorldTile }
+            .toList()
 
     open operator fun contains(worldTile: WorldTile) =
-            super.contains(worldTile.coordinate)
+        super.contains(worldTile.coordinate)
 
     /**
      * @return a new [WorldArea] containing all tiles of this area that are contained in [otherArea].
@@ -72,14 +59,18 @@ open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
      * @see CoordinateArea.intersect
      */
     override infix fun intersect(otherArea: CoordinateArea): WorldArea {
-        return WorldArea(
-            tiles
-                .filter { it.coordinate in otherArea }
-                .toSortedSet())
+        return WorldArea(world, filter intersect otherArea)
+    }
+
+    /**
+     * Creates a new [WorldArea] that contains all tiles of this and the other one.
+     */
+    operator fun plus(otherArea: WorldArea): WorldArea {
+        return WorldArea(world, filter or otherArea.filter)
     }
 
     override fun toString(): String {
-        return "WorldArea(${tiles.size} tiles)"
+        return "WorldArea(graph: ${world})"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -87,14 +78,15 @@ open class WorldArea(val tiles: SortedSet<WorldTile>) : CoordinateArea({
         if (other !is WorldArea) return false
         if (!super.equals(other)) return false
 
-        if (tiles != other.tiles) return false
+        if (tiles.toSet() != other.tiles.toSet()) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + tiles.hashCode()
+        result = 31 * result + tiles.toSet().hashCode()
         return result
     }
+
 }

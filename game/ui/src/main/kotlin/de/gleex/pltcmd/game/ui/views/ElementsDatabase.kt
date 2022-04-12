@@ -14,6 +14,7 @@ import de.gleex.pltcmd.game.ui.strings.extensions.toFrontendString
 import de.gleex.pltcmd.model.elements.Elements
 import de.gleex.pltcmd.model.elements.blueprint.CommandingElementBlueprint
 import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.util.debug.DebugFeature
 import org.hexworks.zircon.api.ComponentDecorations
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.Panel
@@ -25,6 +26,7 @@ import org.hexworks.zircon.api.view.base.BaseView
 /**
  * This view contains a table to see and compare all elements currently present in the game.
  */
+@DebugFeature("This is just a tool to have a good oversight of all elements in the game")
 class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME) {
     init {
         val decor = ComponentDecorations.shadow()

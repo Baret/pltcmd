@@ -14,8 +14,8 @@ infix fun WorldMap.shouldHaveSameTerrain(other: WorldMap) = this should haveSame
 
 fun haveSameTerrain(expected: WorldMap) = object: Matcher<WorldMap> {
     override fun test(value: WorldMap): MatcherResult {
-        val sectors = value.sectors.toList()
-        val expectedSectors = expected.sectors.toList()
+        val sectors = value.sectors.sorted().toList()
+        val expectedSectors = expected.sectors.sorted().toList()
         val errorMessage = when {
             value.origin != expected.origin -> {
                 Maybe.of("origin ${value.origin} does not equal expected ${expected.origin}")
@@ -48,17 +48,6 @@ fun haveSameTerrain(expected: WorldMap) = object: Matcher<WorldMap> {
 
 }
 
-private fun Sector.isNotEqualTo(otherSector: Sector) =
-        if(this != otherSector) {
-            true
-        } else {
-            // The coordinates are the same, but the terrain might differ
-            tiles.
-                firstOrNone { (coordinate, terrain) ->
-                    val otherTerrain = otherSector.tiles.find { it.coordinate == coordinate }!!.terrain
-                    otherTerrain != terrain
-                }.
-                isDefined()
-        }
+private fun Sector.isNotEqualTo(otherSector: Sector) = this != otherSector
 
 // - - -

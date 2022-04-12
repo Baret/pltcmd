@@ -12,4 +12,16 @@ import org.hexworks.amethyst.api.base.BaseAttribute
 class Memory(world: WorldMap): BaseAttribute() {
     val knownWorld: KnownWorld = KnownWorld(world)
     val knownContacts = Knowledge<ElementEntity, KnownContact>()
+
+    /**
+     * Merges [other] into this memory.
+     * See Known.mergeWith() and [Knowledge.mergeWith]
+     **/
+    fun mergeWith(other: Memory): Boolean {
+        var updated = false
+        knownWorld.mergeWith(other.knownWorld).also { updated = updated || it }
+        knownContacts.mergeWith(other.knownContacts).also { updated = updated || it }
+        return updated
+    }
+
 }

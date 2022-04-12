@@ -1,44 +1,45 @@
 package de.gleex.pltcmd.model.world.coordinate
 
+import de.gleex.pltcmd.model.world.graph.CoordinateGraph
 import de.gleex.pltcmd.model.world.sectorOrigin
 import java.util.*
+import kotlin.random.Random
 
 /**
  * An immutable set of coordinates that should be connected, but there is no check for that.
  */
-open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Iterable<Coordinate> {
-    constructor(coordinates: SortedSet<Coordinate>) : this({ coordinates })
-    constructor(coordinate: Coordinate) : this({ sortedSetOf(coordinate) })
+open class CoordinateArea(coordinateProvider: () -> CoordinateGraph) : Iterable<Coordinate>, CoordinateFilter {
+    constructor(coordinates: CoordinateGraph) : this({ coordinates })
 
-    companion object {
-        val EMPTY = CoordinateArea(sortedSetOf())
-    }
+    @Deprecated("use CoordinateGraph instead")
+    constructor(coordinates: SortedSet<Coordinate>) : this({ CoordinateGraph.of(coordinates) })
+    constructor(coordinate: Coordinate) : this({ CoordinateGraph.of(setOf(coordinate).toSortedSet()) })
 
-    private val coordinates: SortedSet<Coordinate> by lazy(coordinateProvider)
+    internal val coordinates: CoordinateGraph by lazy(coordinateProvider)
 
     open val size
         get() = coordinates.size
 
     open val isEmpty: Boolean
-        get() = coordinates.isEmpty()
+        get() = coordinates.isEmpty
 
     open val first: Coordinate?
-        get() = coordinates.first()
+        get() = coordinates.min
 
     open val last: Coordinate?
-        get() = coordinates.last()
+        get() = coordinates.max
 
     open val description: String
         get() = when {
-            isEmpty   -> "empty area"
+            isEmpty -> "empty area"
             size == 1 -> first!!.toString()
-            else      -> "area between $first and $last"
+            else -> "area between $first and $last"
         }
 
     /**
      * All [MainCoordinate]s contained in this area.
      */
-    open val mainCoordinates: Set<MainCoordinate> by lazy {
+    val mainCoordinates: Set<MainCoordinate> by lazy {
         coordinates
             .map { it.toMainCoordinate() }
             .toSortedSet()
@@ -47,10 +48,12 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     /**
      * All sector origins contained in this area.
      */
-    open val sectorOrigins: SortedSet<Coordinate> by lazy {
-        coordinates
-            .map { it.sectorOrigin }
-            .toSortedSet()
+    val sectorOrigins: CoordinateGraph by lazy {
+        // TODO make a connected graph instead just a set of coordinates
+        CoordinateGraph.of(
+            coordinates
+                .map { it.sectorOrigin }
+                .toSortedSet())
     }
 
     /**
@@ -72,7 +75,22 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
      */
     open infix fun intersect(otherArea: CoordinateArea): CoordinateArea {
         return CoordinateArea {
-            (coordinates intersect otherArea).toSortedSet()
+            coordinates intersect otherArea.coordinates
+        }
+    }
+
+    /**
+     * Creates a new [CoordinateArea] containing all [Coordinate]s that are present in this or [otherArea].
+     */
+    open infix operator fun plus(otherArea: CoordinateArea): CoordinateArea {
+        return CoordinateArea {
+            coordinates + otherArea.coordinates
+        }
+    }
+
+    open infix operator fun minus(otherArea: CoordinateArea): CoordinateArea {
+        return CoordinateArea {
+            coordinates - otherArea.coordinates
         }
     }
 
@@ -83,22 +101,25 @@ open class CoordinateArea(coordinateProvider: () -> SortedSet<Coordinate>) : Ite
     open infix fun covers(otherArea: CoordinateArea): Boolean =
         coordinates.containsAll(otherArea.coordinates)
 
-    open fun filter(predicate: (Coordinate) -> Boolean): CoordinateArea {
-        return CoordinateArea { coordinates.filter(predicate).toSortedSet() }
+    open fun filter(predicate: CoordinateFilter): CoordinateArea {
+        return CoordinateArea { coordinates.filter(predicate) }
     }
 
     /**
      * Returns an ordered sequence of all [Coordinate]s in this area.
      */
-    open fun asSequence() = coordinates.asSequence()
+    open fun asSequence() = coordinates.asSequence().sorted()
 
-    override operator fun iterator() = coordinates.iterator()
+    override operator fun iterator() = asSequence().iterator()
 
-    open fun toSet() = coordinates
+    fun random(random: Random): Coordinate = coordinates.coordinates.random(random)
 
     override fun toString(): String {
-        return "CoordinateArea with $size coordinates"
+        return "CoordinateArea $description with $size coordinates"
     }
+
+    // CoordinateFilter
+    override fun invoke(filterCandidate: Coordinate): Boolean = contains(filterCandidate)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

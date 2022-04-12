@@ -34,7 +34,15 @@ fun RememberingEntity.rememberRevealed(tilesToReveal: CoordinateArea) {
         .knownWorld
         // only unknown terrain that is currently visible needs to be revealed
         .getUnknownIn(tilesToReveal)
-        .forEach { memory.knownWorld reveal it }
+        .let { memory.knownWorld reveal it }
+}
+
+/**
+ * Gives all knowledge of others memory to this entity.
+ * @return true if at least one additional information was added to this memory
+ **/
+fun RememberingEntity.transferMemoryFrom(other: RememberingEntity): Boolean {
+    return memory.mergeWith(other.memory)
 }
 
 /**

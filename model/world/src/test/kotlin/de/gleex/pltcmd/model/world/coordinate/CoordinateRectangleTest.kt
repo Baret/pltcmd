@@ -53,18 +53,18 @@ class CoordinateRectangleTest: WordSpec({
 
         "create the correct sequence" {
             val correctList = listOf(
-                    Coordinate(0, 0),
-                    Coordinate(1, 0),
-                    Coordinate(2, 0),
-                    Coordinate(0, 1),
-                    Coordinate(1, 1),
-                    Coordinate(2, 1),
-                    Coordinate(0, 2),
-                    Coordinate(1, 2),
-                    Coordinate(2, 2),
-                    Coordinate(0, 3),
-                    Coordinate(1, 3),
-                    Coordinate(2, 3)
+                     c(0, 0),
+                    c(1, 0),
+                    c(2, 0),
+                    c(0, 1),
+                    c(1, 1),
+                    c(2, 1),
+                    c(0, 2),
+                    c(1, 2),
+                    c(2, 2),
+                    c(0, 3),
+                    c(1, 3),
+                    c(2, 3)
             )
             rectangleToTest.asSequence().toList() shouldContainInOrder correctList
         }

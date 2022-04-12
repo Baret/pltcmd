@@ -9,7 +9,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import mu.KotlinLogging
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.floor
 
@@ -41,9 +40,6 @@ class Signal<P : SignalPower>(
      */
     private val signalCache: MutableMap<Coordinate, SignalStrength> = ConcurrentHashMap()
 
-    private val coordinatesByDistanceToOrigin: SortedSet<Coordinate> = area
-        .toSortedSet(compareByDistanceFrom(origin))
-
     /**
      * A flow of calls to [at] for every coordinate in [area]. It fills the area from inner to outer
      * (going outwards from [origin]).
@@ -51,14 +47,16 @@ class Signal<P : SignalPower>(
      * This flow is cancellable.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    val all: Flow<Pair<Coordinate, SignalStrength>> =
-        coordinatesByDistanceToOrigin
+    val all: Flow<Pair<Coordinate, SignalStrength>> by lazy {
+        area
+            .toSortedSet(compareByDistanceFrom(origin))
             .asFlow()
             .map { it to at(it) }
             .onStart { log.debug { "Starting to fill cache (current size ${signalCache.size})..." } }
             .onCompletion { log.debug { "...finished filling cache (current size ${signalCache.size})!" } }
             .buffer(Channel.UNLIMITED)
             .cancellable()
+    }
 
     /**
      * @return the [SignalStrength] of this signal at the given target. All [Coordinate]s outside

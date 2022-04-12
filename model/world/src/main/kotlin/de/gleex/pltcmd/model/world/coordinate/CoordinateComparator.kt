@@ -11,9 +11,9 @@ package de.gleex.pltcmd.model.world.coordinate
  * to [otherEasting].
  */
 internal fun compareCoordinateComponents(northing: Int, easting: Int, otherNorthing: Int, otherEasting: Int): Int {
-    val northDiff = northing - otherNorthing
+    val northDiff = northing.compareTo(otherNorthing)
     return if (northDiff == 0) {
-        easting - otherEasting
+        easting.compareTo(otherEasting)
     } else {
         northDiff
     }
