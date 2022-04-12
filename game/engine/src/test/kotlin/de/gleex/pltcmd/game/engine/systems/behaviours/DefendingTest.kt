@@ -7,6 +7,8 @@ import de.gleex.pltcmd.game.engine.entities.types.movementPath
 import de.gleex.pltcmd.game.engine.systems.behaviours.Defending.determineDefense
 import de.gleex.pltcmd.model.faction.Faction
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.terrain.Terrain
+import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.StringSpec
@@ -61,5 +63,5 @@ fun beInGrassland(
     combatantPosition: Coordinate,
     context: GameContext
 ) {
-    every { context.world[combatantPosition].type } returns TerrainType.GRASSLAND
+    every { context.world[combatantPosition].terrain } returns Terrain.Companion.of(TerrainType.GRASSLAND, TerrainHeight.MIN)
 }

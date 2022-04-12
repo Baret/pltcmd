@@ -145,7 +145,7 @@ fun createContext(): GameContext {
     val random = Random(123L)
     every { context.random } returns random
     every { context.elementsAt(any()) } returns EntitySet()
-    every { context.world[any<Coordinate>()].type } returns TerrainType.FOREST
+    every { context.world[any<Coordinate>()].terrain.type } returns TerrainType.FOREST
 
     return context
 }
