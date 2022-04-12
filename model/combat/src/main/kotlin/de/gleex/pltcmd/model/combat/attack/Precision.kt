@@ -16,7 +16,7 @@ import kotlin.math.tan
  * This is an angle for such a cone. It is measured in [milliradian](https://en.wikipedia.org/wiki/Milliradian)
  * (mrad, a thousandth of a radian). A mrad is ≈ 0.057296 degrees.
  */
-class Precision(private val mrad: Double) {
+data class Precision(private val mrad: Double) {
 
     companion object {
         const val mradsPerCircle = 2000.0

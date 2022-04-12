@@ -2,6 +2,7 @@ package de.gleex.pltcmd.game.engine.entities
 
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.*
+import de.gleex.pltcmd.game.engine.attributes.combat.DefenseAttribute
 import de.gleex.pltcmd.game.engine.attributes.combat.ShootersAttribute
 import de.gleex.pltcmd.game.engine.attributes.memory.Memory
 import de.gleex.pltcmd.game.engine.attributes.movement.MovementBaseSpeed
@@ -100,6 +101,7 @@ object EntityFactory {
             // TODO if call sign of the element gets mutable, use a function or ObservableValue as parameter (#98)
             RadioAttribute(RadioCommunicator(element.callSign, radioSender)),
             ShootersAttribute(element),
+            DefenseAttribute(),
             Memory(world)
                 .apply { knownWorld reveal visionAttribute.vision.area },
 
@@ -119,6 +121,7 @@ object EntityFactory {
             SharingKnowledge,
             MovingForOneMinute,
             Communicating,
+            Defending,
             Fighting
         )
         if (element.kind == ElementKind.Infantry) {
