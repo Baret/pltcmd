@@ -43,7 +43,7 @@ internal object Defending : BaseBehavior<GameContext>(DefenseAttribute::class, P
             asMovableEntity { it.isMoving }.orElse(false) -> MovementState.MOVING
             else                                          -> MovementState.STATIONARY
         }
-        val cover = worldMap[currentPosition].cover
+        val cover = worldMap[currentPosition].terrain.cover
         val awareness = AwarenessState.OBSERVING
         return TotalDefense(moving, cover, awareness)
     }
