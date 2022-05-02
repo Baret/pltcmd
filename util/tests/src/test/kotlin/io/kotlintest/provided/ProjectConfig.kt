@@ -3,6 +3,7 @@ package io.kotlintest.provided
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -54,7 +55,15 @@ class ProjectConfig: AbstractProjectConfig() {
                     return
                 }
                 val executionTime = System.currentTimeMillis() - testStartedAt
-                log.info { "Execution of '${testCase.descriptor.chain().joinToString(" ") { it.toString() }}' took $executionTime ms" }
+                val ids = testCase.descriptor.ids()
+                val testClassName = ids.firstOrNull()?.value
+                val infix = if(testCase.spec is WordSpec) {
+                    "should"
+                } else {
+                    ""
+                }
+                val testName = ids.drop(1).joinToString(separator = " $infix ") { it.value }
+                log.info { "Execution of [$testClassName] '$testName' took $executionTime ms" }
                 log.info { " - - - - - - - - - - - - - - - - - -" }
                 executionTimes.add(executionTime)
                 heapSizes.add(heapSize())
