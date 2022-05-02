@@ -48,7 +48,7 @@ abstract class InfoSidebarFragment(
     protected val componentsContainer: Container = Components
             .vbox()
             .withSpacing(0)
-            .withSize(SUB_COMPONENT_WIDTH, neededHeight)
+            .withPreferredSize(SUB_COMPONENT_WIDTH, neededHeight)
             .build()
             .apply {
                 moveRightBy(INDENTATION)
@@ -57,7 +57,7 @@ abstract class InfoSidebarFragment(
     final override val root: Component = Components
             .vbox()
             .withSpacing(0)
-            .withSize(fragmentWidth, 1 + neededHeight)
+            .withPreferredSize(fragmentWidth, 1 + neededHeight)
             .build()
             .apply {
                 addComponent(Components

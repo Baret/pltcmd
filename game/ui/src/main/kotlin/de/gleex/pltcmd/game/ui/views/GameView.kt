@@ -52,7 +52,7 @@ class GameView(
     override fun onDock() {
 
         val logArea = Components.logArea()
-            .withSize(LOG_AREA_WIDTH, LOG_AREA_HEIGHT)
+            .withPreferredSize(LOG_AREA_WIDTH, LOG_AREA_HEIGHT)
             .withPosition(Position.create(0, 0))
             .withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log"))
             .build()

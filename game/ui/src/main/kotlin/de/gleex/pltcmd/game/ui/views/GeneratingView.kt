@@ -67,7 +67,7 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
         val hBox = Components
                 .hbox()
                 .withSpacing(spacing)
-                .withSize(screen.size.width, 1)
+                .withPreferredSize(screen.size.width, 1)
                 .build()
         hBox.addComponents(toggle, header)
         return hBox
@@ -78,7 +78,7 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
                 projectionMode = projectionMode
         )
         return Components.panel()
-                .withSize(screen.width, screen.height - usedLines)
+                .withPreferredSize(screen.width, screen.height - usedLines)
                 .withPosition(0, header.height)
                 .withComponentRenderer(renderer)
                 .build()
@@ -86,7 +86,7 @@ class GeneratingView(tileGrid: TileGrid, worldSizeInTiles: Size) : BaseView(them
 
     private fun createFooter(): HBox {
         return Components.hbox()
-                .withSize(screen.width, 1)
+                .withPreferredSize(screen.width, 1)
                 .withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER)
                 .build()
     }

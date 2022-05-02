@@ -24,7 +24,7 @@ class TerrainDetailsFragment(
         componentsContainer.addComponent(
                 Components.hbox()
                         .withSpacing(1)
-                        .withSize(SUB_COMPONENT_WIDTH, 1)
+                        .withPreferredSize(SUB_COMPONENT_WIDTH, 1)
                         .build()
                         .apply {
                             val icon = Components.icon()
@@ -38,7 +38,7 @@ class TerrainDetailsFragment(
                             addComponents(
                                     icon,
                                     Components.label()
-                                            .withSize(SUB_COMPONENT_WIDTH - icon.size.width - 1, 1)
+                                            .withPreferredSize(SUB_COMPONENT_WIDTH - icon.size.width - 1, 1)
                                             .build()
                                             .apply {
                                                 withFrontendString(Format.SIDEBAR, terrainProperty)

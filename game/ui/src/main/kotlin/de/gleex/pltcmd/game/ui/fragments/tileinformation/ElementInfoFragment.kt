@@ -43,7 +43,7 @@ class ElementInfoFragment(
         componentsContainer.addComponents(
                 Components.hbox()
                         .withSpacing(1)
-                        .withSize(SUB_COMPONENT_WIDTH, 1)
+                        .withPreferredSize(SUB_COMPONENT_WIDTH, 1)
                         .build()
                         .apply {
                             addComponents(
@@ -65,7 +65,7 @@ class ElementInfoFragment(
                                             )
                                         },
                                     Components.header()
-                                            .withSize(width - 3, 1)
+                                            .withPreferredSize(width - 3, 1)
                                             .build()
                                             .apply {
                                                 withFrontendString(Format.SIDEBAR,
@@ -80,7 +80,7 @@ class ElementInfoFragment(
                             )
                         },
                 Components.label()
-                        .withSize(SUB_COMPONENT_WIDTH, 1)
+                        .withPreferredSize(SUB_COMPONENT_WIDTH, 1)
                         .build()
                         .apply {
                             withFrontendString(description)

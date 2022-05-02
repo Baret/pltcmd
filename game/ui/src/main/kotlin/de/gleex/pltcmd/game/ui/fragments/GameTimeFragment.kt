@@ -18,13 +18,13 @@ class GameTimeFragment(override val fragmentWidth: Int) : BaseFragment {
 
     override val root = Components.
                             vbox().
-                            withSize(fragmentWidth, FRAGMENT_HEIGHT).
+                            withPreferredSize(fragmentWidth, FRAGMENT_HEIGHT).
                             build().
                             apply {
                                 addComponents(
                                         Components.
                                             header().
-                                            withSize(contentSize.width, 1).
+                                            withPreferredSize(contentSize.width, 1).
                                             build().
                                             apply {
                                                 withFrontendString(
@@ -33,7 +33,7 @@ class GameTimeFragment(override val fragmentWidth: Int) : BaseFragment {
                                             },
                                         Components
                                                 .hbox()
-                                                .withSize(fragmentWidth, 1)
+                                                .withPreferredSize(fragmentWidth, 1)
                                                 .withSpacing(BUTTON_ROW_SPACING)
                                                 .build()
                                                 .apply {
@@ -56,7 +56,7 @@ class GameTimeFragment(override val fragmentWidth: Int) : BaseFragment {
                                                                     },
                                                             Components
                                                                     .header()
-                                                                    .withSize(fragmentWidth - 2 - (BUTTON_ROW_SPACING * 2), 1)
+                                                                    .withPreferredSize(fragmentWidth - 2 - (BUTTON_ROW_SPACING * 2), 1)
                                                                     .build()
                                                                     .apply {
                                                                         withFrontendString(Format.SIDEBAR,

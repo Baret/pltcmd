@@ -57,7 +57,7 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
         val tablePanel = Components
             .panel()
             .withDecorations(decor)
-            .withSize(panelSize)
+            .withPreferredSize(panelSize)
             .build()
 
         tablePanel.addFragment(table)
@@ -66,7 +66,7 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
 
         val detailsPanel = Components
             .vbox()
-            .withSize(detailsPanelSize)
+            .withPreferredSize(detailsPanelSize)
             .build()
             .apply {
                 val halfSize = Size.create(contentSize.width, contentSize.height / 2)
@@ -96,7 +96,7 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
 
         screen.addComponent(Components
             .hbox()
-            .withSize(screen.size)
+            .withPreferredSize(screen.size)
             .build()
             .apply {
                 addComponents(tablePanel, detailsPanel)
@@ -107,6 +107,6 @@ class ElementsDatabase(tileGrid: TileGrid) : BaseView(tileGrid, UiOptions.THEME)
         Components
             .panel()
             .withDecorations(ComponentDecorations.box(BoxType.LEFT_RIGHT_DOUBLE, title))
-            .withSize(size)
+            .withPreferredSize(size)
             .build()
 }

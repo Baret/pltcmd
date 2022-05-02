@@ -41,7 +41,7 @@ class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : F
     }
 
     private val timePanel = Components.panel()
-            .withSize(UiOptions.SIDEBAR_WIDTH, GameTimeFragment.FRAGMENT_HEIGHT + 2)
+            .withPreferredSize(UiOptions.SIDEBAR_WIDTH, GameTimeFragment.FRAGMENT_HEIGHT + 2)
             .withDecorations(ComponentDecorations.box(BoxType.LEFT_RIGHT_DOUBLE, "Current time"))
             .build()
             .apply {
@@ -56,14 +56,14 @@ class InfoSidebar(height: Int, private val gameWorld: GameWorld, game: Game) : F
             }
 
     private val intelPanel = Components.vbox()
-            .withSize(UiOptions.SIDEBAR_WIDTH, height - timePanel.height)
+            .withPreferredSize(UiOptions.SIDEBAR_WIDTH, height - timePanel.height)
             .withSpacing(1)
             .withDecorations(ComponentDecorations.box(BoxType.LEFT_RIGHT_DOUBLE, "Intel"))
             .build()
 
     override val root =
             Components.vbox()
-                    .withSize(UiOptions.SIDEBAR_WIDTH, height)
+                    .withPreferredSize(UiOptions.SIDEBAR_WIDTH, height)
                     .build()
                     .apply {
                         addComponents(timePanel, intelPanel)

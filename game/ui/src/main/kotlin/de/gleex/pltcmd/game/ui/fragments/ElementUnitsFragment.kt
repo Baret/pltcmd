@@ -46,19 +46,19 @@ class ElementUnitsFragment(
     override val root: Component =
         Components
             .vbox()
-            .withSize(fragmentWidth, fragmentHeight)
+            .withPreferredSize(fragmentWidth, fragmentHeight)
             .build()
             .apply {
                 val elementNameHeader = Components
                     .header()
-                    .withSize(contentSize.withHeight(1))
+                    .withPreferredSize(contentSize.withHeight(1))
                     .build()
                     .apply {
                         withFrontendString(elementName)
                     }
                 val totalUnitsLabel = Components
                     .label()
-                    .withSize(contentSize.withHeight(2))
+                    .withPreferredSize(contentSize.withHeight(2))
                     .build()
                     .apply {
                         withFrontendString(totalUnits)
@@ -73,7 +73,7 @@ class ElementUnitsFragment(
     private fun unitSummaryPanel(size: Size): VBox {
         val vbox = Components
             .vbox()
-            .withSize(size)
+            .withPreferredSize(size)
             .build()
         unitSummary
             .bindTransform { summaryMap ->
@@ -87,7 +87,7 @@ class ElementUnitsFragment(
                             vbox.addComponent(
                                 Components
                                     .label()
-                                    .withSize(vbox.contentSize.withHeight(1))
+                                    .withPreferredSize(vbox.contentSize.withHeight(1))
                                     .build()
                                     .apply {
                                         withFrontendString(format, "${count.toString().padStart(3)}x ", blueprint)
