@@ -74,10 +74,7 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
     }
 
     private fun Coordinate.setUnit(unitTile: Tile) {
-        val position = toPosition()
-        fetchBlockAt(position).ifPresent {
-            it.setUnit(unitTile)
-        }
+        fetchBlockAt(this)?.setUnit(unitTile)
     }
 
     private fun ElementEntity.hide() {
@@ -85,10 +82,7 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
     }
 
     private fun Coordinate.hideUnit() {
-        val position = toPosition()
-        fetchBlockAt(position).ifPresent {
-            it.resetUnit()
-        }
+        fetchBlockAt(this)?.resetUnit()
     }
 
     /** Returns the [Coordinate] of the [Tile] that is visible in the top left corner. */
@@ -112,7 +106,7 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
      * @return the [GameBlock] at the given [Coordinate] if it is contained in this world.
      */
     fun fetchBlockAt(coordinate: Coordinate): GameBlock? =
-        fetchBlockAt(coordinate.toPosition())
+        fetchBlockAtOrNull(coordinate.toPosition())
 
     private fun Coordinate.toPosition(): Position3D {
         // translate to 0,0 based grid then invert y axis
@@ -131,7 +125,7 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
      * Adds the current [visibleOffset] to the given position to translate it to the corresponding [Position3D]
      * and returns the [GameBlock] at the location, if present.
      */
-    fun fetchBlockAtVisiblePosition(position: Position) = fetchBlockAt(position.toVisiblePosition3D())
+    fun fetchBlockAtVisiblePosition(position: Position) = fetchBlockAtOrNull(position.toVisiblePosition3D())
 
     /**
      * Returns the [Coordinate] at the currently visible position

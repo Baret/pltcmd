@@ -27,8 +27,8 @@ object MakesSecurityHalts : BaseFacet<GameContext, UpdatePosition>(UpdatePositio
     override suspend fun receive(message: UpdatePosition): Response {
         if (message.oldPosition.sectorOrigin != message.newPosition.sectorOrigin) {
             val entity: MovableEntity = message.source
-            entity.findAttribute(CommandersIntent::class)
-                .ifPresent { intent ->
+            entity.findAttributeOrNull(CommandersIntent::class)
+                ?.let { intent ->
                     // Make a security halt when approximately 300m into the new sector
                     val afterTiles = 3.0
                     val ticksPerTile =

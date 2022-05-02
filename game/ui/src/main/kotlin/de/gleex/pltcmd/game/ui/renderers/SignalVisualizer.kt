@@ -59,7 +59,7 @@ class SignalVisualizer(val world: GameWorld) {
         currentJob = signal.all
                 .onEach { (coordinate, signalStrength) ->
                     world.fetchBlockAt(coordinate)
-                        .ifPresent { block ->
+                        ?.let { block ->
                             block.setOverlay(TileRepository.forSignal(signalStrength))
                             currentBlocks.add(block)
                         }

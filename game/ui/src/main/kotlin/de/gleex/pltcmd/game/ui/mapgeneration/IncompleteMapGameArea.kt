@@ -48,8 +48,8 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
         val terrainZLevel = terrainHeight?.ordinal ?: Z_LEVEL_DEFAULT
         verticalPositions
                 .forEach { position3D ->
-                    fetchBlockAt(position3D)
-                            .ifPresent { block ->
+                    fetchBlockAtOrNull(position3D)
+                            ?.let { block ->
                                 when {
                                     position3D.z == terrainZLevel -> block.setTerrain(terrainHeight, terrainType)
                                     position3D.z < terrainZLevel -> block.setTerrain(TerrainHeight.ofValue(position3D.z), null)

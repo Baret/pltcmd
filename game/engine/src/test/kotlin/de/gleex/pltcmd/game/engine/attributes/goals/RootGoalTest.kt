@@ -26,7 +26,7 @@ class RootGoalTest : WordSpec() {
                 rootGoal.step(goalTestEntity, testGameContext) should beNull()
                 rootGoal
                         .addNow(TestSubGoal(1))
-                        .step(goalTestEntity, testGameContext) should haveValue(1)
+                        .step(goalTestEntity, testGameContext)!! should haveValue(1)
                 rootGoal.step(goalTestEntity, testGameContext) should beNull()
             }
 
@@ -35,7 +35,7 @@ class RootGoalTest : WordSpec() {
                 rootGoal.step(goalTestEntity, testGameContext) should beNull()
                 rootGoal
                         .addLast(TestSubGoal(1))
-                        .step(goalTestEntity, testGameContext) should haveValue(1)
+                        .step(goalTestEntity, testGameContext)!! should haveValue(1)
                 rootGoal.step(goalTestEntity, testGameContext) should beNull()
             }
         }
@@ -47,7 +47,7 @@ class RootGoalTest : WordSpec() {
                     .addNow(TestSubGoal(1))
             "be empty" {
                 rootGoal
-                        .step(goalTestEntity, testGameContext) should haveValue(1)
+                        .step(goalTestEntity, testGameContext)!! should haveValue(1)
                 rootGoal
                         .clear()
                         .step(goalTestEntity, testGameContext) should beNull()
@@ -75,7 +75,7 @@ class RootGoalTest : WordSpec() {
                 val actualValues = mutableListOf<Int>()
                 repeat(expectedValues.size * 2) {
                     rootGoal.step(goalTestEntity, testGameContext)
-                            .ifPresent {
+                            ?.let {
                                 actualValues.add((it as TestMessage).value)
                             }
                 }
