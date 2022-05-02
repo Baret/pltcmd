@@ -28,9 +28,7 @@ internal object Communicating : BaseBehavior<GameContext>(RadioAttribute::class)
             }
             radioCommunicator.proceedWithConversation()
             true
-        }.orElseGet {
-            false
-        }
+        } ?: false
     }
 
 }

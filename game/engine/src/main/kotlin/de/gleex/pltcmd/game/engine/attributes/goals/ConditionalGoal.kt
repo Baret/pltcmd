@@ -4,7 +4,6 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import mu.KotlinLogging
 import org.hexworks.amethyst.api.Message
-import org.hexworks.cobalt.datatypes.Maybe
 
 private val log = KotlinLogging.logger {}
 
@@ -29,7 +28,7 @@ data class ConditionalGoal(
     override fun isFinished(element: ElementEntity): Boolean =
         whenTrue.isFinished(element) && whenFalse.isFinished(element)
 
-    override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
+    override fun step(element: ElementEntity, context: GameContext): Message<GameContext>? {
         if (conditionWasTrue.not() && condition.invoke()) {
             log.debug { " - - - - - - - - -CONDITION WAS TRUE! SWITCHING GOAL - - - - - - - - -" }
             conditionWasTrue = true

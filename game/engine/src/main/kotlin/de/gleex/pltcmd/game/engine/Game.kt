@@ -28,7 +28,6 @@ import mu.KotlinLogging
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
-import org.hexworks.cobalt.datatypes.Maybe
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
@@ -113,9 +112,9 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     }
 
     /**
-     * @return a [Maybe] containing the first [ElementEntity] found at the given location.
+     * @return the first [ElementEntity] found at the given location or null, if none found.
      */
-    fun firstElementAt(location: Coordinate): Maybe<ElementEntity> =
+    fun firstElementAt(location: Coordinate): ElementEntity? =
         allEntities.firstElementAt(location)
 
     /**

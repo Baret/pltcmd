@@ -23,7 +23,6 @@ import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
-import org.hexworks.cobalt.datatypes.Maybe
 
 private val log = KotlinLogging.logger {}
 
@@ -35,11 +34,10 @@ object ReportContacts : BaseFacet<GameContext, DetectedEntity>(
 ) {
 
     override suspend fun receive(message: DetectedEntity): Response {
-        val reporterMaybe: Maybe<ElementEntity> = message.source.asElementEntity { it }
-        val detectedElementMaybe = message.entity.asElementEntity { it }
-        if (reporterMaybe.isPresent && detectedElementMaybe.isPresent) {
-            val reporter = reporterMaybe.get()
-            val contact = KnownContact(reporter, detectedElementMaybe.get(), message.knowledgeGrade)
+        val reporter: ElementEntity? = message.source.asElementEntity { it }
+        val detectedElement = message.entity.asElementEntity { it }
+        if (reporter != null && detectedElement != null) {
+            val contact = KnownContact(reporter, detectedElement, message.knowledgeGrade)
             val hasNewKnowledge = reporter.rememberContact(contact)
             if(hasNewKnowledge) {
                 return reportContact(reporter, contact, message.context)

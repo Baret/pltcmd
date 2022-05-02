@@ -202,11 +202,9 @@ fun createRadioCommuicatorPanel(element: ElementEntity, size: Size): Component {
                         build().
                         apply {
                             textProperty.updateFrom(
-                                    "Talking to ".toProperty()
-                                            bindPlusWith element.inConversationWith.bindTransform {
-                                        it.map { callSign -> callSign.toString() }
-                                                .orElse("nobody")
-                                    })
+                                "Talking to ".toProperty()
+                                    .bindPlusWith(element.inConversationWith.bindTransform { it?.toString() ?: "nobody" })
+                            )
                         })
 
                 // TODO: add list of buffered conversations

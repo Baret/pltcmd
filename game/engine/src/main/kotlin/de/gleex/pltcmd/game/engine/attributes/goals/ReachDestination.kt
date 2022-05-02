@@ -7,7 +7,6 @@ import de.gleex.pltcmd.game.engine.extensions.hasFacet
 import de.gleex.pltcmd.game.engine.systems.facets.MakesSecurityHalts
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.amethyst.api.Message
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * This goal is the abstract version of "move to this destination". It executes checks to make sure the element
@@ -17,7 +16,7 @@ data class ReachDestination(private val destination: Coordinate) : Goal() {
     override fun isFinished(element: ElementEntity): Boolean =
             element.position.value == destination
 
-    override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
+    override fun step(element: ElementEntity, context: GameContext): Message<GameContext>? {
         setSubGoals(element)
         return stepSubGoals(element, context)
     }

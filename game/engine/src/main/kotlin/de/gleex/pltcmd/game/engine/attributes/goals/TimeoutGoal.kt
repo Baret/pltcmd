@@ -3,7 +3,6 @@ package de.gleex.pltcmd.game.engine.attributes.goals
 import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import org.hexworks.amethyst.api.Message
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * This is a wrapper around another goal. It gets executed for a given number of ticks or until the wrapped goal
@@ -22,7 +21,7 @@ open class TimeoutGoal(
     override fun isFinished(element: ElementEntity): Boolean =
             ticksRemaining <= 0 || goal.isFinished(element)
 
-    override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
+    override fun step(element: ElementEntity, context: GameContext): Message<GameContext>? {
         ticksRemaining--
         return goal.step(element, context)
                 .also {

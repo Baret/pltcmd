@@ -73,9 +73,7 @@ private object ExecuteOrderWithCommandersIntent :
                     Consumed
                 }
             }
-        }.orElseGet {
-            Pass
-        }
+        } ?: Pass
     }
 }
 

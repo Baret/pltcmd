@@ -9,7 +9,6 @@ import de.gleex.pltcmd.game.engine.extensions.tryCastTo
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import org.hexworks.amethyst.api.base.BaseEntityType
-import org.hexworks.cobalt.datatypes.Maybe
 
 /** Represents an element in an army. */
 object ElementType : BaseEntityType("element", "A movable and communicating element."), Factionable, Movable,
@@ -37,11 +36,11 @@ internal val ElementEntity.commandersIntent
 
 /**
  * Invokes [whenElement] if this entity is an [ElementEntity]. When the type is not [ElementType],
- * [Maybe.empty] is returned.
+ * null is returned.
  *
  * @param R the type that is returned by [whenElement]
  */
-fun <R> AnyGameEntity.asElementEntity(whenElement: (ElementEntity) -> R): Maybe<R> =
+fun <R> AnyGameEntity.asElementEntity(whenElement: (ElementEntity) -> R): R? =
     tryCastTo<ElementEntity, ElementType, R>(whenElement)
 
 /**

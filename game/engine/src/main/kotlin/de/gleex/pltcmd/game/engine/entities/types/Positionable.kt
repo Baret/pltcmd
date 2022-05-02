@@ -10,7 +10,6 @@ import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * This file contains code for entities that have the [PositionAttribute].
@@ -36,9 +35,9 @@ var PositionableEntity.currentPosition: Coordinate
 
 /**
  * Invokes [whenPositionable] if this entity is an [PositionableEntity]. When the type is not [Positionable],
- * [Maybe.empty] is returned.
+ * null is returned.
  *
  * @param R the type that is returned by [whenPositionable]
  */
-fun <R> AnyGameEntity.asPositionableEntity(whenPositionable: (PositionableEntity) -> R): Maybe<R> =
+fun <R> AnyGameEntity.asPositionableEntity(whenPositionable: (PositionableEntity) -> R): R? =
     tryCastTo<PositionableEntity, Positionable, R>(whenPositionable)

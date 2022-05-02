@@ -4,7 +4,6 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import org.hexworks.amethyst.api.Message
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * This goal finds random destinations in the given area and moves there. At each waypoint the
@@ -13,7 +12,7 @@ import org.hexworks.cobalt.datatypes.Maybe
  * This goal is an [EndlessGoal]!
  */
 data class PatrolAreaGoal(private val patrolAt: CoordinateArea) : EndlessGoal() {
-    override fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
+    override fun step(element: ElementEntity, context: GameContext): Message<GameContext>? {
         if (hasSubGoals().not()) {
             val randomDestination = context
                     .world

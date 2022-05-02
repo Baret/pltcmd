@@ -45,9 +45,11 @@ fun establishCommunications(sender: CallSign, receiver: CallSign) = object : Mat
 
     override fun test(value: Transmission): MatcherResult {
         return MatcherResult(
-                value.message.startsWith(expectedPrefix),
-                "Transmission message should start with '$expectedPrefix' but was '${value.message}'",
+            value.message.startsWith(expectedPrefix),
+            { "Transmission message should start with '$expectedPrefix' but was '${value.message}'" },
+            {
                 "Transmission message should not start with '$expectedPrefix' but was '${value.message}'"
+            }
         )
     }
 }

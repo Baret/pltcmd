@@ -11,7 +11,6 @@ import de.gleex.pltcmd.model.faction.FactionRelations
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * This file contains code for entities that have the [FactionAttribute].
@@ -33,9 +32,9 @@ fun FactionEntity.affiliationTo(other: Faction): Affiliation =
 
 /**
  * Invokes [whenFactionable] if this entity is an [FactionEntity]. When the type is not [Factionable],
- * [Maybe.empty] is returned.
+ * null is returned.
  *
  * @param R the type that is returned by [whenFactionable]
  */
-fun <R> AnyGameEntity.asFactionEntity(whenFactionable: (FactionEntity) -> R): Maybe<R> =
+fun <R> AnyGameEntity.asFactionEntity(whenFactionable: (FactionEntity) -> R): R? =
     tryCastTo<FactionEntity, Factionable, R>(whenFactionable)

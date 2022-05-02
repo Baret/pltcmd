@@ -3,7 +3,6 @@ package de.gleex.pltcmd.model.elements
 import de.gleex.pltcmd.model.elements.units.Unit
 import org.hexworks.cobalt.databinding.api.collection.SetProperty
 import org.hexworks.cobalt.databinding.api.extension.toProperty
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * A commanding element may be in charge of other elements and is represented on the command net by its [callSign].
@@ -84,9 +83,7 @@ class CommandingElement(
         }
         if (canElementBeAdded(element)) {
             // TODO: Maybe a commanding element could get a max number of subordinates so that you cannot stack elements into it endlessly
-            element.superordinate.ifPresent {
-                it.removeElement(element)
-            }
+            element.superordinate?.removeElement(element)
             _subordinates.add(element)
             return true
         }
@@ -114,23 +111,28 @@ class CommandingElement(
         return false
     }
 
+    /**
+     * Removes the [superordinate] from all elements in this collection where this commanding element is
+     * the current superordinate.
+     */
     private fun Collection<Element>.removeSuperordinates() {
-        filter { it.superordinate.isPresent }
-                .filter { it.superordinate.get() == this@CommandingElement }
-                .forEach {
-                    it.superordinate = Maybe.empty()
-                }
+        filter { it.superordinate == this@CommandingElement }
+            .forEach {
+                it.superordinate = null
+            }
     }
 
+    /**
+     * Sets this element as the [superordinate] of every Element in this collection.
+     */
     private fun Collection<Element>.setSelfAsSuperordinate() {
         forEach {
-            it.superordinate = Maybe.of(this@CommandingElement)
+            it.superordinate = this@CommandingElement
         }
     }
 
     override fun toString() =
-            "$description [id=$id, ${subordinates.size} subordinates, $totalUnits total units${superordinate.map { ", superordinate=$it" }
-                    .orElse("")}]"
+            "$description [id=$id, ${subordinates.size} subordinates, $totalUnits total units${superordinate?.let { ", superordinate=$it" } ?: ""}]"
 }
 
 /**

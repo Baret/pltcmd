@@ -7,7 +7,7 @@ import org.hexworks.amethyst.api.Attribute
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.amethyst.api.extensions.FacetWithContext
 import org.hexworks.amethyst.api.system.Behavior
-import org.hexworks.cobalt.datatypes.Maybe
+import org.hexworks.cobalt.databinding.api.extension.orElseThrow
 import kotlin.reflect.KClass
 
 private val log = KotlinLogging.logger {}
@@ -20,31 +20,31 @@ private val log = KotlinLogging.logger {}
  * @see hasAttribute
  */
 internal fun <T : Attribute> AnyGameEntity.getAttribute(attribute: KClass<T>) =
-    findAttribute(attribute).orElseThrow { IllegalStateException("Entity $this does not have an attribute of type $attribute") }
+    findAttributeOrNull(attribute).orElseThrow { IllegalStateException("Entity $this does not have an attribute of type $attribute") }
 
 /**
  * Checks if this entity has the given attribute (shorthand version for findAttribute).
  */
 internal fun <T : Attribute> AnyGameEntity.hasAttribute(attribute: KClass<T>): Boolean =
-    findAttribute(attribute).isPresent
+    findAttributeOrNull(attribute) != null
 
 /**
  * Checks if this entity has the given behavior (shorthand version for findBehavior).
  */
 internal fun <T : Behavior<GameContext>> AnyGameEntity.hasBehavior(behavior: KClass<T>): Boolean =
-    findBehavior(behavior).isPresent
+    findBehaviorOrNull(behavior) != null
 
 /**
  * Checks if this entity has the given facet (shorthand version for findFacet).
  */
 internal fun <T : FacetWithContext<GameContext>> AnyGameEntity.hasFacet(facet: KClass<T>): Boolean =
-    findFacet(facet).isPresent
+    findFacetOrNull(facet) != null
 
 /**
  * Adds the given attribute if no attribute of type [A] is present.
  */
 internal inline fun <reified A : Attribute> AnyGameEntity.addIfMissing(attribute: A) {
-    if (findAttribute(A::class).isEmpty()) {
+    if (findAttributeOrNull(A::class) == null) {
         asMutableEntity().addAttribute(attribute)
     }
 }
@@ -53,7 +53,7 @@ internal inline fun <reified A : Attribute> AnyGameEntity.addIfMissing(attribute
  * Adds the given behavior if no attribute of type [B] is present.
  */
 internal inline fun <reified B : Behavior<GameContext>> AnyGameEntity.addIfMissing(behavior: B) {
-    if (findBehavior(B::class).isEmpty()) {
+    if (findBehaviorOrNull(B::class) == null) {
         asMutableEntity().addBehavior(behavior)
     }
 }
@@ -62,14 +62,13 @@ internal inline fun <reified B : Behavior<GameContext>> AnyGameEntity.addIfMissi
  * Adds the given facet if no attribute of type [F] is present.
  */
 internal inline fun <reified F : FacetWithContext<GameContext>> AnyGameEntity.addIfMissing(facet: F) {
-    if (findFacet(F::class).isEmpty()) {
+    if (findFacetOrNull(F::class) == null) {
         asMutableEntity().addFacet(facet)
     }
 }
 
 /**
- * Casts this entity to [E] when it's type is [T] and provides it to [whenType]. Else return
- * [Maybe.empty].
+ * Casts this entity to [E] when it's type is [T] and provides it to [whenType]. Else return `null`.
  *
  * **This functions should not be used directly!** Instead every entity type/typealias should
  * have its own `asSomeEntity()` function!
@@ -81,13 +80,12 @@ internal inline fun <reified F : FacetWithContext<GameContext>> AnyGameEntity.ad
  * @param R the return type of [whenType]
  * @param whenType invoked with this entity as parameter when the type matches [T]
  */
-internal inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity.tryCastTo(whenType: (E) -> R): Maybe<R> =
+internal inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity.tryCastTo(whenType: (E) -> R): R? =
     if (type is T) {
         @Suppress("UNCHECKED_CAST")
-        val result = whenType(this as E)
-        Maybe.of(result)
+        whenType(this as E)
     } else {
-        Maybe.empty()
+        null
     }
 
 /**
@@ -104,14 +102,13 @@ internal inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity
  *
  * @see tryCastTo
  */
-internal suspend inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity.castToSuspending(crossinline invocation: suspend (E) -> R): Maybe<R> =
+internal suspend inline fun <E : AnyGameEntity, reified T : EntityType, R> AnyGameEntity.castToSuspending(crossinline invocation: suspend (E) -> R): R? =
     if (type is T) {
         @Suppress("UNCHECKED_CAST")
-        val result = invocation(this as E)
-        Maybe.of(result)
+        invocation(this as E)
     } else {
         log.warn { "$logIdentifier can not be cast to an entity of type ${T::class} because it has type ${type::class}" }
-        Maybe.empty()
+        null
     }
 
 /** The unique name of this entity if it has one or something else to identify the object in the logs */

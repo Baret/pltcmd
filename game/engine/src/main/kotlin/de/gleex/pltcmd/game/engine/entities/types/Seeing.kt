@@ -73,5 +73,4 @@ internal fun SeeingEntity.visibleEntities(): EntitySet<Positionable> = sighted.a
  * @return the result of [whenSeeing] when this entity is a [SeeingEntity]. False otherwise.
  */
 suspend fun AnyGameEntity.invokeWhenSeeing(whenSeeing: suspend (SeeingEntity) -> Boolean): Boolean =
-    castToSuspending<SeeingEntity, Seeing, Boolean>(whenSeeing)
-        .orElse(false)
+    castToSuspending<SeeingEntity, Seeing, Boolean>(whenSeeing) ?: false

@@ -12,7 +12,6 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.measure.distance.kilometers
 import de.gleex.pltcmd.util.measure.speed.Speed
 import de.gleex.pltcmd.util.measure.speed.perHour
-import org.hexworks.cobalt.datatypes.Maybe
 import java.util.*
 
 /**
@@ -26,9 +25,9 @@ typealias MovableEntity = GameEntity<Movable>
 /**
  * The destination of an entity determined by its current [movementPath]
  */
-val MovableEntity.destination: Maybe<Coordinate>
+val MovableEntity.destination: Coordinate?
     get() {
-        return Maybe.ofNullable(movementPath.firstOrNull())
+        return movementPath.firstOrNull()
     }
 
 /**
@@ -60,7 +59,7 @@ val MovableEntity.currentSpeed: Speed
 
 /** Check if a destination is set. */
 val MovableEntity.hasNoDestination: Boolean
-    get() = destination.isEmpty()
+    get() = destination == null
 
 /**
  * All currently active [MovementModifier]s this entity has.
@@ -92,5 +91,4 @@ val MovableEntity.canNotMove: Boolean
  * @return the result of [whenMovable] when this entity is a [MovableEntity]. False otherwise.
  */
 suspend fun AnyGameEntity.invokeWhenMovable(whenMovable: suspend (MovableEntity) -> Boolean): Boolean =
-    castToSuspending<MovableEntity, Movable, Boolean>(whenMovable)
-        .orElse(false)
+    castToSuspending<MovableEntity, Movable, Boolean>(whenMovable) ?: false

@@ -8,7 +8,6 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import kotlinx.collections.immutable.persistentMapOf
 import mu.KotlinLogging
-import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
@@ -112,7 +111,7 @@ class GameWorld(private val worldMap: WorldMap, private val factionViewToPresent
     /**
      * @return the [GameBlock] at the given [Coordinate] if it is contained in this world.
      */
-    fun fetchBlockAt(coordinate: Coordinate): Maybe<GameBlock> =
+    fun fetchBlockAt(coordinate: Coordinate): GameBlock? =
         fetchBlockAt(coordinate.toPosition())
 
     private fun Coordinate.toPosition(): Position3D {

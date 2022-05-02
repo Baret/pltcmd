@@ -14,7 +14,6 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import org.hexworks.cobalt.databinding.api.binding.bindTransform
 import org.hexworks.cobalt.databinding.api.property.Property
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.color.ANSITileColor
 
@@ -30,12 +29,10 @@ class ElementInfoFragment(
 ) : InfoSidebarFragment(observedTile, title = "Element", neededHeight = 2) {
 
     // TODO: Handle multiple elements (list binding, show list of elements)
-    private val currentElement: ObservableValue<Maybe<ElementEntity>> = currentInfoTile.bindTransform {
-        Maybe.ofNullable(
+    private val currentElement: ObservableValue<ElementEntity?> = currentInfoTile.bindTransform {
             // TODO use knowledge of HQ
             game.elementsAt(it)
                 .firstOrNull()
-        )
     }
 
     private val callSign: FrontendString<String> = whenElementPresent { it.callsign.name }
@@ -56,14 +53,13 @@ class ElementInfoFragment(
                                         .apply {
                                             iconProperty.updateFrom(
                                                 currentElement.bindTransform {
-                                                    it.map { element ->
+                                                    it?.let { element ->
                                                         TileRepository.Elements.marker(
                                                             element.element,
                                                             element.affiliationTo(game.playerFaction)
                                                         )
                                                             .withBackgroundColor(ANSITileColor.BLACK)
-                                                    }
-                                                        .orElse(TileRepository.empty())
+                                                    } ?: TileRepository.empty()
                                                 },
                                                 updateWhenBound = false
                                             )
@@ -94,8 +90,8 @@ class ElementInfoFragment(
 
     private fun whenElementPresent(transformation: (ElementEntity) -> String): FrontendString<String> {
         return currentElement.bindTransform {
-            if(it.isPresent) {
-                transformation(it.get())
+            if(it != null) {
+                transformation(it)
             } else {
                 ""
             }

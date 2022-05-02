@@ -16,8 +16,8 @@ import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import de.gleex.pltcmd.util.events.globalEventBus
 import mu.KotlinLogging
+import org.hexworks.cobalt.databinding.api.extension.orElseThrow
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.events.api.Subscription
 import java.util.*
 
@@ -50,7 +50,7 @@ class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
      * This property is used if multiple transmissions are received to separate the active and delayed conversations.
      * TODO is visible as a debug feature for the test UI, might be reduced later
      **/
-    val inConversationWith: ObservableValue<Maybe<CallSign>>
+    val inConversationWith: ObservableValue<CallSign?>
         get() = state._inConversationWith
 
     // TODO is visible as a debug feature for the UI, might be removed later
@@ -171,10 +171,10 @@ internal class ReceivingCommunicator internal constructor(
 
     private fun executeOrderAndRespond(transmission: OrderTransmission) {
         val order = Conversations.Orders.getOrder(transmission)
-        if (order.isPresent) {
+        if (order != null) {
             // delegate to the game entity's logic to execute actual messages
             val orderedTo = transmission.location
-            radioContext.executeOrder(order.get(), transmission.sender, orderedTo)
+            radioContext.executeOrder(order, transmission.sender, orderedTo)
             sender.sendNext(transmission.positiveAnswer)
         } else {
             sender.sendNext(transmission.negativeAnswer)
@@ -255,7 +255,9 @@ internal class SendingCommunicator internal constructor(
             } else {
                 // If we had received a transmission we are either sending a response now or the conversation ended already.
                 // If both is false an expected answer is missing!
-                toSend = nothingHeardFrom(state.inConversationWith.get()).firstTransmission
+                val expectedSender = state.inConversationWith
+                    .orElseThrow { IllegalStateException("Expected to be in a conversation. Can not end conversation properly") }
+                toSend = nothingHeardFrom(expectedSender).firstTransmission
             }
         }
         toSend?.let(::transmit)

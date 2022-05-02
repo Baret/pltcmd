@@ -17,7 +17,7 @@ object PathFinding : BaseFacet<GameContext, MoveTo>(MoveTo::class) {
     override suspend fun receive(message: MoveTo): Response {
         val (destination, _, entity) = message
         if (entity.movementPath.isNotEmpty()
-            && entity.destination.filter { current -> current == destination }.isPresent
+            && entity.destination == destination
         ) {
             return Consumed
         }

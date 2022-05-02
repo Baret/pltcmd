@@ -8,7 +8,6 @@ import de.gleex.pltcmd.game.engine.extensions.getAttribute
 import de.gleex.pltcmd.game.engine.extensions.tryCastTo
 import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import org.hexworks.amethyst.api.entity.EntityType
-import org.hexworks.cobalt.datatypes.Maybe
 
 interface Remembering : EntityType
 
@@ -47,9 +46,9 @@ fun RememberingEntity.transferMemoryFrom(other: RememberingEntity): Boolean {
 
 /**
  * Invokes [whenRemembering] if this entity is an [RememberingEntity]. When the type is not [Remembering],
- * [Maybe.empty] is returned.
+ * null is returned.
  *
  * @param R the type that is returned by [whenRemembering]
  */
-fun <R> AnyGameEntity.asRememberingEntity(whenRemembering: (RememberingEntity) -> R): Maybe<R> =
+fun <R> AnyGameEntity.asRememberingEntity(whenRemembering: (RememberingEntity) -> R): R? =
     tryCastTo<RememberingEntity, Remembering, R>(whenRemembering)

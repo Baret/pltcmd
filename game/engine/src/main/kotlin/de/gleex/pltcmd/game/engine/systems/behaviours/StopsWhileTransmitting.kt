@@ -11,6 +11,7 @@ import de.gleex.pltcmd.game.engine.extensions.addIfMissing
 import de.gleex.pltcmd.game.engine.extensions.logIdentifier
 import mu.KotlinLogging
 import org.hexworks.amethyst.api.base.BaseBehavior
+import org.hexworks.cobalt.databinding.api.extension.fold
 
 private val log = KotlinLogging.logger {}
 
@@ -24,14 +25,14 @@ object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class)
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         return entity.asCommunicatingEntity { communicating ->
             var updated = false
-            communicating.findAttribute(Transmitting::class)
-                .fold(whenEmpty = {
+            communicating.findAttributeOrNull(Transmitting::class)
+                .fold(whenNull = {
                     if (communicating.isTransmitting) {
                         log.debug { "${communicating.logIdentifier} is transmitting, adding attribute." }
                         communicating.addIfMissing(Transmitting)
                         updated = true
                     }
-                }, whenPresent = {
+                }, whenNotNull = {
                     if (communicating.isTransmitting.not()) {
                         log.debug { "${communicating.logIdentifier} stopped transmitting, removing attribute." }
                         communicating.asMutableEntity()
@@ -40,9 +41,7 @@ object StopsWhileTransmitting : BaseBehavior<GameContext>(RadioAttribute::class)
                     }
                 })
             updated
-        }.orElseGet {
-            false
-        }
+        } ?: false
     }
 
 }

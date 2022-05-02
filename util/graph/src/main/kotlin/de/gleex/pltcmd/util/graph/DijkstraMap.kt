@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.util.graph
 
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * A generic and rather simple implementation of a DijkstraMap (http://www.roguebasin.com/index.php?title=Dijkstra_Maps_Visualized)
@@ -30,9 +29,9 @@ class DijkstraMap<T>(vararg initialTargets: T) {
         downstreamMap[from] = Pair(to, targetDistance)
     }
 
-    fun pathFrom(from: T): Maybe<List<T>> {
+    fun pathFrom(from: T): List<T> {
         if(_targets.contains(from)) {
-            return Maybe.of(listOf(from))
+            return listOf(from)
         }
         if(downstreamMap.containsKey(from)) {
             val path = ArrayList<T>(maxDistance).apply { add(from) }
@@ -46,19 +45,19 @@ class DijkstraMap<T>(vararg initialTargets: T) {
                 }
                 current = nextNode
             }
-            return Maybe.of(path)
+            return path
         }
-        return Maybe.empty()
+        return emptyList()
     }
 
-    fun distanceFrom(from: T): Maybe<Int> {
+    fun distanceFrom(from: T): Int? {
         if(_targets.contains(from)) {
-            return Maybe.of(0)
+            return 0
         }
         val distance = downstreamMap[from]?.let {
             it.second + 1
         }
-        return Maybe.ofNullable(distance)
+        return distance
     }
 
     /**
