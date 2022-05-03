@@ -1,7 +1,7 @@
 package de.gleex.pltcmd.model.elements
 
 import de.gleex.pltcmd.model.elements.units.Unit
-import org.hexworks.cobalt.core.platform.factory.UUIDFactory
+import org.hexworks.cobalt.core.api.UUID
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
 
@@ -25,7 +25,7 @@ open class Element(
     /**
      * Unique ID of this element used to identify it, for example in [equals].
      */
-    val id = UUIDFactory.randomUUID()
+    val id = UUID.randomUUID()
 
     /**
      * A string containing this element's [corps], [kind] and [rung]. Can be used as relatively short

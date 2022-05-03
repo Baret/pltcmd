@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.model.elements.units
 
-import org.hexworks.cobalt.core.platform.factory.UUIDFactory
+import org.hexworks.cobalt.core.api.UUID
 
 /**
  * A _unit_ is one independent piece of "military equipment" (i.e. a soldier or a weapon system or a vehicle)
@@ -17,7 +17,7 @@ import org.hexworks.cobalt.core.platform.factory.UUIDFactory
  * engine to track its state.
  */
 class Unit(val blueprint: Units) {
-    val id = UUIDFactory.randomUUID()
+    val id = UUID.randomUUID()
     /**
      * @see [Unit]
      */
