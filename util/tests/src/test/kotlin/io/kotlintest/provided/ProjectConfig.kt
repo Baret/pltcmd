@@ -1,6 +1,7 @@
 package io.kotlintest.provided
 
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
@@ -17,15 +18,15 @@ class ProjectConfig: AbstractProjectConfig() {
     val executionTimes = mutableListOf<Long>()
     val heapSizes = mutableListOf<Long>()
 
-    override val parallelism: Int? = 1
+    override val parallelism: Int = 1
 
-    override fun beforeAll() {
+    override suspend fun beforeProject() {
         log.info { "Starting tests, measuring time" }
         logMemoryUsage()
         allStartTime = System.currentTimeMillis()
     }
 
-    override fun afterAll() {
+    override suspend fun afterProject() {
         val executionTime = System.currentTimeMillis() - allStartTime
         log.info { "Tests complete! Execution took $executionTime ms" }
         log.info { "Average test execution time: ${executionTimes.average()} ms" }
@@ -33,7 +34,7 @@ class ProjectConfig: AbstractProjectConfig() {
         log.info { "Maximum memory usage was ${heapSizes.maxOrNull()} MB" }
     }
 
-    override fun listeners(): List<TestListener> =
+    override fun extensions(): List<Extension> =
         listOf(object: TestListener {
             private var testStartedAt = 0L
 
