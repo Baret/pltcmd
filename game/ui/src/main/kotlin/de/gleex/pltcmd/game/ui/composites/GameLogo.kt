@@ -4,6 +4,7 @@ import de.gleex.pltcmd.game.options.UiOptions
 import org.hexworks.zircon.api.CharacterTileStrings
 import org.hexworks.zircon.api.Modifiers
 import org.hexworks.zircon.api.builder.graphics.LayerBuilder
+import org.hexworks.zircon.api.builder.graphics.StyleSetBuilder
 import org.hexworks.zircon.api.color.ANSITileColor
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Size
@@ -22,7 +23,10 @@ object GameLogo {
     private const val titlePart1 = "p l t"
     private const val titlePart2 = "c m d"
 
-    private val style = StyleSet.create(UiOptions.THEME.primaryForegroundColor, ANSITileColor.BLACK)
+    private val style: StyleSet = StyleSetBuilder.newBuilder()
+        .withForegroundColor(UiOptions.THEME.primaryForegroundColor)
+        .withBackgroundColor(ANSITileColor.BLACK)
+        .build()
     private val styleFadingShadow = style
             .withModifiers(Modifiers.fadeIn(20, 2000, true))
             .withForegroundColor(UiOptions.THEME.primaryBackgroundColor)
