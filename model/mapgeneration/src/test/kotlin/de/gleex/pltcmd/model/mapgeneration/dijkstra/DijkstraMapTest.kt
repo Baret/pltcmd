@@ -8,7 +8,6 @@ import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 
@@ -47,7 +46,7 @@ class DijkstraMapTest: WordSpec({
         map.add(c3, c2, 2)
 
         "have no path from a coordinate outside" {
-            map.pathFrom(Coordinate(1,1)) should beNull()
+            map.pathFrom(Coordinate(1,1)) should beEmpty()
         }
 
         "have a correct full path" {
