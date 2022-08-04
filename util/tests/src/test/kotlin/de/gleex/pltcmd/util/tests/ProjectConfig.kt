@@ -1,4 +1,4 @@
-package io.kotlintest.provided
+package de.gleex.pltcmd.util.tests
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
