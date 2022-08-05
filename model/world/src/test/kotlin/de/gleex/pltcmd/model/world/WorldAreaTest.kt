@@ -38,9 +38,10 @@ class WorldAreaTest : StringSpec({
             WorldArea(worldMap) { area.contains(it) }
 
         val invocationCount = 200
+        val randomCoordinates: List<Coordinate> = List(invocationCount) { Coordinate(eastingRange.random(), northingRange.random()) }
         val duration = measureTime {
             repeat(invocationCount) {
-                val wanted = Coordinate(eastingRange.random(), northingRange.random())
+                val wanted = randomCoordinates[it]
                 log.debug { "getting tile $wanted" }
                 val result = underTest[wanted]
                 result shouldNotBe null
