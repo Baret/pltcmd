@@ -186,9 +186,9 @@
 				</executions>
 				<configuration>
 					<!-- do we need this opt-in? -->
-<!--					<args>-->
-<!--						<arg>-opt-in=kotlin.RequiresOptIn</arg>-->
-<!--					</args>-->
+					<args>
+						<arg>-opt-in=kotlin.RequiresOptIn</arg>
+					</args>
 					<compilerPlugins>
 						<plugin>kotlinx-serialization</plugin>
 					</compilerPlugins>
