@@ -13,21 +13,21 @@ class CircleTest : StringSpec({
     val center = Pair(13, 17)
 
     "circleWithRadius 0" {
-     result.clear()
-     circleWithRadius(center.first, center.second, 0, resultCatcher)
-     result shouldBe listOf(center)
+        result.clear()
+        circleWithRadius(center.first, center.second, 0, resultCatcher)
+        result shouldBe listOf(center)
     }
 
     "circleWithRadius 1" {
-     result.clear()
-     circleWithRadius(center.first, center.second, 1, resultCatcher)
-     result.size shouldBe 9
-     // square with edge length 3
-     for (x in (center.first - 1)..(center.first + 1)) {
-      for (y in (center.second - 1)..(center.second + 1)) {
-       result shouldContain Pair(x, y)
-      }
-     }
+        result.clear()
+        circleWithRadius(center.first, center.second, 1, resultCatcher)
+        result.size shouldBe 9
+        // square with edge length 3
+        for (x in (center.first - 1)..(center.first + 1)) {
+            for (y in (center.second - 1)..(center.second + 1)) {
+                result shouldContain Pair(x, y)
+            }
+        }
     }
 
     "circleWithRadius 5" {
