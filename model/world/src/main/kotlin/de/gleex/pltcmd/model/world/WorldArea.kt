@@ -1,6 +1,9 @@
 package de.gleex.pltcmd.model.world
 
 import de.gleex.pltcmd.model.world.coordinate.*
+import mu.KotlinLogging
+
+private val log = KotlinLogging.logger {  }
 
 /**
  * A part of the [WorldMap] containing a set of [WorldTile]s. As world tiles map a terrain to a coordinate, a world
@@ -21,6 +24,14 @@ open class WorldArea internal constructor(
         asSequence().map { world[it] }
     }
 
+    /**
+     * This cache contains all coordinates, that have already been asked for and that are known to be present
+     * in this area.
+     *
+     * This way we filter and get only once on the [world].
+     */
+    private val tileCache: MutableMap<Coordinate, WorldTile> = mutableMapOf()
+
     // overwrites for return type
     override fun filter(predicate: CoordinateFilter): WorldArea {
         return intersect(super.filter(predicate))
@@ -32,6 +43,15 @@ open class WorldArea internal constructor(
      * @return the [WorldTile] at the given [Coordinate] or null, if no tile is present in this area.
      */
     open operator fun get(coordinate: Coordinate): WorldTile? =
+        tileCache[coordinate]
+            ?: findTile(coordinate)
+            ?.also { tileCache[coordinate] = it }
+
+    /**
+     * Tries to find the [WorldTile] to the given [Coordinate] in this area. Returns `null` if the coordinate
+     * does not belong to this area.
+     */
+    private fun findTile(coordinate: Coordinate): WorldTile? =
         if (filter(coordinate)) {
             world[coordinate]
         } else {
