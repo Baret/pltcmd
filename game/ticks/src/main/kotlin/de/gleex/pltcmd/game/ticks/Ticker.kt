@@ -12,6 +12,7 @@ import org.hexworks.cobalt.events.api.EventBus
 import java.time.LocalTime
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
@@ -89,7 +90,7 @@ object Ticker {
             val last = lastTickTimestamp ?: 0
             val duration = System.currentTimeMillis() - last
             avgTickDuration = ((avgTickDuration * durationMeasurements) + duration) / ++durationMeasurements
-            log.debug("$currentTick took ${duration.toDuration(TimeUnit.MILLISECONDS)}. Avg = $avgTickDuration")
+            log.debug("$currentTick took ${duration.toDuration(DurationUnit.MILLISECONDS)}. Avg = $avgTickDuration")
             lastTickTimestamp = System.currentTimeMillis()
         }
         _currentTickProperty.value = nextTick

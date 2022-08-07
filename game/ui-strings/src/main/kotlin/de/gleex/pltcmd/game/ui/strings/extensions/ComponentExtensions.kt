@@ -20,7 +20,7 @@ fun TextOverride.withFrontendString(format: Format, vararg objects: Any) {
     val frontendStrings: Collection<FrontendString<*>> = objects.map {
         when (it) {
             is FrontendString<*>    -> it
-            is ObservableValue<Any> -> it.toFrontendString(format)
+            is ObservableValue<*> -> it.toFrontendString(format)
             else                    -> it.toFrontendString(format)
         }
     }

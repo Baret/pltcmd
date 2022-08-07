@@ -1,7 +1,6 @@
 package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * The root goal is directly and only used by the [CommandersIntent] and is the only goal exposing the sub-goal API.
@@ -40,9 +39,8 @@ class RootGoal : EndlessGoal() {
     /**
      * Removes the active sub-goal and returns it, if any is present.
      *
-     * @return a [Maybe] containing the previously active goal that has been removed. Or an empty maybe if no
-     *          sub-goals were present.
+     * @return The previously active goal that has been removed. Or null if no sub-goals were present.
      */
-    fun removeActiveSubGoal(): Maybe<Goal> =
+    fun removeActiveSubGoal(): Goal? =
             removeFirstSubGoal()
 }

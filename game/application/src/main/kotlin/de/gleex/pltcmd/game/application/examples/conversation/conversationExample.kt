@@ -152,7 +152,7 @@ fun buildUI(hqSender: ElementEntity, bravoSender: ElementEntity, charlieSender: 
 
     val logAreaHeight = 20
     val logArea = Components.logArea().
-    withSize(UiOptions.WINDOW_WIDTH, logAreaHeight).
+    withPreferredSize(UiOptions.WINDOW_WIDTH, logAreaHeight).
     withAlignmentWithin(screen, ComponentAlignment.BOTTOM_CENTER).
     withDecorations(ComponentDecorations.box(BoxType.SINGLE, "Radio log")).
     build().
@@ -164,7 +164,7 @@ fun buildUI(hqSender: ElementEntity, bravoSender: ElementEntity, charlieSender: 
 
     val mainPanel = Components.hbox().
             withAlignmentWithin(screen, ComponentAlignment.TOP_CENTER).
-            withSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - logAreaHeight).
+            withPreferredSize(UiOptions.WINDOW_WIDTH, UiOptions.WINDOW_HEIGHT - logAreaHeight).
             build().
             apply {
                 val hBox = this
@@ -172,7 +172,7 @@ fun buildUI(hqSender: ElementEntity, bravoSender: ElementEntity, charlieSender: 
                 // sidebar
                 addComponent(Components.vbox().
                     withSpacing(1).
-                    withSize(sideBarWidth, contentSize.height).
+                    withPreferredSize(sideBarWidth, contentSize.height).
                     build().
                     apply {
                             addFragment(GameTimeFragment(sideBarWidth))
@@ -191,22 +191,20 @@ fun buildUI(hqSender: ElementEntity, bravoSender: ElementEntity, charlieSender: 
 
 fun createRadioCommuicatorPanel(element: ElementEntity, size: Size): Component {
     return Components.vbox().
-            withSize(size).
+            withPreferredSize(size).
             withSpacing(3).
             withDecorations(ComponentDecorations.box(BoxType.DOUBLE, element.callsign.toString())).
             build().
             apply {
                 addComponent(Components.
                         label().
-                        withSize(contentSize.width, 1).
+                        withPreferredSize(contentSize.width, 1).
                         build().
                         apply {
                             textProperty.updateFrom(
-                                    "Talking to ".toProperty()
-                                            bindPlusWith element.inConversationWith.bindTransform {
-                                        it.map { callSign -> callSign.toString() }
-                                                .orElse("nobody")
-                                    })
+                                "Talking to ".toProperty()
+                                    .bindPlusWith(element.inConversationWith.bindTransform { it?.toString() ?: "nobody" })
+                            )
                         })
 
                 // TODO: add list of buffered conversations

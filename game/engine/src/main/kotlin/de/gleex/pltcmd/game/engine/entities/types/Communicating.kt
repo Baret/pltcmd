@@ -14,7 +14,6 @@ import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import de.gleex.pltcmd.util.events.globalEventBus
 import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.datatypes.Maybe
 import org.hexworks.cobalt.events.api.Subscription
 
 /**
@@ -37,12 +36,12 @@ val CommunicatingEntity.radioSignal: RadioSignal
     get() = communicator.currentSignal
 
 /** TODO is visible as a debug feature for the test UI, might be removed later */
-val CommunicatingEntity.inConversationWith: ObservableValue<Maybe<CallSign>>
+val CommunicatingEntity.inConversationWith: ObservableValue<CallSign?>
     get() = communicator.inConversationWith
 
 /** True if this entity is currently in a conversation */
 val CommunicatingEntity.isTransmitting
-    get() = communicator.inConversationWith.value.isPresent
+    get() = communicator.inConversationWith.value != null
 
 /** The name under which this entity identifies itself when communicating by radio */
 val CommunicatingEntity.radioCallSign: CallSign
@@ -75,10 +74,9 @@ internal fun CommunicatingEntity.startConversation(conversation: Conversation) {
 }
 
 /**
- * Invokes [whenCommunicating] if this entity is a [CommunicatingEntity]. When the type is not [Communicating],
- * [whenOther] is invoked instead.
+ * Invokes [whenCommunicating] if this entity is a [CommunicatingEntity].
  *
- * @param R the type that is returned by [whenCommunicating] or [whenOther]
+ * @param R the type that is returned by [whenCommunicating].
  */
-fun <R> AnyGameEntity.asCommunicatingEntity(whenCommunicating: (CommunicatingEntity) -> R): Maybe<R> =
+fun <R> AnyGameEntity.asCommunicatingEntity(whenCommunicating: (CommunicatingEntity) -> R): R? =
     tryCastTo<CommunicatingEntity, Communicating, R>(whenCommunicating)

@@ -1,14 +1,16 @@
 package de.gleex.pltcmd.model.world.testhelpers
 
-import arrow.core.firstOrNone
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldMap
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.should
-import org.hexworks.cobalt.datatypes.Maybe
+import mu.KotlinLogging
 
 // - - - Matchers for WorldMap
+
+private val log = KotlinLogging.logger {  }
 
 infix fun WorldMap.shouldHaveSameTerrain(other: WorldMap) = this should haveSameTerrain(other)
 
@@ -16,33 +18,37 @@ fun haveSameTerrain(expected: WorldMap) = object: Matcher<WorldMap> {
     override fun test(value: WorldMap): MatcherResult {
         val sectors = value.sectors.sorted().toList()
         val expectedSectors = expected.sectors.sorted().toList()
-        val errorMessage = when {
+        val errorMessage: String? = when {
             value.origin != expected.origin -> {
-                Maybe.of("origin ${value.origin} does not equal expected ${expected.origin}")
+                "origin ${value.origin} does not equal expected ${expected.origin}"
             }
-            value.width != expected.width   -> {
-                Maybe.of("width of ${value.width} does not equal expected width of ${expected.width}")
+            value.width != expected.width -> {
+                "width of ${value.width} does not equal expected width of ${expected.width}"
             }
             value.height != expected.height -> {
-                Maybe.of("height of ${value.height} does not equal expected height of ${expected.height}")
+                "height of ${value.height} does not equal expected height of ${expected.height}"
             }
             sectors.size != expectedSectors.size -> {
-                Maybe.of("Number of sectors ${sectors.size} does not equal expected ${expectedSectors.size}")
+                "Number of sectors ${sectors.size} does not equal expected ${expectedSectors.size}"
             }
-            else                            -> {
-                // check all tiles
-                sectors.
-                    withIndex().
-                    firstOrNone { (index, sector) -> sector.isNotEqualTo(expectedSectors[index]) }.fold(
-                        { Maybe.empty<String>() },
-                        { Maybe.of("Sector at ${it.value.origin} does not equal expected sector!") })
+            else -> {
+                log.debug { "Checking if all tiles are the same" }
+                val tilesAreTheSame = containExactly(expected.allTiles).test(value.allTiles).passed()
+                log.debug { "Tiles are the same? $tilesAreTheSame" }
+                if(!tilesAreTheSame) {
+                    "tiles are not the same"
+                } else {
+                    null
+                }
             }
         }
 
-        return MatcherResult.Companion.invoke(
-                errorMessage.isEmpty(),
-                "world map should have the same terrain but ${errorMessage.orElse("")}",
-                "world map should not have the same terrain"
+        log.debug { "Done matching world maps. Errormessage: '$errorMessage'" }
+
+        return MatcherResult(
+            errorMessage == null,
+            { "world map should have the same terrain but $errorMessage" },
+            { "world map should not have the same terrain" }
         )
     }
 

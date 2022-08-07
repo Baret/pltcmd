@@ -5,8 +5,8 @@ import de.gleex.pltcmd.game.engine.entities.types.*
 import de.gleex.pltcmd.game.ui.renderers.SignalVisualizer
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.debug.DebugFeature
+import org.hexworks.cobalt.databinding.api.extension.fold
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
-import org.hexworks.cobalt.databinding.internal.binding.ComputedDualBinding
 import org.hexworks.zircon.api.dsl.fragment.buildSelector
 
 /**
@@ -44,16 +44,21 @@ class SignalVisualizationFragment(
 
     init {
         // React to updates of currentInfoTile as well as new selection of the multiselect
-        ComputedDualBinding(currentInfoTile, select.selectedValue) { coordinate, (_, drawSignal) ->
-            game
-                .firstElementAt(coordinate)
-                .fold(
-                    whenEmpty = { visualizer.deactivate() },
-                    whenPresent = { elementToVisualize -> drawSignal(elementToVisualize) }
-                )
-        }
+        currentInfoTile.onChange { updateVisualization(it.newValue, select.selected.second) }
+        select.selectedValue.onChange { updateVisualization(currentInfoTile.value, it.newValue.second) }
 
-        componentsContainer
-            .addFragment(select)
+        componentsContainer.addFragment(select)
+    }
+
+    private fun updateVisualization(
+        coordinate: Coordinate,
+        drawSignal: (ElementEntity) -> Unit
+    ) {
+        game
+            .firstElementAt(coordinate)
+            .fold(
+                whenNull = { visualizer.deactivate() },
+                whenNotNull = { elementToVisualize -> drawSignal(elementToVisualize) }
+            )
     }
 }

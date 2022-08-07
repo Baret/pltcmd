@@ -39,9 +39,13 @@ class RiverTyper(override val rand: Random, override val context: GenerationCont
         log.debug { "Longest distance: $tryingDistance tiles. Starting to search river candidates..." }
         while (mountainTopsToReach.isNotEmpty() && tryingDistance >= 0) {
             context.mountainTops.allWithDistance(tryingDistance)
-                    .shuffled(rand)
-                    .forEach { riverEndCandidate ->
-                        context.mountainTops.pathFrom(riverEndCandidate).ifPresent { riverCandidate ->
+                .shuffled(rand)
+                .forEach { riverEndCandidate ->
+                    context
+                        .mountainTops
+                        .pathFrom(riverEndCandidate)
+                        .takeIf { it.isNotEmpty() }
+                        ?.let { riverCandidate ->
                             // if the path leads to a mountain top that does not yet have a river to it
                             val currentMountainTop = riverCandidate.last()
                             if (mountainTopsToReach.contains(currentMountainTop)) {
@@ -49,7 +53,7 @@ class RiverTyper(override val rand: Random, override val context: GenerationCont
                                 mountainTopsToReach.remove(currentMountainTop)
                             }
                         }
-                    }
+                }
             tryingDistance--
         }
         log.debug { "Found ${fullRivers.size} full paths to create rivers." }

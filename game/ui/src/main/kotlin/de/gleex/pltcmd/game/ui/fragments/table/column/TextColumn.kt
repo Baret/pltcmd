@@ -7,6 +7,7 @@ import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.component.Label
 import org.hexworks.zircon.api.component.renderer.ComponentRenderContext
 import org.hexworks.zircon.api.component.renderer.ComponentRenderer
+import org.hexworks.zircon.api.component.renderer.fillWithText
 import org.hexworks.zircon.api.graphics.TileGraphics
 
 /**
@@ -21,7 +22,7 @@ open class TextColumn<T : Any, V : Any>(
 ) : Column<T, Label>(name, format, { rowElement: T ->
     Components
         .label()
-        .withSize(format.length, 1)
+        .withPreferredSize(format.length, 1)
         .withComponentRenderer(object : ComponentRenderer<Label> {
             override fun render(tileGraphics: TileGraphics, context: ComponentRenderContext<Label>) {
                 var newStyle = context.currentStyle

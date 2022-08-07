@@ -21,7 +21,7 @@ class MapFragment(gameWorld: GameWorld) : Fragment {
         GameComponents.newGameAreaComponentRenderer<Panel, Tile, GameBlock>(gameWorld, ProjectionMode.TOP_DOWN)
 
     override val root: Panel = Components.panel()
-        .withSize(UiOptions.MAP_VIEW_WIDTH, UiOptions.MAP_VIEW_HEIGHT)
+        .withPreferredSize(UiOptions.MAP_VIEW_WIDTH, UiOptions.MAP_VIEW_HEIGHT)
         .withDecorations(
             MapGridDecorationRenderer(),
             MapCoordinateDecorationRenderer(gameWorld)
@@ -32,7 +32,7 @@ class MapFragment(gameWorld: GameWorld) : Fragment {
      * This panel contains the game area rendering the [GameWorld].
      */
     val mapPanel: Panel = Components.panel()
-        .withSize(root.contentSize)
+        .withPreferredSize(root.contentSize)
         .withComponentRenderer(mapRenderer)
         .build()
         .apply {

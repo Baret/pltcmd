@@ -48,12 +48,12 @@ class ElementCommandFragment(
         .bindTransform { it.callsign }
 
     override val root = Components.vbox()
-            .withSize(fragmentWidth, 5)
+            .withPreferredSize(fragmentWidth, 5)
             .build()
             .apply {
                 addFragment(elementSelect)
                 addComponent(Components.button()
-                        .withSize(width, 1)
+                        .withPreferredSize(width, 1)
                         .build()
                         .apply {
                             textProperty.updateFrom("Move to ".toProperty() bindPlusWith selectedDestination.bindTransform { it.toString() }, true)
@@ -62,7 +62,7 @@ class ElementCommandFragment(
                             }
                         })
                 addComponent(Components.button()
-                        .withSize(width, 1)
+                        .withPreferredSize(width, 1)
                         .build()
                         .apply {
                             textProperty.updateFrom("Patrol at ".toProperty() bindPlusWith selectedDestination.bindTransform { it.toString() }, true)
@@ -71,7 +71,7 @@ class ElementCommandFragment(
                             }
                         })
                 addComponent(Components.button()
-                        .withSize(width, 1)
+                        .withPreferredSize(width, 1)
                         .withText("Halt!")
                         .build()
                         .apply {
@@ -80,7 +80,7 @@ class ElementCommandFragment(
                             }
                         })
                 addComponent(Components.button()
-                        .withSize(width, 1)
+                        .withPreferredSize(width, 1)
                         .withText("Continue!")
                         .build()
                         .apply {

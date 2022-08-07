@@ -11,7 +11,7 @@ import de.gleex.pltcmd.model.faction.Affiliation
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.knowledge.KnowledgeGrade
 import de.gleex.pltcmd.util.knowledge.KnownByGrade
-import org.hexworks.cobalt.datatypes.Maybe
+import org.hexworks.cobalt.databinding.api.extension.fold
 
 /**
  * Holds information about an [Element] that was reported (directly or indirectly, by vision, sound or assumption).
@@ -26,13 +26,12 @@ class KnownContact(private val reporter: ElementEntity, contact: ElementEntity, 
     val position: Coordinate
         get() = origin.currentPosition
     val affiliation: Affiliation
-        get() = revealAt(KnowledgeGrade.MEDIUM) { reporter.affiliationTo(origin) }
-            .orElseGet { Affiliation.Unknown }
+        get() = revealAt(KnowledgeGrade.MEDIUM) { reporter.affiliationTo(origin) } ?: Affiliation.Unknown
 
     // details of the element depend on how much we know about it
-    val rung: Maybe<Rung>
+    val rung: Rung?
         get() = revealAt(KnowledgeGrade.LOW) { it.element.rung }
-    val unitCount: Maybe<Int>
+    val unitCount: Int?
         get() = revealAt(KnowledgeGrade.HIGH) { it.element.totalUnits }
 
     override fun copy(): KnownContact {
@@ -49,7 +48,7 @@ val KnownContact.description
         .replace(Regex(" +"), " ")
 
 /**
- * Returns a text from this [Maybe]. If no mapping function is provided `toString()` will be used on the value.
- * An empty [String] is returned for an empty [Maybe].
+ * Returns a text from this nullable. If no mapping function is provided, `toString()` will be used on the value.
+ * [defaultText] (empty string by default) is used when this is null.
  **/
-fun <T : Any> Maybe<T>.text(defaultText: String = "", toText: (T) -> String = Any::toString) = map(toText).orElse(defaultText)
+fun <T : Any> T?.text(defaultText: String = "", toText: (T) -> String = Any::toString) = fold({ defaultText }, toText)

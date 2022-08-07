@@ -4,7 +4,6 @@ import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import mu.KotlinLogging
 import org.hexworks.amethyst.api.Message
-import org.hexworks.cobalt.datatypes.Maybe
 
 private val log = KotlinLogging.logger {}
 
@@ -41,25 +40,23 @@ abstract class Goal(vararg subGoals: Goal) {
      *
      * The default implementation simply advances the sub-goals by calling [stepSubGoals].
      */
-    open fun step(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> =
+    open fun step(element: ElementEntity, context: GameContext): Message<GameContext>? =
         stepSubGoals(element, context)
 
     /**
      * Calls [step] on the next unfinished sub-goal. All finished sub-goals are removed first.
      */
-    protected fun stepSubGoals(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
+    protected fun stepSubGoals(element: ElementEntity, context: GameContext): Message<GameContext>? {
         removeUpcomingSubGoalsThatAreFinished(element)
         return subGoals
             .firstOrNull()
             ?.step(element, context)
-            ?: Maybe.empty()
     }
 
     /**
      * Pops (removes and returns) the current sub-goal from the queue if it is not empty.
      */
-    protected fun removeFirstSubGoal(): Maybe<Goal> =
-        Maybe.ofNullable(subGoals.removeFirstOrNull())
+    protected fun removeFirstSubGoal(): Goal? = subGoals.removeFirstOrNull()
 
     /**
      * Removes all sub-goals at the head of the queue that are already finished.
@@ -70,7 +67,7 @@ abstract class Goal(vararg subGoals: Goal) {
                 .first()
                 .isFinished(element)
         ) {
-            val popped = removeFirstSubGoal().get()
+            val popped = removeFirstSubGoal()
             log.debug { "Removed first sub-goal $popped from $this because it is  finished" }
         }
     }

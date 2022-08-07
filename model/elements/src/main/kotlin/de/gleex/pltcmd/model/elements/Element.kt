@@ -1,10 +1,9 @@
 package de.gleex.pltcmd.model.elements
 
 import de.gleex.pltcmd.model.elements.units.Unit
-import org.hexworks.cobalt.core.platform.factory.UUIDFactory
+import org.hexworks.cobalt.core.api.UUID
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import org.hexworks.cobalt.databinding.api.property.Property
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * An element consists of a set of [Unit]s. All elements of a faction make up its armed forces.
@@ -20,13 +19,13 @@ open class Element(
         val kind: ElementKind,
         val rung: Rung,
         units: Set<Unit>,
-        initialSuperOrdinate: Maybe<CommandingElement> = Maybe.empty()
+        initialSuperOrdinate: CommandingElement? = null
 ) {
 
     /**
      * Unique ID of this element used to identify it, for example in [equals].
      */
-    val id = UUIDFactory.randomUUID()
+    val id = UUID.randomUUID()
 
     /**
      * A string containing this element's [corps], [kind] and [rung]. Can be used as relatively short
@@ -48,20 +47,18 @@ open class Element(
     open val totalSoldiers
             get() = allUnits.sumOf { it.personnel }
 
-    private var _superordinate: Property<Maybe<CommandingElement>> =
-            initialSuperOrdinate.toProperty({ _, newValue ->
-                newValue.fold({ true }) {
-                    it != this
-                }
+    private var _superordinate: Property<CommandingElement?> =
+            initialSuperOrdinate.toProperty(validator = { _, newValue ->
+                newValue != this
             })
 
     /**
-     * If this element is currently being commanded this [Maybe] contains the superordinate.
+     * If this element is currently being commanded this is the superordinate.
      *
-     * When this elements gets a new superordinate it automatically removes itself from the
+     * When this element gets a new superordinate it automatically removes itself from the
      * former superordinate (if it was present).
      */
-    var superordinate: Maybe<CommandingElement>
+    var superordinate: CommandingElement?
         get() = _superordinate.value
         set(value) {
             require(_superordinate.updateValue(value).successful) {
@@ -106,8 +103,7 @@ open class Element(
      */
     fun removeUnit(unit: Unit): Boolean = _units.remove(unit)
 
-    override fun toString() = "$description [id=$id, ${_units.size} units${superordinate.map { ",superordinate=$it" }
-            .orElse("")}]"
+    override fun toString() = "$description [id=$id, ${_units.size} units${superordinate?.let { ",superordinate=$it" } ?: ""}]"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -38,16 +38,17 @@ class WorldAreaTest : StringSpec({
             WorldArea(worldMap) { area.contains(it) }
 
         val invocationCount = 200
+        val randomCoordinates: List<Coordinate> = List(invocationCount) { Coordinate(eastingRange.random(), northingRange.random()) }
+
         val duration = measureTime {
             repeat(invocationCount) {
-                val wanted = Coordinate(eastingRange.random(), northingRange.random())
-                log.debug { "getting tile $wanted" }
+                val wanted = randomCoordinates[it]
                 val result = underTest[wanted]
                 result shouldNotBe null
                 result?.coordinate shouldBe wanted
             }
         }
-        val maxDurationInMs: Long = 115
+        val maxDurationInMs: Long = 165
         log.info { "Accessing a random tile of ${map.size} tiles $invocationCount times took a total of $duration and should be less than $maxDurationInMs ms" }
         duration.inWholeMilliseconds shouldBeLessThan maxDurationInMs
     }

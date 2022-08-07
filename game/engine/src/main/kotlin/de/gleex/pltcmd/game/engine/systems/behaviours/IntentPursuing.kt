@@ -15,15 +15,13 @@ object IntentPursuing : BaseBehavior<GameContext>(CommandersIntent::class) {
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean {
         return entity.asElementEntity { element ->
             val messageToExecute = element.commandersIntent.proceed(element, context)
-            if (messageToExecute.isPresent) {
+            if (messageToExecute != null) {
                 // FIXME: Use surrounding coroutine context (something like entity.receiveWhenElement{ ... }?)
                 runBlocking {
-                    element.receiveMessage(messageToExecute.get())
+                    element.receiveMessage(messageToExecute)
                 }
             }
-            messageToExecute.isPresent
-        }.orElseGet {
-            false
-        }
+            messageToExecute != null
+        } ?: false
     }
 }

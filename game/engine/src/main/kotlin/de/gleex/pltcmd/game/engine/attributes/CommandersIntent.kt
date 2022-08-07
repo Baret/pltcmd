@@ -9,7 +9,6 @@ import de.gleex.pltcmd.game.engine.entities.types.ElementEntity
 import de.gleex.pltcmd.game.ticks.Ticker
 import org.hexworks.amethyst.api.Message
 import org.hexworks.amethyst.api.base.BaseAttribute
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * Contains the [RootGoal] that is used to add or remove the goals of an element.
@@ -18,9 +17,9 @@ internal class CommandersIntent : BaseAttribute() {
     private val commandersIntent: RootGoal = RootGoal()
 
     /**
-     * Proceeds with the current goal. If the given element currently has no goal an empty [Maybe] will be returned.
+     * Proceeds with the current goal. If the given element currently has no goal `null` will be returned.
      */
-    fun proceed(element: ElementEntity, context: GameContext): Maybe<Message<GameContext>> {
+    fun proceed(element: ElementEntity, context: GameContext): Message<GameContext>? {
         return commandersIntent.step(element, context)
     }
 
@@ -36,9 +35,7 @@ internal class CommandersIntent : BaseAttribute() {
     /**
      * Clears the current list of goals and sets [newGoal] to the current commander's intent.
      */
-    fun setTo(newGoal: Goal) =
-            clear()
-                    .andThen(newGoal)
+    fun setTo(newGoal: Goal) = clear().andThen(newGoal)
 
     /**
      * Adds the given goal to the end of the queue of goals. [nextGoal] will thus be executed after all current goals
@@ -79,7 +76,7 @@ internal class CommandersIntent : BaseAttribute() {
     fun doWhen(goal: Goal, condition: () -> Boolean): CommandersIntent {
         val currentGoal = commandersIntent
                 .removeActiveSubGoal()
-                .orElse(DoNothingGoal)
+                ?: DoNothingGoal
         val conditionalGoal = ConditionalGoal(goal, currentGoal, condition)
         return butNow(conditionalGoal)
     }

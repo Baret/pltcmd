@@ -1,8 +1,10 @@
-package io.kotlintest.provided
+package de.gleex.pltcmd.util.tests
 
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -16,15 +18,15 @@ class ProjectConfig: AbstractProjectConfig() {
     val executionTimes = mutableListOf<Long>()
     val heapSizes = mutableListOf<Long>()
 
-    override val parallelism: Int? = 1
+    override val parallelism: Int = 1
 
-    override fun beforeAll() {
+    override suspend fun beforeProject() {
         log.info { "Starting tests, measuring time" }
         logMemoryUsage()
         allStartTime = System.currentTimeMillis()
     }
 
-    override fun afterAll() {
+    override suspend fun afterProject() {
         val executionTime = System.currentTimeMillis() - allStartTime
         log.info { "Tests complete! Execution took $executionTime ms" }
         log.info { "Average test execution time: ${executionTimes.average()} ms" }
@@ -32,7 +34,7 @@ class ProjectConfig: AbstractProjectConfig() {
         log.info { "Maximum memory usage was ${heapSizes.maxOrNull()} MB" }
     }
 
-    override fun listeners(): List<TestListener> =
+    override fun extensions(): List<Extension> =
         listOf(object: TestListener {
             private var testStartedAt = 0L
 
@@ -54,7 +56,15 @@ class ProjectConfig: AbstractProjectConfig() {
                     return
                 }
                 val executionTime = System.currentTimeMillis() - testStartedAt
-                log.info { "Execution of '${testCase.description.names().drop(1).joinToString(" ") { it.displayName }}' took $executionTime ms" }
+                val ids = testCase.descriptor.ids()
+                val testClassName = ids.firstOrNull()?.value
+                val infix = if(testCase.spec is WordSpec) {
+                    "should"
+                } else {
+                    ""
+                }
+                val testName = ids.drop(1).joinToString(separator = " $infix ") { it.value }
+                log.info { "Execution of [$testClassName] '$testName' took $executionTime ms" }
                 log.info { " - - - - - - - - - - - - - - - - - -" }
                 executionTimes.add(executionTime)
                 heapSizes.add(heapSize())

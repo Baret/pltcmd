@@ -18,7 +18,7 @@ internal object Fighting :
 
     override suspend fun update(entity: AnyGameEntity, context: GameContext): Boolean =
         entity.asElementEntity { attackNearbyEnemies(it, context) }
-            .orElseGet { false }
+            ?: false
 
     fun attackNearbyEnemies(attacker: ElementEntity, context: GameContext): Boolean =
         attacker

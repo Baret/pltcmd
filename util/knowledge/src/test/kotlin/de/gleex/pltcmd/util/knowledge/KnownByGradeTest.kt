@@ -4,7 +4,6 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import org.hexworks.cobalt.datatypes.Maybe
 
 class KnownByGradeTest : WordSpec({
 
@@ -28,7 +27,7 @@ class KnownByGradeTest : WordSpec({
 
     "reveal" should {
         unrevealed.revealed shouldBe KnowledgeGrade.NONE
-        unrevealed.revealAt(KnowledgeGrade.FULL) { it } shouldBe Maybe.empty()
+        unrevealed.revealAt(KnowledgeGrade.FULL) { it } shouldBe null
 
         unrevealed.reveal(KnowledgeGrade.FULL)
         // unrevealed is now revealed!
@@ -36,7 +35,7 @@ class KnownByGradeTest : WordSpec({
             unrevealed.revealed shouldBe KnowledgeGrade.FULL
         }
         "change bit to origin" {
-            unrevealed.revealAt(KnowledgeGrade.FULL) { it } shouldBe Maybe.of(knownBit)
+            unrevealed.revealAt(KnowledgeGrade.FULL) { it } shouldBe knownBit
         }
     }
 

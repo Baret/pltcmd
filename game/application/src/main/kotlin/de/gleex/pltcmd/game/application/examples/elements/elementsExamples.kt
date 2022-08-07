@@ -7,7 +7,7 @@ import de.gleex.pltcmd.model.elements.units.Units.*
 import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.elements.units.times
 import de.gleex.pltcmd.util.debug.DebugFeature
-import org.hexworks.cobalt.datatypes.Maybe
+import org.hexworks.cobalt.databinding.api.extension.fold
 
 @DebugFeature("I was playing around with the elements model in the early days")
 fun main() {
@@ -67,7 +67,7 @@ fun main() {
     spacer()
     println("When they are back on their own, they get back their cool callsign:")
     //bravo.removeElement(wolfs)
-    wolfs.superordinate = Maybe.empty()
+    wolfs.superordinate = null
     printCommandElement(wolfs)
     spacer()
     println("BTW, just to make it completely ridiculous, the company containing alpha and bravo: $company")

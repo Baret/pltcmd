@@ -31,7 +31,7 @@ internal object SharingKnowledge :
                 log.debug { "TransferMemory for ${toUpdate.logIdentifier} took $duration ms" }
             }
             true
-        }.orElse(false)
+        } ?: false
     }
 
 }
@@ -41,11 +41,11 @@ internal object SharingKnowledge :
  */
 internal fun PositionableEntity.comradesAtPosition(entities: EntitySet<EntityType>): EntitySet<Remembering> {
     val myPosition = currentPosition
-    val myFaction = asFactionEntity { it.faction.value }.get()
+    val myFaction = asFactionEntity { it.faction.value }
     val comradesAtPosition = entities.filterTyped<Remembering> { other ->
         other != this
-                && other.asPositionableEntity { it.currentPosition == myPosition }.orElse(false)
-                && other.asFactionEntity { it.faction.value == myFaction }.orElse(false)
+                && other.asPositionableEntity { it.currentPosition == myPosition } ?: false
+                && other.asFactionEntity { it.faction.value == myFaction } ?: false
     }
     return comradesAtPosition
 }

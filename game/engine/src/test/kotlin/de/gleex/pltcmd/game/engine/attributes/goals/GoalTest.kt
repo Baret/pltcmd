@@ -1,10 +1,12 @@
 package de.gleex.pltcmd.game.engine.attributes.goals
 
+import de.gleex.pltcmd.game.engine.GameContext
 import de.gleex.pltcmd.game.engine.attributes.goals.testimplementations.*
-import de.gleex.pltcmd.util.tests.beEmptyMaybe
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import org.hexworks.amethyst.api.Message
 
 class GoalTest : FreeSpec() {
 
@@ -20,9 +22,9 @@ class GoalTest : FreeSpec() {
                         "The goal should not yet be finished" {
                             testGoal.isFinished(goalTestEntity) shouldBe false
                         }
-                        val commandMaybe = testGoal.step(goalTestEntity, testGameContext)
+                        val command: Message<GameContext> = testGoal.step(goalTestEntity, testGameContext)!!
                         "The returned command should contain value $expectedValue" {
-                            commandMaybe should haveContainedValue(expectedValue)
+                            command should haveValue(expectedValue)
                         }
                         expectedValue++
                     }
@@ -30,7 +32,7 @@ class GoalTest : FreeSpec() {
 
                 "It should be finished after 3 steps" {
                     testGoal.isFinished(goalTestEntity) shouldBe true
-                    testGoal.step(goalTestEntity, testGameContext) should beEmptyMaybe()
+                    testGoal.step(goalTestEntity, testGameContext) should beNull()
                 }
             }
         }

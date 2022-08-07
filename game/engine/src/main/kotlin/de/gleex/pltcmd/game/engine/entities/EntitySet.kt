@@ -10,7 +10,6 @@ import de.gleex.pltcmd.model.world.coordinate.CoordinateArea
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.toPersistentSet
 import org.hexworks.amethyst.api.entity.EntityType
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * A set of [GameEntity]s with a couple of handy methods to query for specific entities.
@@ -64,11 +63,11 @@ class EntitySet<T : EntityType>(initialEntities: Iterable<GameEntity<T>> = empty
             filterElements { it.currentPosition == location }
 
     /**
-     * @return a [Maybe] containing the first [GameEntity] of type [ElementType] found at the given [location]
-     *  or an empty [Maybe] if no elements are present.
+     * @return The first [GameEntity] of type [ElementType] found at the given [location]
+     *  or null if no elements are present.
      */
-    fun firstElementAt(location: Coordinate): Maybe<ElementEntity> =
-            Maybe.ofNullable(filterElements { it.currentPosition == location }.firstOrNull())
+    fun firstElementAt(location: Coordinate): ElementEntity? =
+            filterElements { it.currentPosition == location }.firstOrNull()
 
     /**
      * Shorthand version for `filterTyped { it.currentPosition in area }`

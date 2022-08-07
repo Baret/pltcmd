@@ -3,18 +3,16 @@ package de.gleex.pltcmd.model.elements
 import de.gleex.pltcmd.model.elements.units.Units
 import de.gleex.pltcmd.model.elements.units.new
 import de.gleex.pltcmd.model.elements.units.times
-import de.gleex.pltcmd.util.tests.beEmptyMaybe
-import de.gleex.pltcmd.util.tests.shouldContainValue
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forNone
 import io.kotest.matchers.collections.*
+import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import mu.KotlinLogging
-import org.hexworks.cobalt.datatypes.Maybe
 
 private val log = KotlinLogging.logger {}
 
@@ -109,7 +107,7 @@ class CommandingElementTest : WordSpec() {
 
                         ce.subordinates should beEmpty()
                         allSubs.forAll {
-                            it.superordinate should beEmptyMaybe()
+                            it.superordinate should beNull()
                         }
 
                         ce.addElement(sub1) shouldBe true
@@ -118,7 +116,7 @@ class CommandingElementTest : WordSpec() {
 
                         ce.subordinates shouldContainExactly allSubs
                         allSubs.forAll {
-                            it.superordinate shouldContainValue ce
+                            it.superordinate shouldBe ce
                         }
                     }
 
@@ -133,14 +131,14 @@ class CommandingElementTest : WordSpec() {
 
                         ce.subordinates shouldContainExactly bothSubs
                         bothSubs.forAll {
-                            it.superordinate shouldContainValue ce
+                            it.superordinate shouldBe ce
                         }
 
                         ce.removeElement(sub1)
 
                         ce.subordinates shouldContainExactly setOf(sub2)
-                        sub1.superordinate should beEmptyMaybe()
-                        sub2.superordinate shouldContainValue ce
+                        sub1.superordinate should beNull()
+                        sub2.superordinate shouldBe ce
                     }
                 }
 
@@ -155,7 +153,7 @@ class CommandingElementTest : WordSpec() {
                             assertSoftly {
                                 super1.subordinates should beEmpty()
                                 super2.subordinates should beEmpty()
-                                sub.superordinate should beEmptyMaybe()
+                                sub.superordinate should beNull()
                             }
                         }
                     }
@@ -167,7 +165,7 @@ class CommandingElementTest : WordSpec() {
                             assertSoftly {
                                 super1.subordinates shouldContainExactly setOf(sub)
                                 super2.subordinates should beEmpty()
-                                sub.superordinate shouldContainValue super1
+                                sub.superordinate shouldBe super1
                             }
                         }
                     }
@@ -178,7 +176,7 @@ class CommandingElementTest : WordSpec() {
                             assertSoftly {
                                 super1.subordinates should beEmpty()
                                 super2.subordinates shouldContainExactly setOf(sub)
-                                sub.superordinate shouldContainValue super2
+                                sub.superordinate shouldBe super2
                             }
                         }
                     }
@@ -189,7 +187,7 @@ class CommandingElementTest : WordSpec() {
                     "not be itself (this)" {
                         val commandingElement = buildCommandingElement()
                         shouldThrow<IllegalArgumentException> {
-                            commandingElement.superordinate = Maybe.of(commandingElement)
+                            commandingElement.superordinate = commandingElement
                             Any()
                         }
                     }

@@ -31,8 +31,8 @@ class WorldMapGeneratorTest: WordSpec() {
                     val newTimestamp = System.currentTimeMillis()
                     lastTimestamp shouldNotBe newTimestamp
                     lastTimestamp = newTimestamp
-                    generatedWorld2 shouldHaveSameTerrain generatedWorld1
                     generatedWorld2 shouldNotBeSameInstanceAs generatedWorld1
+                    generatedWorld2 shouldHaveSameTerrain generatedWorld1
                 }
             }
 

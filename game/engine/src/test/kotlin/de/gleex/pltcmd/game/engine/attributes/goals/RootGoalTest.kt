@@ -1,9 +1,9 @@
 package de.gleex.pltcmd.game.engine.attributes.goals
 
 import de.gleex.pltcmd.game.engine.attributes.goals.testimplementations.*
-import de.gleex.pltcmd.util.tests.beEmptyMaybe
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 
@@ -14,7 +14,7 @@ class RootGoalTest : WordSpec() {
             "'never' finish" {
                 emptyRootGoal.isFinished(goalTestEntity) shouldBe false
                 repeat(100) {
-                    emptyRootGoal.step(goalTestEntity, testGameContext) should beEmptyMaybe()
+                    emptyRootGoal.step(goalTestEntity, testGameContext) should beNull()
                 }
                 emptyRootGoal.isFinished(goalTestEntity) shouldBe false
             }
@@ -23,20 +23,20 @@ class RootGoalTest : WordSpec() {
         "A root goal with one sub-goal" should {
             "step it when it has been added first" {
                 val rootGoal = RootGoal()
-                rootGoal.step(goalTestEntity, testGameContext) should beEmptyMaybe()
+                rootGoal.step(goalTestEntity, testGameContext) should beNull()
                 rootGoal
                         .addNow(TestSubGoal(1))
-                        .step(goalTestEntity, testGameContext) should haveContainedValue(1)
-                rootGoal.step(goalTestEntity, testGameContext) should beEmptyMaybe()
+                        .step(goalTestEntity, testGameContext)!! should haveValue(1)
+                rootGoal.step(goalTestEntity, testGameContext) should beNull()
             }
 
             "step it when it has been added last" {
                 val rootGoal = RootGoal()
-                rootGoal.step(goalTestEntity, testGameContext) should beEmptyMaybe()
+                rootGoal.step(goalTestEntity, testGameContext) should beNull()
                 rootGoal
                         .addLast(TestSubGoal(1))
-                        .step(goalTestEntity, testGameContext) should haveContainedValue(1)
-                rootGoal.step(goalTestEntity, testGameContext) should beEmptyMaybe()
+                        .step(goalTestEntity, testGameContext)!! should haveValue(1)
+                rootGoal.step(goalTestEntity, testGameContext) should beNull()
             }
         }
 
@@ -47,10 +47,10 @@ class RootGoalTest : WordSpec() {
                     .addNow(TestSubGoal(1))
             "be empty" {
                 rootGoal
-                        .step(goalTestEntity, testGameContext) should haveContainedValue(1)
+                        .step(goalTestEntity, testGameContext)!! should haveValue(1)
                 rootGoal
                         .clear()
-                        .step(goalTestEntity, testGameContext) should beEmptyMaybe()
+                        .step(goalTestEntity, testGameContext) should beNull()
             }
         }
 
@@ -75,7 +75,7 @@ class RootGoalTest : WordSpec() {
                 val actualValues = mutableListOf<Int>()
                 repeat(expectedValues.size * 2) {
                     rootGoal.step(goalTestEntity, testGameContext)
-                            .ifPresent {
+                            ?.let {
                                 actualValues.add((it as TestMessage).value)
                             }
                 }

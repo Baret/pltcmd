@@ -29,7 +29,7 @@ class InputSidebar(
     override val root =
             Components.vbox()
                     .withSpacing(2)
-                    .withSize(UiOptions.SIDEBAR_WIDTH, height)
+                    .withPreferredSize(UiOptions.SIDEBAR_WIDTH, height)
                     .withDecorations(ComponentDecorations.box(BoxType.DOUBLE, "Command net"))
                     .build()
 

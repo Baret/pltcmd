@@ -1,6 +1,5 @@
 package de.gleex.pltcmd.util.knowledge
 
-import org.hexworks.cobalt.datatypes.Maybe
 
 /**
  * Represents a [Known] whose bits depend on a [KnowledgeGrade].
@@ -31,11 +30,11 @@ abstract class KnownByGrade<T : Any, SELF : KnownByGrade<T, SELF>>(
     /**
      * Returns the value of the [accessor] depending on the [revealed] value of this [Known]
      */
-    fun <R> revealAt(minAmount: KnowledgeGrade, accessor: (T) -> R): Maybe<R> {
+    fun <R> revealAt(minAmount: KnowledgeGrade, accessor: (T) -> R): R? {
         if (revealed >= minAmount) {
-            return Maybe.of(accessor(origin))
+            return accessor(origin)
         }
-        return Maybe.empty()
+        return null
     }
 
     /**

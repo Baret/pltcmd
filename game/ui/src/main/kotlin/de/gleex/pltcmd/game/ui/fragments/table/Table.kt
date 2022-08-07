@@ -52,7 +52,7 @@ class Table<M : Any>(
                 .map { column ->
                     Components
                         .header()
-                        .withSize(column.width, 1)
+                        .withPreferredSize(column.width, 1)
                         .withText(column.name)
                         .build()
                         .apply {
@@ -67,14 +67,14 @@ class Table<M : Any>(
     private val rowPanel: VBox =
         Components
             .vbox()
-            .withSize(width, height - headerPanel.height)
+            .withPreferredSize(width, height - headerPanel.height)
             .withSpacing(rowSpacing)
             .build()
 
     override val root: VBox =
         Components
             .vbox()
-            .withSize(width, height)
+            .withPreferredSize(width, height)
             .withSpacing(0)
             .build()
             .apply {
@@ -125,7 +125,7 @@ class Table<M : Any>(
     private fun newRow(components: List<Component>): HBox =
         Components
             .hbox()
-            .withSize(width, 1)
+            .withPreferredSize(width, 1)
             .withSpacing(columnSpacing)
             .build()
             .apply {

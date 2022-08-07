@@ -24,7 +24,7 @@ object CustomComponent {
         val size = fragmentToWrap.root.size
         log.debug { "Creating custom component with size $size at $position for fragment $fragmentToWrap" }
         return Components.panel()
-                .withSize(size)
+                .withPreferredSize(size)
                 .withPosition(position)
                 .build()
                 .apply {

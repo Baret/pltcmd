@@ -18,7 +18,7 @@ class CurrentCoordinateFragment(currentTile: ObservableValue<Coordinate>) :
     init {
         componentsContainer.addComponent(
                 Components.label()
-                        .withSize(SUB_COMPONENT_WIDTH, 1)
+                        .withPreferredSize(SUB_COMPONENT_WIDTH, 1)
                         .build()
                         .apply {
                             withFrontendString(Format.SIDEBAR, currentInfoTile)

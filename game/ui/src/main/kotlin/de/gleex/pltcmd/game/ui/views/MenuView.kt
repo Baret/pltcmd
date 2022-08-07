@@ -36,7 +36,7 @@ open class MenuView(tileGrid: TileGrid, entries: List<MenuEntry>) : BaseView(the
             (entries.maxOfOrNull { it.uiWidth } ?: 0)
 
         val menuBox = Components.vbox()
-            .withSize(maxEntryWidth, entries.size)
+            .withPreferredSize(maxEntryWidth, entries.size)
             .withAlignmentWithin(screen, ComponentAlignment.CENTER)
             .build()
         entries.forEach(menuBox::addEntry)

@@ -29,12 +29,12 @@ class ElementHierarchyFragment(
     override val root: Component =
         Components
             .vbox()
-            .withSize(fragmentWidth, fragmentHeight)
+            .withPreferredSize(fragmentWidth, fragmentHeight)
             .build()
             .apply {
                 val elementNameHeader = Components
                     .header()
-                    .withSize(contentSize.withHeight(1))
+                    .withPreferredSize(contentSize.withHeight(1))
                     .build()
                     .apply {
                         withFrontendString(superOrdinate.toFrontendString(format))
@@ -48,7 +48,7 @@ class ElementHierarchyFragment(
     private fun hierarchyPanel(size: Size): VBox {
         val vbox = Components
             .vbox()
-            .withSize(size)
+            .withPreferredSize(size)
             .withSpacing(0)
             .build()
         subsFirstLevel
@@ -81,7 +81,7 @@ class ElementHierarchyFragment(
         val label = Components
             .label()
             .withText("w00t")
-            .withSize(size)
+            .withPreferredSize(size)
             .build()
             .apply {
                 withFrontendString(format, hierarchySymbolsPrefix, elementBlueprint)
