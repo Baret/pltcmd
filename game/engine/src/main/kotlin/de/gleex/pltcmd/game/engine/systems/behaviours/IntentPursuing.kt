@@ -5,7 +5,6 @@ import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
 import de.gleex.pltcmd.game.engine.entities.types.asElementEntity
 import de.gleex.pltcmd.game.engine.entities.types.commandersIntent
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
-import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.base.BaseBehavior
 
 /**
@@ -16,10 +15,7 @@ object IntentPursuing : BaseBehavior<GameContext>(CommandersIntent::class) {
         return entity.asElementEntity { element ->
             val messageToExecute = element.commandersIntent.proceed(element, context)
             if (messageToExecute != null) {
-                // FIXME: Use surrounding coroutine context (something like entity.receiveWhenElement{ ... }?)
-                runBlocking {
-                    element.receiveMessage(messageToExecute)
-                }
+                element.receiveMessage(messageToExecute)
             }
             messageToExecute != null
         } ?: false

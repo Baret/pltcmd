@@ -63,8 +63,10 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     fun <T : EntityType> addEntity(entity: GameEntity<T>) = entity.also {
         engine.addEntity(it)
         allEntities.add(it)
-        entity.asElementEntity { element ->
-            removeOnDefeat(element)
+        runBlocking {
+            entity.asElementEntity { element ->
+                removeOnDefeat(element)
+            }
         }
     }
 
