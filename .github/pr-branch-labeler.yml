@@ -1,0 +1,7 @@
+# keep these labels in sync with issue-branch
+# i.e. apply label "feature" when head matches "feature/*"
+feature: "feature/*"
+documentation: "docs/*"
+enhancement: "enhancement/*"
+bug: "bugfix/*"
+misc: "misc/*"

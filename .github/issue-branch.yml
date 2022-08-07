@@ -1,3 +1,4 @@
+# keep these labels in sync with banch labeler
 branches:
   - label: feature
     prefix: feature/
