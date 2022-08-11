@@ -14,7 +14,9 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
 import de.gleex.pltcmd.model.radio.receivedTransmission
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
+import de.gleex.pltcmd.util.debug.DebugFeature
 import de.gleex.pltcmd.util.events.globalEventBus
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.extension.orElseThrow
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
@@ -48,12 +50,12 @@ class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
 
     /**
      * This property is used if multiple transmissions are received to separate the active and delayed conversations.
-     * TODO is visible as a debug feature for the test UI, might be reduced later
      **/
+    @DebugFeature("is visible as a debug feature for the test UI, might be reduced later")
     val inConversationWith: ObservableValue<CallSign?>
         get() = state._inConversationWith
 
-    // TODO is visible as a debug feature for the UI, might be removed later
+    @DebugFeature("is visible as a debug feature for the UI, might be removed later")
     val currentSignal: RadioSignal
         get() = sender.radio.signal
 
@@ -110,7 +112,10 @@ internal class ReceivingCommunicator internal constructor(
         }
         log.debug { "$callSign is listening to radio broadcasts..." }
         broadcastSubscription = globalEventBus.subscribeToBroadcasts { event ->
-            onBroadcast(event)
+            // TODO: Change radio model to not use eventbus anymore #169
+            runBlocking {
+                onBroadcast(event)
+            }
         }
     }
 
@@ -121,7 +126,7 @@ internal class ReceivingCommunicator internal constructor(
         log.debug { "$callSign stopped listening to radio broadcasts." }
     }
 
-    private fun onBroadcast(event: BroadcastEvent) {
+    private suspend fun onBroadcast(event: BroadcastEvent) {
         val radioLocation = radioContext.currentLocation
         if (event.isReceivedAt(radioLocation)) {
             // TODO decode the message of the event here (i.e. apply SignalStrength). It might be impossible to find out if this transmission "is for me" (#85)
@@ -147,7 +152,7 @@ internal class ReceivingCommunicator internal constructor(
         return hasReceiver(callSign)
     }
 
-    private fun respondTo(incomingTransmission: Transmission) {
+    private suspend fun respondTo(incomingTransmission: Transmission) {
         val sender = incomingTransmission.sender
         if (!state.isInConversation()) {
             state.setInConversationWith(sender)
@@ -161,7 +166,7 @@ internal class ReceivingCommunicator internal constructor(
         }
     }
 
-    private fun sendResponseTo(transmission: Transmission) {
+    private suspend fun sendResponseTo(transmission: Transmission) {
         when (transmission) {
             is OrderTransmission -> executeOrderAndRespond(transmission)
             is TransmissionWithResponse -> sender.sendNext(transmission.response)
@@ -169,7 +174,7 @@ internal class ReceivingCommunicator internal constructor(
         }
     }
 
-    private fun executeOrderAndRespond(transmission: OrderTransmission) {
+    private suspend fun executeOrderAndRespond(transmission: OrderTransmission) {
         val order = Conversations.Orders.getOrder(transmission)
         if (order != null) {
             // delegate to the game entity's logic to execute actual messages
