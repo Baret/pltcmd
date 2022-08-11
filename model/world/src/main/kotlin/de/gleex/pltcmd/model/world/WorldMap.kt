@@ -13,7 +13,6 @@ import kotlin.math.min
 /**
  * The world contains all map tiles. The world is divided into [Sector]s.
  */
-@OptIn(ExperimentalStdlibApi::class)
 class WorldMap private constructor(coordinateGraph: CoordinateGraph, tiles: Map<Coordinate, WorldTile>) {
 
     private constructor(

@@ -2,8 +2,7 @@ package de.gleex.pltcmd.game.options
 
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.util.measure.speed.per
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * This object holds constant values that are otherwise "just assumed". When doing calculations regarding "fixed" values
@@ -27,8 +26,7 @@ object GameConstants {
         /**
          * The amount of ingame time that passes in one tick.
          */
-        @OptIn(ExperimentalTime::class)
-        val timeSimulatedPerTick = Duration.seconds(60)
+        val timeSimulatedPerTick = 60.seconds
 
     }
 
