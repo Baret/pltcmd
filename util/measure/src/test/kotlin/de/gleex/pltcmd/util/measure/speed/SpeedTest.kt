@@ -5,16 +5,14 @@ import de.gleex.pltcmd.util.measure.distance.kilometers
 import de.gleex.pltcmd.util.measure.distance.meters
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.minutes
 
-@OptIn(ExperimentalTime::class)
 class SpeedTest : StringSpec({
 
     "constructors/inKph" {
         Speed(13.37).inKph shouldBe 13.37
         13.kilometers.perHour.inKph shouldBe 13.0
-        Speed(3.hundredMeters, Duration.minutes(15)).inKph shouldBe 1.2
+        Speed(3.hundredMeters, 15.minutes).inKph shouldBe 1.2
     }
 
     "times" {
@@ -27,6 +25,6 @@ class SpeedTest : StringSpec({
 
     "equals" {
         7000.meters.perHour shouldBe 7.kilometers.perHour
-        7.kilometers.perHour shouldBe Speed(21.kilometers, Duration.minutes(180))
+        7.kilometers.perHour shouldBe Speed(21.kilometers, 180.minutes)
     }
 })

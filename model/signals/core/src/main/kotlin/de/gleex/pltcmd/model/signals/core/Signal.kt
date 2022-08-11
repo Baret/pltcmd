@@ -5,7 +5,6 @@ import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.Coordinate.Companion.compareByDistanceFrom
 import de.gleex.pltcmd.model.world.coordinate.CoordinatePath
 import de.gleex.pltcmd.model.world.terrain.Terrain
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import mu.KotlinLogging
@@ -46,7 +45,6 @@ class Signal<P : SignalPower>(
      *
      * This flow is cancellable.
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     val all: Flow<Pair<Coordinate, SignalStrength>> by lazy {
         area
             .toSortedSet(compareByDistanceFrom(origin))

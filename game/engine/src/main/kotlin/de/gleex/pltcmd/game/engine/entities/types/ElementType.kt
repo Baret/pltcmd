@@ -4,8 +4,8 @@ import de.gleex.pltcmd.game.engine.attributes.CommandersIntent
 import de.gleex.pltcmd.game.engine.attributes.ElementAttribute
 import de.gleex.pltcmd.game.engine.extensions.AnyGameEntity
 import de.gleex.pltcmd.game.engine.extensions.GameEntity
+import de.gleex.pltcmd.game.engine.extensions.castToSuspending
 import de.gleex.pltcmd.game.engine.extensions.getAttribute
-import de.gleex.pltcmd.game.engine.extensions.tryCastTo
 import de.gleex.pltcmd.model.elements.CallSign
 import de.gleex.pltcmd.model.elements.CommandingElement
 import org.hexworks.amethyst.api.base.BaseEntityType
@@ -40,8 +40,8 @@ internal val ElementEntity.commandersIntent
  *
  * @param R the type that is returned by [whenElement]
  */
-fun <R> AnyGameEntity.asElementEntity(whenElement: (ElementEntity) -> R): R? =
-    tryCastTo<ElementEntity, ElementType, R>(whenElement)
+suspend fun <R> AnyGameEntity.asElementEntity(whenElement: suspend (ElementEntity) -> R): R? =
+    castToSuspending<ElementEntity, ElementType, R>(whenElement)
 
 /**
  * @return true, when this entity is an [ElementEntity].

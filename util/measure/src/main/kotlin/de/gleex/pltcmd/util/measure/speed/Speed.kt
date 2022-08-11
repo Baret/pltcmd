@@ -4,7 +4,6 @@ import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.DistanceUnit
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 /**
@@ -17,7 +16,6 @@ import kotlin.time.toDuration
  *
  * @param inKph km/h (kilometre per hour)
  */
-@OptIn(ExperimentalTime::class)
 data class Speed internal constructor(val inKph: Double) : Comparable<Speed> {
     internal constructor(distance: Distance, time: Duration) : this(
         distance.inUnit(DistanceUnit.Kilometers) / time.toDouble(

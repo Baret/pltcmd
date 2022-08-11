@@ -41,6 +41,7 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     private var previousUpdate: Job? = null
 
     init {
+        // TODO implement better handling of ticks and engine updates
         globalEventBus.subscribeToTicks {
             if (previousUpdate?.isActive == true) {
                 log.warn { "processing of previous tick has not finished yet! Waiting before doing tick #${it.id}" }
@@ -63,8 +64,10 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     fun <T : EntityType> addEntity(entity: GameEntity<T>) = entity.also {
         engine.addEntity(it)
         allEntities.add(it)
-        entity.asElementEntity { element ->
-            removeOnDefeat(element)
+        runBlocking {
+            entity.asElementEntity { element ->
+                removeOnDefeat(element)
+            }
         }
     }
 

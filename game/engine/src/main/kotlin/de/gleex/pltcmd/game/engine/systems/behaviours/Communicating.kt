@@ -11,7 +11,6 @@ import de.gleex.pltcmd.model.radio.communication.Conversations
 import de.gleex.pltcmd.model.radio.communication.RadioContext
 import de.gleex.pltcmd.model.radio.communication.transmissions.context.TransmissionContext
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
-import kotlinx.coroutines.runBlocking
 import org.hexworks.amethyst.api.base.BaseBehavior
 import kotlin.random.Random
 
@@ -40,7 +39,7 @@ private class BaseRadioContext(private val base: FOBEntity) : RadioContext {
         return TransmissionContext(currentLocation, 0, 0, 0)
     }
 
-    override fun executeOrder(order: Conversations.Orders, orderedBy: CallSign, orderedTo: Coordinate?) {
+    override suspend fun executeOrder(order: Conversations.Orders, orderedBy: CallSign, orderedTo: Coordinate?) {
         // TODO: Add the option to reject an order (check if the order can be executed)
         throw IllegalStateException("Communicating entity ${base.logIdentifier} is unable to execute orders.")
     }
@@ -52,21 +51,26 @@ private class ElementRadioContext(private val element: ElementEntity, private va
     override val currentLocation: Coordinate
         get() = element.currentPosition
 
-    // TODO: Fill the context from element. It should be provided by the corresponding game entity (probably via Properties or ObservableValues)
+    // TODO: Fill the context from element. It should be provided by the corresponding game entity
     override fun newTransmissionContext() = TransmissionContext(
-            currentLocation,
-            Random.nextInt(40, 50),
-            Random.nextInt(3, 10),
-            Random.nextInt(0, 4))
+        currentLocation,
+        Random.nextInt(40, 50),
+        Random.nextInt(3, 10),
+        Random.nextInt(0, 4)
+    )
 
-    override fun executeOrder(order: Conversations.Orders, orderedBy: CallSign, orderedTo: Coordinate?) {
-        // TODO use own scope for sending messages async!?
-        runBlocking {
-            // executed on next tick!
-            // TODO: The message contains a context from "last tick" when it is being processed. Maybe let the context create a "future" instance?
-            // ...or simply execute the message directly? A behaviour should not use sendMessage at all!
-            element.sendMessage(OrderMessage(order, orderedBy, orderedTo, context, element))
-        }
+    override suspend fun executeOrder(order: Conversations.Orders, orderedBy: CallSign, orderedTo: Coordinate?) {
+        // executed on next tick!
+        // ...or simply execute the message directly? A behaviour should not use sendMessage at all!
+        element.sendMessage(
+            OrderMessage(
+                order,
+                orderedBy,
+                orderedTo,
+                context.copy(currentTick = context.currentTick.next),
+                element
+            )
+        )
     }
 
 }

@@ -13,7 +13,6 @@ import java.time.LocalTime
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 private val log = KotlinLogging.logger {}
@@ -84,7 +83,6 @@ object Ticker {
     /**
      * Increases the current tick, publishes the corresponding [TickEvent].
      */
-    @OptIn(ExperimentalTime::class)
     private fun tick() {
         if(log.isDebugEnabled() && lastTickTimestamp != null) {
             val last = lastTickTimestamp ?: 0

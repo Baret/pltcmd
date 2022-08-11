@@ -12,7 +12,6 @@ import mu.KotlinLogging
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 
 /**
  * This file contains code for entities that have the [ShootersAttribute].
@@ -59,7 +58,6 @@ internal fun CombatantEntity.attack(target: CombatantEntity, random: Random) {
  * @param range in meters
  * @return number of all hits in the given time.
  **/
-@OptIn(ExperimentalTime::class)
 internal fun Shooter.fireShots(range: Distance, attackDuration: Duration, random: Random): Int {
     val shotsPerDuration = weapon.roundsPerMinute * attackDuration.toDouble(DurationUnit.MINUTES) + partialShot
     // rounding down loses a partial shot that is remember for the next call.
