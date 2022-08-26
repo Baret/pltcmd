@@ -13,7 +13,6 @@ import de.gleex.pltcmd.model.radio.subscribeToReceivedTransmissions
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import de.gleex.pltcmd.util.events.globalEventBus
 import mu.KotlinLogging
-import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.events.api.Subscription
 
 /**
@@ -22,6 +21,9 @@ import org.hexworks.cobalt.events.api.Subscription
 
 /** Type marker for entities that have the [RadioAttribute] */
 interface Communicating : Factionable, Remembering
+/**
+ * An entity, that communicates via radio.
+ */
 typealias CommunicatingEntity = GameEntity<Communicating>
 
 private val log = KotlinLogging.logger {}
@@ -35,13 +37,9 @@ internal val CommunicatingEntity.communicator: RadioCommunicator
 val CommunicatingEntity.radioSignal: RadioSignal
     get() = communicator.currentSignal
 
-/** TODO is visible as a debug feature for the test UI, might be removed later */
-val CommunicatingEntity.inConversationWith: ObservableValue<CallSign?>
-    get() = communicator.inConversationWith
-
 /** True if this entity is currently in a conversation */
 val CommunicatingEntity.isTransmitting
-    get() = communicator.inConversationWith.value != null
+    get() = communicator.isInConversation
 
 /** The name under which this entity identifies itself when communicating by radio */
 val CommunicatingEntity.radioCallSign: CallSign

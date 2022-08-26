@@ -19,7 +19,6 @@ import de.gleex.pltcmd.util.events.globalEventBus
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.hexworks.cobalt.databinding.api.extension.orElseThrow
-import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.events.api.Subscription
 import java.util.*
 
@@ -49,11 +48,9 @@ class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
     val callSign = sender.callSign
 
     /**
-     * This property is used if multiple transmissions are received to separate the active and delayed conversations.
-     **/
-    @DebugFeature("is visible as a debug feature for the test UI, might be reduced later")
-    val inConversationWith: ObservableValue<CallSign?>
-        get() = state._inConversationWith
+     * True, if this communicator is currently in an ongoing conversation.
+     */
+    val isInConversation = state.isInConversation
 
     @DebugFeature("is visible as a debug feature for the UI, might be removed later")
     val currentSignal: RadioSignal
@@ -154,8 +151,8 @@ internal class ReceivingCommunicator internal constructor(
 
     private suspend fun respondTo(incomingTransmission: Transmission) {
         val sender = incomingTransmission.sender
-        if (!state.isInConversation()) {
-            state.setInConversationWith(sender)
+        if (!state.isInConversation) {
+            state.inConversationWith = sender
         }
 
         if (state.isInConversationWith(sender)) {
@@ -238,7 +235,7 @@ internal class SendingCommunicator internal constructor(
         transmitFromBuffer()
 
         // if no conversation is going on, check if we should start a new one
-        if (!state.isInConversation()) {
+        if (!state.isInConversation) {
             conversationQueue.poll()
                 ?.let {
                     startConversation(it)
@@ -254,8 +251,8 @@ internal class SendingCommunicator internal constructor(
      */
     private fun transmitFromBuffer() {
         var toSend: Transmission? = transmissionBuffer.poll()
-        if (toSend == null && state.isInConversation()) {
-            if (state.isWaitingForReply()) {
+        if (toSend == null && state.isInConversation) {
+            if (state.isWaitingForReply) {
                 state.waitForReply()
             } else {
                 // If we had received a transmission we are either sending a response now or the conversation ended already.
@@ -287,11 +284,11 @@ internal class SendingCommunicator internal constructor(
      * conversation will be started the next time [proceedWithConversation] is invoked.
      */
     fun startConversation(conversation: Conversation) {
-        if (state.isInConversation()) {
+        if (state.isInConversation) {
             // try again next tick
             queueConversation(conversation)
         } else {
-            state.setInConversationWith(conversation.receiver)
+            state.inConversationWith = conversation.receiver
             sendNext(conversation.firstTransmission)
         }
     }
@@ -309,7 +306,7 @@ internal class SendingCommunicator internal constructor(
     }
 
     /**
-     * Adds the given [Transmission] to the buffer so it is sent next when [proceedWithConversation] is called.
+     * Adds the given [Transmission] to the buffer, so it is sent next when [proceedWithConversation] is called.
      */
     internal fun sendNext(transmission: Transmission) {
         transmissionBuffer.add(transmission)

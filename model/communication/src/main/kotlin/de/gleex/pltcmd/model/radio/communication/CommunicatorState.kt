@@ -1,40 +1,67 @@
 package de.gleex.pltcmd.model.radio.communication
 
 import de.gleex.pltcmd.model.elements.CallSign
-import org.hexworks.cobalt.databinding.api.extension.toProperty
-import org.hexworks.cobalt.databinding.api.property.Property
 
 /** mutable data used by RadioCommunicator */
-internal data class CommunicatorState(
-    /** This property is used if multiple transmissions are received to separate the active and delayed conversations. */
-        val _inConversationWith: Property<CallSign?> = null.toProperty(),
-    private var waitForReply: Int = MAX_RESPONSE_DELAY
-) {
+internal class CommunicatorState {
     companion object {
         /** The number of ticks to wait for a response before canceling the running conversation */
-        private const val MAX_RESPONSE_DELAY = 3
+        private const val MAX_RESPONSE_DELAY = 5
     }
 
-    val inConversationWith: CallSign?
-        get() = _inConversationWith.value
+    private var waitForReplyCounter: Int = MAX_RESPONSE_DELAY
 
-    fun isInConversation(): Boolean = _inConversationWith.value != null
+    /**
+     * The [CallSign] the communicator is currently talking to. May be null, if no conversation is active.
+     */
+    internal var inConversationWith: CallSign? = null
 
-    fun isInConversationWith(callSign: CallSign): Boolean = _inConversationWith.value == callSign
+    /**
+     * True, if the communicator is currently in an active conversation.
+     *
+     * @see inConversationWith
+     */
+    internal val isInConversation: Boolean
+        get() = inConversationWith != null
 
-    fun setInConversationWith(callSign: CallSign) = _inConversationWith.updateValue(callSign)
+    /**
+     * True, if the communicator has not yet received a reply to a transmission.
+     */
+    internal val isWaitingForReply get() = waitForReplyCounter > 0
 
-    fun clearInConversationWith() = _inConversationWith.updateValue(null)
+    /**
+     * Checks if the communicator is currently communicating with the given [CallSign].
+     *
+     * @see inConversationWith
+     */
+    internal fun isInConversationWith(callSign: CallSign): Boolean = inConversationWith == callSign
 
-    fun isWaitingForReply() = waitForReply > 0
+    /**
+     * Used when the communicator is no longer in an active conversation. Clears [inConversationWith].
+     */
+    internal fun clearInConversationWith() {
+        inConversationWith = null
+    }
 
-    fun waitForReply() {
-        if (isWaitingForReply()) {
-            waitForReply--
+    /**
+     * When [isWaitingForReply], call ths method to count down the number of ticks to wait for an answer.
+     *
+     * @see MAX_RESPONSE_DELAY
+     */
+    internal fun waitForReply() {
+        if (isWaitingForReply) {
+            waitForReplyCounter--
         }
     }
 
-    fun receivedReply() {
-        waitForReply = MAX_RESPONSE_DELAY
+    /**
+     * Used, when a reply has been received while waiting for a reply.
+     *
+     * @see isWaitingForReply
+     * @see waitForReply
+     * @see MAX_RESPONSE_DELAY
+     */
+    internal fun receivedReply() {
+        waitForReplyCounter = MAX_RESPONSE_DELAY
     }
 }
