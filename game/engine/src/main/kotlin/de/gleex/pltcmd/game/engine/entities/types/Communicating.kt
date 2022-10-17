@@ -11,6 +11,7 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
 import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.radio.subscribeToReceivedTransmissions
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
+import de.gleex.pltcmd.util.debug.DebugFeature
 import de.gleex.pltcmd.util.events.globalEventBus
 import mu.KotlinLogging
 import org.hexworks.cobalt.events.api.Subscription
@@ -34,6 +35,7 @@ internal val CommunicatingEntity.communicator: RadioCommunicator
 /**
  * The current [RadioSignal] of this entity.
  */
+@DebugFeature("Present for the UI to visualize the current signal.")
 val CommunicatingEntity.radioSignal: RadioSignal
     get() = communicator.currentSignal
 

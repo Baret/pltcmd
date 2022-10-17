@@ -28,6 +28,7 @@ class RadioSender(private val location: ObservableValue<Coordinate>, private val
 
     /** Sends out the given transmission. */
     fun transmit(transmission: Transmission) {
+        net.addTransmission(this, transmission)
         globalEventBus.publishTransmission(this, signal, transmission)
     }
 }

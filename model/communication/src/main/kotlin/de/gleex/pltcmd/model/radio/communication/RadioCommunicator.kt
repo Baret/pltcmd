@@ -1,8 +1,7 @@
 package de.gleex.pltcmd.model.radio.communication
 
 import de.gleex.pltcmd.model.elements.CallSign
-import de.gleex.pltcmd.model.radio.BroadcastEvent
-import de.gleex.pltcmd.model.radio.RadioSender
+import de.gleex.pltcmd.model.radio.*
 import de.gleex.pltcmd.model.radio.communication.transmissions.OrderTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.TerminatingTransmission
 import de.gleex.pltcmd.model.radio.communication.transmissions.Transmission
@@ -11,8 +10,6 @@ import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.contactL
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.hasReceiver
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.location
 import de.gleex.pltcmd.model.radio.communication.transmissions.decoding.sender
-import de.gleex.pltcmd.model.radio.receivedTransmission
-import de.gleex.pltcmd.model.radio.subscribeToBroadcasts
 import de.gleex.pltcmd.model.signals.radio.RadioSignal
 import de.gleex.pltcmd.util.debug.DebugFeature
 import de.gleex.pltcmd.util.events.globalEventBus
@@ -29,9 +26,9 @@ private val log = KotlinLogging.logger {}
  * is called and receives radio [Transmission]s by subscribing to [BroadcastEvent]s via the [globalEventBus].
  */
 // technically this is a facade that delegates to RadioTransmitter and RadioReceiver which share the same state
-class RadioCommunicator(callSign: CallSign, radio: RadioSender) {
+class RadioCommunicator(callSign: CallSign, radio: RadioSender, net: RadioNet) {
     private val state: CommunicatorState = CommunicatorState()
-    private val sender = SendingCommunicator(callSign, state, radio)
+    private val sender = SendingCommunicator(callSign, state, radio, net)
     private val receiver = ReceivingCommunicator(callSign, state, sender).apply {
         onReceivedTransmission = { transmission ->
             globalEventBus.receivedTransmission(this@RadioCommunicator, transmission)
