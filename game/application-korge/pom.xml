@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.gleex.pltcmd.game</groupId>
+        <artifactId>game</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>application-korge</artifactId>
+
+    <name>Application with KorGE</name>
+    <description>Testing the use of KorGE as frontend.</description>
+
+    <properties>
+        <korge.version>3.3.0</korge.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.soywiz.korlibs.korge2</groupId>
+            <artifactId>korge-jvm</artifactId>
+            <version>${korge.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>world</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>mapgeneration</artifactId>
+        </dependency>
+    </dependencies>
+</project>
