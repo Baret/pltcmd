@@ -32,30 +32,35 @@ suspend fun main() {
     val mapWidth = world.width * TILE_SIZE
     val mapHeight = world.height * TILE_SIZE
     Korge("PltCmd", virtualWidth = mapWidth, virtualHeight = mapHeight) {
+        worldMapView(world)
+    }
+}
 
-        val camera = camera {
-            worldMap(world)
-            scale = 2.0
-        }
+private suspend fun Stage.worldMapView(
+    world: WorldMap
+) {
+    val camera = camera {
+        worldMap(world)
+        scale = 2.0
+    }
 
-        onScroll { event ->
-            if (event.scrollDeltaYPixels < 0) {
-                if (camera.scale <= 3.0) {
-                    camera.scale += 0.4
-                }
-            } else {
-                if (camera.scale >= 1.0) {
-                    camera.scale -= 0.4
-                }
+    onScroll { event ->
+        if (event.scrollDeltaYPixels < 0) {
+            if (camera.scale <= 3.0) {
+                camera.scale += 0.4
+            }
+        } else {
+            if (camera.scale >= 1.0) {
+                camera.scale -= 0.4
             }
         }
-        addUpdater { deltaTime ->
-            with(camera) {
-                if (views.input.keys[Key.A]) x += TILE_SIZE * scaleX
-                if (views.input.keys[Key.D]) x -= TILE_SIZE * scaleX
-                if (views.input.keys[Key.W]) y += TILE_SIZE * scaleY
-                if (views.input.keys[Key.S]) y -= TILE_SIZE * scaleY
-            }
+    }
+    addUpdater { deltaTime ->
+        with(camera) {
+            if (views.input.keys[Key.A]) x += TILE_SIZE * scaleX
+            if (views.input.keys[Key.D]) x -= TILE_SIZE * scaleX
+            if (views.input.keys[Key.W]) y += TILE_SIZE * scaleY
+            if (views.input.keys[Key.S]) y -= TILE_SIZE * scaleY
         }
     }
 }
