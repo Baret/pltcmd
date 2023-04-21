@@ -1,22 +1,25 @@
 package de.gleex.pltcmd.game.application.korge.intro
 
-import com.soywiz.klock.seconds
-import com.soywiz.korge.scene.MaskTransition
+import com.soywiz.korge.input.onClick
 import com.soywiz.korge.scene.Scene
-import com.soywiz.korge.scene.delay
-import com.soywiz.korge.view.SContainer
-import com.soywiz.korge.view.Text
-import com.soywiz.korge.view.filter.TransitionFilter
-import com.soywiz.korge.view.text
+import com.soywiz.korge.view.*
 import de.gleex.pltcmd.game.application.korge.mainmenu.MainMenuScene
 
-class IntroScene: Scene() {
+class IntroScene : Scene() {
     override suspend fun SContainer.sceneInit() {
-        text("pltcmd", textSize = Text.DEFAULT_TEXT_SIZE * 3)
+        val text1 = text("pltcmd", textSize = Text.DEFAULT_TEXT_SIZE * 3) {
+            centerOnStage()
+        }
+        text("welcome, commander") {
+                alignBottomToTopOf(text1)
+                centerXOnStage()
+            }
 
-        text("welcome, commander")
+        text("click to continue") {
+            centerXOnStage()
+            alignBottomToBottomOf(this@sceneInit)
+        }
 
-        delay(5.seconds)
-        sceneContainer.changeTo<MainMenuScene>(transition = MaskTransition(TransitionFilter.Transition.SWEEP), time = 2.seconds)
+        onClick { sceneContainer.changeTo<MainMenuScene>() }
     }
 }

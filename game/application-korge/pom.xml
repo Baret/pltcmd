@@ -15,7 +15,7 @@
     <description>Testing the use of KorGE as frontend.</description>
 
     <properties>
-        <korge.version>3.3.0</korge.version>
+        <korge.version>3.4.0</korge.version>
     </properties>
 
     <dependencies>

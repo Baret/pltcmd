@@ -7,6 +7,9 @@ import de.gleex.pltcmd.game.application.korge.intro.IntroScene
 import de.gleex.pltcmd.game.application.korge.mainmenu.MainMenuScene
 import kotlin.reflect.KClass
 
+/**
+ * The module used for the normal game start.
+ */
 object PltCmdModule: Module() {
     override val mainScene: KClass<out Scene> = IntroScene::class
 
