@@ -20,6 +20,6 @@ class IntroScene : Scene() {
             alignBottomToBottomOf(this@sceneInit)
         }
 
-        onClick { sceneContainer.changeTo<MainMenuScene>() }
+        onClick { sceneContainer.pushTo<MainMenuScene>() }
     }
 }

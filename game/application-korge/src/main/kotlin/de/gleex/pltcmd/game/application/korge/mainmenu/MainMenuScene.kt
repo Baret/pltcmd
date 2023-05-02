@@ -6,16 +6,22 @@ import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.ui.uiButton
 import com.soywiz.korge.ui.uiVerticalStack
 import com.soywiz.korge.view.SContainer
+import com.soywiz.korge.view.centerOnStage
+import de.gleex.pltcmd.game.application.korge.common.backButton
+import de.gleex.pltcmd.game.application.korge.gamestart.CreateGameScene
 import de.gleex.pltcmd.game.application.korge.intro.IntroScene
 import kotlin.system.exitProcess
 
 class MainMenuScene : Scene() {
     override suspend fun SContainer.sceneInit() {
+        backButton(sceneContainer)
         uiVerticalStack(width = width * 0.5f, padding = 30.0) {
-            uiButton("New game")
+            uiButton("New game") {
+                onClick { sceneContainer.pushTo<CreateGameScene>() }
+            }
             uiButton("Load game")
             uiButton("Options") {
-                onClick { sceneContainer.changeTo<IntroScene>() }
+                onClick { sceneContainer.pushTo<IntroScene>() }
             }
             uiButton("Quit game") {
                 onClick {
@@ -23,6 +29,8 @@ class MainMenuScene : Scene() {
                     exitProcess(0)
                 }
             }
+        }.apply {
+            centerOnStage()
         }
     }
 }
