@@ -4,6 +4,7 @@ import com.soywiz.korge.scene.Module
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korinject.AsyncInjector
 import com.soywiz.korma.geom.SizeInt
+import de.gleex.pltcmd.game.application.korge.elements.ElementPlaygroundScene
 import de.gleex.pltcmd.game.application.korge.gamestart.CreateGameScene
 import de.gleex.pltcmd.game.application.korge.intro.IntroScene
 import de.gleex.pltcmd.game.application.korge.mainmenu.MainMenuScene
@@ -21,5 +22,6 @@ object PltCmdModule: Module() {
         mapPrototype { IntroScene() }
         mapPrototype { MainMenuScene() }
         mapPrototype { CreateGameScene() }
+        mapSingleton { ElementPlaygroundScene() }
     }
 }

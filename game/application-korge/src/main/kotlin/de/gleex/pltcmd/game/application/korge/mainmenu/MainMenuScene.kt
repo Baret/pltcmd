@@ -8,6 +8,7 @@ import com.soywiz.korge.ui.uiVerticalStack
 import com.soywiz.korge.view.SContainer
 import com.soywiz.korge.view.centerOnStage
 import de.gleex.pltcmd.game.application.korge.common.backButton
+import de.gleex.pltcmd.game.application.korge.elements.ElementPlaygroundScene
 import de.gleex.pltcmd.game.application.korge.gamestart.CreateGameScene
 import de.gleex.pltcmd.game.application.korge.intro.IntroScene
 import kotlin.system.exitProcess
@@ -22,6 +23,9 @@ class MainMenuScene : Scene() {
             uiButton("Load game")
             uiButton("Options") {
                 onClick { sceneContainer.pushTo<IntroScene>() }
+            }
+            uiButton("Element icon playground") {
+                onClick { sceneContainer.pushTo<ElementPlaygroundScene>() }
             }
             uiButton("Quit game") {
                 onClick {
