@@ -1,0 +1,9 @@
+{
+  "mssSymbolFormatXml": "<SymbolFormat EffectSize=\"0.05\" DateTimeFormat=\"hh:mm:ss dd/mm/yy\" RelativeFontSize=\"0.33\" RelativeLineWidth=\"0.025\" SymbolSize=\"20mm\" WorkMode=\"Ext\" SymbolCompatibility=\"[StrictStandardColors,CivilEchelon,StrictStandardSizes]\" LabelDistribution=\"100\"/>",
+  "imageFormat": "Svg",
+  "compressionType": "UnCompressed",
+  "targetDpi": 96,
+  "mssStringXmls": [
+    "<Symbol ID=\"SUGPUCRVA------\"/>"
+  ]
+}
