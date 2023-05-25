@@ -21,7 +21,7 @@ object IconCache {
 
     suspend fun load(iconSelector: IconSelector): Bitmap {
         val fileName = "elements/${iconSelector.fileName}.png"
-        log.debug { "Loading SVG from iconSelector $iconSelector: $fileName" }
+        log.debug { "Loading PNG from iconSelector $iconSelector: $fileName" }
         return resourcesVfs[fileName].readBitmap(PNG)
             .also { log.debug { "Loaded PNG $it" } }
     }
