@@ -9,21 +9,12 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>application-korge</artifactId>
+    <artifactId>graphics</artifactId>
 
-    <name>Application with KorGE</name>
-    <description>Testing the use of KorGE as frontend.</description>
-
-    <properties>
-        <korge.version>3.4.0</korge.version>
-    </properties>
+    <name>Graphics and Icons</name>
+    <description>Utlities to provide access to graphics, images, icons and so forth.</description>
 
     <dependencies>
-        <dependency>
-            <groupId>com.soywiz.korlibs.korge2</groupId>
-            <artifactId>korge-jvm</artifactId>
-            <version>${korge.version}</version>
-        </dependency>
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>world</artifactId>
@@ -31,10 +22,6 @@
         <dependency>
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>elements</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.gleex.pltcmd.model</groupId>
-            <artifactId>mapgeneration</artifactId>
         </dependency>
     </dependencies>
 </project>

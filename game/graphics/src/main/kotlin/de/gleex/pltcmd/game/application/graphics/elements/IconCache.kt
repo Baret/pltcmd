@@ -1,17 +1,13 @@
-package de.gleex.pltcmd.game.application.korge.elements.icons
+package de.gleex.pltcmd.game.application.graphics.elements
 
-import com.soywiz.korim.bitmap.Bitmap
-import com.soywiz.korim.format.PNG
-import com.soywiz.korim.format.readBitmap
-import com.soywiz.korim.vector.format.SVG
-import com.soywiz.korim.vector.format.readSVG
-import com.soywiz.korio.file.std.resourcesVfs
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.elements.Rung
 import de.gleex.pltcmd.model.faction.Affiliation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import java.io.FileNotFoundException
+import java.net.URL
 
 /**
  * Loads and caches element icons.
@@ -19,22 +15,32 @@ import mu.KotlinLogging
 object IconCache {
     private val log = KotlinLogging.logger { }
 
-    suspend fun load(iconSelector: IconSelector): Bitmap {
+    /**
+     * @return the URL of the icon for the given [ElementIconSelector].
+     *
+     * @throws FileNotFoundException if no resource for the given selector could be loaded.
+     */
+    suspend fun load(iconSelector: ElementIconSelector): URL {
         val fileName = "elements/${iconSelector.fileName}.png"
         log.debug { "Loading PNG from iconSelector $iconSelector: $fileName" }
-        return resourcesVfs[fileName].readBitmap(PNG)
-            .also { log.debug { "Loaded PNG $it" } }
+        return IconCache::class.java.classLoader.getResource(fileName)
+            ?: throw FileNotFoundException(fileName)
     }
 
-    fun loadBlocking(iconSelector: IconSelector): SVG {
+    /**O
+     * @return the URL of the icon for the given [ElementIconSelector].
+     *
+     * @throws FileNotFoundException if no resource for the given selector could be loaded.
+     */
+    fun loadBlocking(iconSelector: ElementIconSelector): URL {
         return runBlocking(Dispatchers.IO) {
-            resourcesVfs["elements/${iconSelector.fileName}.svg"].readSVG()
+            load(iconSelector)
         }
     }
 }
 
 
-private val IconSelector.fileName: String
+private val ElementIconSelector.fileName: String
     get() = "${affiliation.fileNamePart()}_${kind.fileNamePart()}_${size.fileNamePart()}${tags.fileNameParts()}"
 
 private fun Affiliation?.fileNamePart() = when (this) {
@@ -55,6 +61,10 @@ private fun ElementKind?.fileNamePart() = when (this) {
     null                           -> "knd"
 }
 
+/**
+ * Later, when we have icon for element size, we use this part of the file name.
+ */
+@Suppress("SameReturnValue")
 private fun Rung?.fileNamePart() = when (this) {
     Rung.Fireteam  -> "siz"
     Rung.Squad     -> "siz"

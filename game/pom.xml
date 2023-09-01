@@ -16,7 +16,7 @@
 
     <modules>
         <module>application</module>
-        <module>application-korge</module>
+        <module>graphics</module>
         <module>options</module>
         <module>ticks</module>
         <module>ui</module>
