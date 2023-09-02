@@ -5,7 +5,11 @@ import de.gleex.pltcmd.model.elements.Rung
 import de.gleex.pltcmd.model.faction.Affiliation
 
 /**
- * A elector containing information for an element icon to be loaded.
+ * A selector containing information for an element icon to be loaded.
+ *
+ * The three basic fields may be null so that the icon selection falls back to a default.
+ *
+ * Tags describe additional information for the icon, i.e. when it is for an anti-air element.
  */
 data class ElementIconSelector(
     val affiliation: Affiliation? = null,
