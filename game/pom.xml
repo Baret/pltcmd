@@ -26,10 +26,6 @@
     </modules>
 
     <dependencies>
-        <dependency>
-            <groupId>org.hexworks.zircon</groupId>
-            <artifactId>zircon.core-jvm</artifactId>
-        </dependency>
         <!-- tests -->
         <dependency>
             <groupId>de.gleex.pltcmd.util</groupId>
@@ -42,6 +38,10 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.hexworks.zircon</groupId>
+                <artifactId>zircon.core-jvm</artifactId>
+            </dependency>
             <!-- modules -->
             <dependency>
                 <groupId>de.gleex.pltcmd.game</groupId>
