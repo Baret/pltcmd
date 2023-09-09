@@ -38,10 +38,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.hexworks.zircon</groupId>
-                <artifactId>zircon.core-jvm</artifactId>
-            </dependency>
             <!-- modules -->
             <dependency>
                 <groupId>de.gleex.pltcmd.game</groupId>
