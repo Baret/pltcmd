@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.gleex.pltcmd.game</groupId>
+        <artifactId>game</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>application-ktx</artifactId>
+
+    <name>Application with KTX</name>
+    <description>A frontend for the game built with KTX</description>
+
+    <properties>
+        <gdx.version>1.12.0</gdx.version>
+        <ktx.version>1.12.0-rc1</ktx.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx</artifactId>
+            <version>${gdx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-backend-lwjgl3</artifactId>
+            <version>${gdx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.libktx</groupId>
+            <artifactId>ktx-app</artifactId>
+            <version>${ktx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.libktx</groupId>
+            <artifactId>ktx-assets</artifactId>
+            <version>${ktx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.libktx</groupId>
+            <artifactId>ktx-graphics</artifactId>
+            <version>${ktx.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

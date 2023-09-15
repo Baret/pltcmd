@@ -23,6 +23,7 @@
         <module>engine</module>
         <module>ui-strings</module>
         <module>serialization</module>
+        <module>application-ktx</module>
     </modules>
 
     <dependencies>
