@@ -31,6 +31,12 @@
             <version>${gdx.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-platform</artifactId>
+            <version>${gdx.version}</version>
+            <classifier>natives-desktop</classifier>
+        </dependency>
+        <dependency>
             <groupId>io.github.libktx</groupId>
             <artifactId>ktx-app</artifactId>
             <version>${ktx.version}</version>
