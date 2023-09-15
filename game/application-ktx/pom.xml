@@ -20,6 +20,13 @@
     </properties>
 
     <dependencies>
+        <!-- internal dependencies --><!-- gdx -->
+        <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>graphics</artifactId>
+        </dependency>
+
+        <!-- gdx -->
         <dependency>
             <groupId>com.badlogicgames.gdx</groupId>
             <artifactId>gdx</artifactId>
@@ -36,6 +43,8 @@
             <version>${gdx.version}</version>
             <classifier>natives-desktop</classifier>
         </dependency>
+
+        <!-- ktx -->
         <dependency>
             <groupId>io.github.libktx</groupId>
             <artifactId>ktx-app</artifactId>

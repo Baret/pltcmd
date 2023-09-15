@@ -9,8 +9,8 @@ fun main() {
         return
     }
     Lwjgl3Application(Pltcmd(), Lwjgl3ApplicationConfiguration().apply {
-        setTitle("application-ktx")
-        setWindowedMode(640, 480)
+        setTitle("pltcmd")
+        setWindowedMode(1800, 990)
         setWindowIcon(*(arrayOf(128, 64, 32, 16).map { "libgdx$it.png" }.toTypedArray()))
     })
 }

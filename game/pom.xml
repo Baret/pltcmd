@@ -52,12 +52,17 @@
             </dependency>
             <dependency>
                 <groupId>de.gleex.pltcmd.game</groupId>
-                <artifactId>options</artifactId>
+                <artifactId>engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>de.gleex.pltcmd.game</groupId>
-                <artifactId>engine</artifactId>
+                <artifactId>graphics</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gleex.pltcmd.game</groupId>
+                <artifactId>options</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
