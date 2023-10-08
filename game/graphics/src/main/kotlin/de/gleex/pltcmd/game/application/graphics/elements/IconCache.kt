@@ -21,11 +21,17 @@ object IconCache {
      * @throws FileNotFoundException if no resource for the given selector could be loaded.
      */
     suspend fun load(iconSelector: ElementIconSelector): URL {
-        val fileName = "elements/${iconSelector.fileName}.png"
+        val fileName = pathFor(iconSelector)
         log.debug { "Loading PNG from iconSelector $iconSelector: $fileName" }
         return IconCache::class.java.classLoader.getResource(fileName)
             ?: throw FileNotFoundException(fileName)
     }
+
+    /**
+     * @return the internal path on the classpath to the file for the given selector.
+     */
+    fun pathFor(iconSelector: ElementIconSelector) =
+        "elements/${iconSelector.fileName}.png"
 
     /**O
      * @return the URL of the icon for the given [ElementIconSelector].
