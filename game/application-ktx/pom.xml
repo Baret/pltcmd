@@ -20,10 +20,16 @@
     </properties>
 
     <dependencies>
-        <!-- internal dependencies --><!-- gdx -->
+        <!-- internal dependencies -->
         <dependency>
             <groupId>de.gleex.pltcmd.game</groupId>
             <artifactId>graphics</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.badlogicgames.gdx</groupId>
+                    <artifactId>gdx-tools</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- gdx -->
