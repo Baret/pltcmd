@@ -8,6 +8,8 @@ fun main() {
     println("Packing textures in $baseFolder")
     val settings = Settings().apply {
         pot = false
+        grid = true
+        duplicatePadding = true
         paddingX = 4
         paddingY = 4
         maxWidth = 128

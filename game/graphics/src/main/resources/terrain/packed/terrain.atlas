@@ -1,131 +1,131 @@
 
 terrain.png
-size: 112, 220
+size: 108, 216
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 forest
   rotate: false
-  xy: 4, 184
+  xy: 2, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 1
 forest
   rotate: false
-  xy: 4, 148
+  xy: 38, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 2
 forest
   rotate: false
-  xy: 40, 184
+  xy: 74, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 3
 grasslands
   rotate: false
-  xy: 4, 112
+  xy: 2, 38
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 1
 grasslands
   rotate: false
-  xy: 40, 148
+  xy: 38, 38
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 2
 grasslands
   rotate: false
-  xy: 76, 184
+  xy: 74, 38
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 3
 hills
   rotate: false
-  xy: 4, 76
+  xy: 2, 74
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 1
 hills
   rotate: false
-  xy: 40, 112
+  xy: 38, 74
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 2
 hills
   rotate: false
-  xy: 76, 148
+  xy: 74, 74
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 3
 mountain
   rotate: false
-  xy: 4, 40
+  xy: 2, 110
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 1
 mountain
   rotate: false
-  xy: 40, 76
+  xy: 38, 110
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 2
 mountain
   rotate: false
-  xy: 76, 112
+  xy: 74, 110
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 3
 water_deep
   rotate: false
-  xy: 4, 4
+  xy: 2, 146
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 1
 water_deep
   rotate: false
-  xy: 40, 40
+  xy: 38, 146
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 2
 water_deep
   rotate: false
-  xy: 76, 76
+  xy: 74, 146
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 3
 water_shallow
   rotate: false
-  xy: 40, 4
+  xy: 2, 182
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 1
 water_shallow
   rotate: false
-  xy: 76, 40
+  xy: 38, 182
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 2
 water_shallow
   rotate: false
-  xy: 76, 4
+  xy: 74, 182
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
