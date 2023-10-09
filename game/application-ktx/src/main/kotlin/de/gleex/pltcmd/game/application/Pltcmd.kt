@@ -2,9 +2,6 @@ package de.gleex.pltcmd.game.application
 
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
-import com.badlogic.gdx.graphics.Texture.TextureFilter.MipMapLinearNearest
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -13,7 +10,7 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.FitViewport
 import de.gleex.pltcmd.game.application.graphics.elements.ElementIconSelector
-import de.gleex.pltcmd.game.application.graphics.elements.IconCache
+import de.gleex.pltcmd.game.application.graphics.elements.fileName
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.faction.Affiliation
 import ktx.app.KtxGame
@@ -29,16 +26,17 @@ class Pltcmd : KtxGame<KtxScreen>() {
 }
 
 class FirstScreen : KtxScreen {
-    private val stage = Stage(FitViewport(50f, 50f))
-    private val textureAtlas = TextureAtlas(Gdx.files.getFileHandle("terrain/packed/terrain.atlas", Files.FileType.Classpath))
+    private val stage = Stage(FitViewport(20f, 20f))
+    private val textureAtlasTerrain = TextureAtlas(Gdx.files.getFileHandle("terrain/packed/terrain.atlas", Files.FileType.Classpath))
+    private val textureAtlasElements = TextureAtlas(Gdx.files.getFileHandle("elements/packed/elements.atlas", Files.FileType.Classpath))
 
     override fun show() {
-        val grasslandsRegions = textureAtlas.findRegions("grasslands")
-        val forestRegions = textureAtlas.findRegions("forest")
-        val hillsRegions = textureAtlas.findRegions("hills")
-        val mountainRegions = textureAtlas.findRegions("mountain")
-        val waterDeepRegions = textureAtlas.findRegions("water_deep")
-        val waterShallowRegions = textureAtlas.findRegions("water_shallow")
+        val grasslandsRegions = textureAtlasTerrain.findRegions("grasslands")
+        val forestRegions = textureAtlasTerrain.findRegions("forest")
+        val hillsRegions = textureAtlasTerrain.findRegions("hills")
+        val mountainRegions = textureAtlasTerrain.findRegions("mountain")
+        val waterDeepRegions = textureAtlasTerrain.findRegions("water_deep")
+        val waterShallowRegions = textureAtlasTerrain.findRegions("water_shallow")
         drawMap(0..49, 0..49, grasslandsRegions)
         drawMap(3..6, 2..5, forestRegions)
         drawMap(30..46, 20..49, forestRegions)
@@ -62,31 +60,18 @@ class FirstScreen : KtxScreen {
     }
 
     private fun placeElementIconAtRandomPosition(iconSelector: ElementIconSelector) {
-        val imageTexture = Texture(Gdx.files.classpath(IconCache.pathFor(iconSelector)), true)
-            .apply {
-                when(iconSelector.affiliation) {
-                    // failed: nearest, MipMapNearestLinear
-                    // best result: MipMapLinearNearest
-                    // favorite: setFilter(MipMapLinearNearest, Linear)
-                    Affiliation.Unknown  -> setFilter(MipMapLinearNearest, Linear)
-                    Affiliation.Self     -> setFilter(MipMapLinearNearest, Linear)
-                    Affiliation.Friendly -> setFilter(MipMapLinearNearest, Linear)
-                    Affiliation.Neutral  -> setFilter(MipMapLinearNearest, Linear)
-                    Affiliation.Hostile  -> setFilter(MipMapLinearNearest, Linear)
-                    null                 -> setFilter(MipMapLinearNearest, Linear)
-                }
-            }
+        val imageTexture = textureAtlasElements.findRegion(iconSelector.fileName)
         stage.addActor(
             Image(imageTexture).apply {
-                val aspectRatio = imageTexture.width.toFloat() / imageTexture.height
+                val aspectRatio = imageTexture.packedWidth.toFloat() / imageTexture.packedHeight
                 val posCorrection = (aspectRatio - 1) / 2f
-                println("imageSize: ${imageTexture.width} * ${imageTexture.height}")
+                println("imageSize: ${imageTexture.packedWidth} * ${imageTexture.packedHeight}")
                 println("aspect = $aspectRatio posCorrection = $posCorrection")
                 setPosition(
-                    Random.nextInt(40).toFloat() - posCorrection,
-                    Random.nextInt(40).toFloat()
+                    Random.nextInt(19).toFloat(),
+                    Random.nextInt(19).toFloat()
                 )
-                setSize(2.5f, 2.5f)
+                setSize(1f, 1f)
                 setScaling(Scaling.fillY)
             }
         )

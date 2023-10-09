@@ -46,7 +46,7 @@ object IconCache {
 }
 
 
-private val ElementIconSelector.fileName: String
+val ElementIconSelector.fileName: String
     get() = "${affiliation.fileNamePart()}_${kind.fileNamePart()}_${size.fileNamePart()}${tags.fileNameParts()}"
 
 private fun Affiliation?.fileNamePart() = when (this) {
