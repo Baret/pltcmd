@@ -3,7 +3,8 @@ package de.gleex.pltcmd.game.application
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.Texture.TextureFilter.*
+import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
+import com.badlogic.gdx.graphics.Texture.TextureFilter.MipMapLinearNearest
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -57,34 +58,35 @@ class FirstScreen : KtxScreen {
         placeElementIconAtRandomPosition(ElementIconSelector(Affiliation.Friendly, ElementKind.Infantry, tags = listOf("recon")))
         placeElementIconAtRandomPosition(ElementIconSelector(Affiliation.Unknown, ElementKind.Aerial))
         placeElementIconAtRandomPosition(ElementIconSelector(Affiliation.Neutral, ElementKind.Infantry, tags = listOf("engi")))
+        placeElementIconAtRandomPosition(ElementIconSelector(Affiliation.Self, ElementKind.MechanizedInfantry))
     }
 
     private fun placeElementIconAtRandomPosition(iconSelector: ElementIconSelector) {
-        val image = Texture(Gdx.files.classpath(IconCache.pathFor(iconSelector)), true)
+        val imageTexture = Texture(Gdx.files.classpath(IconCache.pathFor(iconSelector)), true)
             .apply {
                 when(iconSelector.affiliation) {
                     // failed: nearest, MipMapNearestLinear
                     // best result: MipMapLinearNearest
                     // favorite: setFilter(MipMapLinearNearest, Linear)
-                    Affiliation.Unknown  -> setFilter(Nearest, Nearest)
-                    Affiliation.Self     -> setFilter(MipMapLinearNearest, MipMapLinearNearest)
-                    Affiliation.Friendly -> setFilter(MipMapLinearNearest, MipMapLinearNearest)
-                    Affiliation.Neutral  -> setFilter(Linear, Linear)
+                    Affiliation.Unknown  -> setFilter(MipMapLinearNearest, Linear)
+                    Affiliation.Self     -> setFilter(MipMapLinearNearest, Linear)
+                    Affiliation.Friendly -> setFilter(MipMapLinearNearest, Linear)
+                    Affiliation.Neutral  -> setFilter(MipMapLinearNearest, Linear)
                     Affiliation.Hostile  -> setFilter(MipMapLinearNearest, Linear)
-                    null                 -> setFilter(MipMapLinearNearest, MipMapLinearNearest)
+                    null                 -> setFilter(MipMapLinearNearest, Linear)
                 }
             }
         stage.addActor(
-            Image(image).apply {
-                val aspectRatio = image.width.toFloat() / image.height
+            Image(imageTexture).apply {
+                val aspectRatio = imageTexture.width.toFloat() / imageTexture.height
                 val posCorrection = (aspectRatio - 1) / 2f
-                println("imageSize: ${image.width} * ${image.height}")
+                println("imageSize: ${imageTexture.width} * ${imageTexture.height}")
                 println("aspect = $aspectRatio posCorrection = $posCorrection")
                 setPosition(
                     Random.nextInt(40).toFloat() - posCorrection,
                     Random.nextInt(40).toFloat()
                 )
-                setSize(1f, 1f)
+                setSize(2.5f, 2.5f)
                 setScaling(Scaling.fillY)
             }
         )
