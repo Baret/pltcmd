@@ -3,7 +3,7 @@ package de.gleex.pltcmd.game.application
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
+import com.badlogic.gdx.graphics.Texture.TextureFilter.*
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -28,7 +28,7 @@ class Pltcmd : KtxGame<KtxScreen>() {
 }
 
 class FirstScreen : KtxScreen {
-    private val stage = Stage(FitViewport(16f, 16f))
+    private val stage = Stage(FitViewport(50f, 50f))
     private val textureAtlas = TextureAtlas(Gdx.files.getFileHandle("terrain/packed/terrain.atlas", Files.FileType.Classpath))
 
     override fun show() {
@@ -38,8 +38,10 @@ class FirstScreen : KtxScreen {
         val mountainRegions = textureAtlas.findRegions("mountain")
         val waterDeepRegions = textureAtlas.findRegions("water_deep")
         val waterShallowRegions = textureAtlas.findRegions("water_shallow")
-        drawMap(0..15, 0..15, grasslandsRegions)
+        drawMap(0..49, 0..49, grasslandsRegions)
         drawMap(3..6, 2..5, forestRegions)
+        drawMap(30..46, 20..49, forestRegions)
+        drawMap(20..26, 21..25, forestRegions)
         // a river
         drawMap(0..10, 10..10, waterShallowRegions)
         drawMap(11..15, 10..10, waterDeepRegions)
@@ -60,7 +62,17 @@ class FirstScreen : KtxScreen {
     private fun placeElementIconAtRandomPosition(iconSelector: ElementIconSelector) {
         val image = Texture(Gdx.files.classpath(IconCache.pathFor(iconSelector)), true)
             .apply {
-                setFilter(Linear, Linear)
+                when(iconSelector.affiliation) {
+                    // failed: nearest, MipMapNearestLinear
+                    // best result: MipMapLinearNearest
+                    // favorite: setFilter(MipMapLinearNearest, Linear)
+                    Affiliation.Unknown  -> setFilter(Nearest, Nearest)
+                    Affiliation.Self     -> setFilter(MipMapLinearNearest, MipMapLinearNearest)
+                    Affiliation.Friendly -> setFilter(MipMapLinearNearest, MipMapLinearNearest)
+                    Affiliation.Neutral  -> setFilter(Linear, Linear)
+                    Affiliation.Hostile  -> setFilter(MipMapLinearNearest, Linear)
+                    null                 -> setFilter(MipMapLinearNearest, MipMapLinearNearest)
+                }
             }
         stage.addActor(
             Image(image).apply {
@@ -69,8 +81,8 @@ class FirstScreen : KtxScreen {
                 println("imageSize: ${image.width} * ${image.height}")
                 println("aspect = $aspectRatio posCorrection = $posCorrection")
                 setPosition(
-                    Random.nextInt(15).toFloat() - posCorrection,
-                    Random.nextInt(15).toFloat()
+                    Random.nextInt(40).toFloat() - posCorrection,
+                    Random.nextInt(40).toFloat()
                 )
                 setSize(1f, 1f)
                 setScaling(Scaling.fillY)

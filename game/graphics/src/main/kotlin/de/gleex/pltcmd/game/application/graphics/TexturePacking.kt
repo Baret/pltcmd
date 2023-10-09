@@ -8,9 +8,9 @@ fun main() {
     println("Packing textures in $baseFolder")
     val settings = Settings().apply {
         pot = false
-        paddingX = 2
-        paddingY = 2
-        maxWidth = 120
+        paddingX = 4
+        paddingY = 4
+        maxWidth = 128
     }
     TexturePacker.process(settings, baseFolder, "${baseFolder}packed", "terrain")
     println("texture packing done")
