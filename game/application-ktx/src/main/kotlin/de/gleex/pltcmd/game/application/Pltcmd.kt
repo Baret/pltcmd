@@ -37,6 +37,7 @@ class FirstScreen : KtxScreen {
         val mountainRegions = textureAtlasTerrain.findRegions("mountain")
         val waterDeepRegions = textureAtlasTerrain.findRegions("water_deep")
         val waterShallowRegions = textureAtlasTerrain.findRegions("water_shallow")
+        stage.batch.setColor(255f, 0f, 0f, 1f)
         drawMap(0..49, 0..49, grasslandsRegions)
         drawMap(3..6, 2..5, forestRegions)
         drawMap(30..46, 20..49, forestRegions)
@@ -61,35 +62,36 @@ class FirstScreen : KtxScreen {
 
     private fun placeElementIconAtRandomPosition(iconSelector: ElementIconSelector) {
         val imageTexture = textureAtlasElements.findRegion(iconSelector.fileName)
-        stage.addActor(
-            Image(imageTexture).apply {
-                val aspectRatio = imageTexture.packedWidth.toFloat() / imageTexture.packedHeight
-                val posCorrection = (aspectRatio - 1) / 2f
-                println("imageSize: ${imageTexture.packedWidth} * ${imageTexture.packedHeight}")
-                println("aspect = $aspectRatio posCorrection = $posCorrection")
-                setPosition(
-                    Random.nextInt(19).toFloat(),
-                    Random.nextInt(19).toFloat()
-                )
-                setSize(1f, 1f)
-                setScaling(Scaling.fillY)
-            }
+        stage.addActor(Image(imageTexture).apply {
+                    val aspectRatio = imageTexture.packedWidth.toFloat() / imageTexture.packedHeight
+                    val posCorrection = (aspectRatio - 1) / 2f
+                    println("imageSize: ${imageTexture.packedWidth} * ${imageTexture.packedHeight}")
+                    println("aspect = $aspectRatio posCorrection = $posCorrection")
+                    setPosition(
+                        Random.nextInt(19).toFloat(),
+                        Random.nextInt(19).toFloat()
+                    )
+                    setSize(1f, 1f)
+                    setScaling(Scaling.fillY)
+                }
         )
     }
 
     private fun drawMap(
         xRange: IntRange,
         yRange: IntRange,
-        grasslandsRegions: Array<AtlasRegion>
+        atlasRegions: Array<AtlasRegion>
     ) {
         for (x in xRange) {
             for (y in yRange) {
-                val region = grasslandsRegions.random()
+                val region = atlasRegions.random()
                 stage.addActor(
                     Image(AtlasRegion(region)).apply {
                         setPosition(x.toFloat(), y.toFloat())
                         setSize(1f, 1f)
                         setScaling(Scaling.fill)
+                        val tint = Random.nextDouble(0.4, 1.0).toFloat()
+                        setColor(255f, 255f, 255f, tint)
                     }
                 )
             }
