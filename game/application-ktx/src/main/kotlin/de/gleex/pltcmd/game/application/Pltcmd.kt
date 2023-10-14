@@ -9,10 +9,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.FitViewport
+import de.gleex.pltcmd.game.application.actors.terrain.WorldTileActor
 import de.gleex.pltcmd.game.application.graphics.elements.ElementIconSelector
 import de.gleex.pltcmd.game.application.graphics.elements.fileName
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.faction.Affiliation
+import de.gleex.pltcmd.model.world.WorldTile
+import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.terrain.Terrain
+import de.gleex.pltcmd.model.world.terrain.TerrainHeight
+import de.gleex.pltcmd.model.world.terrain.TerrainType
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
@@ -37,7 +43,6 @@ class FirstScreen : KtxScreen {
         val mountainRegions = textureAtlasTerrain.findRegions("mountain")
         val waterDeepRegions = textureAtlasTerrain.findRegions("water_deep")
         val waterShallowRegions = textureAtlasTerrain.findRegions("water_shallow")
-        stage.batch.setColor(255f, 0f, 0f, 1f)
         drawMap(0..49, 0..49, grasslandsRegions)
         drawMap(3..6, 2..5, forestRegions)
         drawMap(30..46, 20..49, forestRegions)
@@ -52,6 +57,18 @@ class FirstScreen : KtxScreen {
         drawMap(4..9, 13..15, hillsRegions)
         drawMap(5..7, 13..13, mountainRegions)
         drawMap(9..13, 0..2, mountainRegions)
+
+        stage.addActor(
+            WorldTileActor(
+                WorldTile(
+                    Coordinate(100, 123),
+                    Terrain.Companion.of(TerrainType.MOUNTAIN, TerrainHeight.TEN)
+                ))
+                .apply {
+                    setPosition(0f, 0f)
+                    setSize(1f, 1f)
+                    setScale(1f)
+                })
 
         placeElementIconAtRandomPosition(ElementIconSelector(Affiliation.Hostile, ElementKind.Armored))
         placeElementIconAtRandomPosition(ElementIconSelector(Affiliation.Friendly, ElementKind.Infantry, tags = listOf("recon")))
@@ -91,7 +108,7 @@ class FirstScreen : KtxScreen {
                         setSize(1f, 1f)
                         setScaling(Scaling.fill)
                         val tint = Random.nextDouble(0.4, 1.0).toFloat()
-                        setColor(255f, 255f, 255f, tint)
+//                        setColor(255f, 255f, 255f, tint)
                     }
                 )
             }

@@ -1,5 +1,8 @@
 package de.gleex.pltcmd.game.application.graphics.elements
 
+import com.badlogic.gdx.Files
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.elements.Rung
 import de.gleex.pltcmd.model.faction.Affiliation
@@ -14,6 +17,11 @@ import java.net.URL
  */
 object IconCache {
     private val log = KotlinLogging.logger { }
+
+    // TODO: wrap the atlas into application logic like getTextureFor(element)
+    fun getTextureAtlas(): TextureAtlas {
+        return TextureAtlas(Gdx.files.getFileHandle("elements/packed/elements.atlas", Files.FileType.Classpath))
+    }
 
     /**
      * @return the URL of the icon for the given [ElementIconSelector].
