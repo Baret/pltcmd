@@ -49,11 +49,6 @@
             <version>${gdx.version}</version>
             <classifier>natives-desktop</classifier>
         </dependency>
-        <dependency>
-            <groupId>com.github.tommyettinger</groupId>
-            <artifactId>colorful</artifactId>
-            <version>0.8.4</version>
-        </dependency>
 
         <!-- ktx -->
         <dependency>
