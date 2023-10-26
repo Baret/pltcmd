@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -32,11 +33,14 @@ class Pltcmd : KtxGame<KtxScreen>() {
 }
 
 class FirstScreen : KtxScreen {
+    private val skin: Skin = Skin()
     private val stage = Stage(FitViewport(20f, 20f))
     private val textureAtlasTerrain = TextureAtlas(Gdx.files.getFileHandle("terrain/packed/terrain.atlas", Files.FileType.Classpath))
     private val textureAtlasElements = TextureAtlas(Gdx.files.getFileHandle("elements/packed/elements.atlas", Files.FileType.Classpath))
 
     override fun show() {
+        Gdx.input.inputProcessor = stage
+
         val grasslandsRegions = textureAtlasTerrain.findRegions("grasslands")
         val forestRegions = textureAtlasTerrain.findRegions("forest")
         val hillsRegions = textureAtlasTerrain.findRegions("hills")
