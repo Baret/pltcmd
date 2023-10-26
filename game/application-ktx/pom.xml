@@ -32,6 +32,15 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>world</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>mapgeneration</artifactId>
+        </dependency>
+
         <!-- gdx -->
         <dependency>
             <groupId>com.badlogicgames.gdx</groupId>
