@@ -2,17 +2,22 @@ package de.gleex.pltcmd.game.application.actors.terrain
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.kotcrab.vis.ui.VisUI
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 
 /**
  * An actor that displays the current coordinate when hovered.
  */
-class CoordinateTileActor(coordinate: Coordinate) : Label(coordinate.toString(), Skin()) {
+class CoordinateTileActor(coordinate: Coordinate) : Label(coordinate.toString(), VisUI.getSkin()) {
+
     init {
-        addListener(object: ClickListener() {
+        setScale(1.0f)
+        setPosition(0f, 0f)
+        setFontScale(1.0f)
+
+        addListener(object: InputListener() {
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
                 isVisible = true
             }

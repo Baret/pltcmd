@@ -75,6 +75,11 @@
             <artifactId>ktx-graphics</artifactId>
             <version>${ktx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.libktx</groupId>
+            <artifactId>ktx-vis-style</artifactId>
+            <version>${ktx.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
