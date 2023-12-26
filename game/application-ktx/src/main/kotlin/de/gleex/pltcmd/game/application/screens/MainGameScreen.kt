@@ -1,56 +1,111 @@
 package de.gleex.pltcmd.game.application.screens
 
-import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
-import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.actions.ColorAction
+import com.badlogic.gdx.utils.viewport.StretchViewport
+import de.gleex.pltcmd.game.application.actors.WorldMapRendererActor
 import de.gleex.pltcmd.model.world.WorldMap
 import ktx.app.KtxScreen
+import mu.KotlinLogging
 
+
+private val log = KotlinLogging.logger { }
 
 /**
  * This screen is the main interface for the player. It mainly renders the given [WorldMap].
  */
-class MainGameScreen(worldMap: WorldMap): KtxScreen {
-    private val tiledMap: TiledMap = TiledMap()
-    private var camera = OrthographicCamera()
-    private val renderer = OrthoCachedTiledMapRenderer(tiledMap, (1f/16f))
-
-    private val textureAtlasTerrain =
-        TextureAtlas(Gdx.files.getFileHandle("terrain/packed/terrain.atlas", Files.FileType.Classpath))
-
+class MainGameScreen(private val worldMap: WorldMap) : KtxScreen {
+    private val stage = Stage(StretchViewport(1100f, 1000f))
     override fun show() {
-        // set up camera
-        val w = Gdx.graphics.width.toFloat()
-        val h = Gdx.graphics.height.toFloat()
-
-        camera = OrthographicCamera()
-        camera.setToOrtho(false, w, h)
-        camera.update()
-
-        // set up tiledMap
-        val layer =TiledMapTileLayer(50, 50, 16, 16).apply {
-            setCell(1, 1, TiledMapTileLayer.Cell().apply { tile = StaticTiledMapTile(textureAtlasTerrain.findRegion("grasslands")) })
-        }
-        tiledMap.layers.add(layer)
-
-        // set up renderer
-        renderer.setView(camera);
-
-        // render???
+        Gdx.input.inputProcessor = stage
+        // set up actors
+        stage.addActor(StupidClickableActor().apply {
+            x = 0f
+            y = 0f
+            width = 300f
+            height = 800f
+        })
+        stage.addActor(StupidClickableActor().apply {
+            x = 0f
+            y = 800f
+            width = 1100f
+            height = 200f
+        })
+        stage.addActor(WorldMapRendererActor(worldMap).apply {
+            x = 300f
+            y = 0f
+            width = 800f
+            height = 800f
+        })
     }
 
     override fun render(delta: Float) {
-        Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.update();
+        stage.act(delta)
+        stage.draw()
+    }
 
-        renderer.render();
+    override fun resize(width: Int, height: Int) {
+        stage.viewport.update(width, height)
+    }
+
+    override fun dispose() {
+        stage.dispose()
+    }
+}
+
+private class StupidClickableActor : Actor() {
+
+    private val renderer = ShapeRenderer()
+
+    private val color1: Color = Color.FOREST
+    private val color2: Color = Color.CYAN
+    private var isColor1 = true
+
+    private val currentColor: Color
+        get() {
+            return if(isColor1) {
+                color1
+            } else {
+                color2
+            }
+        }
+
+    init {
+        this.color = currentColor
+        addListener(object : InputListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                isColor1 = !isColor1
+                val newColor = currentColor
+                addAction(Actions.color(newColor, 1f))
+                return true
+            }
+        })
+    }
+
+    override fun draw(batch: Batch?, parentAlpha: Float) {
+        batch?.end()
+
+        renderer.transformMatrix = batch?.transformMatrix
+        renderer.projectionMatrix = batch?.projectionMatrix
+        renderer.translate(x, y, 0f)
+
+        renderer.begin(ShapeRenderer.ShapeType.Filled)
+        renderer.color = if(hasActions() && actions[0]!! is ColorAction) {
+            (actions[0] as ColorAction).color
+        } else {
+            color
+        }
+        renderer.rect(0f, 0f, width, height)
+        renderer.end()
+
+        batch?.begin()
     }
 }

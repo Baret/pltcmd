@@ -24,12 +24,12 @@ class Pltcmd : KtxGame<KtxScreen>() {
         log.info { "Adding $screen" }
         addScreen(screen)
         log.info { "Loading screen" }
-//        setScreen<MainGameScreen>()
-        setScreen<FirstScreen>()
+        setScreen<MainGameScreen>()
+//        setScreen<FirstScreen>()
     }
 
     private fun generateWorld(): WorldMap {
-        val seed = System.currentTimeMillis()
+        val seed: Long = 23 //System.currentTimeMillis()
         log.info { "Generating world with seed $seed" }
         val worldMapGenerator = WorldMapGenerator(seed, 100, 100)
         val (worldMap, duration) = measureTimedValue { worldMapGenerator.generateWorld() }
