@@ -44,7 +44,7 @@ class MainGameScreen(private val worldMap: WorldMap) : KtxScreen {
             y = 0f
             width = 800f
             height = 800f
-        })
+        }.also { stage.keyboardFocus = it })
     }
 
     override fun render(delta: Float) {
