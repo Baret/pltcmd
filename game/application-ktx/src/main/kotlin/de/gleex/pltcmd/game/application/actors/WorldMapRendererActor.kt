@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.kotcrab.vis.ui.VisUI
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownTerrain
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -21,64 +23,28 @@ import de.gleex.pltcmd.util.measure.distance.DistanceUnit.Meters
 import mu.KotlinLogging
 import kotlin.math.floor
 
-private val log = KotlinLogging.logger {  }
+private val log = KotlinLogging.logger { }
 
-class WorldMapRendererActor(private val knownWorld: KnownWorld) : Actor() {
+/**
+ * Renders the given [KnownWorld] and offers basic controls for the user like scrolling.
+ */
+class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
     private val renderer = ShapeRenderer()
 
     private var bottomLeftCoordinate: Coordinate = knownWorld.origin.origin
 
+    private val coordinateHighlightLabel = Label(bottomLeftCoordinate.toString(), VisUI.getSkin())
+
     init {
         color = Color.DARK_GRAY
-        val scrollListener = object : InputListener() {
-            override fun keyDown(event: InputEvent?, keycode: Int): Boolean {
-                return when (keycode) {
-                    Keys.A -> {
-                        scrollByCoordinates(-1, 0)
-                        true
-                    }
-
-                    Keys.D -> {
-                        scrollByCoordinates(1, 0)
-                        true
-                    }
-
-                    Keys.W -> {
-                        scrollByCoordinates(0, 1)
-                        true
-                    }
-
-                    Keys.S -> {
-                        scrollByCoordinates(0, -1)
-                        true
-                    }
-
-                    else         -> {
-                        false
-                    }
-                }
-            }
-        }
-        val revealListener = object : InputListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                return if(button == Buttons.LEFT) {
-                    knownWorld.reveal(coordinateAtActorPosition(x, y).fillCircle(Distance(250, Meters)).area {true})
-                    true
-                } else {
-                    false
-                }
-            }
-
-            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
-                knownWorld.reveal(coordinateAtActorPosition(x, y))
-            }
-        }
-        addListener(scrollListener)
-        addListener(revealListener)
+        setupListeners()
+        log.info { "My origin: $originX | $originY on stage ${localToStageCoordinates(Vector2(originX, originY))}" }
+        addActor(coordinateHighlightLabel)
+        coordinateHighlightLabel.isVisible = false
     }
 
     override fun act(delta: Float) {
-        if(delta > 0f) {
+        if (delta > 0f) {
             if (Gdx.input.isKeyPressed(Keys.A)) scrollByCoordinates(-1, 0)
             if (Gdx.input.isKeyPressed(Keys.D)) scrollByCoordinates(1, 0)
             if (Gdx.input.isKeyPressed(Keys.W)) scrollByCoordinates(0, 1)
@@ -101,6 +67,7 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Actor() {
         renderer.drawGridLines()
 
         batch?.begin()
+        coordinateHighlightLabel.draw(batch, parentAlpha)
     }
 
     private fun ShapeRenderer.drawTiles() {
@@ -143,14 +110,14 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Actor() {
         forEachVisibleCoordinate { currentCoordinate ->
             val drawPos = drawPositionOf(currentCoordinate)
             drawWithType(ShapeRenderer.ShapeType.Line) {
-                color = if(currentCoordinate.northingFromBottom == currentCoordinate.sectorOrigin.northingFromBottom) {
+                color = if (currentCoordinate.northingFromBottom == currentCoordinate.sectorOrigin.northingFromBottom) {
                     Color.RED
                 } else {
                     Color.BLACK
                 }
                 val bottomRight = Vector2(drawPos).add(TILE_WIDTH, 0f)
                 line(drawPos, bottomRight)
-                color = if(currentCoordinate.eastingFromLeft == currentCoordinate.sectorOrigin.eastingFromLeft) {
+                color = if (currentCoordinate.eastingFromLeft == currentCoordinate.sectorOrigin.eastingFromLeft) {
                     Color.RED
                 } else {
                     Color.BLACK
@@ -193,6 +160,81 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Actor() {
             bottomLeftCoordinate = newCoordinate
         }
     }
+
+    private fun setupListeners() {
+        val scrollListener = object : InputListener() {
+            override fun keyDown(event: InputEvent?, keycode: Int): Boolean {
+                return when (keycode) {
+                    Keys.A -> {
+                        scrollByCoordinates(-1, 0)
+                        true
+                    }
+
+                    Keys.D -> {
+                        scrollByCoordinates(1, 0)
+                        true
+                    }
+
+                    Keys.W -> {
+                        scrollByCoordinates(0, 1)
+                        true
+                    }
+
+                    Keys.S -> {
+                        scrollByCoordinates(0, -1)
+                        true
+                    }
+
+                    else   -> {
+                        false
+                    }
+                }
+            }
+        }
+        val revealListener = object : InputListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                return if (button == Buttons.LEFT) {
+                    knownWorld.reveal(coordinateAtActorPosition(x, y).fillCircle(Distance(250, Meters)).area { true })
+                    true
+                } else {
+                    false
+                }
+            }
+
+            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
+                if(event?.button == Buttons.LEFT) {
+                    knownWorld.reveal(coordinateAtActorPosition(x, y))
+                }
+            }
+        }
+        val highlightCoordinateListener = object : InputListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                return if (button == Buttons.RIGHT) {
+                    log.info { "My origin: $originX | $originY on stage ${localToStageCoordinates(Vector2(originX, originY))}" }
+                    if(coordinateHighlightLabel.x == x && coordinateHighlightLabel.y == y) {
+                        coordinateHighlightLabel.isVisible = false
+                    } else {
+                        val labelPosition = localToStageCoordinates(drawPositionOf(coordinateAtActorPosition(x, y)))
+                        coordinateHighlightLabel.x = labelPosition.x
+                        coordinateHighlightLabel.y = labelPosition.y
+                        coordinateHighlightLabel.isVisible = true
+                        coordinateHighlightLabel.setText(coordinateAtActorPosition(x, y).toString())
+                    }
+                    true
+                } else {
+                    false
+                }
+            }
+
+            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
+                knownWorld.reveal(coordinateAtActorPosition(x, y))
+            }
+        }
+        addListener(scrollListener)
+        addListener(revealListener)
+        addListener(highlightCoordinateListener)
+    }
+
 
     companion object {
         private val terrainTypeColor: Map<TerrainType, Color> = TerrainType.entries.toTypedArray().associate {
