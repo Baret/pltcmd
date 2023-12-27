@@ -3,6 +3,7 @@ package de.gleex.pltcmd.game.application
 import com.kotcrab.vis.ui.VisUI
 import de.gleex.pltcmd.game.application.screens.FirstScreen
 import de.gleex.pltcmd.game.application.screens.MainGameScreen
+import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.WorldMapGenerator
 import de.gleex.pltcmd.model.world.WorldMap
 import ktx.app.KtxGame
@@ -20,7 +21,7 @@ class Pltcmd : KtxGame<KtxScreen>() {
 
         addScreen(FirstScreen())
         val worldMap: WorldMap = generateWorld()
-        val screen = MainGameScreen(worldMap)
+        val screen = MainGameScreen(KnownWorld(worldMap))
         log.info { "Adding $screen" }
         addScreen(screen)
         log.info { "Loading screen" }

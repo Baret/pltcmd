@@ -1,6 +1,8 @@
 package de.gleex.pltcmd.game.application.actors
 
-import com.badlogic.gdx.Input
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input.Buttons
+import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -8,48 +10,81 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import de.gleex.pltcmd.model.world.WorldMap
-import de.gleex.pltcmd.model.world.WorldTile
+import de.gleex.pltcmd.game.engine.attributes.memory.KnownTerrain
+import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.coordinate.fillCircle
 import de.gleex.pltcmd.model.world.sectorOrigin
 import de.gleex.pltcmd.model.world.terrain.TerrainType
+import de.gleex.pltcmd.util.measure.distance.Distance
+import de.gleex.pltcmd.util.measure.distance.DistanceUnit.Meters
 import mu.KotlinLogging
+import kotlin.math.floor
 
 private val log = KotlinLogging.logger {  }
 
-class WorldMapRendererActor(private val worldMap: WorldMap) : Actor() {
+class WorldMapRendererActor(private val knownWorld: KnownWorld) : Actor() {
     private val renderer = ShapeRenderer()
 
-    private var bottomLeftCoordinate = worldMap.origin
+    private var bottomLeftCoordinate: Coordinate = knownWorld.origin.origin
 
     init {
         color = Color.DARK_GRAY
-        addListener(object: InputListener() {
-            override fun keyUp(event: InputEvent?, keycode: Int): Boolean {
-                log.info { "Received keyDown event $event keyCode = $keycode" }
+        val scrollListener = object : InputListener() {
+            override fun keyDown(event: InputEvent?, keycode: Int): Boolean {
                 return when (keycode) {
-                    Input.Keys.A -> {
+                    Keys.A -> {
                         scrollByCoordinates(-1, 0)
                         true
                     }
-                    Input.Keys.D -> {
+
+                    Keys.D -> {
                         scrollByCoordinates(1, 0)
                         true
                     }
-                    Input.Keys.W -> {
+
+                    Keys.W -> {
                         scrollByCoordinates(0, 1)
                         true
                     }
-                    Input.Keys.S -> {
+
+                    Keys.S -> {
                         scrollByCoordinates(0, -1)
                         true
                     }
+
                     else         -> {
                         false
                     }
                 }
             }
-        })
+        }
+        val revealListener = object : InputListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                return if(button == Buttons.LEFT) {
+                    knownWorld.reveal(coordinateAtActorPosition(x, y).fillCircle(Distance(250, Meters)).area {true})
+                    true
+                } else {
+                    false
+                }
+            }
+
+            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
+                knownWorld.reveal(coordinateAtActorPosition(x, y))
+            }
+        }
+        addListener(scrollListener)
+        addListener(revealListener)
+    }
+
+    override fun act(delta: Float) {
+        if(delta > 0f) {
+            if (Gdx.input.isKeyPressed(Keys.A)) scrollByCoordinates(-1, 0)
+            if (Gdx.input.isKeyPressed(Keys.D)) scrollByCoordinates(1, 0)
+            if (Gdx.input.isKeyPressed(Keys.W)) scrollByCoordinates(0, 1)
+            if (Gdx.input.isKeyPressed(Keys.S)) scrollByCoordinates(0, -1)
+        }
+        super.act(delta)
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
@@ -70,13 +105,11 @@ class WorldMapRendererActor(private val worldMap: WorldMap) : Actor() {
 
     private fun ShapeRenderer.drawTiles() {
         forEachVisibleCoordinate { currentCoordinate ->
-            if (currentCoordinate in worldMap) {
-                drawTile(worldMap[currentCoordinate])
-            }
+            drawTile(knownWorld[currentCoordinate])
         }
     }
 
-    private fun forEachVisibleCoordinate(action: (Coordinate) -> Unit) {
+    private inline fun forEachVisibleCoordinate(action: (Coordinate) -> Unit) {
         var currentCoordinate = bottomLeftCoordinate
         var currentDrawPosition: Vector2
         do {
@@ -90,11 +123,11 @@ class WorldMapRendererActor(private val worldMap: WorldMap) : Actor() {
         } while (currentDrawPosition.x < width && currentDrawPosition.y < height)
     }
 
-    private fun ShapeRenderer.drawTile(worldTile: WorldTile) {
+    private fun ShapeRenderer.drawTile(worldTile: KnownTerrain) {
         val drawPos = drawPositionOf(worldTile.coordinate)
         drawWithType(ShapeRenderer.ShapeType.Filled) {
             // TODO: draw height
-            color = terrainTypeColor[worldTile.type]
+            color = worldTile.terrain?.type?.let { terrainTypeColor[it] } ?: Color.BLACK
             rect(drawPos.x, drawPos.y, TILE_WIDTH, TILE_HEIGHT)
         }
     }
@@ -147,9 +180,16 @@ class WorldMapRendererActor(private val worldMap: WorldMap) : Actor() {
         return Vector2(drawPosX, drawPosY)
     }
 
+    /**
+     * Translates a point in this actor to the underlying coordinate
+     */
+    private fun coordinateAtActorPosition(x: Float, y: Float): Coordinate {
+        return bottomLeftCoordinate.movedBy(floor(x / TILE_WIDTH).toInt(), floor(y / TILE_HEIGHT).toInt())
+    }
+
     private fun scrollByCoordinates(scrollAmountEasting: Int, scrollAmountNorthing: Int) {
         val newCoordinate = bottomLeftCoordinate.movedBy(scrollAmountEasting, scrollAmountNorthing)
-        if (newCoordinate in worldMap) {
+        if (newCoordinate in knownWorld.origin) {
             bottomLeftCoordinate = newCoordinate
         }
     }

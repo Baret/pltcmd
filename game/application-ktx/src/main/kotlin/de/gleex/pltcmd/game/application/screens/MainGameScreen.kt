@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.ColorAction
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import de.gleex.pltcmd.game.application.actors.WorldMapRendererActor
+import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
 import de.gleex.pltcmd.model.world.WorldMap
 import ktx.app.KtxScreen
 import mu.KotlinLogging
@@ -22,7 +23,7 @@ private val log = KotlinLogging.logger { }
 /**
  * This screen is the main interface for the player. It mainly renders the given [WorldMap].
  */
-class MainGameScreen(private val worldMap: WorldMap) : KtxScreen {
+class MainGameScreen(private val knownWorld: KnownWorld) : KtxScreen {
     private val stage = Stage(StretchViewport(1100f, 1000f))
     override fun show() {
         Gdx.input.inputProcessor = stage
@@ -39,7 +40,7 @@ class MainGameScreen(private val worldMap: WorldMap) : KtxScreen {
             width = 1100f
             height = 200f
         })
-        stage.addActor(WorldMapRendererActor(worldMap).apply {
+        stage.addActor(WorldMapRendererActor(knownWorld).apply {
             x = 300f
             y = 0f
             width = 800f

@@ -40,6 +40,10 @@
             <groupId>de.gleex.pltcmd.model</groupId>
             <artifactId>mapgeneration</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>engine</artifactId>
+        </dependency>
 
         <!-- gdx -->
         <dependency>
