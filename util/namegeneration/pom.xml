@@ -13,5 +13,12 @@
     <name>Name generation</name>
     <description>Different generators for names.</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.gleex.kng</groupId>
+            <artifactId>kotlin-name-generator</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+    </dependencies>
 
 </project>
