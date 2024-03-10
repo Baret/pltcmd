@@ -31,7 +31,8 @@ data class Terrain private constructor(val type: TerrainType, val height: Terrai
         /**
          * Return a randomly created terrain.
          */
-        fun random(r: Random) = of(TerrainType.values()
+        fun random(r: Random) = of(
+            TerrainType.entries.toTypedArray()
                 .random(r), TerrainHeight.random(r))
     }
 

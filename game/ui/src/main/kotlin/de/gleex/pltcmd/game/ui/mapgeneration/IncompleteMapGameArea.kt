@@ -24,7 +24,7 @@ class IncompleteMapGameArea(size: Size, worldSizeInTiles: Size) :
                 initialFilters = emptyList()) {
 
     companion object {
-        private val BLOCKS_HEIGHT = TerrainHeight.values().size
+        private val BLOCKS_HEIGHT = TerrainHeight.entries.size
         private const val Z_LEVEL_DEFAULT: Int = 0
 
         val Position.verticalPositions: Sequence<Position3D>

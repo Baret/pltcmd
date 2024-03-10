@@ -11,6 +11,6 @@ enum class TerrainType {
     WATER_SHALLOW;
 
     companion object {
-        fun random(r: Random) = TerrainType.values().random(r)
+        fun random(r: Random) = entries.toTypedArray().random(r)
     }
 }

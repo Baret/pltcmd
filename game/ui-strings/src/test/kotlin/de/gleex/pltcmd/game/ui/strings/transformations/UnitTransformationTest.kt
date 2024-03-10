@@ -18,9 +18,9 @@ class UnitTransformationTest : WordSpec() {
     init {
         "The unit transformation" should {
             "work for units and unit blueprints" {
-                Format.values()
+                Format.entries.toTypedArray()
                         .forAll { format ->
-                            Units.values()
+                            Units.entries.toTypedArray()
                                     .forAll { blueprint ->
                                         val blueprintValue: String = blueprint.toFrontendString(format).value
                                         val unitValue: String = blueprint.new()
@@ -32,7 +32,7 @@ class UnitTransformationTest : WordSpec() {
         }
 
         "The icon for a unit" should {
-            Units.values()
+            Units.entries
                     .groupBy { it.kind }
                     .forEach { (unitKind, blueprints) ->
                         "be unique for unit kind $unitKind" {
@@ -44,7 +44,7 @@ class UnitTransformationTest : WordSpec() {
         }
 
         "The 3 digit frontend string of all units" should {
-            val short3Strings = Units.values()
+            val short3Strings = Units.entries
                     .map { it.toFrontendString(Format.SHORT3).value }
             "be unique" {
                 short3Strings.logDuplicates(Format.SHORT3)

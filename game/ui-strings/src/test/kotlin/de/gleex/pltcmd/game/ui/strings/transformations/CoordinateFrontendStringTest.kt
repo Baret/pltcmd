@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldBe
 class CoordinateFrontendStringTest : WordSpec({
     val normalCoordinate = Coordinate(123, 456)
     "A typical coordinate like $normalCoordinate" should {
-        Format.values()
+        Format.entries
                 .forEach { format ->
                     "be formatted correctly for format $format" {
                         val actual = normalCoordinate.toFrontendString(format).value
@@ -26,7 +26,7 @@ class CoordinateFrontendStringTest : WordSpec({
 
     "A coordinate with more than 3 digits" should {
         val longEasting = Coordinate(1234, 567)
-        Format.values()
+        Format.entries
                 .forEach { format ->
                     "use a star for easting when necessary for format $format, testing with coordinate $longEasting" {
                         val actual = longEasting.toFrontendString(format).value
@@ -41,7 +41,7 @@ class CoordinateFrontendStringTest : WordSpec({
                 }
 
         val longNorthing = Coordinate(123, 4567)
-        Format.values()
+        Format.entries
                 .forEach { format ->
                     "use a star for northing when necessary for format $format, testing with coordinate $longNorthing" {
                         val actual = longNorthing.toFrontendString(format).value
@@ -56,7 +56,7 @@ class CoordinateFrontendStringTest : WordSpec({
                 }
 
         val longCoordinate = Coordinate(12345, 67890)
-        Format.values()
+        Format.entries
                 .forEach { format ->
                     "use two stars when necessary for format $format, testing with coordinate $longCoordinate" {
                         val actual = longCoordinate.toFrontendString(format).value
@@ -73,7 +73,7 @@ class CoordinateFrontendStringTest : WordSpec({
 
     "Negative coordinates" should {
         val negativeEasting = Coordinate(-1234, 567)
-        Format.values()
+        Format.entries
                 .forEach { format ->
                     "should use a minus for easting when necessary for format $format, testing with coordinate $negativeEasting" {
                         val actual = negativeEasting.toFrontendString(format).value
@@ -88,7 +88,7 @@ class CoordinateFrontendStringTest : WordSpec({
                 }
 
         val negativeNorthing = Coordinate(123, -456)
-        Format.values()
+        Format.entries
                 .forEach { format ->
                     "should use a minus for northing when necessary for format $format, testing with coordinate $negativeNorthing" {
                         val actual = negativeNorthing.toFrontendString(format).value
@@ -103,7 +103,7 @@ class CoordinateFrontendStringTest : WordSpec({
                 }
 
         val negative = Coordinate(-123, -345)
-        Format.values()
+        Format.entries
                 .forEach { format ->
                     "should use two minus when necessary for format $format, testing with coordinate $negative" {
                         val actual = negative.toFrontendString(format).value
@@ -118,7 +118,7 @@ class CoordinateFrontendStringTest : WordSpec({
                 }
 
         val negativeAndLong = Coordinate(-123, 45678)
-        Format.values()
+        Format.entries
                 .forEach { format ->
                     "should use a minus AND a star when necessary for format $format, testing with coordinate $negativeAndLong" {
                         val actual = negativeAndLong.toFrontendString(format).value

@@ -7,12 +7,12 @@ import de.gleex.pltcmd.util.debug.DebugFeature
 
 @DebugFeature("Just to see all FrontendStrings of the units")
 fun main() {
-    val formatsFormat = Format.values()
+    val formatsFormat = Format.entries
             .joinToString("", "", "|") { it.asFormatString() }
     val headerFormat = "| %3s $formatsFormat"
     val lineFormat = "| %3d $formatsFormat"
 
-    val headerValues: MutableList<String> = Format.values()
+    val headerValues: MutableList<String> = Format.entries
             .map {
                 it.toFrontendString(it).value
             }
@@ -26,12 +26,12 @@ fun main() {
 
     println()
     var i = 1
-    Units.values()
+    Units.entries
             .groupBy { it.kind }
             .forEach { (kind, units) ->
                 println(kind)
                 units.forEach { unit ->
-                    val formatValues: MutableList<Any> = Format.values()
+                    val formatValues: MutableList<Any> = Format.entries
                             .map {
                                 unit.toFrontendString(it).value
                             }
@@ -41,7 +41,7 @@ fun main() {
                 }
             }
     println()
-    println("There you have all ${Units.values().size} units.")
+    println("There you have all ${Units.entries.size} units.")
 }
 
 private fun Format.asFormatString() =

@@ -9,14 +9,14 @@ import io.kotest.matchers.shouldBe
 class TerrainHeightTest: StringSpec({
     "Max terrain height should be ${TerrainHeight.TEN}" {
         TerrainHeight.MAX shouldBe TerrainHeight.TEN
-        TerrainHeight.values().forAll {
+        TerrainHeight.entries.toTypedArray().forAll {
             it.value shouldBeLessThanOrEqual TerrainHeight.MAX.value
         }
     }
 
     "Min terrain height should be ${TerrainHeight.ONE}" {
         TerrainHeight.MIN shouldBe TerrainHeight.ONE
-        TerrainHeight.values().forAll {
+        TerrainHeight.entries.toTypedArray().forAll {
             it.value shouldBeGreaterThanOrEqual TerrainHeight.MIN.value
         }
     }
