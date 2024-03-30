@@ -1,0 +1,8 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Default renovate config. It provides you with the presets you most probably need. Change as you need. For some documentation on Renovate and presets, see our readme: https://gitlab.com/subshell/common/renovate/-/blob/main/README.md",
+  "extends": [
+    "config:recommended",
+    ":automergePatch"
+  ]
+}
