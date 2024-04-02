@@ -23,10 +23,10 @@ object DemoMap {
         for (x in 0 until TILE_COUNT) {
             for (y in 0 until TILE_COUNT) {
                 val coordinate = Coordinate(origin.eastingFromLeft + x, origin.northingFromBottom + y)
-                val height = TerrainHeight.values()[x % TerrainHeight.values().size]
-                var type = TerrainType.values()[(x / (TILE_COUNT / 2) + y / (TILE_COUNT / 2))]
+                val height = TerrainHeight.entries[x % TerrainHeight.entries.size]
+                var type = TerrainType.entries[(x / (TILE_COUNT / 2) + y / (TILE_COUNT / 2))]
                 if (x > TILE_COUNT / 2 && y > TILE_COUNT / 2) {
-                    type = TerrainType.values()[3]
+                    type = TerrainType.entries.toTypedArray()[3]
                 }
                 if (coordinate.eastingFromLeft % 5 == 0 && coordinate.northingFromBottom % 5 == 0) {
                     sectorTiles.add(WorldTile(coordinate, Terrain.of(type, TerrainHeight.TEN)))

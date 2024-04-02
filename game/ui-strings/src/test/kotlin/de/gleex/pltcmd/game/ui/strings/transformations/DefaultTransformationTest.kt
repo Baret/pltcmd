@@ -10,7 +10,8 @@ class DefaultTransformationTest : WordSpec({
 
     "The default transformation for frontend strings" should {
         "truncate correctly" {
-        Format.values()
+        Format.entries
+                .toTypedArray()
                 .forAll { format ->
                         val actualValue = testString.defaultTransformation(format)
                         when (format) {
@@ -25,7 +26,8 @@ class DefaultTransformationTest : WordSpec({
 
         "call toString()" {
             val a = A(15)
-            Format.values()
+            Format.entries
+                    .toTypedArray()
                     .forAll { format ->
                         val actualValue = a.defaultTransformation(format)
                         when (format) {

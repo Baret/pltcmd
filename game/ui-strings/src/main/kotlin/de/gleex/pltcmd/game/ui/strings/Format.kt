@@ -39,7 +39,7 @@ enum class Format(val length: Int) {
          * Returns the largest [Format] that fits into the given width.
          */
         fun forWidth(width: Int): Format {
-            return Format.values()
+            return entries
                 .filter { it.length <= width }
                 .maxByOrNull { it.length }
                 ?: Format.ICON

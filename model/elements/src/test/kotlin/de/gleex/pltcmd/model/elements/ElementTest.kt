@@ -40,15 +40,15 @@ class ElementTest : WordSpec({
     }
 
     // Test element creation with invalid unit kinds
-    ElementKind.values()
+    ElementKind.entries
             .forEach { elementKind ->
                 val invalidUnitKinds = UnitKind
-                        .values()
-                        .filter {
-                            elementKind.allowedUnitKinds.contains(it).not()
-                        }
+                    .entries
+                    .filter {
+                        elementKind.allowedUnitKinds.contains(it).not()
+                    }
                 invalidUnitKinds.forEach { invalidUnitKind ->
-                    val invalidUnitBlueprint = Units.values()
+                    val invalidUnitBlueprint = Units.entries
                             .first { it.kind == invalidUnitKind }
                     "An element of kind $elementKind created with a $invalidUnitBlueprint" should {
                         "not be valid" {
