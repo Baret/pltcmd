@@ -33,7 +33,7 @@
 		<kotlin.version>1.9.23</kotlin.version>
 		<!-- version used by Kotest -->
 		<kotlinx.coroutines.version>1.8.0</kotlinx.coroutines.version>
-		<serialization.version>1.5.1</serialization.version>
+		<serialization.version>1.6.3</serialization.version>
 
 		<zircon.version>2022.1.0-RELEASE</zircon.version>
 		<amethyst.version>2022.1.0-RELEASE</amethyst.version>
