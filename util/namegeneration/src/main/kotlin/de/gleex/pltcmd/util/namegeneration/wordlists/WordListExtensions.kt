@@ -8,7 +8,7 @@ internal operator fun WordList.plus(otherWorlist: WordList): WordList =
         for(i in 0 until size) {
             add(get(i))
         }
-        for(j in 0..otherWorlist.size) {
+        for(j in 0 until  otherWorlist.size) {
             add(otherWorlist[j])
         }
     }.asWordList()
