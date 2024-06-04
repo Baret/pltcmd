@@ -25,6 +25,11 @@ categories:
   - title: 'Other changes'
     labels:
       - 'misc'
+  - title: 'Dependency updates'
+    labels:
+      - 'dependencies::major'
+      - 'dependencies::minor'
+      - 'dependencies::patch'
 version-resolver:
   major:
     labels:

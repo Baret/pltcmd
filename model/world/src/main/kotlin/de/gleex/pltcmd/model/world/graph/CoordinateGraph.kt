@@ -15,7 +15,6 @@ import org.jgrapht.graph.MaskSubgraph
 import org.jgrapht.graph.builder.GraphBuilder
 import org.jgrapht.graph.builder.GraphTypeBuilder
 import java.util.*
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 private val log = KotlinLogging.logger { }
@@ -151,7 +150,6 @@ internal constructor(
          * @param vertices the list of vertices. **Must be sorted! Binary search is being performed on this list!**
          */
         @JvmStatic
-        @OptIn(ExperimentalTime::class)
         protected fun buildGraph(vertices: Set<Coordinate>): Graph<Coordinate, DefaultEdge> {
             val graphBuilder = newGraphBuilder()
 

@@ -29,7 +29,6 @@ import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.databinding.api.extension.toProperty
 import kotlin.random.Random
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 private val log = KotlinLogging.logger {}
@@ -105,7 +104,6 @@ data class Game(val engine: Engine<GameContext>, val world: WorldMap, val player
     /**
      * Gets all [ElementEntity]s at the given coordinate.
      */
-    @OptIn(ExperimentalTime::class)
     fun elementsAt(location: Coordinate): Collection<ElementEntity> {
         val (elements, duration) = measureTimedValue {
             allEntities.elementsAt(location)

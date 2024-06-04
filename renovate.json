@@ -4,6 +4,7 @@
   "extends": [
     "config:recommended",
     ":automergePatch",
+    ":rebaseStalePrs",
     ":assignAndReview(Baret)"
   ],
   "ignoreDeps": [

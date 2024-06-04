@@ -11,12 +11,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import mu.KotlinLogging
 import kotlin.random.Random
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 private val log = KotlinLogging.logger {}
 
-@OptIn(ExperimentalTime::class)
 class WorldAreaTest : StringSpec({
 
     "get() must not be slow" {

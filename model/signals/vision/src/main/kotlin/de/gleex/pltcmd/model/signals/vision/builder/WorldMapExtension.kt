@@ -10,7 +10,6 @@ import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.times
 import mu.KotlinLogging
 import kotlin.math.ceil
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 private val log = KotlinLogging.logger {}
@@ -23,7 +22,6 @@ private val log = KotlinLogging.logger {}
  *
  * @return a visual
  */
-@OptIn(ExperimentalTime::class)
 fun WorldMap.visionAt(location: Coordinate, visualRange: VisionPower): Vision {
     val radius: Distance = ceil(visualRange.power) * WorldTile.edgeLength
     log.debug { "Creating vision at $location with $visualRange. Calculating circle with radius ${radius}..." }
