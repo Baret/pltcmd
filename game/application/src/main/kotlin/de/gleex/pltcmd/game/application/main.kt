@@ -33,7 +33,6 @@ import org.hexworks.zircon.api.screen.Screen
 import org.hexworks.zircon.api.uievent.ComponentEventType
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 private val log = KotlinLogging.logger {}
@@ -130,7 +129,6 @@ open class Main {
      *
      * @return the elements to command in the UI and the HQ entity for sending messages from the UI.
      */
-    @OptIn(ExperimentalTime::class)
     protected open fun prepareGame(game: Game, gameWorld: GameWorld): Pair<List<ElementEntity>, FOBEntity> {
         log.debug { "Finding visible sector for coordinate ${gameWorld.visibleTopLeftCoordinate()}" }
         val visibleSector = game.world.sectors.first {

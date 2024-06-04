@@ -29,12 +29,10 @@ import java.util.*
 import kotlin.math.ceil
 import kotlin.math.sqrt
 import kotlin.system.measureTimeMillis
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 private val log = KotlinLogging.logger {  }
 
-@OptIn(ExperimentalTime::class)
 class WorldMapTest : WordSpec({
     "A WorldMap" should {
         "not be empty" {
