@@ -38,7 +38,7 @@
 		<zircon.version>2022.1.0-RELEASE</zircon.version>
 		<amethyst.version>2022.1.0-RELEASE</amethyst.version>
 		<!-- Should match the higher version used by Amethyst or Zircon -->
-		<cobalt.version>2022.1.0-RELEASE</cobalt.version>
+		<cobalt.version>2024.1.0-RELEASE</cobalt.version>
 		<kotlinx-collections-immutable.version>0.3.7</kotlinx-collections-immutable.version>
 
 		<jupiter.version>5.10.2</jupiter.version>
