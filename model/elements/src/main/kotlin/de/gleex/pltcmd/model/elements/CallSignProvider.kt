@@ -1,10 +1,7 @@
 package de.gleex.pltcmd.model.elements
 
 import de.gleex.kng.generators.nextAsString
-import de.gleex.pltcmd.util.namegeneration.angelNames
-import de.gleex.pltcmd.util.namegeneration.bluntToolAndWeaponNamesNumbered
-import de.gleex.pltcmd.util.namegeneration.heavyAnimalsNumbered
-import de.gleex.pltcmd.util.namegeneration.natoAlphabetGenerator
+import de.gleex.pltcmd.util.namegeneration.*
 import mu.KotlinLogging
 import kotlin.reflect.KProperty
 
@@ -18,7 +15,6 @@ private val log = KotlinLogging.logger {}
 internal class CallSignProvider(
     corps: Corps,
     kind: ElementKind,
-    @Suppress("UNUSED_PARAMETER")
     rung: Rung
 ) {
 
@@ -29,15 +25,15 @@ internal class CallSignProvider(
         callSign = CallSign(
             when (corps) {
                 Corps.Fighting  -> when(kind) {
-                    ElementKind.Aerial -> natoAlphabetGenerator // snakeNamesNumbered
-                    else -> bluntToolAndWeaponNamesNumbered
+                    ElementKind.Aerial -> SnakeNamesNumbered
+                    else -> BluntToolAndWeaponNamesNumbered
                 }
-                Corps.Logistics -> heavyAnimalsNumbered
+                Corps.Logistics -> HeavyAnimalsNumbered
                 Corps.CombatSupport -> when(rung) {
-                    Rung.Company, Rung.Battalion -> angelNames
-                    else -> natoAlphabetGenerator // usefulToolsNumbered
+                    Rung.Company, Rung.Battalion -> AngelNames
+                    else -> NatoAlphabetGenerator // usefulToolsNumbered
                 }
-                Corps.Reconnaissance -> natoAlphabetGenerator // sneakyNamesNumbered
+                Corps.Reconnaissance -> NatoAlphabetGenerator // sneakyNamesNumbered
             }.nextAsString()
         )
     }

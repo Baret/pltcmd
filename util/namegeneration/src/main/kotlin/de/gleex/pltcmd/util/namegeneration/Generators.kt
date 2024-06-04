@@ -26,15 +26,26 @@ internal fun NameGenerator.numbered() = this
 /**
  * Uses the NATO phonetic alphabet.
  */
-object natoAlphabetGenerator : NameGenerator by defaultGeneratorWithList(natoAlphabet)
+object NatoAlphabetGenerator : NameGenerator by defaultGeneratorWithList(natoAlphabet)
 
 /**
  * A long list of angel names.
  */
-object angelNames : NameGenerator by defaultGeneratorWithList(angels)
+object AngelNames : NameGenerator by defaultGeneratorWithList(angels)
 
-object bluntToolAndWeaponNamesNumbered : NameGenerator by
+/**
+ * A mix of bludgeoning weapons and tools. Something to hit hard.
+ */
+object BluntToolAndWeaponNamesNumbered : NameGenerator by
 defaultGeneratorWithList(bludgeoningWeapons + bluntTools)
     .numbered()
 
-object heavyAnimalsNumbered : NameGenerator by defaultGeneratorWithList(heavyAnimals).numbered()
+/**
+ * Animals that are big and heavy.
+ */
+object HeavyAnimalsNumbered : NameGenerator by defaultGeneratorWithList(heavyAnimals).numbered()
+
+/**
+ * All kinds of common names for snakes.
+ */
+object SnakeNamesNumbered : NameGenerator by defaultGeneratorWithList(snakes).numbered()
