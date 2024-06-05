@@ -15,8 +15,8 @@
     <description>A frontend for the game built with KTX</description>
 
     <properties>
-        <gdx.version>1.12.0</gdx.version>
-        <ktx.version>1.12.0-rc1</ktx.version>
+        <gdx.version>1.12.1</gdx.version>
+        <ktx.version>1.12.1-rc1</ktx.version>
     </properties>
 
     <dependencies>

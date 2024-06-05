@@ -41,8 +41,6 @@
 		<cobalt.version>2022.1.0-RELEASE</cobalt.version>
 		<kotlinx-collections-immutable.version>0.3.7</kotlinx-collections-immutable.version>
 
-		<ktx.version>1.12.0-rc1</ktx.version>
-
 		<jupiter.version>5.10.2</jupiter.version>
 		<kotest.version>5.9.0</kotest.version>
 	</properties>
