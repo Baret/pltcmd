@@ -28,7 +28,10 @@ internal class CallSignProvider(
                     ElementKind.Aerial -> SnakeNamesNumbered
                     else -> BluntToolAndWeaponNamesNumbered
                 }
-                Corps.Logistics -> HeavyAnimalsNumbered
+                Corps.Logistics -> when(rung) {
+                    Rung.Company, Rung.Battalion -> AngelNames
+                    else -> HeavyAnimalsNumbered
+                }
                 Corps.CombatSupport -> when(rung) {
                     Rung.Company, Rung.Battalion -> AngelNames
                     else -> NatoAlphabetGenerator // usefulToolsNumbered
