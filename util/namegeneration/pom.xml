@@ -17,7 +17,7 @@
         <dependency>
             <groupId>de.gleex.kng</groupId>
             <artifactId>kotlin-name-generator</artifactId>
-            <version>0.1.1</version>
+            <version>0.1.2</version>
         </dependency>
     </dependencies>
 
