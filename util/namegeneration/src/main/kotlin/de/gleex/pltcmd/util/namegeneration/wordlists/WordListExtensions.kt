@@ -5,8 +5,9 @@ import de.gleex.kng.wordlist.asWordList
 
 internal operator fun WordList.plus(otherWordlist: WordList): WordList =
     buildList {
-        for(i in 0 until size) {
-            add(get(i))
+        val thisWordList = this@plus
+        for(i in 0 until thisWordList.size) {
+            add(thisWordList[i])
         }
         for(j in 0 until  otherWordlist.size) {
             add(otherWordlist[j])
