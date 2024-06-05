@@ -14,9 +14,9 @@ import io.kotest.matchers.string.shouldHaveMaxLength
 class TerrainTransformationsTest : WordSpec({
     "All transformations for terrain height" should {
         "be valid" {
-            Format.values()
+            Format.entries.toTypedArray()
                     .forAll { format ->
-                        TerrainHeight.values()
+                        TerrainHeight.entries.toTypedArray()
                                 .forAll { terrainHeight ->
                                     assertSoftly {
                                         val directlyTransformed = terrainHeight.terrainHeightTransformation(format)
@@ -30,9 +30,9 @@ class TerrainTransformationsTest : WordSpec({
 
     "All transformations for terrain type" should {
         "be valid" {
-            Format.values()
+            Format.entries.toTypedArray()
                     .forAll { format ->
-                        TerrainType.values()
+                        TerrainType.entries.toTypedArray()
                                 .forAll { terrainType ->
                                     assertSoftly {
                                         val directlyTransformed = terrainType.terrainTypeTransformation(format)
@@ -46,11 +46,11 @@ class TerrainTransformationsTest : WordSpec({
 
     "All transformations for every terrain combination" should {
         "be valid" {
-            Format.values()
+            Format.entries.toTypedArray()
                     .forAll { format ->
-                        TerrainType.values()
+                        TerrainType.entries.toTypedArray()
                                 .forAll { type ->
-                                    TerrainHeight.values().forAll { height ->
+                                    TerrainHeight.entries.toTypedArray().forAll { height ->
                                         assertSoftly {
                                             val terrain = Terrain.of(type, height)
                                             val directlyTransformed = terrain.terrainTransformation(format)

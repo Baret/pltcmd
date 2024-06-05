@@ -5,7 +5,6 @@ import de.gleex.pltcmd.model.signals.radio.RadioPower
 import de.gleex.pltcmd.model.world.WorldMap
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import mu.KotlinLogging
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 private val log = KotlinLogging.logger {}
@@ -15,7 +14,6 @@ private val log = KotlinLogging.logger {}
  * While traveling over or through terrain it loses power, which makes it harder to understand ("decode")
  * the message.
  */
-@OptIn(ExperimentalTime::class)
 fun WorldMap.radioSignalAt(location: Coordinate, power: RadioPower): Signal<RadioPower> {
         log.debug { "Creating radio signal at $location with radio power $power. Calculating circle with radius ${power.maxRange}..." }
         val (area, duration) = measureTimedValue { circleAt(location, power.maxRange) }

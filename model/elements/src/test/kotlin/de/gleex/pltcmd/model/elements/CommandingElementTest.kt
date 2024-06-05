@@ -28,7 +28,7 @@ class CommandingElementTest : WordSpec() {
         "The corps of a commanding element" should {
             val commandingElement = buildCommandingElement()
 
-            val invalidCorps = Corps.values()
+            val invalidCorps = Corps.entries
                     .filter { it != commandingElement.corps }
             "NOT allow adding elements of corps $invalidCorps when it is of corps ${commandingElement.corps} itself" {
                 invalidCorps.forNone {
@@ -46,7 +46,7 @@ class CommandingElementTest : WordSpec() {
         "The element kind of a commanding element" should {
             val commandingElement = buildCommandingElement()
 
-            val invalidKinds = ElementKind.values()
+            val invalidKinds = ElementKind.entries
                     .filter { it != commandingElement.kind }
             "NOT allow adding elements of kind $invalidKinds when it is of kind ${commandingElement.kind} itself" {
                 invalidKinds.forNone {
@@ -64,7 +64,7 @@ class CommandingElementTest : WordSpec() {
         "The rung of a subordinate" should {
             val commandingElement = buildCommandingElement()
 
-            val invalidRungs = Rung.values()
+            val invalidRungs = Rung.entries
                     .filter { it >= commandingElement.rung }
             "NOT allow adding elements of rung $invalidRungs when it is of rung ${commandingElement.rung} itself (only smaller rungs allowed)" {
                 invalidRungs.forNone {
@@ -73,7 +73,7 @@ class CommandingElementTest : WordSpec() {
                 }
             }
 
-            val validRungs = Rung.values()
+            val validRungs = Rung.entries
                     .filter { it < commandingElement.rung }
             "allow adding elements of rung $validRungs when it is of rung ${commandingElement.rung} itself" {
                 validRungs.forAll {
@@ -82,8 +82,8 @@ class CommandingElementTest : WordSpec() {
                 }
             }
 
-            "have been checked against all ${Rung.values().size} rungs" {
-                invalidRungs + validRungs shouldHaveSize Rung.values().size
+            "have been checked against all ${Rung.entries.size} rungs" {
+                invalidRungs + validRungs shouldHaveSize Rung.entries.size
             }
         }
 

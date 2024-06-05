@@ -4,7 +4,6 @@ import de.gleex.pltcmd.game.serialization.Storage
 import de.gleex.pltcmd.game.serialization.StorageId
 import de.gleex.pltcmd.model.world.WorldMap
 import mu.KotlinLogging
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 
@@ -13,7 +12,6 @@ private val log = KotlinLogging.logger {}
 /**
  * Stores and loads map data.
  */
-@OptIn(ExperimentalTime::class)
 object MapStorage {
     private const val storageType = "map"
 

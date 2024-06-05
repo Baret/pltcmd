@@ -110,7 +110,7 @@ object ColorRepository {
      * Creates a [TileColor] for the given [Rung] to highlight and differentiate it in the UI.
      */
     fun forRung(rung: Rung): TileColor {
-        val ratio = rung.ordinal.toDouble() / (Rung.values().size - 1).toDouble()
+        val ratio = rung.ordinal.toDouble() / (Rung.entries.size - 1).toDouble()
         return TileColor
             .create(77, 77, 77)
             .interpolateTo(TileColor.create(191, 191, 191))
