@@ -7,14 +7,19 @@ package de.gleex.pltcmd.game.application.actors.terrain.model
 class NeighborBitmap private constructor(private val bitmap: UByte) {
 
     companion object {
+        private val ZERO: UByte = 0.toUByte()
+
         /**
          * Factory function that sets the bits for the given [Direction]s.
          */
-        fun of(vararg directions: Direction): NeighborBitmap {
+        fun of(vararg directions: Direction): NeighborBitmap = of(directions.toList())
+
+        /**
+         * Factory function that sets the bits for the given [Direction]s.
+         */
+        fun of(directions: List<Direction>): NeighborBitmap {
             return NeighborBitmap(directions.sumOf { it.byteValue.toInt() }.toUByte())
         }
-
-        private val ZERO: UByte = 0.toUByte()
     }
 
     fun isNorth(): Boolean {
@@ -65,6 +70,13 @@ class NeighborBitmap private constructor(private val bitmap: UByte) {
 
     override fun hashCode(): Int {
         return bitmap.hashCode()
+    }
+
+    /**
+     * True if all bits are set.
+     */
+    fun all(): Boolean {
+        return bitmap == UByte.MAX_VALUE
     }
 
     /**

@@ -18,6 +18,7 @@ class NeighborBitmapTest : FreeSpec() {
                 it.isSouthWest() shouldBe false
                 it.isWest() shouldBe false
                 it.isNorthWest() shouldBe false
+                it.all() shouldBe false
             }
         }
 
@@ -33,6 +34,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe false
                     it.isWest() shouldBe false
                     it.isNorthWest() shouldBe false
+                    it.all() shouldBe false
                 }
             }
             "north east" {
@@ -46,6 +48,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe false
                     it.isWest() shouldBe false
                     it.isNorthWest() shouldBe false
+                    it.all() shouldBe false
                 }
             }
             "east" {
@@ -59,6 +62,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe false
                     it.isWest() shouldBe false
                     it.isNorthWest() shouldBe false
+                    it.all() shouldBe false
                 }
             }
             "south east" {
@@ -72,6 +76,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe false
                     it.isWest() shouldBe false
                     it.isNorthWest() shouldBe false
+                    it.all() shouldBe false
                 }
             }
             "south" {
@@ -85,6 +90,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe false
                     it.isWest() shouldBe false
                     it.isNorthWest() shouldBe false
+                    it.all() shouldBe false
                 }
             }
             "south west" {
@@ -98,6 +104,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe true
                     it.isWest() shouldBe false
                     it.isNorthWest() shouldBe false
+                    it.all() shouldBe false
                 }
             }
             "west" {
@@ -111,6 +118,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe false
                     it.isWest() shouldBe true
                     it.isNorthWest() shouldBe false
+                    it.all() shouldBe false
                 }
             }
             "north west" {
@@ -124,6 +132,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe false
                     it.isWest() shouldBe false
                     it.isNorthWest() shouldBe true
+                    it.all() shouldBe false
                 }
             }
         }
@@ -140,6 +149,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe false
                     it.isWest() shouldBe false
                     it.isNorthWest() shouldBe false
+                    it.all() shouldBe false
                 }
             }
             "three" {
@@ -157,6 +167,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe true
                     it.isWest() shouldBe true
                     it.isNorthWest() shouldBe false
+                    it.all() shouldBe false
                 }
             }
             "five" {
@@ -176,6 +187,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe false
                     it.isWest() shouldBe true
                     it.isNorthWest() shouldBe true
+                    it.all() shouldBe false
                 }
             }
             "all" {
@@ -198,6 +210,7 @@ class NeighborBitmapTest : FreeSpec() {
                     it.isSouthWest() shouldBe true
                     it.isWest() shouldBe true
                     it.isNorthWest() shouldBe true
+                    it.all() shouldBe true
                 }
             }
         }
