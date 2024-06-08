@@ -8,7 +8,7 @@ class WorldTileActor(private val tile: WorldTile): Group() {
     init {
         addActor(TerrainTypeActor(tile.type))
         addActor(TerrainHeightActor(tile.height))
-        addActor(CoordinateTileActor(tile.coordinate))
+        addActor(CoordinateTileActor(tile.coordinate, tile.terrain.height))
     }
 
     override fun addAction(action: Action?) {

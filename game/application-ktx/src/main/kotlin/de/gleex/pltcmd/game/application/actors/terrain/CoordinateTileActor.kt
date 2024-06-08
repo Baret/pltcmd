@@ -6,11 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.kotcrab.vis.ui.VisUI
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 
 /**
  * An actor that displays the current coordinate when hovered.
  */
-class CoordinateTileActor(coordinate: Coordinate) : Label(coordinate.toString(), VisUI.getSkin()) {
+class CoordinateTileActor(coordinate: Coordinate, height: TerrainHeight) : Label("$coordinate [${height.value}]", VisUI.getSkin()) {
 
     init {
         setScale(1.0f)

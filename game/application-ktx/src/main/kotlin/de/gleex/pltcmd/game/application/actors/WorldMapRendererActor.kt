@@ -4,16 +4,21 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.Vector4
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.kotcrab.vis.ui.VisUI
+import de.gleex.pltcmd.game.application.actors.terrain.model.DrawableWorldTile
+import de.gleex.pltcmd.game.application.actors.terrain.model.NeighborBitmap
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownTerrain
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
+import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.fillCircle
 import de.gleex.pltcmd.model.world.sectorOrigin
@@ -35,8 +40,11 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
 
     private val coordinateHighlightLabel = Label(bottomLeftCoordinate.toString(), VisUI.getSkin())
 
+    private val cam = OrthographicCamera(width, height)
+
     init {
         color = Color.DARK_GRAY
+        cam.setToOrtho(false, (50 * TILE_WIDTH) / width, (50 * TILE_HEIGHT) / height)
         setupListeners()
         log.info { "My origin: $originX | $originY on stage ${localToStageCoordinates(Vector2(originX, originY))}" }
         addActor(coordinateHighlightLabel)
@@ -56,9 +64,9 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
     override fun draw(batch: Batch?, parentAlpha: Float) {
         batch?.end()
 
-        renderer.transformMatrix = batch?.transformMatrix
-        renderer.projectionMatrix = batch?.projectionMatrix
-        renderer.translate(x, y, 0f)
+        renderer.transformMatrix = cam.combined
+        renderer.projectionMatrix = cam.combined
+        //renderer.translate(x, y, 0f)
 
         renderer.fillBackground()
 
@@ -72,7 +80,7 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
 
     private fun ShapeRenderer.drawTiles() {
         forEachVisibleCoordinate { currentCoordinate ->
-            drawTile(knownWorld[currentCoordinate])
+            drawTile(knownWorld.drawableTileFor(currentCoordinate))
         }
     }
 
@@ -90,12 +98,31 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
         } while (currentDrawPosition.x < width && currentDrawPosition.y < height)
     }
 
-    private fun ShapeRenderer.drawTile(worldTile: KnownTerrain) {
-        val drawPos = drawPositionOf(worldTile.coordinate)
+    private fun ShapeRenderer.drawTile(tile: DrawableWorldTile) {
+        val drawPos = drawPositionOf(tile.coordinate)
+        // Terrain type
         drawWithType(ShapeRenderer.ShapeType.Filled) {
             // TODO: draw height
-            color = worldTile.terrain?.type?.let { terrainTypeColor[it] } ?: Color.BLACK
+            color = tile.terrain?.type?.let { terrainTypeColor[it] } ?: Color.BLACK
             rect(drawPos.x, drawPos.y, TILE_WIDTH, TILE_HEIGHT)
+        }
+        // contour lines
+        val localHeight = tile.terrain?.height
+        if(!tile.neighborsSameHeight.all() && localHeight != null) {
+            var northLine: Vector4? = null
+            if(tile.neighborsSameHeight.isNorth().not()) {
+                val nHeight = knownWorld[tile.coordinate.withRelativeNorthing(1)].terrain?.height
+                if(nHeight != null && localHeight > nHeight) {
+                    northLine = Vector4(drawPos.x, drawPos.y + 2.0f, drawPos.x + TILE_WIDTH, drawPos.y + 2.0f)
+                }
+            }
+            drawWithType(ShapeRenderer.ShapeType.Line) {
+                northLine?.let {
+                    log.debug { "Drawing northLine at ${tile.coordinate} with drawPos $it" }
+                    color = Color.RED
+                    line(it.x, it.y, it.z, it.w)
+                }
+            }
         }
     }
 
@@ -135,6 +162,20 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
         begin(type)
         drawInstructions()
         end()
+    }
+
+    private fun KnownWorld.drawableTileFor(coordinate: Coordinate): DrawableWorldTile {
+        val knowTile: KnownTerrain = get(coordinate)
+        val sameHeights = buildList<NeighborBitmap.Direction> {
+            knowTile.terrain?.height?.let { height ->
+                if(height == get(coordinate.withRelativeNorthing(1)).terrain?.height) {
+                    log.debug { "Adding NORTH to height bitmap of $coordinate" }
+                    add(NeighborBitmap.Direction.NORTH)
+                }
+            }
+        }
+        // TODO: add all the other bits to the bitmaps
+        return DrawableWorldTile(knowTile, NeighborBitmap.of(sameHeights), NeighborBitmap.of())
     }
 
     /**
@@ -248,7 +289,7 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
             }
         }
 
-        private const val TILE_WIDTH = 16f
-        private const val TILE_HEIGHT = 16f
+        private val TILE_WIDTH: Float = WorldTile.edgeLength.inUnit(Meters).toFloat()
+        private val TILE_HEIGHT: Float = WorldTile.edgeLength.inUnit(Meters).toFloat()
     }
 }
