@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
@@ -12,6 +11,7 @@ import com.badlogic.gdx.math.Vector4
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.kotcrab.vis.ui.VisUI
 import de.gleex.pltcmd.game.application.actors.terrain.model.DrawableWorldTile
@@ -27,6 +27,7 @@ import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.DistanceUnit.Meters
 import mu.KotlinLogging
 import kotlin.math.floor
+import kotlin.properties.Delegates
 
 private val log = KotlinLogging.logger { }
 
@@ -40,15 +41,26 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
 
     private val coordinateHighlightLabel = Label(bottomLeftCoordinate.toString(), VisUI.getSkin())
 
-    private val cam = OrthographicCamera(width, height)
+    private var worldWidthInMeters by Delegates.notNull<Float>()
+    private var worldHeightInMeters by Delegates.notNull<Float>()
 
     init {
-        color = Color.DARK_GRAY
-        cam.setToOrtho(false, (50 * TILE_WIDTH) / width, (50 * TILE_HEIGHT) / height)
         setupListeners()
-        log.info { "My origin: $originX | $originY on stage ${localToStageCoordinates(Vector2(originX, originY))}" }
         addActor(coordinateHighlightLabel)
         coordinateHighlightLabel.isVisible = false
+    }
+
+    override fun setStage(stage: Stage?) {
+        super.setStage(stage)
+        log.debug { "Stage has been set. Updating cam." }
+        color = Color.DARK_GRAY
+        val metersW = 50 * TILE_WIDTH
+        val aspectRatio = width / height
+        log.debug { "Setting cam to display $metersW meters, aspectRatio is $aspectRatio. And translating by $x | $y" }
+        worldWidthInMeters = metersW * aspectRatio
+        worldHeightInMeters = 50 * TILE_HEIGHT
+        log.debug { "My origin: $originX | $originY on stage ${localToStageCoordinates(Vector2(originX, originY))}" }
+        log.debug { "My size: $width * $height" }
     }
 
     override fun act(delta: Float) {
@@ -64,9 +76,9 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
     override fun draw(batch: Batch?, parentAlpha: Float) {
         batch?.end()
 
-        renderer.transformMatrix = cam.combined
-        renderer.projectionMatrix = cam.combined
-        //renderer.translate(x, y, 0f)
+        renderer.transformMatrix = batch?.transformMatrix
+        renderer.projectionMatrix = batch?.projectionMatrix
+        renderer.translate(x, y, 0f)
 
         renderer.fillBackground()
 
@@ -129,7 +141,7 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
     private fun ShapeRenderer.fillBackground() {
         drawWithType(ShapeRenderer.ShapeType.Filled) {
             color = this@WorldMapRendererActor.color
-            rect(0f, 0f, width, height)
+            rect(0f, 0f, width, width)
         }
     }
 
@@ -183,9 +195,9 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
      */
     private fun drawPositionOf(coordinate: Coordinate): Vector2 {
         val currentOriginCoordinate = coordinate - bottomLeftCoordinate
-        val drawPosX: Float = currentOriginCoordinate.eastingFromLeft.toFloat() * TILE_WIDTH
-        val drawPosY: Float = currentOriginCoordinate.northingFromBottom.toFloat() * TILE_HEIGHT
-        return Vector2(drawPosX, drawPosY)
+        val worldPosX: Float = currentOriginCoordinate.eastingFromLeft.toFloat() * TILE_WIDTH
+        val worldPosY: Float = currentOriginCoordinate.northingFromBottom.toFloat() * TILE_HEIGHT
+        return Vector2(worldPosX, worldPosY)
     }
 
     /**
@@ -235,7 +247,9 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
         val revealListener = object : InputListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 return if (button == Buttons.LEFT) {
-                    knownWorld.reveal(coordinateAtActorPosition(x, y).fillCircle(Distance(250, Meters)).area { true })
+                    val coordinateAtActorPosition = coordinateAtActorPosition(x, y)
+                    log.debug { "You clicked at $x | $y which results in coordinate $coordinateAtActorPosition" }
+                    knownWorld.reveal(coordinateAtActorPosition.fillCircle(Distance(250, Meters)).area { true })
                     true
                 } else {
                     false
@@ -251,15 +265,30 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
         val highlightCoordinateListener = object : InputListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 return if (button == Buttons.RIGHT) {
-                    log.info { "My origin: $originX | $originY on stage ${localToStageCoordinates(Vector2(originX, originY))}" }
+                    val coordinateAtActorPosition = coordinateAtActorPosition(x, y)
+                    val drawPositionOfCoordinate = drawPositionOf(coordinateAtActorPosition)
+                    val clickPositionOnStage = localToStageCoordinates(Vector2(x, y))
+                    log.debug { "My origin: $originX | $originY on stage ${localToStageCoordinates(Vector2(originX, originY))}" }
+                    log.debug { "You RIGHT clicked at $x | $y" }
+                    log.debug { "\tlocalToStageCoordinates=$clickPositionOnStage" }
+                    log.debug { "\tcoordinateAtActorPosition=$coordinateAtActorPosition" }
+                    log.debug { "\tdrawPositionOfCoordinate=$drawPositionOfCoordinate" }
+                    val currentOriginCoordinate = coordinateAtActorPosition - bottomLeftCoordinate
+                    log.debug { "\t\tcurrentOriginCoordinate = $coordinateAtActorPosition - $bottomLeftCoordinate = $currentOriginCoordinate" }
+                    log.debug { "\t\t TILE_WIDTH * TILE_HEIGHT = $TILE_WIDTH * $TILE_HEIGHT meters" }
+                    val easting = currentOriginCoordinate.eastingFromLeft.toFloat()
+                    val worldPosX: Float = easting * TILE_WIDTH
+                    val northing = currentOriginCoordinate.northingFromBottom.toFloat()
+                    val worldPosY: Float = northing * TILE_HEIGHT
+                    log.debug { "\t\teasting $easting = $worldPosX" }
+                    log.debug { "\t\tnorthing $northing = $worldPosY" }
                     if(coordinateHighlightLabel.x == x && coordinateHighlightLabel.y == y) {
                         coordinateHighlightLabel.isVisible = false
                     } else {
-                        val labelPosition = localToStageCoordinates(drawPositionOf(coordinateAtActorPosition(x, y)))
-                        coordinateHighlightLabel.x = labelPosition.x
-                        coordinateHighlightLabel.y = labelPosition.y
+                        coordinateHighlightLabel.x = clickPositionOnStage.x
+                        coordinateHighlightLabel.y = clickPositionOnStage.y
                         coordinateHighlightLabel.isVisible = true
-                        coordinateHighlightLabel.setText(coordinateAtActorPosition(x, y).toString())
+                        coordinateHighlightLabel.setText(coordinateAtActorPosition.toString())
                     }
                     true
                 } else {
