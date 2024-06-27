@@ -18,7 +18,6 @@ import de.gleex.pltcmd.game.application.actors.terrain.model.DrawableWorldTile
 import de.gleex.pltcmd.game.application.actors.terrain.model.NeighborBitmap
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownTerrain
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
-import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.fillCircle
 import de.gleex.pltcmd.model.world.sectorOrigin
@@ -195,9 +194,9 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
      */
     private fun drawPositionOf(coordinate: Coordinate): Vector2 {
         val currentOriginCoordinate = coordinate - bottomLeftCoordinate
-        val worldPosX: Float = currentOriginCoordinate.eastingFromLeft.toFloat() * TILE_WIDTH
-        val worldPosY: Float = currentOriginCoordinate.northingFromBottom.toFloat() * TILE_HEIGHT
-        return Vector2(worldPosX, worldPosY)
+        val drawPosX: Float = currentOriginCoordinate.eastingFromLeft.toFloat() * TILE_WIDTH
+        val drawPosY: Float = currentOriginCoordinate.northingFromBottom.toFloat() * TILE_HEIGHT
+        return Vector2(drawPosX, drawPosY)
     }
 
     /**
@@ -285,8 +284,9 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                     if(coordinateHighlightLabel.x == x && coordinateHighlightLabel.y == y) {
                         coordinateHighlightLabel.isVisible = false
                     } else {
-                        coordinateHighlightLabel.x = clickPositionOnStage.x
-                        coordinateHighlightLabel.y = clickPositionOnStage.y
+                        val labelPosition = localToStageCoordinates(drawPositionOfCoordinate)
+                        coordinateHighlightLabel.x = labelPosition.x
+                        coordinateHighlightLabel.y = labelPosition.y
                         coordinateHighlightLabel.isVisible = true
                         coordinateHighlightLabel.setText(coordinateAtActorPosition.toString())
                     }
@@ -318,7 +318,7 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
             }
         }
 
-        private val TILE_WIDTH: Float = WorldTile.edgeLength.inUnit(Meters).toFloat()
-        private val TILE_HEIGHT: Float = WorldTile.edgeLength.inUnit(Meters).toFloat()
+        private const val TILE_WIDTH = 16f
+        private const val TILE_HEIGHT = 16f
     }
 }
