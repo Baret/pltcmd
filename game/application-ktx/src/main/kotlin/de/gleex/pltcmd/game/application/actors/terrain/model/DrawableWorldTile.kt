@@ -11,7 +11,7 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
  */
 data class DrawableWorldTile(
     val tile: KnownTerrain,
-    val neighborsSameHeight: NeighborBitmap,
+    val neighborsLower: NeighborBitmap,
     val neighborsSameTerrain: NeighborBitmap
 ) {
     /**
