@@ -370,10 +370,11 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                         coordinateHighlightLabel.isVisible = false
                     } else {
                         val labelPosition = localToStageCoordinates(drawPositionOfCoordinate)
+                        val labelText = "$coordinateAtActorPosition${knownWorld[coordinateAtActorPosition].terrain?.height?.let{", $it"} ?: ""}"
                         coordinateHighlightLabel.x = labelPosition.x
                         coordinateHighlightLabel.y = labelPosition.y
                         coordinateHighlightLabel.isVisible = true
-                        coordinateHighlightLabel.setText(coordinateAtActorPosition.toString())
+                        coordinateHighlightLabel.setText(labelText)
                     }
                     true
                 } else {
