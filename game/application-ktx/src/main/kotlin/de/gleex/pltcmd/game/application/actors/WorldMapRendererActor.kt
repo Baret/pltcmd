@@ -147,6 +147,23 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                         TILE_HEIGHT - offsetFromEdge
                     )
                 }
+                drawWithType(ShapeRenderer.ShapeType.Filled) {
+                    color = contourLineColor
+                    val triangleHeight = 5f
+                    val triangleWidth = 4f
+                    val centerX = TILE_WIDTH / 2f
+                    val centerY = TILE_HEIGHT / 2f
+                    val offsetX = triangleWidth / 2f
+                    val offsetY = triangleHeight / 2f
+                    triangle(
+                        centerX - offsetX,
+                        centerY - offsetY,
+                        centerX + offsetX,
+                        centerY - offsetY,
+                        centerX,
+                        centerY + offsetY
+                        )
+                }
             } else {
                 var northLine: Vector4? = null
                 if (tile.neighborsLower.isNorth()) {
