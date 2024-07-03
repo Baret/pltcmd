@@ -30,7 +30,7 @@ class Pltcmd : KtxGame<KtxScreen>() {
     }
 
     private fun generateWorld(): WorldMap {
-        val seed: Long = 23 //System.currentTimeMillis()
+        val seed: Long = 1720015570753 // System.currentTimeMillis() // another seed with a long plane area: 1720014618599
         log.info { "Generating world with seed $seed" }
         val worldMapGenerator = WorldMapGenerator(seed, 100, 100)
         val (worldMap, duration) = measureTimedValue { worldMapGenerator.generateWorld() }

@@ -60,6 +60,9 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
         worldHeightInMeters = 50 * TILE_HEIGHT
         log.debug { "My origin: $originX | $originY on stage ${localToStageCoordinates(Vector2(originX, originY))}" }
         log.debug { "My size: $width * $height" }
+//        forEachVisibleCoordinate {
+//            knownWorld.reveal(it)
+//        }
     }
 
     override fun act(delta: Float) {
@@ -143,25 +146,25 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                     rect(
                         drawPos.x + offsetFromEdge,
                         drawPos.y + offsetFromEdge,
-                        TILE_WIDTH - offsetFromEdge,
-                        TILE_HEIGHT - offsetFromEdge
+                        TILE_WIDTH - (offsetFromEdge * 2f),
+                        TILE_HEIGHT - (offsetFromEdge * 2f)
                     )
                 }
                 drawWithType(ShapeRenderer.ShapeType.Filled) {
                     color = contourLineColor
-                    val triangleHeight = 5f
+                    val triangleHeight = 6f
                     val triangleWidth = 4f
                     val centerX = TILE_WIDTH / 2f
                     val centerY = TILE_HEIGHT / 2f
                     val offsetX = triangleWidth / 2f
                     val offsetY = triangleHeight / 2f
                     triangle(
-                        centerX - offsetX,
-                        centerY - offsetY,
-                        centerX + offsetX,
-                        centerY - offsetY,
-                        centerX,
-                        centerY + offsetY
+                        drawPos.x + (centerX - offsetX),
+                        drawPos.y + (centerY - offsetY),
+                        drawPos.x + (centerX + offsetX),
+                        drawPos.y + (centerY - offsetY),
+                        drawPos.x + centerX,
+                        drawPos.y + (centerY + offsetY)
                         )
                 }
             } else {
@@ -281,7 +284,6 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                         val (eastingDiff, northingDiff) = diffPair
                         val neighborHeight = get(coordinate.movedBy(eastingDiff, northingDiff)).terrain?.height
                         if (neighborHeight != null && neighborHeight.value < height.value) {
-                            log.debug { "Adding $direction to height bitmap of $coordinate" }
                             add(direction)
                         }
                     }
