@@ -10,7 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.ColorAction
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.viewport.StretchViewport
+import com.kotcrab.vis.ui.VisUI
 import de.gleex.pltcmd.game.application.actors.WorldMapRendererActor
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
 import de.gleex.pltcmd.model.world.WorldMap
@@ -46,6 +48,14 @@ class MainGameScreen(private val knownWorld: KnownWorld) : KtxScreen {
             width = 800f
             height = 800f
         }.also { stage.keyboardFocus = it })
+
+        // FPS display
+        stage.addActor(object : Label("${Gdx.graphics.framesPerSecond}", VisUI.getSkin()) {
+            override fun act(delta: Float) {
+                this.setText(Gdx.graphics.framesPerSecond)
+                super.act(delta)
+            }
+        })
     }
 
     override fun render(delta: Float) {

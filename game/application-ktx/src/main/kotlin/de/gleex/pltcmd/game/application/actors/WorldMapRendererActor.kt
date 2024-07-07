@@ -46,12 +46,12 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
     init {
         setupListeners()
         addActor(coordinateHighlightLabel)
-        coordinateHighlightLabel.isVisible = false
     }
 
     override fun setStage(stage: Stage?) {
         super.setStage(stage)
-        log.debug { "Stage has been set. Updating cam." }
+        log.debug { "Stage has been set. Initializing values." }
+        coordinateHighlightLabel.isVisible = false
         color = Color.DARK_GRAY
         val metersW = 50 * TILE_WIDTH
         val aspectRatio = width / height
@@ -60,9 +60,9 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
         worldHeightInMeters = 50 * TILE_HEIGHT
         log.debug { "My origin: $originX | $originY on stage ${localToStageCoordinates(Vector2(originX, originY))}" }
         log.debug { "My size: $width * $height" }
-//        forEachVisibleCoordinate {
-//            knownWorld.reveal(it)
-//        }
+        forEachVisibleCoordinate {
+            knownWorld.reveal(it)
+        }
     }
 
     override fun act(delta: Float) {
