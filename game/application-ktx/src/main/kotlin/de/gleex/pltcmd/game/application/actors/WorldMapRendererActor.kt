@@ -43,6 +43,8 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
     private var worldWidthInMeters by Delegates.notNull<Float>()
     private var worldHeightInMeters by Delegates.notNull<Float>()
 
+    private val tileCache: MutableMap<Coordinate, DrawableWorldTile> = HashMap(knownWorld.origin.allTiles.size / 8, 0.9f)
+
     init {
         setupListeners()
         addActor(coordinateHighlightLabel)
@@ -267,22 +269,15 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
     }
 
     private fun KnownWorld.drawableTileFor(coordinate: Coordinate): DrawableWorldTile {
+        if(tileCache.containsKey(coordinate)) {
+            return tileCache[coordinate]!!
+        }
         val knowTile: KnownTerrain = get(coordinate)
         val lowerNeighbors = buildList<NeighborBitmap.Direction> {
             knowTile.terrain?.height?.let { height ->
-                listOf(
-                    (0 to 1) to NeighborBitmap.Direction.NORTH,
-                    (1 to 1) to NeighborBitmap.Direction.NORTH_EAST,
-                    (1 to 0) to NeighborBitmap.Direction.EAST,
-                    (1 to -1) to NeighborBitmap.Direction.SOUTH_EAST,
-                    (-1 to 0) to NeighborBitmap.Direction.SOUTH,
-                    (-1 to -1) to NeighborBitmap.Direction.SOUTH_WEST,
-                    (-1 to 0) to NeighborBitmap.Direction.WEST,
-                    (-1 to 1) to NeighborBitmap.Direction.NORTH_WEST,
-                )
-                    .forEach { (diffPair, direction) ->
-                        val (eastingDiff, northingDiff) = diffPair
-                        val neighborHeight = get(coordinate.movedBy(eastingDiff, northingDiff)).terrain?.height
+                NeighborBitmap.Direction.entries
+                    .forEach { direction ->
+                        val neighborHeight = get(coordinate.movedBy(direction.eastingDiff, direction.northingDiff)).terrain?.height
                         if (neighborHeight != null && neighborHeight.value < height.value) {
                             add(direction)
                         }
@@ -290,7 +285,25 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
             }
         }
         // TODO: add all the other bits to the bitmaps
-        return DrawableWorldTile(knowTile, NeighborBitmap.of(lowerNeighbors), NeighborBitmap.of())
+        val neighborsRevealed = buildList<NeighborBitmap.Direction> {
+                NeighborBitmap.Direction.entries
+                    .forEach { direction ->
+                        if(get(coordinate.movedBy(direction.eastingDiff, direction.northingDiff)).revealed) {
+                            add(direction)
+                        }
+                    }
+        }
+        val drawableWorldTile = DrawableWorldTile(
+            knowTile,
+            NeighborBitmap.of(lowerNeighbors),
+            NeighborBitmap.of(),
+            NeighborBitmap.of(neighborsRevealed)
+        )
+        if(drawableWorldTile.neighborsRevealed.all()) {
+            log.info { "All neighbors of $coordinate revealed, caching drawable tile." }
+            tileCache[coordinate] = drawableWorldTile
+        }
+        return drawableWorldTile
     }
 
     /**

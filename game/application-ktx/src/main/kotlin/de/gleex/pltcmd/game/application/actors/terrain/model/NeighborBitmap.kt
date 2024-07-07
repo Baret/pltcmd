@@ -82,14 +82,14 @@ class NeighborBitmap private constructor(private val bitmap: UByte) {
     /**
      * Represents the bit for one of the 8 cardinal directions of a neighboring tile.
      */
-    enum class Direction(val byteValue: UByte) {
-        NORTH(1.toUByte()),
-        NORTH_EAST(2.toUByte()),
-        EAST(4.toUByte()),
-        SOUTH_EAST(8.toUByte()),
-        SOUTH(16.toUByte()),
-        SOUTH_WEST(32.toUByte()),
-        WEST(64.toUByte()),
-        NORTH_WEST(128.toUByte())
+    enum class Direction(val byteValue: UByte, val eastingDiff: Int, val northingDiff: Int) {
+        NORTH(1.toUByte(), 0 , 1),
+        NORTH_EAST(2.toUByte(), 1 ,1),
+        EAST(4.toUByte(), 1, 0),
+        SOUTH_EAST(8.toUByte(), 1, -1),
+        SOUTH(16.toUByte(), 0, -1),
+        SOUTH_WEST(32.toUByte(), -1, -1),
+        WEST(64.toUByte(), -1, 0),
+        NORTH_WEST(128.toUByte(), -1, 1)
     }
 }
