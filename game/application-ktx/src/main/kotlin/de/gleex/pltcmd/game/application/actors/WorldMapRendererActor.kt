@@ -141,15 +141,14 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
     ) {
         tile.terrain?.height?.let { localHeight ->
             val contourLineColor = if(localHeight.value % 2 == 0) { Color.RED } else { Color.ORANGE }
-            val offsetFromEdge = 2.0f
             if (tile.neighborsLower.all()) {
                 drawWithType(ShapeRenderer.ShapeType.Line) {
                     color = contourLineColor
                     rect(
-                        drawPos.x + offsetFromEdge,
-                        drawPos.y + offsetFromEdge,
-                        TILE_WIDTH - (offsetFromEdge * 2f),
-                        TILE_HEIGHT - (offsetFromEdge * 2f)
+                        drawPos.x + OFFSET_FROM_TILE_EDGE,
+                        drawPos.y + OFFSET_FROM_TILE_EDGE,
+                        TILE_WIDTH - (OFFSET_FROM_TILE_EDGE * 2f),
+                        TILE_HEIGHT - (OFFSET_FROM_TILE_EDGE * 2f)
                     )
                 }
                 drawWithType(ShapeRenderer.ShapeType.Filled) {
@@ -170,60 +169,12 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                         )
                 }
             } else {
-                var northLine: Vector4? = null
-                if (tile.neighborsLower.isNorth()) {
-                    val nHeight = knownWorld[tile.coordinate.withRelativeNorthing(1)].terrain?.height
-                    if (nHeight != null && localHeight > nHeight) {
-                        northLine = Vector4(
-                            drawPos.x,
-                            (drawPos.y + TILE_HEIGHT) - offsetFromEdge,
-                            drawPos.x + TILE_WIDTH,
-                            (drawPos.y + TILE_HEIGHT) - offsetFromEdge
-                        )
-                    }
-                }
-                var southLine: Vector4? = null
-                if (tile.neighborsLower.isSouth()) {
-                    val nHeight = knownWorld[tile.coordinate.withRelativeNorthing(-1)].terrain?.height
-                    if (nHeight != null && localHeight > nHeight) {
-                        southLine = Vector4(
-                            drawPos.x,
-                            drawPos.y + offsetFromEdge,
-                            drawPos.x + TILE_WIDTH,
-                            drawPos.y +  offsetFromEdge
-                        )
-                    }
-                }
-                var eastLine: Vector4? = null
-                if (tile.neighborsLower.isEast()) {
-                    val nHeight = knownWorld[tile.coordinate.withRelativeEasting(1)].terrain?.height
-                    if (nHeight != null && localHeight > nHeight) {
-                        eastLine = Vector4(
-                            (drawPos.x + TILE_WIDTH) - offsetFromEdge,
-                            drawPos.y + TILE_HEIGHT,
-                            (drawPos.x + TILE_WIDTH) - offsetFromEdge,
-                            drawPos.y
-                        )
-                    }
-                }
-                var westLine: Vector4? = null
-                if (tile.neighborsLower.isWest()) {
-                    val nHeight = knownWorld[tile.coordinate.withRelativeEasting(-1)].terrain?.height
-                    if (nHeight != null && localHeight > nHeight) {
-                        westLine = Vector4(
-                            drawPos.x +  offsetFromEdge,
-                            drawPos.y + TILE_HEIGHT,
-                            drawPos.x +  offsetFromEdge,
-                            drawPos.y
-                        )
-                    }
-                }
                 drawWithType(ShapeRenderer.ShapeType.Line) {
-                    listOf(northLine, eastLine, southLine, westLine).forEach {
-                        it?.let {
-                            color = contourLineColor
-                            line(it.x, it.y, it.z, it.w)
-                        }
+                    tile.contourLines.forEach { contourLine ->
+                        val lineStart = Vector2(drawPos.x + contourLine.x, drawPos.y + contourLine.y)
+                        val lineEnd = Vector2(drawPos.x + contourLine.z, drawPos.y + contourLine.w)
+                        color = contourLineColor
+                        line(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y)
                     }
                 }
             }
@@ -272,9 +223,9 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
         if(tileCache.containsKey(coordinate)) {
             return tileCache[coordinate]!!
         }
-        val knowTile: KnownTerrain = get(coordinate)
+        val knownTile: KnownTerrain = get(coordinate)
         val lowerNeighbors = buildList<NeighborBitmap.Direction> {
-            knowTile.terrain?.height?.let { height ->
+            knownTile.terrain?.height?.let { height ->
                 NeighborBitmap.Direction.entries
                     .forEach { direction ->
                         val neighborHeight = get(coordinate.movedBy(direction.eastingDiff, direction.northingDiff)).terrain?.height
@@ -284,7 +235,7 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                     }
             }
         }
-        // TODO: add all the other bits to the bitmaps
+        val neighborsLower = NeighborBitmap.of(lowerNeighbors)
         val neighborsRevealed = buildList<NeighborBitmap.Direction> {
                 NeighborBitmap.Direction.entries
                     .forEach { direction ->
@@ -293,11 +244,71 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                         }
                     }
         }
+
+        // contour lines
+        val contourLines = mutableListOf<Vector4>()
+        if(knownTile.revealed) {
+            val localHeight = knownTile.terrain?.height!!
+            if (neighborsLower.isNorth()) {
+                val nHeight = knownWorld[coordinate.withRelativeNorthing(1)].terrain?.height
+                if (nHeight != null && localHeight > nHeight) {
+                    contourLines.add(
+                        Vector4(
+                            0f,
+                            TILE_HEIGHT - OFFSET_FROM_TILE_EDGE,
+                            TILE_WIDTH,
+                            TILE_HEIGHT - OFFSET_FROM_TILE_EDGE
+                        )
+                    )
+                }
+            }
+            if (neighborsLower.isSouth()) {
+                val nHeight = knownWorld[coordinate.withRelativeNorthing(-1)].terrain?.height
+                if (nHeight != null && localHeight > nHeight) {
+                    contourLines.add(
+                        Vector4(
+                            0f,
+                            OFFSET_FROM_TILE_EDGE,
+                            TILE_WIDTH,
+                            OFFSET_FROM_TILE_EDGE
+                        )
+                    )
+                }
+            }
+            if (neighborsLower.isEast()) {
+                val nHeight = knownWorld[coordinate.withRelativeEasting(1)].terrain?.height
+                if (nHeight != null && localHeight > nHeight) {
+                    contourLines.add(
+                        Vector4(
+                            TILE_WIDTH - OFFSET_FROM_TILE_EDGE,
+                            TILE_HEIGHT,
+                            TILE_WIDTH - OFFSET_FROM_TILE_EDGE,
+                            0f
+                        )
+                    )
+                }
+            }
+            if (neighborsLower.isWest()) {
+                val nHeight = knownWorld[coordinate.withRelativeEasting(-1)].terrain?.height
+                if (nHeight != null && localHeight > nHeight) {
+                    contourLines.add(
+                        Vector4(
+                            OFFSET_FROM_TILE_EDGE,
+                            TILE_HEIGHT,
+                            OFFSET_FROM_TILE_EDGE,
+                            0f
+                        )
+                    )
+                }
+            }
+        }
+
         val drawableWorldTile = DrawableWorldTile(
-            knowTile,
-            NeighborBitmap.of(lowerNeighbors),
+            knownTile,
+            neighborsLower,
             NeighborBitmap.of(),
-            NeighborBitmap.of(neighborsRevealed)
+            NeighborBitmap.of(neighborsRevealed),
+            contourLines
         )
         if(drawableWorldTile.neighborsRevealed.all()) {
             log.info { "All neighbors of $coordinate revealed, caching drawable tile." }
@@ -438,5 +449,6 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
 
         private const val TILE_WIDTH = 16f
         private const val TILE_HEIGHT = 16f
+        private const val OFFSET_FROM_TILE_EDGE = 2.0f
     }
 }

@@ -1,5 +1,6 @@
 package de.gleex.pltcmd.game.application.actors.terrain.model
 
+import com.badlogic.gdx.math.Vector4
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownTerrain
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -13,7 +14,8 @@ data class DrawableWorldTile(
     val tile: KnownTerrain,
     val neighborsLower: NeighborBitmap,
     val neighborsSameTerrain: NeighborBitmap,
-    val neighborsRevealed: NeighborBitmap
+    val neighborsRevealed: NeighborBitmap,
+    val contourLines: List<Vector4>
 ) {
     /**
      * The coordinate of the underlying [KnownTerrain].
