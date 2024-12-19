@@ -187,7 +187,7 @@
 				<artifactId>kotlin-maven-plugin</artifactId>
 				<version>${kotlin.version}</version>
 				<configuration>
-					<languageVersion>${kotlin.version}</languageVersion>
+					<languageVersion>${kotlin.api.version}</languageVersion>
 					<apiVersion>${kotlin.api.version}</apiVersion>
 					<jvmTarget>${kotlin.compiler.jvmTarget}</jvmTarget>
 
