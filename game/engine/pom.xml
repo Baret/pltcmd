@@ -61,6 +61,13 @@
         <dependency>
             <groupId>org.hexworks.amethyst</groupId>
             <artifactId>amethyst.core-jvm</artifactId>
+            <exclusions>
+                <exclusion>
+                    <!-- amethyst comes with an old kotlin -->
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib-common</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
