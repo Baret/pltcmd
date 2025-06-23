@@ -30,7 +30,7 @@
 		<maven.compiler.target>21</maven.compiler.target>
 
 		<kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
-		<kotlin.version>2.1.21</kotlin.version>
+		<kotlin.version>2.2.0</kotlin.version>
 		<kotlin.api.version>2.1</kotlin.api.version>
 		<!-- version used by Kotest -->
 		<kotlinx.coroutines.version>1.10.2</kotlinx.coroutines.version>
