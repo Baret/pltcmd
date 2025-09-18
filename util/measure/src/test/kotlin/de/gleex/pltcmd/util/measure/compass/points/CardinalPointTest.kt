@@ -2,7 +2,7 @@ package de.gleex.pltcmd.util.measure.compass.points
 
 import de.gleex.pltcmd.util.measure.compass.bearing.Bearing
 import de.gleex.pltcmd.util.measure.compass.points.CardinalPoint.*
-import io.kotest.assertions.forEachAsClue
+import io.kotest.assertions.asClue
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
@@ -36,9 +36,11 @@ class CardinalPointTest : WordSpec({
                 row(248, 292, W),
                 row(293, 337, NW)
             ) { fromAngle, toAngle, expectedCardinal ->
-                (fromAngle..toAngle).forEachAsClue { angle ->
-                    CardinalPoint.fromBearing(Bearing(angle)) shouldBe expectedCardinal
-                    anglesToCheck.remove(angle)
+                (fromAngle..toAngle).forEach { angle ->
+                    angle.asClue {
+                        CardinalPoint.fromBearing(Bearing(angle)) shouldBe expectedCardinal
+                        anglesToCheck.remove(angle)
+                    }
                 }
             }
             anglesToCheck shouldBe emptySet()
