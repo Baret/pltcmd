@@ -37,7 +37,7 @@ class WorldMapGeneratorTest: WordSpec() {
             }
 
             val differentSeed = AtomicLong(seed + 1)
-            "always generate a different world with different seed".config(invocations = 10, threads = 1) {
+            "always generate a different world with different seed".config(invocations = 10, blockingTest = true) {
                 delay(500)
                 val generatedWorld3 = WorldMapGenerator(differentSeed.getAndIncrement(), width, height).generateWorld()
                 assertSoftly {
