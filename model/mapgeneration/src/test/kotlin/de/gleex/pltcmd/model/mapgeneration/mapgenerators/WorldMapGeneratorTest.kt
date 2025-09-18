@@ -14,7 +14,7 @@ import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicLong
 
 class WorldMapGeneratorTest: WordSpec() {
-    override fun isolationMode() = IsolationMode.InstancePerLeaf
+    override fun isolationMode() = IsolationMode.InstancePerRoot
 
     init {
         val seed = 22L

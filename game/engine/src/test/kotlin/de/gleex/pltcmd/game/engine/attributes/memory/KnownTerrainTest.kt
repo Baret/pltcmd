@@ -100,7 +100,7 @@ class KnownTerrainTest: WordSpec({
         }
     }
 }) {
-    override fun isolationMode() = IsolationMode.InstancePerLeaf
+    override fun isolationMode() = IsolationMode.InstancePerRoot
 }
 
 private fun KnownTerrain.shouldBeKnownTerrain() {

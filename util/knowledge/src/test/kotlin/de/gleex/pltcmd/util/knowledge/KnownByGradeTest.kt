@@ -60,5 +60,5 @@ class KnownByGradeTest : WordSpec({
         }
     }
 }) {
-    override fun isolationMode() = IsolationMode.InstancePerLeaf
+    override fun isolationMode() = IsolationMode.InstancePerRoot
 }

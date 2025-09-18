@@ -19,7 +19,7 @@ import io.kotest.matchers.shouldBe
 
 class KnownWorldTest : WordSpec() {
 
-    override fun isolationMode() = IsolationMode.InstancePerLeaf
+    override fun isolationMode() = IsolationMode.InstancePerRoot
 
     private val defaultTerrain = Terrain.of(MOUNTAIN, NINE)
 
