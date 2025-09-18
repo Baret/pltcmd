@@ -3,8 +3,8 @@ package de.gleex.pltcmd.model.world
 import de.gleex.pltcmd.model.world.Sector.Companion.TILE_COUNT
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.testhelpers.randomSectorAt
+import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.forEachAsClue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.row
@@ -26,10 +26,12 @@ class SectorTest : WordSpec() {
             val validEastings = validOrigin.eastingFromLeft until validOrigin.eastingFromLeft + TILE_COUNT
             val validNorthings = validOrigin.northingFromBottom until validOrigin.northingFromBottom + TILE_COUNT
             "have only tiles with easting in $validEastings and northing in $validNorthings" {
-                sector.forEachAsClue { coordinate ->
-                    assertSoftly {
-                        coordinate.eastingFromLeft shouldBeInRange validEastings
-                        coordinate.northingFromBottom shouldBeInRange validNorthings
+                sector.forEach { coordinate ->
+                    coordinate.asClue {
+                        assertSoftly {
+                            coordinate.eastingFromLeft shouldBeInRange validEastings
+                            coordinate.northingFromBottom shouldBeInRange validNorthings
+                        }
                     }
                 }
             }

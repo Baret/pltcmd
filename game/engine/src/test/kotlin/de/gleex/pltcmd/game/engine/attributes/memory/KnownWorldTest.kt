@@ -9,8 +9,8 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight.NINE
 import de.gleex.pltcmd.model.world.terrain.TerrainType.MOUNTAIN
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
+import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.forEachAsClue
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
@@ -204,13 +204,15 @@ class KnownWorldTest : WordSpec() {
         assertSoftly {
             originalWorld
                 .area
-                .forEachAsClue { coordinate ->
-                    val tile = WorldTile(coordinate, defaultTerrain)
-                    val expected = when (coordinate) {
-                        in revealedCoordinates -> tile.revealed()
-                        else                   -> tile.unrevealed()
+                .forEach { coordinate ->
+                    coordinate.asClue {
+                        val tile = WorldTile(coordinate, defaultTerrain)
+                        val expected = when (coordinate) {
+                            in revealedCoordinates -> tile.revealed()
+                            else                   -> tile.unrevealed()
+                        }
+                        this[coordinate] shouldBe expected
                     }
-                    this[coordinate] shouldBe expected
                 }
         }
     }
