@@ -10,7 +10,7 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldBeSorted
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.ints.shouldBeBetween
+import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.or
 import io.kotest.matchers.should
