@@ -16,6 +16,7 @@ import kotlin.time.toDuration
  *
  * @param inKph km/h (kilometre per hour)
  */
+@ConsistentCopyVisibility
 data class Speed internal constructor(val inKph: Double) : Comparable<Speed> {
     internal constructor(distance: Distance, time: Duration) : this(
         distance.inUnit(DistanceUnit.Kilometers) / time.toDouble(

@@ -9,6 +9,7 @@ import kotlin.math.roundToInt
  *
  * @see DistanceUnit
  */
+@ConsistentCopyVisibility
 data class Distance internal constructor(internal val valueInMeters: Double): Comparable<Distance> {
     internal constructor(valueInMeters: Int): this(valueInMeters.toDouble())
     constructor(value: Int, unit: DistanceUnit) : this(unit inMeters value)
