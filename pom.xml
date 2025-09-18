@@ -115,6 +115,12 @@
 			<version>${kotest.version}</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-table-jvm</artifactId>
+            <version>${kotest.version}</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>io.kotest.extensions</groupId>
 			<artifactId>kotest-assertions-arrow</artifactId>
