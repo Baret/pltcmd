@@ -1,6 +1,6 @@
 package de.gleex.pltcmd.util.measure.compass.bearing
 
-import io.kotest.assertions.forEachAsClue
+import io.kotest.assertions.asClue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
@@ -49,12 +49,14 @@ class BearingTest : WordSpec({
 
     "A bearing" should {
         "be due on exact cardinals" {
-            (0..359).forEachAsClue { angle ->
-                val actualBearing = angle.toBearing()
-                if (angle % 45 == 0) {
-                    actualBearing.isDue shouldBe true
-                } else {
-                    actualBearing.isDue shouldBe false
+            (0..359).forEach { angle ->
+                angle.asClue {
+                    val actualBearing = angle.toBearing()
+                    if (angle % 45 == 0) {
+                        actualBearing.isDue shouldBe true
+                    } else {
+                        actualBearing.isDue shouldBe false
+                    }
                 }
             }
         }

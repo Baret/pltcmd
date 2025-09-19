@@ -14,7 +14,7 @@ import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicLong
 
 class WorldMapGeneratorTest: WordSpec() {
-    override fun isolationMode() = IsolationMode.InstancePerLeaf
+    override fun isolationMode() = IsolationMode.InstancePerRoot
 
     init {
         val seed = 22L
@@ -37,7 +37,7 @@ class WorldMapGeneratorTest: WordSpec() {
             }
 
             val differentSeed = AtomicLong(seed + 1)
-            "always generate a different world with different seed".config(invocations = 10, threads = 1) {
+            "always generate a different world with different seed".config(invocations = 10, blockingTest = true) {
                 delay(500)
                 val generatedWorld3 = WorldMapGenerator(differentSeed.getAndIncrement(), width, height).generateWorld()
                 assertSoftly {

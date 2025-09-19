@@ -43,7 +43,7 @@
 		<kotlinx-collections-immutable.version>0.4.0</kotlinx-collections-immutable.version>
 
 		<jupiter.version>5.13.4</jupiter.version>
-		<kotest.version>5.9.1</kotest.version>
+		<kotest.version>6.0.3</kotest.version>
 	</properties>
 
 	<dependencies>
@@ -88,13 +88,11 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>${jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>${jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -115,6 +113,12 @@
 			<version>${kotest.version}</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-table-jvm</artifactId>
+            <version>${kotest.version}</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>io.kotest.extensions</groupId>
 			<artifactId>kotest-assertions-arrow</artifactId>
@@ -160,6 +164,13 @@
 				<artifactId>kotlinx-collections-immutable-jvm</artifactId>
 				<version>${kotlinx-collections-immutable.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 			<dependency>
 				<groupId>org.hexworks.zircon</groupId>
 				<artifactId>zircon.core-jvm</artifactId>

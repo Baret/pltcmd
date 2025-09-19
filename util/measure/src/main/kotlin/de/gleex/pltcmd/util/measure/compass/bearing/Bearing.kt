@@ -5,6 +5,7 @@ import de.gleex.pltcmd.util.measure.compass.points.CardinalPoint
 /**
  * A bearing represents an absolute bearing between 0 and 359 degrees.
  */
+@ConsistentCopyVisibility
 data class Bearing internal constructor(
     /**
      * The angle of this bearing as a value between 0 and 359.
