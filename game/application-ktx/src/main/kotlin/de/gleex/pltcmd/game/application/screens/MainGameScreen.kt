@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.ColorAction
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.utils.viewport.StretchViewport
+import com.badlogic.gdx.utils.viewport.FillViewport
 import com.kotcrab.vis.ui.VisUI
 import de.gleex.pltcmd.game.application.actors.WorldMapRendererActor
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
@@ -26,7 +26,7 @@ private val log = KotlinLogging.logger { }
  * This screen is the main interface for the player. It mainly renders the given [WorldMap].
  */
 class MainGameScreen(private val knownWorld: KnownWorld) : KtxScreen {
-    private val stage = Stage(StretchViewport(1100f, 1000f))
+    private val stage = Stage(FillViewport(1100f, 1000f))
     override fun show() {
         Gdx.input.inputProcessor = stage
         // set up actors
