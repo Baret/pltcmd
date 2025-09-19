@@ -54,7 +54,6 @@ class NeighborBitmap private constructor(private val bitmap: UByte) {
         return (bitmap and Direction.NORTH_WEST.byteValue) != ZERO
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun toString(): String {
         return "NeighborBitmap(bitmap=${bitmap.toInt().toString(2).padStart(8, '0')})"
     }
