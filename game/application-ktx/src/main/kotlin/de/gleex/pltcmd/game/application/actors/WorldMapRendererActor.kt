@@ -21,9 +21,11 @@ import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.model.world.coordinate.fillCircle
 import de.gleex.pltcmd.model.world.sectorOrigin
+import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import de.gleex.pltcmd.util.measure.distance.Distance
 import de.gleex.pltcmd.util.measure.distance.DistanceUnit.Meters
+import ktx.graphics.copy
 import mu.KotlinLogging
 import kotlin.math.floor
 import kotlin.properties.Delegates
@@ -126,7 +128,25 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
         tile: DrawableWorldTile,
         drawPos: Vector2
     ) {
-        val terrainTypeColor: Color? = tile.terrain?.type?.let { terrainTypeColor[it] }
+        val heightFactor = when (tile.terrain?.height) {
+            TerrainHeight.ONE   -> 0.28f
+            TerrainHeight.TWO   -> 0.36f
+            TerrainHeight.THREE -> 0.44f
+            TerrainHeight.FOUR  -> 0.52f
+            TerrainHeight.FIVE  -> 0.60f
+            TerrainHeight.SIX   -> 0.68f
+            TerrainHeight.SEVEN -> 0.76f
+            TerrainHeight.EIGHT -> 0.84f
+            TerrainHeight.NINE  -> 0.92f
+            TerrainHeight.TEN   -> 1.0f
+            null                -> 1.0f
+        }
+        val terrainTypeColor: Color? = tile
+            .terrain
+            ?.type
+            ?.let { terrainTypeColor[it] }
+            ?.copy()
+            ?.mul(heightFactor)
         if (terrainTypeColor != null) {
             drawWithType(ShapeRenderer.ShapeType.Filled) {
                 color = terrainTypeColor
