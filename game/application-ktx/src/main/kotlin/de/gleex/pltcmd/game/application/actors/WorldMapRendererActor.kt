@@ -218,14 +218,18 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                     Color.BLACK
                 }
                 val bottomRight = Vector2(drawPos).add(TILE_WIDTH, 0f)
+                if (currentCoordinate.northingFromBottom == currentCoordinate.sectorOrigin.northingFromBottom) {
                 line(drawPos, bottomRight)
+                    }
                 color = if (currentCoordinate.eastingFromLeft == currentCoordinate.sectorOrigin.eastingFromLeft) {
                     Color.RED
                 } else {
                     Color.BLACK
                 }
                 val topLeft = Vector2(drawPos).add(0f, TILE_HEIGHT)
-                line(drawPos, topLeft)
+                if (currentCoordinate.eastingFromLeft == currentCoordinate.sectorOrigin.eastingFromLeft) {
+                    line(drawPos, topLeft)
+                }
             }
         }
     }
