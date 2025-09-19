@@ -160,7 +160,7 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
         drawPos: Vector2
     ) {
         tile.terrain?.height?.let { localHeight ->
-            val contourLineColor = if(localHeight.value % 2 == 0) { Color.RED } else { Color.ORANGE }
+            val contourLineColor = if(localHeight.value % 2 == 0) { Color(.25f, .20f, .20f, 1f) } else { Color(.35f, .30f, .30f, 1f) }
             if (tile.neighborsLower.all()) {
                 drawWithType(ShapeRenderer.ShapeType.Line) {
                     color = contourLineColor
