@@ -418,39 +418,20 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
             }
         }
         val highlightCoordinateListener = object : InputListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                return if (button == Buttons.RIGHT) {
+            override fun mouseMoved(event: InputEvent?, x: Float, y: Float): Boolean {
                     val coordinateAtActorPosition = coordinateAtActorPosition(x, y)
                     val drawPositionOfCoordinate = drawPositionOf(coordinateAtActorPosition)
-                    val clickPositionOnStage = localToStageCoordinates(Vector2(x, y))
-                    log.debug { "My origin: $originX | $originY on stage ${localToStageCoordinates(Vector2(originX, originY))}" }
-                    log.debug { "You RIGHT clicked at $x | $y" }
-                    log.debug { "\tlocalToStageCoordinates=$clickPositionOnStage" }
-                    log.debug { "\tcoordinateAtActorPosition=$coordinateAtActorPosition" }
-                    log.debug { "\tdrawPositionOfCoordinate=$drawPositionOfCoordinate" }
-                    val currentOriginCoordinate = coordinateAtActorPosition - bottomLeftCoordinate
-                    log.debug { "\t\tcurrentOriginCoordinate = $coordinateAtActorPosition - $bottomLeftCoordinate = $currentOriginCoordinate" }
-                    log.debug { "\t\t TILE_WIDTH * TILE_HEIGHT = $TILE_WIDTH * $TILE_HEIGHT meters" }
-                    val easting = currentOriginCoordinate.eastingFromLeft.toFloat()
-                    val worldPosX: Float = easting * TILE_WIDTH
-                    val northing = currentOriginCoordinate.northingFromBottom.toFloat()
-                    val worldPosY: Float = northing * TILE_HEIGHT
-                    log.debug { "\t\teasting $easting = $worldPosX" }
-                    log.debug { "\t\tnorthing $northing = $worldPosY" }
                     if(coordinateHighlightLabel.x == x && coordinateHighlightLabel.y == y) {
                         coordinateHighlightLabel.isVisible = false
                     } else {
                         val labelPosition = localToStageCoordinates(drawPositionOfCoordinate)
-                        val labelText = "$coordinateAtActorPosition${knownWorld[coordinateAtActorPosition].terrain?.height?.let{", $it"} ?: ""}"
+                        val labelText = "$coordinateAtActorPosition${knownWorld[coordinateAtActorPosition].terrain?.height?.let{", ${it.value}"} ?: ""}"
                         coordinateHighlightLabel.x = labelPosition.x
                         coordinateHighlightLabel.y = labelPosition.y
                         coordinateHighlightLabel.isVisible = true
                         coordinateHighlightLabel.setText(labelText)
                     }
-                    true
-                } else {
-                    false
-                }
+                    return true
             }
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
