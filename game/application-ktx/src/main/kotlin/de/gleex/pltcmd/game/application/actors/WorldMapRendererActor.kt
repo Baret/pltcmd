@@ -376,7 +376,11 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                 return if (button == Buttons.LEFT) {
                     val coordinateAtActorPosition = coordinateAtActorPosition(x, y)
                     log.debug { "You clicked at $x | $y which results in coordinate $coordinateAtActorPosition" }
-                    knownWorld.reveal(coordinateAtActorPosition.fillCircle(Distance(250, Meters)).area { true })
+                    if(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+                        knownWorld.reveal(knownWorld.origin.sectorAt(coordinateAtActorPosition))
+                    } else {
+                        knownWorld.reveal(coordinateAtActorPosition.fillCircle(Distance(250, Meters)).area { true })
+                    }
                     true
                 } else {
                     false
