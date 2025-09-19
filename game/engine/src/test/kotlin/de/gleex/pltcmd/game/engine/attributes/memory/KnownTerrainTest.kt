@@ -6,7 +6,6 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import io.kotest.assertions.assertSoftly
-import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -17,21 +16,25 @@ class KnownTerrainTest: WordSpec({
         val coordinate = Coordinate.zero
         val tile = WorldTile(coordinate, Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
         val otherTile = WorldTile(coordinate.movedBy(1, 1), Terrain.of(TerrainType.GRASSLAND, TerrainHeight.EIGHT))
-        val unknownByConstructor = KnownTerrain(tile)
-        val unknownByExtension = tile.unrevealed()
-
-        val knownByConstructor = KnownTerrain(tile, true)
-        val knownByExtension = tile.revealed()
 
         "have null fields when unrevealed" {
+            val unknownByConstructor = KnownTerrain(tile)
+            val unknownByExtension = tile.unrevealed()
             unknownByConstructor.shouldBeUnknownTerrain()
             unknownByExtension.shouldBeUnknownTerrain()
         }
         "have the correct terrain when revealed" {
+            val knownByConstructor = KnownTerrain(tile, true)
+            val knownByExtension = tile.revealed()
             knownByConstructor.shouldBeKnownTerrain()
             knownByExtension.shouldBeKnownTerrain()
         }
         "equal correctly" {
+            val unknownByConstructor = KnownTerrain(tile)
+            val unknownByExtension = tile.unrevealed()
+            val knownByConstructor = KnownTerrain(tile, true)
+            val knownByExtension = tile.revealed()
+
             otherTile shouldNotBe tile
 
             unknownByConstructor shouldNotBe knownByConstructor
@@ -56,6 +59,10 @@ class KnownTerrainTest: WordSpec({
             terrain.hashCode() shouldNotBe oldHash
         }
         "merge with less knowledge to stays as it is" {
+            val unknownByConstructor = KnownTerrain(tile)
+            val unknownByExtension = tile.unrevealed()
+            val knownByExtension = tile.revealed()
+
             // the typealias erases some generic type information so it cannot be used for merging
             //knownByAlias.mergeWith(unknownByAlias)
             //knownByAlias.mergeWith(unknownByExtension)
@@ -72,6 +79,8 @@ class KnownTerrainTest: WordSpec({
             unknownByExtension.shouldBeUnknownTerrain()
         }
         "merge with more knowledge by alias to increases it" {
+            val unknownByExtension = tile.unrevealed()
+            val knownByConstructor = KnownTerrain(tile, true)
             // the typealias erases some generic type information so it cannot be used for merging
             //unknownByAlias.mergeWith(knownByAlias)
             //unknownByAlias.mergeWith(knownByExtension)
@@ -81,6 +90,9 @@ class KnownTerrainTest: WordSpec({
             knownByConstructor.shouldBeKnownTerrain()
         }
         "merge with more knowledge by extension to increases it" {
+            val unknownByExtension = tile.unrevealed()
+            val knownByConstructor = KnownTerrain(tile, true)
+            val knownByExtension = tile.revealed()
             // the typealias erases some generic type information so it cannot be used for merging
             // TODO: Fix these tests!
             //unknownByAlias.mergeWith(knownByAlias)
@@ -91,6 +103,7 @@ class KnownTerrainTest: WordSpec({
             knownByConstructor.shouldBeKnownTerrain()
         }
         "not merge with other knowledge" {
+            val unknownByExtension = tile.unrevealed()
             val otherKnown = otherTile.revealed()
             unknownByExtension.shouldBeUnknownTerrain()
 
@@ -99,9 +112,7 @@ class KnownTerrainTest: WordSpec({
             unknownByExtension.shouldBeUnknownTerrain()
         }
     }
-}) {
-    override fun isolationMode() = IsolationMode.InstancePerLeaf
-}
+})
 
 private fun KnownTerrain.shouldBeKnownTerrain() {
     assertSoftly(this) {

@@ -1,8 +1,8 @@
 package de.gleex.pltcmd.game.engine.systems.behaviours
 
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
-import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
+import org.junit.jupiter.api.fail
 
 class LookAroundTest : StringSpec({
 
@@ -65,7 +65,7 @@ fun testHeight(x: Int): TerrainHeight {
         4 -> 4
         5 -> 3
         6 -> 2
-        else -> fail("$x not modulo 6!?")
+        else -> fail {"$x not modulo 6!?" }
     }
     return TerrainHeight.ofValue(height)!!
 }

@@ -9,17 +9,14 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight.NINE
 import de.gleex.pltcmd.model.world.terrain.TerrainType.MOUNTAIN
 import de.gleex.pltcmd.model.world.testhelpers.sectorAtWithTerrain
+import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.forEachAsClue
-import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 
 class KnownWorldTest : WordSpec() {
-
-    override fun isolationMode() = IsolationMode.InstancePerLeaf
 
     private val defaultTerrain = Terrain.of(MOUNTAIN, NINE)
 
@@ -29,15 +26,15 @@ class KnownWorldTest : WordSpec() {
         ) { defaultTerrain }
     )
 
-    private val knownWorld = KnownWorld(originalWorld)
-
     init {
         "A KnownWorld" should {
             "initially be completely unknown" {
+                val knownWorld = KnownWorld(originalWorld)
                 knownWorld.shouldHaveRevealed(/* none */)
             }
 
             "reveal more and more" {
+                val knownWorld = KnownWorld(originalWorld)
                 knownWorld.shouldHaveRevealed()
 
                 val firstCoordinate = Coordinate(10, 10)
@@ -51,10 +48,10 @@ class KnownWorldTest : WordSpec() {
                 val thirdCoordinate = Coordinate(42, 13)
                 knownWorld reveal thirdCoordinate
                 knownWorld.shouldHaveRevealed(firstCoordinate, secondCoordinate, thirdCoordinate)
-
             }
 
             "not reveal coordinates outside of it" {
+                val knownWorld = KnownWorld(originalWorld)
                 for (easting in -1..50) {
                     knownWorld reveal Coordinate(easting, -1)
                     knownWorld reveal Coordinate(easting, 51)
@@ -67,6 +64,7 @@ class KnownWorldTest : WordSpec() {
             }
 
             "reveal areas correctly" {
+                val knownWorld = KnownWorld(originalWorld)
                 val firstArea = CoordinateRectangle(
                     bottomLeftCoordinate = Coordinate.zero,
                     width = 2,
@@ -93,6 +91,7 @@ class KnownWorldTest : WordSpec() {
             }
 
             "not change when a coordinate gets revealed multiple times" {
+                val knownWorld = KnownWorld(originalWorld)
                 val coordinate = Coordinate(24, 44)
                 knownWorld reveal coordinate
                 knownWorld.shouldHaveRevealed(coordinate)
@@ -103,6 +102,7 @@ class KnownWorldTest : WordSpec() {
             }
 
             "merge correctly" {
+                val knownWorld = KnownWorld(originalWorld)
                 val otherKnownWorld = KnownWorld(originalWorld)
 
                 val coordinate1 = Coordinate(14, 14)
@@ -151,6 +151,7 @@ class KnownWorldTest : WordSpec() {
             }
 
             "find unknown areas correctly" {
+                val knownWorld = KnownWorld(originalWorld)
                 val area = originalWorld.area
                 val toReveal = Coordinate(23, 42)
                 val smallArea = CoordinateRectangle(
@@ -159,27 +160,27 @@ class KnownWorldTest : WordSpec() {
                     height = 2
                 )
 
-                knownWorld.getUnknownIn(area) shouldBeUnknown area
+                assertUnknownArea(knownWorld, knownWorld.getUnknownIn(area), area)
 
                 knownWorld.reveal(toReveal)
 
-                knownWorld.getUnknownIn(area) shouldBeUnknown area.filter { it != toReveal }
-                knownWorld.getUnknownIn(smallArea) shouldBeUnknown CoordinateArea(
+                assertUnknownArea(knownWorld, knownWorld.getUnknownIn(area), area.filter { it != toReveal })
+                assertUnknownArea(knownWorld, knownWorld.getUnknownIn(smallArea), CoordinateArea(
                     sortedSetOf(
                         Coordinate(23, 43),
                         Coordinate(24, 42),
                         Coordinate(24, 43)
                     )
-                )
+                ))
 
                 knownWorld.reveal(Coordinate(24, 43))
 
-                knownWorld.getUnknownIn(smallArea) shouldBeUnknown CoordinateArea(
+                assertUnknownArea(knownWorld, knownWorld.getUnknownIn(smallArea), CoordinateArea(
                     sortedSetOf(
                         Coordinate(23, 43),
                         Coordinate(24, 42)
                     )
-                )
+                ))
 
                 knownWorld.reveal(area)
 
@@ -204,24 +205,26 @@ class KnownWorldTest : WordSpec() {
         assertSoftly {
             originalWorld
                 .area
-                .forEachAsClue { coordinate ->
-                    val tile = WorldTile(coordinate, defaultTerrain)
-                    val expected = when (coordinate) {
-                        in revealedCoordinates -> tile.revealed()
-                        else                   -> tile.unrevealed()
+                .forEach { coordinate ->
+                    coordinate.asClue {
+                        val tile = WorldTile(coordinate, defaultTerrain)
+                        val expected = when (coordinate) {
+                            in revealedCoordinates -> tile.revealed()
+                            else                   -> tile.unrevealed()
+                        }
+                        this[coordinate] shouldBe expected
                     }
-                    this[coordinate] shouldBe expected
                 }
         }
     }
 
     /**
-     * Asserts that this area is the same as [area] and that all coordinates in it are unknown in [knownWorld].
+     * Asserts that this area is the same as [expectedArea] and that all coordinates in it are unknown in [knownWorld].
      */
-    private infix fun CoordinateArea.shouldBeUnknown(area: CoordinateArea) {
+    private fun assertUnknownArea(knownWorld: KnownWorld, actualArea: CoordinateArea, expectedArea: CoordinateArea) {
         assertSoftly {
-            this.toSet() shouldContainExactly area.toSet()
-            this.map { knownWorld[it] }
+            actualArea.toSet() shouldContainExactly expectedArea.toSet()
+            actualArea.map { knownWorld[it] }
                 .forAll { it.revealed shouldBe false }
         }
     }

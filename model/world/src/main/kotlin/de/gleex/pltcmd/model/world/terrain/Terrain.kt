@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
 @Serializable
+@ConsistentCopyVisibility
 data class Terrain private constructor(val type: TerrainType, val height: TerrainHeight) {
 
     companion object {

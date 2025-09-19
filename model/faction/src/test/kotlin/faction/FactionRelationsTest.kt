@@ -6,7 +6,7 @@ import de.gleex.pltcmd.model.faction.FactionRelations
 import de.gleex.pltcmd.model.faction.graph.AffiliationEdge
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.core.spec.style.scopes.FreeSpecContainerContext
+import io.kotest.core.spec.style.scopes.FreeSpecContainerScope
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import org.jgrapht.Graph
@@ -95,7 +95,7 @@ class FactionRelationsTest : FreeSpec({
     }
 })
 
-private suspend fun FreeSpecContainerContext.checkCompleteness(
+private suspend fun FreeSpecContainerScope.checkCompleteness(
     numberOfFactions: Int,
     graph: Graph<Faction, AffiliationEdge>
 ) {

@@ -8,7 +8,7 @@ import de.gleex.pltcmd.model.world.terrain.Terrain
 import de.gleex.pltcmd.model.world.terrain.TerrainHeight
 import de.gleex.pltcmd.model.world.terrain.TerrainType
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.scopes.WordSpecShouldContainerContext
+import io.kotest.core.spec.style.scopes.WordSpecShouldContainerScope
 import io.kotest.matchers.shouldBe
 
 class EmptyRectangleAreaFinderTest : WordSpec() {
@@ -42,7 +42,7 @@ class EmptyRectangleAreaFinderTest : WordSpec() {
     }
 }
 
-private suspend fun WordSpecShouldContainerContext.testFilledOrigin(
+private suspend fun WordSpecShouldContainerScope.testFilledOrigin(
     underTest: EmptyRectangleAreaFinder,
     testWorld: MutableWorld,
     origin: Coordinate

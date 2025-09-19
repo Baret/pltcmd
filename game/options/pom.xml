@@ -21,6 +21,13 @@
         <dependency>
             <groupId>org.hexworks.zircon</groupId>
             <artifactId>zircon.core-jvm</artifactId>
+            <exclusions>
+                <exclusion>
+                    <!-- zircon comes with an old kotlin -->
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib-common</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

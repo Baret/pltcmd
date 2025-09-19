@@ -17,6 +17,7 @@ import kotlin.math.*
  * It is like the numerical location of the Military Grid Reference System (see https://en.wikipedia.org/wiki/Military_Grid_Reference_System#Numerical_location).
  */
 @Serializable
+@ConsistentCopyVisibility
 data class Coordinate private constructor(val eastingFromLeft: Int, val northingFromBottom: Int) :
     Comparable<Coordinate> {
 
