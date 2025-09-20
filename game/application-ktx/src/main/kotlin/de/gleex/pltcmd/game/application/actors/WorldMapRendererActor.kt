@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.kotcrab.vis.ui.VisUI
 import de.gleex.pltcmd.game.application.actors.terrain.model.DrawableWorldTile
 import de.gleex.pltcmd.game.application.actors.terrain.model.NeighborBitmap
+import de.gleex.pltcmd.game.application.drawing.drawWithType
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownTerrain
 import de.gleex.pltcmd.game.engine.attributes.memory.KnownWorld
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
@@ -232,15 +233,6 @@ class WorldMapRendererActor(private val knownWorld: KnownWorld) : Group() {
                 }
             }
         }
-    }
-
-    private inline fun ShapeRenderer.drawWithType(
-        type: ShapeRenderer.ShapeType,
-        crossinline drawInstructions: ShapeRenderer.() -> Unit
-    ) {
-        begin(type)
-        drawInstructions()
-        end()
     }
 
     private fun KnownWorld.drawableTileFor(coordinate: Coordinate): DrawableWorldTile {

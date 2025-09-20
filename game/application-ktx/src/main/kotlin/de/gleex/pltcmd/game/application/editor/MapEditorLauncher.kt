@@ -10,7 +10,7 @@ fun main() {
         return
     }
     Lwjgl3Application(PltcmdMapEditor(), Lwjgl3ApplicationConfiguration().apply {
-        setTitle("pltcmd")
+        setTitle("pltcmd editor")
         setWindowedMode(1800, 990)
         setWindowIcon(*(arrayOf(128, 64, 32, 16).map { "libgdx$it.png" }.toTypedArray()))
     })
