@@ -10,8 +10,11 @@ import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.measure.distance.DistanceUnit
+import mu.KotlinLogging
 
-class   HeightRenderActor(private val coordinate: Coordinate, private val world: MutableWorld) : Actor() {
+private val log = KotlinLogging.logger {  }
+
+class  HeightRenderActor(private val coordinate: Coordinate, private val world: MutableWorld) : Actor() {
 
     private val renderer = ShapeRenderer()
     private val edgeLength = WorldTile.edgeLength.inUnit(DistanceUnit.Meters).toFloat()
@@ -22,6 +25,7 @@ class   HeightRenderActor(private val coordinate: Coordinate, private val world:
         setPosition(x, y)
         width = edgeLength
         height = edgeLength
+        log.info { "$coordinate | initialized actor at $x | $y with size $width * $height" }
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
@@ -30,7 +34,7 @@ class   HeightRenderActor(private val coordinate: Coordinate, private val world:
         renderer.transformMatrix = batch?.transformMatrix
         renderer.projectionMatrix = batch?.projectionMatrix
         renderer.drawWithType(Filled) {
-            val color = if(coordinate.eastingFromLeft % 2 == 0) {
+            color = if(coordinate.eastingFromLeft % 2 == 0) {
                 if(coordinate.northingFromBottom % 2 == 0) {
                     Color.BLACK
                 } else {
