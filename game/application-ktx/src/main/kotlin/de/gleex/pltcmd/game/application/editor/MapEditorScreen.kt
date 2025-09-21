@@ -14,24 +14,23 @@ import de.gleex.pltcmd.util.measure.distance.DistanceUnit
 import ktx.app.KtxScreen
 import mu.KotlinLogging
 
-private val log = KotlinLogging.logger {  }
+private val log = KotlinLogging.logger { }
 
-class MapEditorScreen: KtxScreen {
+class MapEditorScreen : KtxScreen {
 
     private val editableWorld = MutableWorld(worldSizeWidthInTiles = 300, worldSizeHeightInTiles = 300)
 
-    private lateinit var camera: Camera
-    private lateinit var viewport: Viewport
     private lateinit var stage: Stage
 
     override fun show() {
         log.info { "Creating camera, viewport and stage" }
         // camera = screen size
-        camera = OrthographicCamera(Gdx.graphics.width.toFloat(),Gdx.graphics.height.toFloat())
+        val camera: Camera = OrthographicCamera(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
 
         val sectorEdgeLength = (Sector.TILE_COUNT * WorldTile.edgeLength.inUnit(DistanceUnit.Meters)).toFloat()
         // viewport = world size
-        viewport = ExtendViewport(sectorEdgeLength, sectorEdgeLength, camera)
+        log.info { "Viewport world size = $sectorEdgeLength" }
+        val viewport: Viewport = ExtendViewport(sectorEdgeLength, sectorEdgeLength, camera)
 
         stage = Stage(viewport)
 
@@ -39,7 +38,8 @@ class MapEditorScreen: KtxScreen {
         Gdx.input.inputProcessor = stage
 
         log.info { "Creating coordinate rectangle" }
-        val coordinateRectangleSequence = editableWorld.bottomLeftCoordinate..editableWorld.bottomLeftCoordinate.movedBy(10,10)
+        val coordinateRectangleSequence =
+            editableWorld.bottomLeftCoordinate..editableWorld.bottomLeftCoordinate.movedBy(10, 10)
         log.info { "Starting to add actors" }
         coordinateRectangleSequence.forEach { coordinate ->
             log.info { "$coordinate | Adding height render actor" }
@@ -56,6 +56,10 @@ class MapEditorScreen: KtxScreen {
     }
 
     override fun resize(width: Int, height: Int) {
-        viewport.update(width, height)
+        stage.viewport.update(width, height)
+        stage.camera.viewportWidth = Gdx.graphics.width.toFloat()
+        stage.camera.viewportHeight = Gdx.graphics.height.toFloat()
+        stage.camera.position.set(stage.camera.viewportWidth / 2f, stage.camera.viewportHeight / 2f, 0f)
+        stage.camera.update()
     }
 }
