@@ -41,10 +41,11 @@ class MapEditorScreen : KtxScreen {
         val coordinateRectangleSequence =
             editableWorld.bottomLeftCoordinate..editableWorld.bottomLeftCoordinate.movedBy(10, 10)
         log.info { "Starting to add actors" }
-        coordinateRectangleSequence.forEach { coordinate ->
-            log.info { "$coordinate | Adding height render actor" }
-            stage.addActor(HeightRenderActor(coordinate, editableWorld))
-        }
+        coordinateRectangleSequence
+            .forEach { coordinate ->
+                log.info { "$coordinate | Adding height render actor" }
+                stage.addActor(HeightRenderActor(coordinate, editableWorld))
+            }
         camera.update()
     }
 
