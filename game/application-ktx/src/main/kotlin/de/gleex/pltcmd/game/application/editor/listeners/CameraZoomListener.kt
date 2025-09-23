@@ -10,10 +10,10 @@ private val log = KotlinLogging.logger {  }
 class CameraZoomListener(private val camera: OrthographicCamera) : InputListener() {
     override fun scrolled(event: InputEvent?, x: Float, y: Float, amountX: Float, amountY: Float): Boolean {
         return if (amountY != 0f) {
-            val zoomAmount = amountY * zoomAmountFactor
+            val zoomAmount = amountY * ZOOM_AMOUNT_SCALE
             log.info { "Scrolling from ${camera.zoom} by $zoomAmount" }
             camera.zoom += zoomAmount
-            camera.zoom = camera.zoom.coerceIn(0.2f, 2.0f)
+            camera.zoom = camera.zoom.coerceIn(MIN_ZOOM, MAX_ZOOM)
             log.info { "Zoomed to ${camera.zoom}" }
             true
         } else {
@@ -22,6 +22,8 @@ class CameraZoomListener(private val camera: OrthographicCamera) : InputListener
     }
 
     companion object {
-        private val zoomAmountFactor = 0.1f
+        private const val ZOOM_AMOUNT_SCALE = 0.1f
+        private const val MIN_ZOOM = 0.2f
+        private const val MAX_ZOOM = 2.0f
     }
 }
