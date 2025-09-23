@@ -1,18 +1,21 @@
 package de.gleex.pltcmd.game.application.editor
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
+import de.gleex.pltcmd.game.application.editor.actions.MoveCameraAction
 import de.gleex.pltcmd.game.application.editor.actors.HeightRenderActor
+import de.gleex.pltcmd.game.application.editor.listeners.CameraZoomListener
+import de.gleex.pltcmd.game.application.editor.listeners.LogIWasRenderedListener
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.util.measure.distance.DistanceUnit
 import ktx.app.KtxScreen
 import mu.KotlinLogging
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 private val log = KotlinLogging.logger { }
 
@@ -25,7 +28,7 @@ class MapEditorScreen : KtxScreen {
     override fun show() {
         log.info { "Creating camera, viewport and stage" }
         // camera = screen size
-        val camera: Camera = OrthographicCamera(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+        val camera: OrthographicCamera = OrthographicCamera(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
 
         val sectorEdgeLength = (Sector.TILE_COUNT * WorldTile.edgeLength.inUnit(DistanceUnit.Meters)).toFloat()
         // viewport = world size
@@ -36,6 +39,7 @@ class MapEditorScreen : KtxScreen {
 
         log.info { "Setting input processor" }
         Gdx.input.inputProcessor = stage
+        stage.registerListeners()
 
         log.info { "Creating coordinate rectangle" }
         val coordinateRectangleSequence =
@@ -49,11 +53,13 @@ class MapEditorScreen : KtxScreen {
         camera.update()
     }
 
+    @OptIn(ExperimentalAtomicApi::class)
     override fun render(delta: Float) {
         stage.batch.projectionMatrix = stage.camera.combined
         stage.camera.update()
         stage.act(delta)
         stage.draw()
+        LogIWasRenderedListener.logNow.store(false)
     }
 
     override fun resize(width: Int, height: Int) {
@@ -62,5 +68,14 @@ class MapEditorScreen : KtxScreen {
         stage.camera.viewportHeight = Gdx.graphics.height.toFloat()
         stage.camera.position.set(stage.camera.viewportWidth / 2f, stage.camera.viewportHeight / 2f, 0f)
         stage.camera.update()
+    }
+
+    private fun Stage.registerListeners() {
+        addListener(LogIWasRenderedListener())
+        val currentCamera = camera
+        if(currentCamera is OrthographicCamera) {
+            addListener(CameraZoomListener(currentCamera))
+            addAction(MoveCameraAction(currentCamera))
+        }
     }
 }
