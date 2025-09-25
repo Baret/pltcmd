@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
-import de.gleex.pltcmd.game.application.editor.actions.MoveCameraAction
+import de.gleex.pltcmd.game.application.editor.actions.MoveCameraActor
 import de.gleex.pltcmd.game.application.editor.actors.HeightRenderActor
 import de.gleex.pltcmd.game.application.editor.listeners.CameraZoomListener
 import de.gleex.pltcmd.game.application.editor.listeners.LogIWasRenderedListener
@@ -75,7 +75,7 @@ class MapEditorScreen : KtxScreen {
         val currentCamera = camera
         if(currentCamera is OrthographicCamera) {
             addListener(CameraZoomListener(currentCamera))
-            addAction(MoveCameraAction(currentCamera))
+            addActor(MoveCameraActor(currentCamera))
         }
     }
 }
