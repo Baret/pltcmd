@@ -23,7 +23,7 @@ class MoveCameraActor(private val camera: OrthographicCamera) : Actor() {
     }
 
     companion object {
-        private const val scrollAmount = 60f
+        private const val scrollAmount = 200f
 
         const val KEY_SCROLL_LEFT = Keys.A
         const val KEY_SCROLL_RIGHT = Keys.D
