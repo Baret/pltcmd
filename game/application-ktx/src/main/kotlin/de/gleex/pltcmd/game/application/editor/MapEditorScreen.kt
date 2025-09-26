@@ -7,8 +7,8 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import de.gleex.pltcmd.game.application.editor.actions.MoveCameraActor
 import de.gleex.pltcmd.game.application.editor.actors.HeightRenderActor
+import de.gleex.pltcmd.game.application.editor.actors.LogIWasRendered
 import de.gleex.pltcmd.game.application.editor.listeners.CameraZoomListener
-import de.gleex.pltcmd.game.application.editor.listeners.LogIWasRenderedListener
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldTile
@@ -50,6 +50,7 @@ class MapEditorScreen : KtxScreen {
                 log.info { "$coordinate | Adding height render actor" }
                 stage.addActor(HeightRenderActor(coordinate, editableWorld))
             }
+        stage.addActor(LogIWasRendered)
         camera.update()
     }
 
@@ -59,7 +60,7 @@ class MapEditorScreen : KtxScreen {
         stage.camera.update()
         stage.act(delta)
         stage.draw()
-        LogIWasRenderedListener.logNow.store(false)
+        LogIWasRendered.logNow.store(false)
     }
 
     override fun resize(width: Int, height: Int) {
@@ -71,7 +72,7 @@ class MapEditorScreen : KtxScreen {
     }
 
     private fun Stage.registerListeners() {
-        addListener(LogIWasRenderedListener())
+//        addListener(LogIWasRenderedListener())
         val currentCamera = camera
         if(currentCamera is OrthographicCamera) {
             addListener(CameraZoomListener(currentCamera))

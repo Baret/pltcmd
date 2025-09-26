@@ -11,6 +11,7 @@ import de.gleex.pltcmd.model.world.WorldTile
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
 import de.gleex.pltcmd.util.measure.distance.DistanceUnit
 import mu.KotlinLogging
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 private val log = KotlinLogging.logger {  }
 
@@ -28,7 +29,11 @@ class  HeightRenderActor(private val coordinate: Coordinate, private val world: 
         log.info { "$coordinate | initialized actor at $x | $y with size $width * $height" }
     }
 
+    @OptIn(ExperimentalAtomicApi::class)
     override fun draw(batch: Batch?, parentAlpha: Float) {
+        if(LogIWasRendered.logNow.load()) {
+            log.info { " = = = Rendering now $coordinate" }
+        }
         batch?.end()
 
         renderer.transformMatrix = batch?.transformMatrix
