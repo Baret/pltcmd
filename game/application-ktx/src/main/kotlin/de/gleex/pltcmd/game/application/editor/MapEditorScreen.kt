@@ -21,7 +21,7 @@ private val log = KotlinLogging.logger { }
 
 class MapEditorScreen : KtxScreen {
 
-    private val editableWorld = MutableWorld(worldSizeWidthInTiles = 300, worldSizeHeightInTiles = 300)
+    private val editableWorld = MutableWorld(worldSizeWidthInTiles = worldWidthInTiles, worldSizeHeightInTiles = worldHeightInTiles)
 
     private lateinit var stage: Stage
 
