@@ -7,26 +7,18 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Filled
 import com.badlogic.gdx.scenes.scene2d.Actor
 import de.gleex.pltcmd.game.application.drawing.drawWithType
 import de.gleex.pltcmd.game.application.editor.worldTileEdgeLengthInMeters
-import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
+import de.gleex.pltcmd.model.mapgeneration.mapgenerators.MapGenerationListener
 import de.gleex.pltcmd.model.world.coordinate.Coordinate
+import de.gleex.pltcmd.model.world.terrain.TerrainHeight
+import de.gleex.pltcmd.model.world.terrain.TerrainType
 import mu.KotlinLogging
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 private val log = KotlinLogging.logger { }
 
-class HeightRenderActor(private val coordinate: Coordinate, private val world: MutableWorld) : Actor() {
+class HeightRenderActor(private val coordinate: Coordinate) : Actor(), MapGenerationListener {
 
     private val renderer = ShapeRenderer()
-
-    init {
-        val x = (coordinate.eastingFromLeft - world.bottomLeftCoordinate.eastingFromLeft) * worldTileEdgeLengthInMeters
-        val y =
-            (coordinate.northingFromBottom - world.bottomLeftCoordinate.northingFromBottom) * worldTileEdgeLengthInMeters
-        setPosition(x, y)
-        width = worldTileEdgeLengthInMeters
-        height = worldTileEdgeLengthInMeters
-        log.info { "$coordinate | initialized actor at $x | $y with size $width * $height" }
-    }
 
     @OptIn(ExperimentalAtomicApi::class)
     override fun draw(batch: Batch?, parentAlpha: Float) {
@@ -55,5 +47,19 @@ class HeightRenderActor(private val coordinate: Coordinate, private val world: M
         }
 
         batch?.begin()
+    }
+
+    override fun startGeneration(origin: Coordinate) {
+        val x = (coordinate.eastingFromLeft - origin.eastingFromLeft) * worldTileEdgeLengthInMeters
+        val y =
+            (coordinate.northingFromBottom - origin.northingFromBottom) * worldTileEdgeLengthInMeters
+        setPosition(x, y)
+        width = worldTileEdgeLengthInMeters
+        height = worldTileEdgeLengthInMeters
+        log.info { "$coordinate | initialized actor at $x | $y with size $width * $height" }
+    }
+
+    override fun terrainGenerated(coordinate: Coordinate, terrainHeight: TerrainHeight?, terrainType: TerrainType?) {
+        TODO("Not yet implemented")
     }
 }

@@ -48,8 +48,9 @@ class MapEditorScreen : KtxScreen {
         coordinateRectangleSequence
             .forEach { coordinate ->
                 log.info { "$coordinate | Adding height render actor" }
-                stage.addActor(HeightRenderActor(coordinate, editableWorld))
+                stage.addActor(HeightRenderActor(coordinate).also { editableWorld.addListener(it) })
             }
+        editableWorld.startWorldGeneration()
         stage.addActor(LogIWasRendered)
         camera.update()
     }
