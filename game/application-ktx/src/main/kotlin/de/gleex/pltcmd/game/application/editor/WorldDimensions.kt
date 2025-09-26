@@ -15,12 +15,12 @@ internal val worldOrigin: Coordinate = Coordinate.zero
 /**
  * How many tiles the world has from west to east.
  */
-internal const val worldWidthInTiles: Int = 300
+internal const val worldWidthInTiles: Int = 150
 
 /**
  * How many tiles the world has from south to north.
  */
-internal const val worldHeightInTiles: Int = 300
+internal const val worldHeightInTiles: Int = 150
 
 /**
  * The edge length of a single tile as [Distance]. Tiles are square.

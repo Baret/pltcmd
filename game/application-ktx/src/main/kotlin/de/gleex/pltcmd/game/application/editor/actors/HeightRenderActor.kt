@@ -16,6 +16,7 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 private val log = KotlinLogging.logger { }
 
+// having that many actors is not good... :(
 class HeightRenderActor(private val coordinate: Coordinate) : Actor(), MapGenerationListener {
 
     private val renderer = ShapeRenderer()

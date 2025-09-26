@@ -6,12 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import de.gleex.pltcmd.game.application.editor.actions.MoveCameraActor
-import de.gleex.pltcmd.game.application.editor.actors.HeightRenderActor
 import de.gleex.pltcmd.game.application.editor.actors.LogIWasRendered
+import de.gleex.pltcmd.game.application.editor.actors.SectorRenderActor
 import de.gleex.pltcmd.game.application.editor.listeners.CameraZoomListener
 import de.gleex.pltcmd.model.mapgeneration.mapgenerators.data.MutableWorld
 import de.gleex.pltcmd.model.world.Sector
 import de.gleex.pltcmd.model.world.WorldTile
+import de.gleex.pltcmd.model.world.sectorOrigin
 import de.gleex.pltcmd.util.measure.distance.DistanceUnit
 import ktx.app.KtxScreen
 import mu.KotlinLogging
@@ -45,10 +46,11 @@ class MapEditorScreen : KtxScreen {
         val coordinateRectangleSequence =
             editableWorld.bottomLeftCoordinate..editableWorld.bottomLeftCoordinate.movedBy(10, 10)
         log.info { "Starting to add actors" }
-        coordinateRectangleSequence
-            .forEach { coordinate ->
-                log.info { "$coordinate | Adding height render actor" }
-                stage.addActor(HeightRenderActor(coordinate).also { editableWorld.addListener(it) })
+        (editableWorld.bottomLeftCoordinate..editableWorld.topRightCoordinate)
+            .filter { it.sectorOrigin == it }
+            .forEach { sectorOrigin ->
+                log.info { "$sectorOrigin | Adding sector render actor" }
+                stage.addActor(SectorRenderActor(sectorOrigin, editableWorld))
             }
         editableWorld.startWorldGeneration()
         stage.addActor(LogIWasRendered)
