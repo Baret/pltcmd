@@ -184,6 +184,28 @@ class MutableWorld(
         return empty.filter(predicate)
     }
 
+    /**
+     * Notifies all listeners that the world generation is about to start.
+     *
+     * @see MapGenerationListener.startGeneration
+     */
+    fun startWorldGeneration() {
+        listeners.forEach { it.startGeneration(bottomLeftCoordinate) }
+    }
+
+    /**
+     * Returns true if the given coordinate has already been (partly) generated.
+     */
+    operator fun contains(coordinate: Coordinate) = terrainMap.keys.contains(coordinate)
+
+    /**
+     * Ensures that the resulting position is inside this world.
+     * @return the given Coordinate or the nearest at the border of this map
+     **/
+    fun moveInside(location: Coordinate): Coordinate {
+        return WorldMap.Utils.moveInside(location, bottomLeftCoordinate, topRightCoordinate)
+    }
+
     private fun requireInBounds(coordinate: Coordinate) {
         require(isInBounds(coordinate)) { "Coordinate $coordinate is not inside this world $completeArea" }
     }
@@ -199,18 +221,5 @@ class MutableWorld(
     }
 
     private infix fun Coordinate.isInBounds(world: MutableWorld) = world.isInBounds(this)
-
-    /**
-     * Returns true if the given coordinate has already been (partly) generated.
-     */
-    operator fun contains(coordinate: Coordinate) = terrainMap.keys.contains(coordinate)
-
-    /**
-     * Ensures that the resulting position is inside this world.
-     * @return the given Coordinate or the nearest at the border of this map
-     **/
-    fun moveInside(location: Coordinate): Coordinate {
-        return WorldMap.Utils.moveInside(location, bottomLeftCoordinate, topRightCoordinate)
-    }
 
 }
