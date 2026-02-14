@@ -51,7 +51,7 @@ class WorldMapGenerator(private val seed: Long, val worldWidthInTiles: Int, val 
 
     fun generateWorld(bottomLeftCoordinate: Coordinate = Coordinate(0, 0)): WorldMap {
         val partiallyGeneratedWorld = MutableWorld(bottomLeftCoordinate, worldWidthInTiles, worldHeightInTiles)
-        listeners.forEach { it.startGeneration(bottomLeftCoordinate) }
+        partiallyGeneratedWorld.startWorldGeneration()
         listeners.forEach(partiallyGeneratedWorld::addListener)
         try {
             log.info { "Generating a random world with seed $seed" }
