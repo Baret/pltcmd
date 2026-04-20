@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.gleex.pltcmd.game</groupId>
+        <artifactId>game</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>application-ktx</artifactId>
+
+    <name>Application with KTX</name>
+    <description>A frontend for the game built with KTX</description>
+
+    <properties>
+        <gdx.version>1.13.1</gdx.version>
+        <ktx.version>1.13.1-rc1</ktx.version>
+    </properties>
+
+    <dependencies>
+        <!-- internal dependencies -->
+        <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>graphics</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.badlogicgames.gdx</groupId>
+                    <artifactId>gdx-tools</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>world</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.model</groupId>
+            <artifactId>mapgeneration</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gleex.pltcmd.game</groupId>
+            <artifactId>engine</artifactId>
+        </dependency>
+
+        <!-- gdx -->
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx</artifactId>
+            <version>${gdx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-backend-lwjgl3</artifactId>
+            <version>${gdx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-platform</artifactId>
+            <version>${gdx.version}</version>
+            <classifier>natives-desktop</classifier>
+        </dependency>
+
+        <!-- ktx -->
+        <dependency>
+            <groupId>io.github.libktx</groupId>
+            <artifactId>ktx-app</artifactId>
+            <version>${ktx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.libktx</groupId>
+            <artifactId>ktx-assets</artifactId>
+            <version>${ktx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.libktx</groupId>
+            <artifactId>ktx-graphics</artifactId>
+            <version>${ktx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.libktx</groupId>
+            <artifactId>ktx-vis-style</artifactId>
+            <version>${ktx.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
