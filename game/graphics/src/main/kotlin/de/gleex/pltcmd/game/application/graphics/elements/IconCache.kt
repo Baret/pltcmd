@@ -1,5 +1,8 @@
 package de.gleex.pltcmd.game.application.graphics.elements
 
+import com.badlogic.gdx.Files
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import de.gleex.pltcmd.model.elements.ElementKind
 import de.gleex.pltcmd.model.elements.Rung
 import de.gleex.pltcmd.model.faction.Affiliation
@@ -15,17 +18,28 @@ import java.net.URL
 object IconCache {
     private val log = KotlinLogging.logger { }
 
+    // TODO: wrap the atlas into application logic like getTextureFor(element)
+    fun getTextureAtlas(): TextureAtlas {
+        return TextureAtlas(Gdx.files.getFileHandle("elements/packed/elements.atlas", Files.FileType.Classpath))
+    }
+
     /**
      * @return the URL of the icon for the given [ElementIconSelector].
      *
      * @throws FileNotFoundException if no resource for the given selector could be loaded.
      */
     suspend fun load(iconSelector: ElementIconSelector): URL {
-        val fileName = "elements/${iconSelector.fileName}.png"
+        val fileName = pathFor(iconSelector)
         log.debug { "Loading PNG from iconSelector $iconSelector: $fileName" }
         return IconCache::class.java.classLoader.getResource(fileName)
             ?: throw FileNotFoundException(fileName)
     }
+
+    /**
+     * @return the internal path on the classpath to the file for the given selector.
+     */
+    fun pathFor(iconSelector: ElementIconSelector) =
+        "elements/${iconSelector.fileName}.png"
 
     /**O
      * @return the URL of the icon for the given [ElementIconSelector].
@@ -40,7 +54,7 @@ object IconCache {
 }
 
 
-private val ElementIconSelector.fileName: String
+val ElementIconSelector.fileName: String
     get() = "${affiliation.fileNamePart()}_${kind.fileNamePart()}_${size.fileNamePart()}${tags.fileNameParts()}"
 
 private fun Affiliation?.fileNamePart() = when (this) {

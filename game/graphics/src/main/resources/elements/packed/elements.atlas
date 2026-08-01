@@ -1,0 +1,418 @@
+
+elements.png
+size: 858, 916
+format: RGBA8888
+filter: MipMapLinearNearest, Linear
+repeat: none
+fnd_air_siz
+  rotate: false
+  xy: 4, 4
+  size: 423, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+fnd_arm_siz
+  rotate: false
+  xy: 431, 4
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+fnd_arm_siz_recon
+  rotate: false
+  xy: 4, 308
+  size: 423, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+fnd_inf_siz
+  rotate: false
+  xy: 431, 308
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+fnd_inf_siz_aa
+  rotate: false
+  xy: 4, 612
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+fnd_inf_siz_arty
+  rotate: false
+  xy: 431, 612
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+
+elements2.png
+size: 858, 916
+format: RGBA8888
+filter: MipMapLinearNearest, Linear
+repeat: none
+fnd_inf_siz_at
+  rotate: false
+  xy: 4, 4
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+fnd_inf_siz_engi
+  rotate: false
+  xy: 431, 4
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+fnd_inf_siz_recon
+  rotate: false
+  xy: 4, 308
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+fnd_inf_siz_snip
+  rotate: false
+  xy: 431, 308
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+fnd_knd_siz
+  rotate: false
+  xy: 4, 612
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+fnd_mec_siz
+  rotate: false
+  xy: 431, 612
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+
+elements3.png
+size: 858, 916
+format: RGBA8888
+filter: MipMapLinearNearest, Linear
+repeat: none
+fnd_mot_siz
+  rotate: false
+  xy: 4, 4
+  size: 420, 300
+  orig: 500, 300
+  offset: 35, 0
+  index: -1
+hst_air_siz
+  rotate: false
+  xy: 431, 4
+  size: 292, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+hst_arm_siz
+  rotate: false
+  xy: 4, 308
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+hst_arm_siz_recon
+  rotate: false
+  xy: 431, 308
+  size: 292, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+hst_inf_siz
+  rotate: false
+  xy: 4, 612
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+hst_inf_siz_aa
+  rotate: false
+  xy: 431, 612
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+
+elements4.png
+size: 858, 916
+format: RGBA8888
+filter: MipMapLinearNearest, Linear
+repeat: none
+hst_inf_siz_arty
+  rotate: false
+  xy: 4, 4
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+hst_inf_siz_at
+  rotate: false
+  xy: 431, 4
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+hst_inf_siz_engi
+  rotate: false
+  xy: 4, 308
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+hst_inf_siz_recon
+  rotate: false
+  xy: 431, 308
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+hst_inf_siz_snip
+  rotate: false
+  xy: 4, 612
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+hst_knd_siz
+  rotate: false
+  xy: 431, 612
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+
+elements5.png
+size: 858, 916
+format: RGBA8888
+filter: MipMapLinearNearest, Linear
+repeat: none
+hst_mec_siz
+  rotate: false
+  xy: 4, 4
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+hst_mot_siz
+  rotate: false
+  xy: 431, 4
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_air_siz
+  rotate: false
+  xy: 4, 308
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_arm_siz
+  rotate: false
+  xy: 431, 308
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_arm_siz_recon
+  rotate: false
+  xy: 4, 612
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_inf_siz
+  rotate: false
+  xy: 431, 612
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+
+elements6.png
+size: 858, 916
+format: RGBA8888
+filter: MipMapLinearNearest, Linear
+repeat: none
+neu_inf_siz_aa
+  rotate: false
+  xy: 4, 4
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_inf_siz_arty
+  rotate: false
+  xy: 431, 4
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_inf_siz_at
+  rotate: false
+  xy: 4, 308
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_inf_siz_engi
+  rotate: false
+  xy: 431, 308
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_inf_siz_recon
+  rotate: false
+  xy: 4, 612
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_inf_siz_snip
+  rotate: false
+  xy: 431, 612
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+
+elements7.png
+size: 858, 916
+format: RGBA8888
+filter: MipMapLinearNearest, Linear
+repeat: none
+neu_knd_siz
+  rotate: false
+  xy: 4, 4
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_mec_siz
+  rotate: false
+  xy: 431, 4
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+neu_mot_siz
+  rotate: false
+  xy: 4, 308
+  size: 288, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_air_siz
+  rotate: false
+  xy: 431, 308
+  size: 293, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_arm_siz
+  rotate: false
+  xy: 4, 612
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_arm_siz_recon
+  rotate: false
+  xy: 431, 612
+  size: 293, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+
+elements8.png
+size: 858, 916
+format: RGBA8888
+filter: MipMapLinearNearest, Linear
+repeat: none
+unk_inf_siz
+  rotate: false
+  xy: 4, 4
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_inf_siz_aa
+  rotate: false
+  xy: 431, 4
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_inf_siz_arty
+  rotate: false
+  xy: 4, 308
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_inf_siz_at
+  rotate: false
+  xy: 431, 308
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_inf_siz_engi
+  rotate: false
+  xy: 4, 612
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_inf_siz_recon
+  rotate: false
+  xy: 431, 612
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+
+elements9.png
+size: 858, 612
+format: RGBA8888
+filter: MipMapLinearNearest, Linear
+repeat: none
+unk_inf_siz_snip
+  rotate: false
+  xy: 4, 4
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_knd_siz
+  rotate: false
+  xy: 431, 4
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_mec_siz
+  rotate: false
+  xy: 4, 308
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
+unk_mot_siz
+  rotate: false
+  xy: 431, 308
+  size: 290, 300
+  orig: 500, 300
+  offset: 102, 0
+  index: -1
